@@ -1,37 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../core/theme/app_spacing.dart';
-import '../../../shared/widgets/primary_button.dart';
 import 'providers/result_providers.dart';
-import '../../exams/presentation/providers/exam_providers.dart';
 
 class ReviewScreen extends ConsumerWidget {
-  final String resultId;
   const ReviewScreen({super.key, required this.resultId});
+
+  final String resultId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final resultAsync = ref.watch(resultProvider(resultId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Review Questions'),
-      ),
+      appBar: AppBar(title: const Text('Attempt Summary')),
       body: resultAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (error, stackTrace) => _LoadError(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(resultProvider(resultId)),
+        ),
         data: (result) {
-          final questionsAsync = ref.watch(examQuestionsProvider(result.examId));
-
-          return questionsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, stack) => Center(child: Text('Error: $err')),
-            data: (questions) {
-              if (questions.isEmpty) {
-                return const Center(child: Text('No questions available'));
-              }
-              return _ReviewScreenBody(questions: questions);
-            },
+          return ListView(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${result.score.toStringAsFixed(0)}%',
+                        style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      const Text('Overall score'),
+                      const SizedBox(height: AppSpacing.md),
+                      LinearProgressIndicator(
+                        value: (result.score / result.maxScore).clamp(0, 1),
+                        minHeight: 10,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _MetricCard(
+                icon: Icons.track_changes,
+                label: 'Accuracy',
+                value: '${result.accuracy.toStringAsFixed(1)}%',
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  Expanded(
+                    child: _MetricCard(
+                      icon: Icons.check_circle_outline,
+                      label: 'Correct',
+                      value: '${result.correctCount}',
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _MetricCard(
+                      icon: Icons.cancel_outlined,
+                      label: 'Incorrect',
+                      value: '${result.incorrectCount}',
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: _MetricCard(
+                      icon: Icons.remove_circle_outline,
+                      label: 'Skipped',
+                      value: '${result.skippedCount}',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Text(
+                    'Question-by-question review is not shown until the mobile app consumes the server-authoritative review payload. This prevents mock answers from being presented as real results.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              FilledButton(
+                onPressed: () => context.go('/results'),
+                child: const Text('View all results'),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton(
+                onPressed: result.examId.isEmpty
+                    ? null
+                    : () => context.push('/test-attempt', extra: result.examId),
+                child: const Text('Retake test'),
+              ),
+            ],
           );
         },
       ),
@@ -39,212 +114,57 @@ class ReviewScreen extends ConsumerWidget {
   }
 }
 
-class _ReviewScreenBody extends StatefulWidget {
-  final List<dynamic> questions; // using dynamic/model.Question from examQuestionsProvider
-  
-  const _ReviewScreenBody({required this.questions});
+class _MetricCard extends StatelessWidget {
+  const _MetricCard({required this.icon, required this.label, required this.value});
 
-  @override
-  State<_ReviewScreenBody> createState() => _ReviewScreenBodyState();
-}
-
-class _ReviewScreenBodyState extends State<_ReviewScreenBody> {
-  int _currentIndex = 0;
-
-  void _next() {
-    if (_currentIndex < widget.questions.length - 1) {
-      setState(() {
-        _currentIndex++;
-      });
-    }
-  }
-
-  void _previous() {
-    if (_currentIndex > 0) {
-      setState(() {
-        _currentIndex--;
-      });
-    }
-  }
+  final IconData icon;
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final currentQ = widget.questions[_currentIndex];
-
-    return Column(
-      children: [
-        // Progress Header
-        Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Question ${_currentIndex + 1} of ${widget.questions.length}',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              _buildStatusBadge(theme, currentQ),
-            ],
-          ),
-        ),
-        LinearProgressIndicator(
-          value: (_currentIndex + 1) / widget.questions.length,
-          backgroundColor: theme.colorScheme.surfaceContainerHighest,
-          color: theme.colorScheme.primary,
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Q${_currentIndex + 1}. ${currentQ.text}',
-                  style: theme.textTheme.titleLarge,
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                ...List.generate(currentQ.options.length, (index) {
-                  return _buildOptionItem(theme, index, currentQ);
-                }),
-                const SizedBox(height: AppSpacing.xl),
-                const Divider(),
-                const SizedBox(height: AppSpacing.lg),
-                Text(
-                  'Explanation',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Container(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    border: Border.all(color: theme.colorScheme.outlineVariant),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            Icon(icon, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              value,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Text(
-                    currentQ.explanation,
-                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-              ],
             ),
-          ),
-        ),
-        const Divider(height: 1),
-        Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _currentIndex > 0 ? _previous : null,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
-                  ),
-                  child: const Text('Previous'),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: PrimaryButton(
-                  text: _currentIndex < widget.questions.length - 1 ? 'Next' : 'Finish',
-                  onPressed: _currentIndex < widget.questions.length - 1 ? _next : () => Navigator.pop(context),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatusBadge(ThemeData theme, dynamic q) {
-    String label;
-    Color color;
-
-    // Hardcoded mock of user choices since attempt response is not available easily here
-    final userOptionIndex = 0; // mock
-    final correctOptionIndex = q.correctOptionIndexes.isNotEmpty ? q.correctOptionIndexes.first : 0;
-
-    if (userOptionIndex == correctOptionIndex) {
-      label = 'Correct';
-      color = Colors.green;
-    } else {
-      label = 'Incorrect';
-      color = Colors.red;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
-      ),
-      child: Text(
-        label,
-        style: theme.textTheme.labelSmall?.copyWith(color: color, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildOptionItem(ThemeData theme, int index, dynamic q) {
-    final correctOptionIndex = q.correctOptionIndexes.isNotEmpty ? q.correctOptionIndexes.first : 0;
-    final isCorrectOption = index == correctOptionIndex;
-    final isUserOption = index == 0; // hardcoded mock user choice
-
-    Color bgColor = theme.colorScheme.surface;
-    Color borderColor = theme.colorScheme.outlineVariant;
-    IconData? icon;
-    Color? iconColor;
-
-    if (isCorrectOption) {
-      bgColor = Colors.green.withValues(alpha: 0.1);
-      borderColor = Colors.green;
-      icon = Icons.check_circle;
-      iconColor = Colors.green;
-    } else if (isUserOption) {
-      bgColor = Colors.red.withValues(alpha: 0.1);
-      borderColor = Colors.red;
-      icon = Icons.cancel;
-      iconColor = Colors.red;
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: bgColor,
-        border: Border.all(color: borderColor, width: isCorrectOption || isUserOption ? 2 : 1),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${String.fromCharCode(65 + index)}.', // A, B, C, D
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isCorrectOption ? Colors.green : (isUserOption ? Colors.red : theme.colorScheme.onSurfaceVariant),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Text(
-              q.options[index],
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: isCorrectOption || isUserOption ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ),
-          if (icon != null) ...[
-            const SizedBox(width: AppSpacing.sm),
-            Icon(icon, color: iconColor, size: 24),
+            Text(label, style: Theme.of(context).textTheme.labelMedium),
           ],
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadError extends StatelessWidget {
+  const _LoadError({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.cloud_off_outlined, size: 48),
+            const SizedBox(height: AppSpacing.md),
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+          ],
+        ),
       ),
     );
   }
