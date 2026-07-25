@@ -13,6 +13,10 @@ class ResultsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultsAsync = ref.watch(userResultsProvider);
 
+    Future<void> refreshResults() async {
+      await ref.refresh(userResultsProvider.future);
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Results')),
       body: resultsAsync.when(
@@ -24,7 +28,7 @@ class ResultsScreen extends ConsumerWidget {
         data: (results) {
           if (results.isEmpty) {
             return RefreshIndicator(
-              onRefresh: () async => ref.refresh(userResultsProvider.future),
+              onRefresh: refreshResults,
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: const [
@@ -39,7 +43,7 @@ class ResultsScreen extends ConsumerWidget {
 
           final latest = results.first;
           return RefreshIndicator(
-            onRefresh: () async => ref.refresh(userResultsProvider.future),
+            onRefresh: refreshResults,
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(AppSpacing.md),
