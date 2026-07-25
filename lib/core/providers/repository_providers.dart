@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../network/api_client.dart';
 import '../repositories/analytics_repository.dart';
 import '../repositories/api_attempt_draft_repository.dart';
+import '../repositories/api_attempt_session_repository.dart';
 import '../repositories/attempt_repository.dart';
 import '../repositories/attempt_draft_repository.dart';
+import '../repositories/attempt_session_repository.dart';
 import '../repositories/exam_repository.dart';
 import '../repositories/result_repository.dart';
 
@@ -33,6 +35,11 @@ final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
   return MockAnalyticsRepository();
 });
 
+@Deprecated('Use attemptSessionRepositoryProvider for canonical Neon attempts.')
 final attemptDraftRepositoryProvider = Provider<AttemptDraftRepository>((ref) {
   return ApiAttemptDraftRepository(ref.watch(apiClientProvider));
+});
+
+final attemptSessionRepositoryProvider = Provider<AttemptSessionRepository>((ref) {
+  return ApiAttemptSessionRepository(ref.watch(apiClientProvider));
 });
