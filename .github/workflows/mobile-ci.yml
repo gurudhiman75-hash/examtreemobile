@@ -38,8 +38,16 @@ jobs:
       - name: Regenerate source files
         run: dart run build_runner build --delete-conflicting-outputs
 
-      - name: Verify generated files are committed
-        run: git diff --exit-code
+      - name: Record generated-source drift
+        shell: bash
+        run: |
+          git diff --name-only > "$RUNNER_TEMP/generated-drift.txt"
+          if [[ -s "$RUNNER_TEMP/generated-drift.txt" ]]; then
+            echo "Generated files changed:"
+            cat "$RUNNER_TEMP/generated-drift.txt"
+          else
+            echo "Generated files are current."
+          fi
 
       - name: Static analysis
         run: flutter analyze
@@ -49,3 +57,12 @@ jobs:
 
       - name: Android debug build
         run: flutter build apk --debug
+
+      - name: Enforce committed generated sources
+        shell: bash
+        run: |
+          if [[ -s "$RUNNER_TEMP/generated-drift.txt" ]]; then
+            echo "Run build_runner locally and commit these generated files:"
+            cat "$RUNNER_TEMP/generated-drift.txt"
+            exit 1
+          fi
