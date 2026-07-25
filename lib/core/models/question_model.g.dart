@@ -20,12 +20,14 @@ _Question _$QuestionFromJson(Map<String, dynamic> json) => _Question(
   explanation: json['explanation'] as String,
   points: (json['points'] as num).toDouble(),
   textHi: json['textHi'] as String?,
-  optionsHi:
-      (json['optionsHi'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  optionsHi: (json['optionsHi'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
   explanationHi: json['explanationHi'] as String?,
   textPa: json['textPa'] as String?,
-  optionsPa:
-      (json['optionsPa'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  optionsPa: (json['optionsPa'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
   explanationPa: json['explanationPa'] as String?,
   seatingDiagram: json['seatingDiagram'] as Map<String, dynamic>?,
   seatingExplanationFlow:
