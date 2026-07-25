@@ -7,6 +7,7 @@ import '../../exams/presentation/widgets/exam_card.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../results/presentation/providers/result_providers.dart';
+import '../../auth/presentation/providers/auth_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -43,7 +44,10 @@ class HomeScreen extends ConsumerWidget {
     final availableExams = availableAsync.value ?? [];
     final results = resultsAsync.value ?? [];
 
-    const userName = 'Alex'; // Hardcoded for now
+    final authState = ref.watch(authStateChangesProvider);
+    final user = authState.value;
+    final userName = user?.displayName ?? user?.email?.split('@')[0] ?? 'Student';
+
     final totalTestsTaken = analytics?.totalTestsAttempted ?? 0;
     final averageScore = analytics?.averageScore.toInt() ?? 0;
     final accuracy = analytics?.averageAccuracy ?? 0.0;
@@ -92,9 +96,7 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         _buildSectionTitle(theme, 'Available Tests'),
                         TextButton(
-                          onPressed: () {
-                            // Navigate to Exams tab
-                          },
+                          onPressed: () => context.go('/exams'),
                           child: const Text('View All'),
                         ),
                       ],
@@ -126,7 +128,7 @@ class HomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hello, $name 👋',
+              'Hello, $name ðŸ‘‹',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.primary,
@@ -261,3 +263,4 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
+

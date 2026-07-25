@@ -9,6 +9,8 @@ import '../features/results/presentation/review_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/test_attempt/presentation/test_attempt_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
+import '../features/auth/presentation/login_screen.dart';
+import '../features/auth/presentation/providers/auth_providers.dart';
 import '../shared/layouts/app_scaffold.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -18,10 +20,32 @@ final GlobalKey<NavigatorState> _shellNavigatorResultsKey = GlobalKey<NavigatorS
 final GlobalKey<NavigatorState> _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authStateChangesProvider);
+
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/home',
+    redirect: (context, state) {
+      final isAuthenticated = authState.value != null;
+      final isLoggingIn = state.matchedLocation == '/login';
+
+      if (authState.isLoading) return null;
+
+      if (!isAuthenticated && !isLoggingIn) {
+        return '/login';
+      }
+
+      if (isAuthenticated && isLoggingIn) {
+        return '/home';
+      }
+
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppScaffold(navigationShell: navigationShell);

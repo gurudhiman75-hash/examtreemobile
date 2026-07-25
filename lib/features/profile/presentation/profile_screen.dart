@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_spacing.dart';
 import 'providers/analytics_providers.dart';
+import '../../auth/presentation/providers/auth_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -20,8 +21,11 @@ class ProfileScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
         data: (analytics) {
-          const userName = 'Alex Johnson'; // Mock user info
-          const email = 'alex.johnson@example.com';
+          final authState = ref.watch(authStateChangesProvider);
+          final user = authState.value;
+          final userName = user?.displayName ?? user?.email?.split('@')[0] ?? 'Student';
+          final email = user?.email ?? '';
+
           final testsAttempted = analytics.totalTestsAttempted;
           final averageScore = analytics.averageScore.toInt();
           final accuracy = analytics.averageAccuracy;
@@ -33,7 +37,7 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.lg),
                 _buildStatsRow(theme, testsAttempted, averageScore, accuracy),
                 const SizedBox(height: AppSpacing.xl),
-                _buildMenuSection(theme, context),
+                _buildMenuSection(theme, context, ref),
                 const SizedBox(height: AppSpacing.xxl),
               ],
             ),
@@ -121,7 +125,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMenuSection(ThemeData theme, BuildContext context) {
+  Widget _buildMenuSection(ThemeData theme, BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         _buildMenuItem(
@@ -149,7 +153,9 @@ class ProfileScreen extends ConsumerWidget {
           title: 'Logout',
           iconColor: theme.colorScheme.error,
           textColor: theme.colorScheme.error,
-          onTap: () {},
+          onTap: () {
+            ref.read(authControllerProvider).signOut();
+          },
         ),
       ],
     );

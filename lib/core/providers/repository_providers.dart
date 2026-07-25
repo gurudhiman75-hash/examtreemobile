@@ -8,9 +8,9 @@ import '../repositories/attempt_draft_repository.dart';
 import '../repositories/exam_repository.dart';
 import '../repositories/result_repository.dart';
 
+import '../repositories/api_exam_repository.dart';
 import '../repositories/mock_analytics_repository.dart';
 import '../repositories/mock_attempt_repository.dart';
-import '../repositories/mock_exam_repository.dart';
 import '../repositories/mock_result_repository.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -18,7 +18,7 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 });
 
 final examRepositoryProvider = Provider<ExamRepository>((ref) {
-  return MockExamRepository();
+  return ApiExamRepository(ref.watch(apiClientProvider).dio);
 });
 
 final attemptRepositoryProvider = Provider<AttemptRepository>((ref) {

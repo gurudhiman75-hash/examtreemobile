@@ -13,6 +13,27 @@ import '../../../../core/models/exam_model.dart';
 import '../../../../core/models/question_model.dart' as model;
 import '../../../../core/providers/repository_providers.dart';
 import '../../../../core/repositories/attempt_draft_repository.dart';
+import '../../../../core/repositories/api_exam_repository.dart';
+
+class _ExamLoadError extends StatelessWidget {
+  const _ExamLoadError({required this.error});
+
+  final Object error;
+
+  @override
+  Widget build(BuildContext context) {
+    if (error is ExamLoginRequiredException) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) context.go('/login');
+      });
+      return const Center(child: Text('Sign in required. Redirecting...'));
+    }
+    if (error is ExamPaymentRequiredException) {
+      return const Center(child: Text('Purchase required to access this test.'));
+    }
+    return Center(child: Text('Error: $error'));
+  }
+}
 
 enum QuestionStatus {
   notVisited,
@@ -44,14 +65,14 @@ class TestAttemptScreen extends ConsumerWidget {
     return Scaffold(
       body: questionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (err, stack) => _ExamLoadError(error: err),
         data: (questions) {
           if (questions.isEmpty) {
             return const Center(child: Text('No questions available'));
           }
           return examAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, stack) => Center(child: Text('Error: $err')),
+            error: (err, stack) => _ExamLoadError(error: err),
             data: (exam) =>
                 _TestAttemptScreenBody(questions: questions, exam: exam),
           );
@@ -132,8 +153,10 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
           _secondsRemaining--;
         });
       } else {
-        _timer?.cancel();
-        // Handle Auto Submit
+        timer.cancel();
+        if (mounted && !_isSubmitting) {
+          _submitAttempt();
+        }
       }
     });
   }
@@ -171,7 +194,13 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
         ),
       );
 
-      if (!mounted || resume != true) return;
+      if (!mounted) return;
+      if (resume != true) {
+        await ref.read(attemptDraftRepositoryProvider).deleteDraft(draft.draftId);
+        ref.invalidate(activeDraftProvider(widget.exam.id));
+        ref.invalidate(draftListProvider);
+        return;
+      }
       _restoreDraft(draft);
     } catch (_) {
       // Draft sync should not block starting an attempt.
@@ -192,8 +221,9 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
 
       for (var i = 0; i < _questions.length; i++) {
         final question = _questions[i];
-        final answer = state.answers[question.id];
-        final flagged = state.flags[question.id] ?? false;
+        final questionKey = question.id.toString();
+        final answer = state.answers[questionKey];
+        final flagged = state.flags[questionKey] ?? false;
         _states[i].selectedOptionIndex = answer;
         if (flagged && answer != null) {
           _states[i].status = QuestionStatus.answeredAndMarkedForReview;
@@ -220,13 +250,13 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
     for (var i = 0; i < _questions.length; i++) {
       final question = _questions[i];
       final state = _states[i];
-      answers[question.id] = state.selectedOptionIndex;
-      flags[question.id] =
+      final questionKey = question.id.toString();
+      answers[questionKey] = state.selectedOptionIndex;
+      flags[questionKey] =
           state.status == QuestionStatus.markedForReview ||
           state.status == QuestionStatus.answeredAndMarkedForReview;
       if (state.status != QuestionStatus.notVisited) {
-        final numericId = int.tryParse(question.id);
-        if (numericId != null) visitedQuestionIds.add(numericId);
+        visitedQuestionIds.add(question.id);
       }
     }
 
@@ -252,8 +282,9 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
 
   Future<void> _saveDraft({
     AttemptDraftStatus status = AttemptDraftStatus.inProgress,
+    bool allowDuringSubmit = false,
   }) async {
-    if (_isSavingDraft || _isSubmitting) return;
+    if (_isSavingDraft || (_isSubmitting && !allowDuringSubmit)) return;
     _isSavingDraft = true;
     try {
       final result = await ref
@@ -285,19 +316,19 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
     });
 
     try {
-      await _saveDraft();
+      await _saveDraft(allowDuringSubmit: true);
       final responses = _questions.asMap().entries.map((entry) {
         final question = entry.value;
         final state = _states[entry.key];
         return AttemptDraftResponsePayload(
-          questionId: question.id,
+          questionId: question.id.toString(),
           selectedOption: state.selectedOptionIndex,
         );
       }).toList();
 
       final flags = <String, bool>{
         for (var i = 0; i < _questions.length; i++)
-          _questions[i].id:
+          _questions[i].id.toString():
               _states[i].status == QuestionStatus.markedForReview ||
               _states[i].status == QuestionStatus.answeredAndMarkedForReview,
       };
@@ -768,3 +799,4 @@ class _TestAttemptScreenBodyState extends ConsumerState<_TestAttemptScreenBody>
     );
   }
 }
+

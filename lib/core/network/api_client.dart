@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiClient {
   ApiClient({Dio? dio}) : dio = dio ?? _createDio();
@@ -6,12 +7,11 @@ class ApiClient {
   final Dio dio;
 
   static Dio _createDio() {
-    const authToken = String.fromEnvironment('EXAMTREE_AUTH_TOKEN');
     final dio = Dio(
       BaseOptions(
         baseUrl: const String.fromEnvironment(
           'EXAMTREE_API_BASE_URL',
-          defaultValue: 'http://10.0.2.2:3000/api',
+          defaultValue: 'https://examtree-new.onrender.com/api',
         ),
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 30),
@@ -22,10 +22,26 @@ class ApiClient {
       ),
     );
 
-    if (authToken.isNotEmpty) {
-      dio.options.headers['Authorization'] = 'Bearer $authToken';
-    }
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            try {
+              final idToken = await user.getIdToken();
+              if (idToken != null) {
+                options.headers['Authorization'] = 'Bearer $idToken';
+              }
+            } catch (e) {
+              // Ignore token fetch errors here
+            }
+          }
+          return handler.next(options);
+        },
+      ),
+    );
 
     return dio;
   }
 }
+

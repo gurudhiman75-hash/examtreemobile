@@ -6,7 +6,7 @@ part 'question_model.g.dart';
 @freezed
 abstract class Question with _$Question {
   const factory Question({
-    required String id,
+    required int id,
     required String examId,
     required String subject,
     required String topic,
@@ -16,6 +16,20 @@ abstract class Question with _$Question {
     required List<int> correctOptionIndexes,
     required String explanation,
     required double points,
+    String? textHi,
+    List<String>? optionsHi,
+    String? explanationHi,
+    String? textPa,
+    List<String>? optionsPa,
+    String? explanationPa,
+    Map<String, dynamic>? seatingDiagram,
+    Map<String, dynamic>? seatingExplanationFlow,
+    String? imageUrl,
+    String? questionType,
+    int? diSetId,
+    String? diSetTitle,
+    String? diSetImageUrl,
+    String? diSetDescription,
   }) = _Question;
 
   factory Question.fromJson(Map<String, dynamic> json) => _$QuestionFromJson(json);
