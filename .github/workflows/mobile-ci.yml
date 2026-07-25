@@ -50,6 +50,16 @@ jobs:
             echo "Generated files are current."
           fi
 
+      - name: Upload regenerated model sources
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-model-sources
+          if-no-files-found: error
+          path: |
+            lib/core/models/question_model.freezed.dart
+            lib/core/models/question_model.g.dart
+
       - name: Static analysis
         id: analyze
         continue-on-error: true
@@ -86,8 +96,6 @@ jobs:
             android-build.log
             generated-drift.txt
             generated-sources.patch
-            lib/core/models/question_model.freezed.dart
-            lib/core/models/question_model.g.dart
 
       - name: Enforce verification result
         if: always()
