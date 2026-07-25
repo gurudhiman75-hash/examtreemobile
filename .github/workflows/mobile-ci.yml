@@ -9,7 +9,7 @@ on:
       - 'feat/**'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   verify:
@@ -31,57 +31,6 @@ jobs:
         with:
           channel: stable
           cache: true
-
-      - name: Apply final analyzer cleanups
-        if: github.event_name == 'push'
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          replacements = {
-              Path('lib/core/models/exam_api_dto.dart'): [
-                  (
-                      "String? _nullableString(Object? value) => value == null ? null : value.toString();",
-                      "String? _nullableString(Object? value) => value?.toString();",
-                  ),
-              ],
-              Path('lib/features/results/presentation/results_screen.dart'): [
-                  (
-                      "      await ref.refresh(userResultsProvider.future);",
-                      "      ref.invalidate(userResultsProvider);\n"
-                      "      final refreshedResults = ref.read(userResultsProvider.future);\n"
-                      "      await refreshedResults;",
-                  ),
-              ],
-              Path('test/widget_test.dart'): [
-                  (
-                      "        if (existingDraft != null) existingDraft!,",
-                      "        ?existingDraft,",
-                  ),
-              ],
-          }
-
-          for path, changes in replacements.items():
-              text = path.read_text()
-              for old, new in changes:
-                  if old not in text:
-                      raise SystemExit(f'Expected source fragment not found in {path}: {old}')
-                  text = text.replace(old, new, 1)
-              path.write_text(text)
-          PY
-          dart format \
-            lib/core/models/exam_api_dto.dart \
-            lib/features/results/presentation/results_screen.dart \
-            test/widget_test.dart
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            lib/core/models/exam_api_dto.dart \
-            lib/features/results/presentation/results_screen.dart \
-            test/widget_test.dart
-          git commit -m "fix(mobile): clear final analyzer findings"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Install dependencies
         run: flutter pub get
