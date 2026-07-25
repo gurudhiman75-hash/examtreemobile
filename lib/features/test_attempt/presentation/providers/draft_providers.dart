@@ -21,6 +21,15 @@ final draftSaveProvider = Provider<DraftSaveController>((ref) {
   return DraftSaveController(ref.watch(attemptDraftRepositoryProvider));
 });
 
+class ExistingAttemptDraftRequiresResolution implements Exception {
+  const ExistingAttemptDraftRequiresResolution(this.testId);
+
+  final String testId;
+
+  @override
+  String toString() => 'An existing draft for $testId must be resumed or deleted before a new draft can be saved.';
+}
+
 class DraftSaveController {
   const DraftSaveController(this._repository);
 
@@ -33,7 +42,14 @@ class DraftSaveController {
     required AttemptDraftState state,
     int? expectedVersion,
     AttemptDraftStatus status = AttemptDraftStatus.inProgress,
-  }) {
+  }) async {
+    if (expectedVersion == null) {
+      final existingDraft = await _repository.getDraft(testId);
+      if (existingDraft != null) {
+        throw ExistingAttemptDraftRequiresResolution(testId);
+      }
+    }
+
     return _repository.saveDraft(
       testId: testId,
       testName: testName,
