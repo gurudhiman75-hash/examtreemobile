@@ -40,35 +40,35 @@ jobs:
           from pathlib import Path
 
           replacements = {
-              Path('lib/core/models/exam_api_dto.dart'): (
-                  "String? _nullableString(Object? value) => value == null ? null : value.toString();",
-                  "String? _nullableString(Object? value) => value?.toString();",
-              ),
-              Path('lib/features/results/presentation/results_screen.dart'): (
-                  """    Future<void> refreshResults() async {
-                    await ref.refresh(userResultsProvider.future);
-                  }""",
-                  """    Future<void> refreshResults() async {
-                    ref.invalidate(userResultsProvider);
-                    final refreshedResults = ref.read(userResultsProvider.future);
-                    await refreshedResults;
-                  }""",
-              ),
-              Path('test/widget_test.dart'): (
-                  """  Future<List<AttemptDraft>> listDrafts() async => [
-                        if (existingDraft != null) existingDraft!,
-                      ];""",
-                  """  Future<List<AttemptDraft>> listDrafts() async => [
-                        ?existingDraft,
-                      ];""",
-              ),
+              Path('lib/core/models/exam_api_dto.dart'): [
+                  (
+                      "String? _nullableString(Object? value) => value == null ? null : value.toString();",
+                      "String? _nullableString(Object? value) => value?.toString();",
+                  ),
+              ],
+              Path('lib/features/results/presentation/results_screen.dart'): [
+                  (
+                      "      await ref.refresh(userResultsProvider.future);",
+                      "      ref.invalidate(userResultsProvider);\n"
+                      "      final refreshedResults = ref.read(userResultsProvider.future);\n"
+                      "      await refreshedResults;",
+                  ),
+              ],
+              Path('test/widget_test.dart'): [
+                  (
+                      "        if (existingDraft != null) existingDraft!,",
+                      "        ?existingDraft,",
+                  ),
+              ],
           }
 
-          for path, (old, new) in replacements.items():
+          for path, changes in replacements.items():
               text = path.read_text()
-              if old not in text:
-                  raise SystemExit(f'Expected source fragment not found in {path}')
-              path.write_text(text.replace(old, new, 1))
+              for old, new in changes:
+                  if old not in text:
+                      raise SystemExit(f'Expected source fragment not found in {path}: {old}')
+                  text = text.replace(old, new, 1)
+              path.write_text(text)
           PY
           dart format \
             lib/core/models/exam_api_dto.dart \
