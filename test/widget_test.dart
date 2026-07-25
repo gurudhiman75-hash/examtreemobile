@@ -67,31 +67,34 @@ void main() {
       });
     });
 
-    test('autosave cannot overwrite a draft before resume is resolved', () async {
-      final repository = _FakeAttemptDraftRepository(
-        existingDraft: AttemptDraft(
-          draftId: 'draft-1',
-          testId: 'test-1',
-          testName: 'Sample Test',
-          category: 'SSC',
-          attemptType: 'REAL',
-          state: _sampleState,
-          version: 3,
-        ),
-      );
-      final controller = DraftSaveController(repository);
+    test(
+      'autosave cannot overwrite a draft before resume is resolved',
+      () async {
+        final repository = _FakeAttemptDraftRepository(
+          existingDraft: AttemptDraft(
+            draftId: 'draft-1',
+            testId: 'test-1',
+            testName: 'Sample Test',
+            category: 'SSC',
+            attemptType: 'REAL',
+            state: _sampleState,
+            version: 3,
+          ),
+        );
+        final controller = DraftSaveController(repository);
 
-      await expectLater(
-        controller.save(
-          testId: 'test-1',
-          testName: 'Sample Test',
-          category: 'SSC',
-          state: _sampleState,
-        ),
-        throwsA(isA<ExistingAttemptDraftRequiresResolution>()),
-      );
-      expect(repository.saveCalls, 0);
-    });
+        await expectLater(
+          controller.save(
+            testId: 'test-1',
+            testName: 'Sample Test',
+            category: 'SSC',
+            state: _sampleState,
+          ),
+          throwsA(isA<ExistingAttemptDraftRequiresResolution>()),
+        );
+        expect(repository.saveCalls, 0);
+      },
+    );
   });
 }
 
@@ -113,9 +116,7 @@ class _FakeAttemptDraftRepository implements AttemptDraftRepository {
   Future<AttemptDraft?> getDraft(String testId) async => existingDraft;
 
   @override
-  Future<List<AttemptDraft>> listDrafts() async => [
-        if (existingDraft != null) existingDraft!,
-      ];
+  Future<List<AttemptDraft>> listDrafts() async => [?existingDraft];
 
   @override
   Future<SaveAttemptDraftResult> saveDraft({

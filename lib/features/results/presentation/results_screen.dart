@@ -14,7 +14,9 @@ class ResultsScreen extends ConsumerWidget {
     final resultsAsync = ref.watch(userResultsProvider);
 
     Future<void> refreshResults() async {
-      await ref.refresh(userResultsProvider.future);
+      ref.invalidate(userResultsProvider);
+      final refreshedResults = ref.read(userResultsProvider.future);
+      await refreshedResults;
     }
 
     return Scaffold(
@@ -50,18 +52,18 @@ class ResultsScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Latest attempt',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _LatestResultCard(result: latest),
                 const SizedBox(height: AppSpacing.xl),
                 Text(
                   'Attempt history',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 ...results.map((result) => _AttemptTile(result: result)),
@@ -82,7 +84,9 @@ class _LatestResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final progress = (result.score / result.maxScore).clamp(0.0, 1.0).toDouble();
+    final progress = (result.score / result.maxScore)
+        .clamp(0.0, 1.0)
+        .toDouble();
 
     return Card(
       child: Padding(
@@ -138,7 +142,8 @@ class _LatestResultCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => context.push('/review', extra: result.attemptId),
+                    onPressed: () =>
+                        context.push('/review', extra: result.attemptId),
                     child: const Text('Summary'),
                   ),
                 ),
@@ -147,7 +152,10 @@ class _LatestResultCard extends StatelessWidget {
                   child: FilledButton(
                     onPressed: result.examId.isEmpty
                         ? null
-                        : () => context.push('/test-attempt', extra: result.examId),
+                        : () => context.push(
+                            '/test-attempt',
+                            extra: result.examId,
+                          ),
                     child: const Text('Retake'),
                   ),
                 ),
@@ -169,9 +177,7 @@ class _AttemptTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: CircleAvatar(
-          child: Text('${result.score.round()}'),
-        ),
+        leading: CircleAvatar(child: Text('${result.score.round()}')),
         title: Text(result.examId.isEmpty ? 'Completed test' : result.examId),
         subtitle: Text(
           '${result.correctCount} correct · ${result.incorrectCount} incorrect · ${result.skippedCount} skipped',
