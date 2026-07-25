@@ -1,31 +1,68 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:examtree/main.dart';
+import 'package:examtree/core/models/exam_api_dto.dart';
+import 'package:examtree/core/repositories/attempt_draft_repository.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const ProviderScope(child: ExamTreeApp()));
+  group('mobile API contracts', () {
+    test('test detail payload maps to canonical exam and questions', () {
+      final dto = TestDto.fromJson({
+        'id': 'test-1',
+        'name': 'Sample Test',
+        'category': 'SSC',
+        'categoryId': 'ssc',
+        'duration': 30,
+        'totalQuestions': 1,
+        'attempts': 0,
+        'avgScore': 0,
+        'difficulty': 'Medium',
+        'marksPerQuestion': 2,
+        'negativeMarks': 0.5,
+        'sections': [
+          {
+            'id': 'quant',
+            'name': 'Quantitative Aptitude',
+            'questions': [
+              {
+                'id': 101,
+                'text': 'What is 2 + 2?',
+                'options': ['3', '4', '5', '6'],
+                'correct': 1,
+                'section': 'Quantitative Aptitude',
+                'explanation': '2 + 2 = 4.',
+                'textHi': '2 + 2 कितना है?',
+                'optionsHi': ['3', '4', '5', '6'],
+              },
+            ],
+          },
+        ],
+      });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      final exam = dto.toExam();
+      final questions = dto.toQuestions();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      expect(exam.id, 'test-1');
+      expect(exam.durationInSeconds, 1800);
+      expect(exam.totalMarks, 2);
+      expect(exam.negativeMarking, 0.5);
+      expect(questions, hasLength(1));
+      expect(questions.single.id, 101);
+      expect(questions.single.correctOptionIndexes, [1]);
+      expect(questions.single.textHi, '2 + 2 कितना है?');
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('attempt submission serializes numeric question IDs as numbers', () {
+      const payload = AttemptDraftResponsePayload(
+        questionId: '101',
+        selectedOption: 2,
+        timeTaken: 14,
+      );
+
+      expect(payload.toJson(), {
+        'questionId': 101,
+        'selectedOption': 2,
+        'timeTaken': 14,
+      });
+    });
   });
 }
