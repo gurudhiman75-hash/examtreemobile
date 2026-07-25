@@ -9,7 +9,7 @@ on:
       - 'feat/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -49,6 +49,20 @@ jobs:
           else
             echo "Generated files are current."
           fi
+
+      - name: Commit regenerated model sources
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          if [[ ! -s generated-drift.txt ]]; then
+            echo "No generated source changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/core/models/question_model.freezed.dart lib/core/models/question_model.g.dart
+          git commit -m "chore(mobile): refresh generated question model"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Upload regenerated model sources
         if: always()
@@ -115,8 +129,7 @@ jobs:
             failed=1
           fi
           if [[ -s generated-drift.txt ]]; then
-            echo "Generated sources are stale:"
-            cat generated-drift.txt
+            echo "Generated sources were stale at checkout."
             failed=1
           fi
           exit "$failed"
