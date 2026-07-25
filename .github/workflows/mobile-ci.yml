@@ -14,7 +14,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
@@ -41,28 +41,72 @@ jobs:
       - name: Record generated-source drift
         shell: bash
         run: |
-          git diff --name-only > "$RUNNER_TEMP/generated-drift.txt"
-          if [[ -s "$RUNNER_TEMP/generated-drift.txt" ]]; then
+          git diff --name-only > generated-drift.txt
+          git diff > generated-sources.patch
+          if [[ -s generated-drift.txt ]]; then
             echo "Generated files changed:"
-            cat "$RUNNER_TEMP/generated-drift.txt"
+            cat generated-drift.txt
           else
             echo "Generated files are current."
           fi
 
       - name: Static analysis
-        run: flutter analyze
-
-      - name: Unit and widget tests
-        run: flutter test
-
-      - name: Android debug build
-        run: flutter build apk --debug
-
-      - name: Enforce committed generated sources
+        id: analyze
+        continue-on-error: true
         shell: bash
         run: |
-          if [[ -s "$RUNNER_TEMP/generated-drift.txt" ]]; then
-            echo "Run build_runner locally and commit these generated files:"
-            cat "$RUNNER_TEMP/generated-drift.txt"
-            exit 1
+          set -o pipefail
+          flutter analyze 2>&1 | tee analysis.log
+
+      - name: Unit and widget tests
+        id: tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test 2>&1 | tee tests.log
+
+      - name: Android debug build
+        id: android_build
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter build apk --debug 2>&1 | tee android-build.log
+
+      - name: Upload CI diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ci-diagnostics
+          if-no-files-found: ignore
+          path: |
+            analysis.log
+            tests.log
+            android-build.log
+            generated-drift.txt
+            generated-sources.patch
+
+      - name: Enforce verification result
+        if: always()
+        shell: bash
+        run: |
+          failed=0
+          if [[ "${{ steps.analyze.outcome }}" != "success" ]]; then
+            echo "Static analysis failed."
+            failed=1
           fi
+          if [[ "${{ steps.tests.outcome }}" != "success" ]]; then
+            echo "Flutter tests failed."
+            failed=1
+          fi
+          if [[ "${{ steps.android_build.outcome }}" != "success" ]]; then
+            echo "Android debug build failed."
+            failed=1
+          fi
+          if [[ -s generated-drift.txt ]]; then
+            echo "Generated sources are stale:"
+            cat generated-drift.txt
+            failed=1
+          fi
+          exit "$failed"
