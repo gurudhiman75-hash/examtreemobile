@@ -86,6 +86,8 @@ jobs:
             android-build.log
             generated-drift.txt
             generated-sources.patch
+            lib/core/models/question_model.freezed.dart
+            lib/core/models/question_model.g.dart
 
       - name: Enforce verification result
         if: always()
