@@ -42,7 +42,9 @@ class ReviewScreen extends ConsumerWidget {
                       const Text('Overall score'),
                       const SizedBox(height: AppSpacing.md),
                       LinearProgressIndicator(
-                        value: (result.score / result.maxScore).clamp(0, 1),
+                        value: (result.score / result.maxScore)
+                            .clamp(0.0, 1.0)
+                            .toDouble(),
                         minHeight: 10,
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
