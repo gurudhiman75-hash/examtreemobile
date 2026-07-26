@@ -7,7 +7,7 @@ import '../features/exams/presentation/exams_screen.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
-import '../features/test_attempt/presentation/test_attempt_screen.dart';
+import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
@@ -93,15 +93,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/test-attempt',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final examId = state.extra as String? ?? 'exam_1'; // fallback
-          return TestAttemptScreen(examId: examId);
+          final examId = state.extra as String? ?? 'exam_1';
+          return CanonicalTestAttemptScreen(examId: examId);
         },
       ),
       GoRoute(
         path: '/exam-details',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final examId = state.extra as String? ?? 'exam_1'; // fallback
+          final examId = state.extra as String? ?? 'exam_1';
           return ExamDetailsScreen(examId: examId);
         },
       ),
@@ -109,7 +109,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/review',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final resultId = state.extra as String? ?? 'res_1'; // fallback
+          final resultId = state.extra as String? ?? 'res_1';
           return ReviewScreen(resultId: resultId);
         },
       ),
