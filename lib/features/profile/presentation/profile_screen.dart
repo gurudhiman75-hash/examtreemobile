@@ -1,86 +1,139 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/models/analytics_model.dart';
 import '../../../core/theme/app_spacing.dart';
-import 'providers/analytics_providers.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
+import 'providers/analytics_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final authState = ref.watch(authStateChangesProvider);
+    final user = authState.value;
     final analyticsAsync = ref.watch(userAnalyticsProvider);
+    final userName = user?.displayName?.trim().isNotEmpty == true
+        ? user!.displayName!.trim()
+        : user?.email?.split('@').first ?? 'Student';
+    final email = user?.email ?? '';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        elevation: 0,
-      ),
-      body: analyticsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
-        data: (analytics) {
-          final authState = ref.watch(authStateChangesProvider);
-          final user = authState.value;
-          final userName = user?.displayName ?? user?.email?.split('@')[0] ?? 'Student';
-          final email = user?.email ?? '';
-
-          final testsAttempted = analytics.totalTestsAttempted;
-          final averageScore = analytics.averageScore.toInt();
-          final accuracy = analytics.averageAccuracy;
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildProfileHeader(theme, userName, email),
-                const SizedBox(height: AppSpacing.lg),
-                _buildStatsRow(theme, testsAttempted, averageScore, accuracy),
-                const SizedBox(height: AppSpacing.xl),
-                _buildMenuSection(theme, context, ref),
-                const SizedBox(height: AppSpacing.xxl),
-              ],
-            ),
-          );
+      appBar: AppBar(title: const Text('Profile'), elevation: 0),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(userAnalyticsProvider);
+          await ref.read(userAnalyticsProvider.future);
         },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+          children: [
+            _ProfileHeader(name: userName, email: email),
+            analyticsAsync.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(AppSpacing.xl),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, stackTrace) => _AnalyticsError(
+                onRetry: () => ref.invalidate(userAnalyticsProvider),
+              ),
+              data: (analytics) => _PerformanceSummary(analytics: analytics),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            _ProfileMenu(
+              onResults: () => context.go('/results'),
+              onLogout: () => ref.read(authControllerProvider).signOut(),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildProfileHeader(ThemeData theme, String name, String email) {
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader({required this.name, required this.email});
+
+  final String name;
+  final String email;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final initial = name.trim().isEmpty ? 'S' : name.trim()[0].toUpperCase();
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
       child: Column(
         children: [
-          Center(
-            child: CircleAvatar(
-              radius: 48,
-              backgroundColor: theme.colorScheme.primaryContainer,
-              child: Text(
-                name[0].toUpperCase(),
-                style: theme.textTheme.displayMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.bold,
-                ),
+          CircleAvatar(
+            radius: 48,
+            backgroundColor: theme.colorScheme.primaryContainer,
+            child: Text(
+              initial,
+              style: theme.textTheme.displaySmall?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             name,
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            email,
-            style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-          ),
+          if (email.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              email,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
+}
 
-  Widget _buildStatsRow(ThemeData theme, int testsAttempted, int avgScore, double accuracy) {
+class _PerformanceSummary extends StatelessWidget {
+  const _PerformanceSummary({required this.analytics});
+
+  final Analytics analytics;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _StatsCard(analytics: analytics),
+        const SizedBox(height: AppSpacing.md),
+        if (analytics.totalTestsAttempted == 0)
+          const _NoAttemptsCard()
+        else
+          _InsightsCard(analytics: analytics),
+      ],
+    );
+  }
+}
+
+class _StatsCard extends StatelessWidget {
+  const _StatsCard({required this.analytics});
+
+  final Analytics analytics;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Card(
@@ -92,25 +145,49 @@ class ProfileScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildStatItem(theme, '$testsAttempted', 'Tests'),
-              Container(width: 1, height: 40, color: theme.colorScheme.outlineVariant),
-              _buildStatItem(theme, '$avgScore%', 'Avg Score'),
-              Container(width: 1, height: 40, color: theme.colorScheme.outlineVariant),
-              _buildStatItem(theme, '$accuracy%', 'Accuracy'),
+              Expanded(
+                child: _StatItem(
+                  value: '${analytics.totalTestsAttempted}',
+                  label: 'Tests',
+                ),
+              ),
+              _VerticalDivider(color: theme.colorScheme.outlineVariant),
+              Expanded(
+                child: _StatItem(
+                  value: '${_formatPercent(analytics.averageScore)}%',
+                  label: 'Avg score',
+                ),
+              ),
+              _VerticalDivider(color: theme.colorScheme.outlineVariant),
+              Expanded(
+                child: _StatItem(
+                  value: '${_formatPercent(analytics.averageAccuracy)}%',
+                  label: 'Accuracy',
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildStatItem(ThemeData theme, String value, String label) {
+class _StatItem extends StatelessWidget {
+  const _StatItem({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Text(
           value,
+          textAlign: TextAlign.center,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.primary,
@@ -119,68 +196,268 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: AppSpacing.xs),
         Text(
           label,
-          style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          textAlign: TextAlign.center,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
   }
+}
 
-  Widget _buildMenuSection(ThemeData theme, BuildContext context, WidgetRef ref) {
+class _VerticalDivider extends StatelessWidget {
+  const _VerticalDivider({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: 1, height: 42, color: color);
+  }
+}
+
+class _NoAttemptsCard extends StatelessWidget {
+  const _NoAttemptsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.insights_outlined,
+              size: 40,
+              color: theme.colorScheme.outline,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Complete a test to build your profile analytics.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InsightsCard extends StatelessWidget {
+  const _InsightsCard({required this.analytics});
+
+  final Analytics analytics;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          side: BorderSide(color: theme.colorScheme.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Performance insights',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _InsightRow(
+                icon: Icons.trending_up,
+                title: 'Strongest sections',
+                value: analytics.strongestTopics.isEmpty
+                    ? 'Not enough answered questions'
+                    : analytics.strongestTopics.join(', '),
+                color: Colors.green,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _InsightRow(
+                icon: Icons.trending_down,
+                title: 'Needs attention',
+                value: analytics.weakestTopics.isEmpty
+                    ? 'Not enough answered questions'
+                    : analytics.weakestTopics.join(', '),
+                color: theme.colorScheme.error,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _InsightRow(
+                icon: Icons.timer_outlined,
+                title: 'Average question time',
+                value: analytics.averageTimePerQuestion == 0
+                    ? 'Timing data unavailable'
+                    : _formatDuration(analytics.averageTimePerQuestion),
+                color: theme.colorScheme.primary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InsightRow extends StatelessWidget {
+  const _InsightRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          ),
+          child: Icon(icon, size: 20, color: color),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AnalyticsError extends StatelessWidget {
+  const _AnalyticsError({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            children: [
+              const Text(
+                'Unable to load profile analytics.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              OutlinedButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileMenu extends StatelessWidget {
+  const _ProfileMenu({required this.onResults, required this.onLogout});
+
+  final VoidCallback onResults;
+  final VoidCallback onLogout;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
-        _buildMenuItem(
-          theme: theme,
+        _MenuItem(
           icon: Icons.bar_chart,
           title: 'My Results',
-          onTap: () {},
-        ),
-        _buildMenuItem(
-          theme: theme,
-          icon: Icons.settings_outlined,
-          title: 'Settings',
-          onTap: () {},
-        ),
-        _buildMenuItem(
-          theme: theme,
-          icon: Icons.info_outline,
-          title: 'About ExamTree',
-          onTap: () {},
+          onTap: onResults,
         ),
         const Divider(height: AppSpacing.xl),
-        _buildMenuItem(
-          theme: theme,
+        _MenuItem(
           icon: Icons.logout,
           title: 'Logout',
           iconColor: theme.colorScheme.error,
           textColor: theme.colorScheme.error,
-          onTap: () {
-            ref.read(authControllerProvider).signOut();
-          },
+          onTap: onLogout,
+          showChevron: false,
         ),
       ],
     );
   }
+}
 
-  Widget _buildMenuItem({
-    required ThemeData theme,
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    Color? iconColor,
-    Color? textColor,
-  }) {
+class _MenuItem extends StatelessWidget {
+  const _MenuItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.iconColor,
+    this.textColor,
+    this.showChevron = true,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final Color? iconColor;
+  final Color? textColor;
+  final bool showChevron;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final resolvedIconColor = iconColor ?? theme.colorScheme.primary;
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: (iconColor ?? theme.colorScheme.primary).withValues(alpha: 0.1),
+          color: resolvedIconColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         ),
-        child: Icon(
-          icon,
-          color: iconColor ?? theme.colorScheme.primary,
-          size: 20,
-        ),
+        child: Icon(icon, color: resolvedIconColor, size: 20),
       ),
       title: Text(
         title,
@@ -189,12 +466,31 @@ class ProfileScreen extends ConsumerWidget {
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: theme.colorScheme.onSurfaceVariant,
+      trailing: showChevron
+          ? Icon(
+              Icons.chevron_right,
+              color: theme.colorScheme.onSurfaceVariant,
+            )
+          : null,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.xs,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
       onTap: onTap,
     );
   }
+}
+
+String _formatPercent(double value) {
+  if (!value.isFinite) return '0';
+  if (value == value.roundToDouble()) return value.toInt().toString();
+  return value.toStringAsFixed(1);
+}
+
+String _formatDuration(int seconds) {
+  final safe = seconds < 0 ? 0 : seconds;
+  final minutes = safe ~/ 60;
+  final remainder = safe % 60;
+  if (minutes == 0) return '${remainder}s per question';
+  return '${minutes}m ${remainder.toString().padLeft(2, '0')}s per question';
 }

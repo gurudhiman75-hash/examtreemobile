@@ -9,9 +9,9 @@ import '../repositories/api_result_repository.dart';
 import '../repositories/attempt_repository.dart';
 import '../repositories/attempt_draft_repository.dart';
 import '../repositories/attempt_session_repository.dart';
+import '../repositories/canonical_analytics_repository.dart';
 import '../repositories/exam_repository.dart';
 import '../repositories/result_repository.dart';
-import '../repositories/mock_analytics_repository.dart';
 import '../repositories/mock_attempt_repository.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -31,7 +31,7 @@ final resultRepositoryProvider = Provider<ResultRepository>((ref) {
 });
 
 final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
-  return MockAnalyticsRepository();
+  return CanonicalAnalyticsRepository(ref.watch(resultRepositoryProvider));
 });
 
 @Deprecated('Use attemptSessionRepositoryProvider for canonical Neon attempts.')
