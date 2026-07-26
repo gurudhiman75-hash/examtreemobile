@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../shared/widgets/primary_button.dart';
 import 'providers/result_providers.dart';
 
 class ResultsScreen extends ConsumerWidget {
@@ -10,298 +11,134 @@ class ResultsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final resultsAsync = ref.watch(userResultsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Results & Analytics'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share_outlined),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Results & Analytics')),
       body: resultsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (error, stackTrace) => _ResultsError(
+          onRetry: () => ref.invalidate(userResultsProvider),
+        ),
         data: (results) {
           if (results.isEmpty) {
-            return const Center(child: Text('No results available'));
+            return _EmptyResults(
+              onRefresh: () async => ref.invalidate(userResultsProvider),
+            );
           }
 
-          final result = results.first;
-
-          final examTitle = 'Exam ${result.examId}'; // Mocking title since we only have examId
-          final score = result.score.toInt();
-          final maxScore = result.maxScore.toInt();
-          final rank = result.rank ?? 0;
-          const totalStudents = 1000;
-          final percentile = result.percentile ?? 0.0;
-          final accuracy = result.accuracy;
-
-          final correct = result.correctCount;
-          final incorrect = result.incorrectCount;
-          final unattempted = result.skippedCount;
-
-          const strongestArea = 'Calculus & Integration';
-          const weakestArea = 'Complex Probability';
-
-          final subjectAnalysis = [
-            {'name': 'Algebra', 'score': 90.0, 'color': Colors.blue},
-            {'name': 'Geometry', 'score': 75.0, 'color': Colors.orange},
-            {'name': 'Calculus', 'score': 95.0, 'color': Colors.green},
-          ];
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  examTitle,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                _buildScoreCard(theme, score, maxScore),
-                const SizedBox(height: AppSpacing.lg),
-                _buildPerformanceGrid(theme, rank, totalStudents, percentile, accuracy),
-                const SizedBox(height: AppSpacing.lg),
-                _buildAttemptSummary(theme, correct, incorrect, unattempted),
-                const SizedBox(height: AppSpacing.lg),
-                _buildInsights(theme, strongestArea, weakestArea),
-                const SizedBox(height: AppSpacing.lg),
-                _buildSubjectAnalysis(theme, subjectAnalysis),
-                const SizedBox(height: AppSpacing.xxl),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          context.push('/review', extra: result.attemptId);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
-                        ),
-                        child: const Text('Review Questions'),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: PrimaryButton(
-                        text: 'Retake Test',
-                        onPressed: () {
-                          context.push('/test-attempt', extra: result.examId);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-              ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(userResultsProvider);
+              await ref.read(userResultsProvider.future);
+            },
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(AppSpacing.md),
+              itemCount: results.length,
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: AppSpacing.md),
+              itemBuilder: (context, index) => _ResultCard(
+                result: results[index],
+              ),
             ),
           );
         },
       ),
     );
   }
+}
 
-  Widget _buildScoreCard(ThemeData theme, int score, int maxScore) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Your Score',
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                '$score',
-                style: theme.textTheme.displayMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-              Text(
-                ' / $maxScore',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+class _ResultsError extends StatelessWidget {
+  const _ResultsError({required this.onRetry});
 
-  Widget _buildPerformanceGrid(ThemeData theme, int rank, int total, double percentile, double accuracy) {
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: AppSpacing.sm,
-      childAspectRatio: 1.2,
-      children: [
-        _buildStatCard(theme, 'Rank', '$rank', subtitle: '/$total', icon: Icons.emoji_events, iconColor: Colors.amber),
-        _buildStatCard(theme, 'Percentile', '$percentile%', icon: Icons.show_chart, iconColor: Colors.blue),
-        _buildStatCard(theme, 'Accuracy', '$accuracy%', icon: Icons.track_changes, iconColor: Colors.green),
-      ],
-    );
-  }
+  final VoidCallback onRetry;
 
-  Widget _buildStatCard(ThemeData theme, String title, String value, {String? subtitle, required IconData icon, required Color iconColor}) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 24, color: iconColor),
-            const SizedBox(height: AppSpacing.xs),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  value,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                if (subtitle != null)
-                  Text(
-                    subtitle,
-                    style: theme.textTheme.labelSmall,
-                  ),
-              ],
+            Icon(
+              Icons.cloud_off_outlined,
+              size: 48,
+              color: Theme.of(context).colorScheme.outline,
             ),
-            Text(title, style: theme.textTheme.labelSmall),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAttemptSummary(ThemeData theme, int correct, int incorrect, int unattempted) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Attempt Summary', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: AppSpacing.md),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildAttemptBadge(theme, 'Correct', correct, Colors.green),
-                _buildAttemptBadge(theme, 'Incorrect', incorrect, Colors.red),
-                _buildAttemptBadge(theme, 'Skipped', unattempted, Colors.grey),
-              ],
+            const Text(
+              'Unable to load your attempt history.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildAttemptBadge(ThemeData theme, String label, int count, Color color) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            '$count',
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(label, style: theme.textTheme.labelSmall),
-      ],
-    );
-  }
+class _EmptyResults extends StatelessWidget {
+  const _EmptyResults({required this.onRefresh});
 
-  Widget _buildInsights(ThemeData theme, String strongest, String weakest) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildInsightCard(theme, 'Strongest Area', strongest, Icons.arrow_upward, Colors.green),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _buildInsightCard(theme, 'Weakest Area', weakest, Icons.arrow_downward, Colors.red),
-        ),
-      ],
-    );
-  }
+  final Future<void> Function() onRefresh;
 
-  Widget _buildInsightCard(ThemeData theme, String title, String area, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.05),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          Row(
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: AppSpacing.xs),
-              Text(title, style: theme.textTheme.labelSmall?.copyWith(color: color)),
-            ],
+          SizedBox(height: MediaQuery.sizeOf(context).height * 0.2),
+          Icon(
+            Icons.insights_outlined,
+            size: 64,
+            color: Theme.of(context).colorScheme.outline,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'No completed attempts yet',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            area,
-            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            'Your submitted tests will appear here.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSubjectAnalysis(ThemeData theme, List<Map<String, dynamic>> subjects) {
+class _ResultCard extends StatelessWidget {
+  const _ResultCard({required this.result});
+
+  final Result result;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final percentage = result.percentageScore.clamp(0, 100).toDouble();
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: Padding(
@@ -309,39 +146,254 @@ class ResultsScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Topic Analysis', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: AppSpacing.md),
-            ...subjects.map((subject) {
-              final name = subject['name'] as String;
-              final score = subject['score'] as double;
-              final color = subject['color'] as Color;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(name, style: theme.textTheme.bodyMedium),
-                        Text('${score.toInt()}%', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        result.testName.trim().isEmpty
+                            ? 'Test result'
+                            : result.testName,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (result.category.trim().isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          result.category,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
                       ],
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    LinearProgressIndicator(
-                      value: score / 100,
-                      backgroundColor: color.withValues(alpha: 0.2),
-                      color: color,
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        _formatDate(result.calculatedAt),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            }),
+                const SizedBox(width: AppSpacing.md),
+                _ScoreBadge(percentage: percentage),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [
+                _MetricChip(
+                  label: 'Correct',
+                  value: result.correctCount,
+                  icon: Icons.check_circle_outline,
+                  color: Colors.green,
+                ),
+                _MetricChip(
+                  label: 'Incorrect',
+                  value: result.incorrectCount,
+                  icon: Icons.cancel_outlined,
+                  color: theme.colorScheme.error,
+                ),
+                _MetricChip(
+                  label: 'Unanswered',
+                  value: result.skippedCount,
+                  icon: Icons.remove_circle_outline,
+                  color: theme.colorScheme.outline,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: _SummaryValue(
+                    label: 'Raw score',
+                    value: _formatNumber(result.rawScore),
+                  ),
+                ),
+                Expanded(
+                  child: _SummaryValue(
+                    label: 'Accuracy',
+                    value: '${_formatNumber(result.accuracy)}%',
+                  ),
+                ),
+                Expanded(
+                  child: _SummaryValue(
+                    label: 'Questions',
+                    value: '${result.totalQuestions}',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: result.questionReview.isEmpty
+                        ? null
+                        : () => context.push(
+                              '/review',
+                              extra: result.attemptId,
+                            ),
+                    icon: const Icon(Icons.fact_check_outlined),
+                    label: const Text('Review'),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: result.examId.isEmpty
+                        ? null
+                        : () => context.push(
+                              '/test-attempt',
+                              extra: result.examId,
+                            ),
+                    icon: const Icon(Icons.replay),
+                    label: const Text('Retake'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+class _ScoreBadge extends StatelessWidget {
+  const _ScoreBadge({required this.percentage});
+
+  final double percentage;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: 72,
+      height: 72,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: theme.colorScheme.primaryContainer,
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.4),
+          width: 2,
+        ),
+      ),
+      child: Text(
+        '${_formatNumber(percentage)}%',
+        textAlign: TextAlign.center,
+        style: theme.textTheme.titleMedium?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricChip extends StatelessWidget {
+  const _MetricChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  final String label;
+  final int value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 4),
+          Text(
+            '$label $value',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryValue extends StatelessWidget {
+  const _SummaryValue({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+String _formatNumber(double value) {
+  if (value == value.roundToDouble()) return value.toInt().toString();
+  return value.toStringAsFixed(1);
+}
+
+String _formatDate(DateTime value) {
+  if (value.millisecondsSinceEpoch == 0) return 'Submission date unavailable';
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  final local = value.toLocal();
+  final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+  final period = local.hour >= 12 ? 'PM' : 'AM';
+  return '${local.day} ${months[local.month - 1]} ${local.year}, '
+      '$hour:${local.minute.toString().padLeft(2, '0')} $period';
 }
