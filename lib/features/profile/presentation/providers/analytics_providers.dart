@@ -7,6 +7,8 @@ import '../../../auth/presentation/providers/auth_providers.dart';
 final userAnalyticsProvider = FutureProvider<Analytics>((ref) async {
   final repository = ref.watch(analyticsRepositoryProvider);
   final user = ref.watch(authStateChangesProvider).value;
-  final userId = user?.uid ?? 'user_1';
-  return repository.getUserAnalytics(userId);
+  if (user == null) {
+    throw StateError('Authentication is required to load profile analytics.');
+  }
+  return repository.getUserAnalytics(user.uid);
 });
