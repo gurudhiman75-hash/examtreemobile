@@ -20,19 +20,22 @@ class ExamDetailsScreen extends ConsumerWidget {
       completedAttemptCountProvider(examId),
     );
 
+    Future<void> refresh() async {
+      ref.invalidate(examDetailsProvider(examId));
+      ref.invalidate(completedAttemptCountProvider(examId));
+      await ref.read(examDetailsProvider(examId).future);
+      await ref.read(completedAttemptCountProvider(examId).future);
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Exam Details')),
       body: examAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => _ExamDetailsError(
-          onRetry: () {
-            ref.invalidate(examDetailsProvider(examId));
-            ref.invalidate(completedAttemptCountProvider(examId));
-          },
-        ),
+        error: (error, stackTrace) => _ExamDetailsError(onRetry: refresh),
         data: (exam) => _ExamDetailsBody(
           exam: exam,
           completedAttemptsAsync: completedAttemptsAsync,
+          onRefresh: refresh,
           onStart: () => context.push('/test-attempt', extra: examId),
         ),
       ),
@@ -44,11 +47,13 @@ class _ExamDetailsBody extends StatelessWidget {
   const _ExamDetailsBody({
     required this.exam,
     required this.completedAttemptsAsync,
+    required this.onRefresh,
     required this.onStart,
   });
 
   final Exam exam;
   final AsyncValue<int> completedAttemptsAsync;
+  final Future<void> Function() onRefresh;
   final VoidCallback onStart;
 
   static const instructions = [
@@ -72,7 +77,7 @@ class _ExamDetailsBody extends StatelessWidget {
         : '${exam.maxAttempts}';
 
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: onRefresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -292,7 +297,7 @@ class _InfoTile extends StatelessWidget {
 class _ExamDetailsError extends StatelessWidget {
   const _ExamDetailsError({required this.onRetry});
 
-  final VoidCallback onRetry;
+  final Future<void> Function() onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +319,7 @@ class _ExamDetailsError extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             OutlinedButton.icon(
-              onPressed: onRetry,
+              onPressed: () async => onRetry(),
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
             ),
