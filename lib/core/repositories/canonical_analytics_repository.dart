@@ -1,5 +1,4 @@
 import '../models/analytics_model.dart';
-import '../models/result_model.dart';
 import 'analytics_repository.dart';
 import 'result_repository.dart';
 
