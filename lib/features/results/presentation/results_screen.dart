@@ -88,7 +88,6 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   }
 
   Widget _buildHistory(BuildContext context, List<Result> results) {
-    final theme = Theme.of(context);
     final categories = resultCategories(results);
     final selectedCategory = categories.contains(_selectedCategory)
         ? _selectedCategory
