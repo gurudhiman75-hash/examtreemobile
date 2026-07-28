@@ -47,8 +47,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   }
 
   Future<void> _refresh() async {
+    ref.invalidate(userResultsProvider);
     try {
-      await ref.refresh(userResultsProvider.future);
+      await ref.read(userResultsProvider.future);
     } catch (_) {
       // The provider renders the canonical retry state.
     }
@@ -140,7 +141,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: categories.length + 1,
-                      separatorBuilder: (_, __) =>
+                      separatorBuilder: (context, index) =>
                           const SizedBox(width: AppSpacing.sm),
                       itemBuilder: (context, index) {
                         final category = index == 0 ? null : categories[index - 1];
@@ -156,71 +157,11 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                   ),
                 ],
                 const SizedBox(height: AppSpacing.lg),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Attempt history',
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            filtered.length == results.length
-                                ? '${results.length} completed ${results.length == 1 ? 'attempt' : 'attempts'}'
-                                : '${filtered.length} of ${results.length} shown',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    PopupMenuButton<ResultSortOption>(
-                      tooltip: 'Sort results',
-                      initialValue: _sort,
-                      onSelected: (value) => setState(() => _sort = value),
-                      itemBuilder: (context) => ResultSortOption.values
-                          .map(
-                            (option) => PopupMenuItem(
-                              value: option,
-                              child: Row(
-                                children: [
-                                  if (_sort == option) ...[
-                                    Icon(
-                                      Icons.check_rounded,
-                                      size: 18,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                    const SizedBox(width: AppSpacing.sm),
-                                  ],
-                                  Text(option.label),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.sm),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.swap_vert_rounded, size: 18),
-                            const SizedBox(width: AppSpacing.xs),
-                            Text(
-                              _sort.label,
-                              style: theme.textTheme.labelLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                _HistoryHeader(
+                  visibleCount: filtered.length,
+                  totalCount: results.length,
+                  sort: _sort,
+                  onSortChanged: (value) => setState(() => _sort = value),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 if (filtered.isEmpty)
@@ -260,10 +201,7 @@ class _ResultsSummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.insights_rounded,
-            color: theme.colorScheme.onPrimary,
-          ),
+          Icon(Icons.insights_rounded, color: theme.colorScheme.onPrimary),
           const SizedBox(height: AppSpacing.md),
           Text(
             'Performance history',
@@ -274,7 +212,7 @@ class _ResultsSummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Use your completed attempts to spot progress and choose what to practise next.',
+            'Use completed attempts to spot progress and choose what to practise next.',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onPrimary.withValues(alpha: 0.86),
               height: 1.4,
@@ -341,6 +279,88 @@ class _SummaryMetric extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
             color: theme.colorScheme.onPrimary.withValues(alpha: 0.78),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HistoryHeader extends StatelessWidget {
+  const _HistoryHeader({
+    required this.visibleCount,
+    required this.totalCount,
+    required this.sort,
+    required this.onSortChanged,
+  });
+
+  final int visibleCount;
+  final int totalCount;
+  final ResultSortOption sort;
+  final ValueChanged<ResultSortOption> onSortChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Attempt history',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                visibleCount == totalCount
+                    ? '$totalCount completed ${totalCount == 1 ? 'attempt' : 'attempts'}'
+                    : '$visibleCount of $totalCount shown',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuButton<ResultSortOption>(
+          tooltip: 'Sort results',
+          initialValue: sort,
+          onSelected: onSortChanged,
+          itemBuilder: (context) => ResultSortOption.values
+              .map(
+                (option) => PopupMenuItem(
+                  value: option,
+                  child: Row(
+                    children: [
+                      if (sort == option) ...[
+                        Icon(
+                          Icons.check_rounded,
+                          size: 18,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                      ],
+                      Text(option.label),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.swap_vert_rounded, size: 18),
+                const SizedBox(width: AppSpacing.xs),
+                Text(sort.label, style: theme.textTheme.labelLarge),
+              ],
+            ),
           ),
         ),
       ],
