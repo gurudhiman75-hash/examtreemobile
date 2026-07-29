@@ -8,38 +8,73 @@ import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
-import '../../exams/presentation/widgets/exam_card.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
 import '../../results/presentation/providers/result_providers.dart';
+import 'home_primary_action.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   Future<void> _refreshAll(WidgetRef ref) async {
+    ref
+      ..invalidate(userAnalyticsProvider)
+      ..invalidate(inProgressExamsProvider)
+      ..invalidate(availableExamsProvider)
+      ..invalidate(userResultsProvider);
+
     Future<void> settle(Future<Object?> request) async {
       try {
         await request;
       } catch (_) {
-        // Each dashboard section renders its own retry state.
+        // Each home module presents its own recoverable error state.
       }
     }
 
     await Future.wait([
-      settle(ref.refresh(userAnalyticsProvider.future)),
-      settle(ref.refresh(inProgressExamsProvider.future)),
-      settle(ref.refresh(availableExamsProvider.future)),
-      settle(ref.refresh(userResultsProvider.future)),
+      settle(ref.read(userAnalyticsProvider.future)),
+      settle(ref.read(inProgressExamsProvider.future)),
+      settle(ref.read(availableExamsProvider.future)),
+      settle(ref.read(userResultsProvider.future)),
     ]);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final analyticsAsync = ref.watch(userAnalyticsProvider);
-    final inProgressAsync = ref.watch(inProgressExamsProvider);
+    final activeAsync = ref.watch(inProgressExamsProvider);
     final availableAsync = ref.watch(availableExamsProvider);
     final resultsAsync = ref.watch(userResultsProvider);
     final user = ref.watch(authStateChangesProvider).value;
+
+    final activeTests = activeAsync.value ?? const <Exam>[];
+    final availableTests = availableAsync.value ?? const <Exam>[];
+    final results = resultsAsync.value ?? const <Result>[];
     final userName = _displayName(user?.displayName, user?.email);
+
+    final primaryState = _buildPrimaryState(
+      activeAsync: activeAsync,
+      resultsAsync: resultsAsync,
+      availableAsync: availableAsync,
+      activeTests: activeTests,
+      results: results,
+      availableTests: availableTests,
+    );
+
+    final excludedRecommendationIds = <String>{
+      ...activeTests.map((test) => test.id),
+      if (primaryState.action?.exam != null) primaryState.action!.exam!.id,
+    };
+    final recommendations = availableTests
+        .where((test) => !excludedRecommendationIds.contains(test.id))
+        .take(6)
+        .toList(growable: false);
+    final latestResult = results.isEmpty ? null : _latestResult(results);
+    final primaryShowsLatestResult = primaryState.action?.kind ==
+        HomePrimaryActionKind.reviewResult;
+    final otherActiveTests = primaryState.action?.kind ==
+            HomePrimaryActionKind.resumeTest
+        ? activeTests.skip(1).toList(growable: false)
+        : activeTests;
 
     return Scaffold(
       body: SafeArea(
@@ -57,140 +92,122 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 sliver: SliverList.list(
                   children: [
-                    _WelcomeHeader(
+                    _CommandHeader(
                       name: userName,
-                      onProfileTap: () => context.go('/profile'),
+                      onSearch: () => context.go('/exams'),
+                      onProfile: () => context.go('/profile'),
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    _QuickActions(
-                      onBrowseTests: () => context.go('/exams'),
-                      onViewResults: () => context.go('/results'),
-                      onOpenProfile: () => context.go('/profile'),
+                    const _SectionTitle(
+                      title: 'Next best action',
+                      subtitle: 'One clear step based on your current activity',
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    const _SectionHeading(
-                      title: 'Your progress',
-                      subtitle: 'A quick view of your recent performance',
+                    const SizedBox(height: AppSpacing.sm),
+                    if (primaryState.isLoading)
+                      const _HomeSkeleton(height: 210)
+                    else if (primaryState.hasError)
+                      _HomeErrorCard(
+                        title: 'Your next action could not be prepared',
+                        onRetry: () {
+                          ref
+                            ..invalidate(inProgressExamsProvider)
+                            ..invalidate(userResultsProvider)
+                            ..invalidate(availableExamsProvider);
+                        },
+                      )
+                    else
+                      _PrimaryActionCard(
+                        action: primaryState.action!,
+                        onOpen: () =>
+                            _openPrimaryAction(context, primaryState.action!),
+                        onBrowse: () => context.go('/exams'),
+                      ),
+                    const SizedBox(height: AppSpacing.md),
+                    _ContextActions(
+                      onTests: () => context.go('/exams'),
+                      onResults: () => context.go('/results'),
+                      onProfile: () => context.go('/profile'),
+                    ),
+                    if (otherActiveTests.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacing.xl),
+                      _SectionTitle(
+                        title: 'Continue learning',
+                        subtitle: otherActiveTests.length == 1
+                            ? 'One more active test is ready'
+                            : '${otherActiveTests.length} more active tests are ready',
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      _ExamRail(
+                        tests: otherActiveTests,
+                        mode: _ExamRailMode.resume,
+                        onOpen: (test) => context.push(
+                          '/test-attempt',
+                          extra: test.id,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
+                    const _SectionTitle(
+                      title: 'Performance pulse',
+                      subtitle: 'Enough insight to decide what to do next',
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     analyticsAsync.when(
-                      loading: () => const _DashboardSkeleton(height: 150),
-                      error: (error, stackTrace) => _SectionErrorCard(
-                        title: 'Performance is temporarily unavailable',
+                      loading: () => const _HomeSkeleton(height: 146),
+                      error: (error, stackTrace) => _HomeErrorCard(
+                        title: 'Performance data is temporarily unavailable',
                         onRetry: () => ref.invalidate(userAnalyticsProvider),
                       ),
-                      data: (analytics) => _PerformanceCard(
+                      data: (analytics) => _PerformancePulse(
                         analytics: analytics,
-                        onOpenProfile: () => context.go('/profile'),
+                        onOpen: () => context.go('/profile'),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-                    inProgressAsync.when(
-                      loading: () => const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _SectionHeading(
-                            title: 'Continue learning',
-                            subtitle: 'Your active test will appear here',
-                          ),
-                          SizedBox(height: AppSpacing.sm),
-                          _DashboardSkeleton(height: 150),
-                        ],
+                    if (latestResult != null && !primaryShowsLatestResult) ...[
+                      const SizedBox(height: AppSpacing.xl),
+                      const _SectionTitle(
+                        title: 'Latest result',
+                        subtitle: 'Return to the questions that shaped this score',
                       ),
-                      error: (error, stackTrace) => _SectionErrorCard(
-                        title: 'Could not check active tests',
-                        onRetry: () => ref.invalidate(inProgressExamsProvider),
-                      ),
-                      data: (tests) => tests.isEmpty
-                          ? const SizedBox.shrink()
-                          : _ContinueSection(
-                              tests: tests,
-                              onOpen: (test) => context.push(
-                                '/test-attempt',
-                                extra: test.id,
-                              ),
-                            ),
-                    ),
-                    resultsAsync.when(
-                      loading: () => const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: AppSpacing.lg),
-                          _SectionHeading(
-                            title: 'Latest result',
-                            subtitle: 'Your most recent completed attempt',
-                          ),
-                          SizedBox(height: AppSpacing.sm),
-                          _DashboardSkeleton(height: 130),
-                        ],
-                      ),
-                      error: (error, stackTrace) => Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.lg),
-                        child: _SectionErrorCard(
-                          title: 'Could not load your latest result',
-                          onRetry: () => ref.invalidate(userResultsProvider),
+                      const SizedBox(height: AppSpacing.sm),
+                      _LatestResultCard(
+                        result: latestResult,
+                        onOpen: () => context.push(
+                          '/review',
+                          extra: latestResult.attemptId,
                         ),
                       ),
-                      data: (results) => results.isEmpty
-                          ? const SizedBox.shrink()
-                          : Padding(
-                              padding: const EdgeInsets.only(top: AppSpacing.lg),
-                              child: _LatestResultSection(
-                                result: results.first,
-                                onOpen: () => context.push(
-                                  '/review',
-                                  extra: results.first.attemptId,
-                                ),
-                              ),
-                            ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _SectionHeading(
-                      title: 'Recommended tests',
-                      subtitle: 'Fresh papers ready for your next attempt',
+                    ],
+                    const SizedBox(height: AppSpacing.xl),
+                    _SectionTitle(
+                      title: 'Recommended for you',
+                      subtitle: 'Fresh tests from your available catalogue',
                       actionLabel: 'View all',
                       onAction: () => context.go('/exams'),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     availableAsync.when(
-                      loading: () => const Column(
-                        children: [
-                          _DashboardSkeleton(height: 150),
-                          SizedBox(height: AppSpacing.md),
-                          _DashboardSkeleton(height: 150),
-                        ],
-                      ),
-                      error: (error, stackTrace) => _SectionErrorCard(
+                      loading: () => const _HomeSkeleton(height: 190),
+                      error: (error, stackTrace) => _HomeErrorCard(
                         title: 'Recommendations could not be loaded',
                         onRetry: () => ref.invalidate(availableExamsProvider),
                       ),
-                      data: (tests) => tests.isEmpty
-                          ? _NoTestsCard(
-                              onBrowse: () => context.go('/exams'),
-                            )
-                          : Column(
-                              children: tests
-                                  .take(2)
-                                  .map(
-                                    (test) => ExamCard(
-                                      title: test.title,
-                                      subject: test.category,
-                                      description: test.description,
-                                      duration:
-                                          '${test.durationInSeconds ~/ 60} min',
-                                      totalQuestions: test.totalQuestions,
-                                      difficulty: test.difficulty,
-                                      status: test.status == 'paid'
-                                          ? 'Paid'
-                                          : 'Available',
-                                      onTap: () => context.push(
-                                        '/exam-details',
-                                        extra: test.id,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
+                      data: (tests) {
+                        if (recommendations.isEmpty) {
+                          return _RecommendationEmpty(
+                            catalogueIsEmpty: tests.isEmpty,
+                            onBrowse: () => context.go('/exams'),
+                          );
+                        }
+                        return _ExamRail(
+                          tests: recommendations,
+                          mode: _ExamRailMode.discover,
+                          onOpen: (test) => context.push(
+                            '/exam-details',
+                            extra: test.id,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -201,6 +218,93 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _PrimaryState {
+  const _PrimaryState._({this.action, this.isLoading = false, this.hasError = false});
+
+  const _PrimaryState.loading() : this._(isLoading: true);
+
+  const _PrimaryState.error() : this._(hasError: true);
+
+  const _PrimaryState.data(HomePrimaryAction value) : this._(action: value);
+
+  final HomePrimaryAction? action;
+  final bool isLoading;
+  final bool hasError;
+}
+
+_PrimaryState _buildPrimaryState({
+  required AsyncValue<List<Exam>> activeAsync,
+  required AsyncValue<List<Result>> resultsAsync,
+  required AsyncValue<List<Exam>> availableAsync,
+  required List<Exam> activeTests,
+  required List<Result> results,
+  required List<Exam> availableTests,
+}) {
+  if (activeAsync.isLoading && activeTests.isEmpty) {
+    return const _PrimaryState.loading();
+  }
+
+  if (activeTests.isNotEmpty) {
+    return _PrimaryState.data(
+      resolveHomePrimaryAction(
+        activeTests: activeTests,
+        results: results,
+        availableTests: availableTests,
+      ),
+    );
+  }
+
+  if (resultsAsync.isLoading && results.isEmpty) {
+    return const _PrimaryState.loading();
+  }
+
+  final provisional = resolveHomePrimaryAction(
+    activeTests: activeTests,
+    results: results,
+    availableTests: availableTests,
+  );
+  if (provisional.kind == HomePrimaryActionKind.reviewResult) {
+    return _PrimaryState.data(provisional);
+  }
+
+  if (availableAsync.isLoading && availableTests.isEmpty) {
+    return const _PrimaryState.loading();
+  }
+
+  if (activeAsync.hasError &&
+      resultsAsync.hasError &&
+      availableAsync.hasError) {
+    return const _PrimaryState.error();
+  }
+
+  return _PrimaryState.data(
+    resolveHomePrimaryAction(
+      activeTests: activeTests,
+      results: results,
+      availableTests: availableTests,
+    ),
+  );
+}
+
+void _openPrimaryAction(BuildContext context, HomePrimaryAction action) {
+  switch (action.kind) {
+    case HomePrimaryActionKind.resumeTest:
+      context.push('/test-attempt', extra: action.exam!.id);
+    case HomePrimaryActionKind.reviewResult:
+      context.push('/review', extra: action.result!.attemptId);
+    case HomePrimaryActionKind.startTest:
+      context.push('/exam-details', extra: action.exam!.id);
+    case HomePrimaryActionKind.browseTests:
+      context.go('/exams');
+  }
+}
+
+Result _latestResult(List<Result> results) {
+  final sorted = [...results]
+    ..sort((left, right) => right.calculatedAt.compareTo(left.calculatedAt));
+  return sorted.first;
 }
 
 String _displayName(String? displayName, String? email) {
@@ -218,6 +322,34 @@ String _greeting() {
   return 'Good evening';
 }
 
+String _todayLabel() {
+  const weekdays = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  final now = DateTime.now();
+  return '${weekdays[now.weekday - 1]}, ${now.day} ${months[now.month - 1]}';
+}
+
 String _formatDate(DateTime date) {
   const months = [
     'Jan',
@@ -233,129 +365,78 @@ String _formatDate(DateTime date) {
     'Nov',
     'Dec',
   ];
-  return '${date.day} ${months[date.month - 1]} ${date.year}';
+  final local = date.toLocal();
+  return '${local.day} ${months[local.month - 1]} ${local.year}';
 }
 
-class _WelcomeHeader extends StatelessWidget {
-  const _WelcomeHeader({required this.name, required this.onProfileTap});
+class _CommandHeader extends StatelessWidget {
+  const _CommandHeader({
+    required this.name,
+    required this.onSearch,
+    required this.onProfile,
+  });
 
   final String name;
-  final VoidCallback onProfileTap;
+  final VoidCallback onSearch;
+  final VoidCallback onProfile;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primary.withValues(alpha: 0.76),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _greeting(),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.82),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Build momentum with one focused test today.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.88),
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Semantics(
-            button: true,
-            label: 'Open profile',
-            child: InkWell(
-              onTap: onProfileTap,
-              customBorder: const CircleBorder(),
-              child: CircleAvatar(
-                radius: 26,
-                backgroundColor:
-                    theme.colorScheme.onPrimary.withValues(alpha: 0.16),
-                child: Text(
-                  name.isEmpty ? 'S' : name[0].toUpperCase(),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuickActions extends StatelessWidget {
-  const _QuickActions({
-    required this.onBrowseTests,
-    required this.onViewResults,
-    required this.onOpenProfile,
-  });
-
-  final VoidCallback onBrowseTests;
-  final VoidCallback onViewResults;
-  final VoidCallback onOpenProfile;
-
-  @override
-  Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: _QuickAction(
-            icon: Icons.explore_outlined,
-            label: 'Explore',
-            onTap: onBrowseTests,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${_greeting()},',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                _todayLabel(),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _QuickAction(
-            icon: Icons.insights_outlined,
-            label: 'Results',
-            onTap: onViewResults,
-          ),
+        IconButton.filledTonal(
+          tooltip: 'Search tests',
+          onPressed: onSearch,
+          icon: const Icon(Icons.search_rounded),
         ),
         const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _QuickAction(
-            icon: Icons.person_outline_rounded,
-            label: 'Profile',
-            onTap: onOpenProfile,
+        Semantics(
+          button: true,
+          label: 'Open profile',
+          child: InkWell(
+            onTap: onProfile,
+            customBorder: const CircleBorder(),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: theme.colorScheme.primaryContainer,
+              child: Text(
+                name.isEmpty ? 'S' : name[0].toUpperCase(),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -363,57 +444,8 @@ class _QuickActions extends StatelessWidget {
   }
 }
 
-class _QuickAction extends StatelessWidget {
-  const _QuickAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.md,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            border: Border.all(color: theme.colorScheme.outlineVariant),
-          ),
-          child: Column(
-            children: [
-              Icon(icon, color: theme.colorScheme.primary),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
     required this.title,
     required this.subtitle,
     this.actionLabel,
@@ -441,7 +473,7 @@ class _SectionHeading extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: AppSpacing.xs),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
                 subtitle,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -458,21 +490,324 @@ class _SectionHeading extends StatelessWidget {
   }
 }
 
-class _PerformanceCard extends StatelessWidget {
-  const _PerformanceCard({
-    required this.analytics,
-    required this.onOpenProfile,
+class _PrimaryActionCard extends StatelessWidget {
+  const _PrimaryActionCard({
+    required this.action,
+    required this.onOpen,
+    required this.onBrowse,
   });
 
-  final Analytics analytics;
-  final VoidCallback onOpenProfile;
+  final HomePrimaryAction action;
+  final VoidCallback onOpen;
+  final VoidCallback onBrowse;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final strongestTopic = analytics.strongestTopics.isEmpty
+    final icon = switch (action.kind) {
+      HomePrimaryActionKind.resumeTest => Icons.play_circle_outline_rounded,
+      HomePrimaryActionKind.reviewResult => Icons.fact_check_outlined,
+      HomePrimaryActionKind.startTest => Icons.rocket_launch_outlined,
+      HomePrimaryActionKind.browseTests => Icons.explore_outlined,
+    };
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withValues(alpha: 0.76),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.16),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.onPrimary.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                ),
+                child: Icon(icon, color: theme.colorScheme.onPrimary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      action.eyebrow.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimary.withValues(alpha: 0.76),
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      action.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            action.description,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.86),
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _PrimaryMetadata(action: action),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: onOpen,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: theme.colorScheme.onPrimary,
+                    foregroundColor: theme.colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                    ),
+                  ),
+                  icon: Icon(icon),
+                  label: Text(action.actionLabel),
+                ),
+              ),
+              if (action.kind != HomePrimaryActionKind.browseTests) ...[
+                const SizedBox(width: AppSpacing.sm),
+                IconButton(
+                  tooltip: 'Browse all tests',
+                  onPressed: onBrowse,
+                  style: IconButton.styleFrom(
+                    backgroundColor:
+                        theme.colorScheme.onPrimary.withValues(alpha: 0.14),
+                    foregroundColor: theme.colorScheme.onPrimary,
+                  ),
+                  icon: const Icon(Icons.grid_view_rounded),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PrimaryMetadata extends StatelessWidget {
+  const _PrimaryMetadata({required this.action});
+
+  final HomePrimaryAction action;
+
+  @override
+  Widget build(BuildContext context) {
+    final exam = action.exam;
+    final result = action.result;
+    final items = <(IconData, String)>[];
+
+    if (exam != null) {
+      items
+        ..add((Icons.timer_outlined, '${exam.durationInSeconds ~/ 60} min'))
+        ..add((Icons.help_outline_rounded, '${exam.totalQuestions} questions'))
+        ..add((Icons.signal_cellular_alt_rounded, exam.difficulty));
+    } else if (result != null) {
+      items
+        ..add((
+          Icons.stars_outlined,
+          '${result.percentageScore.round().clamp(0, 100)}% score',
+        ))
+        ..add((
+          Icons.track_changes_outlined,
+          '${result.accuracy.round().clamp(0, 100)}% accuracy',
+        ))
+        ..add((Icons.check_circle_outline, '${result.correctCount} correct'));
+    } else {
+      items.add((Icons.auto_awesome_outlined, 'Live catalogue'));
+    }
+
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: items
+          .map(
+            (item) => _PrimaryMetaChip(icon: item.$1, label: item.$2),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _PrimaryMetaChip extends StatelessWidget {
+  const _PrimaryMetaChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onPrimary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 15, color: theme.colorScheme.onPrimary),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContextActions extends StatelessWidget {
+  const _ContextActions({
+    required this.onTests,
+    required this.onResults,
+    required this.onProfile,
+  });
+
+  final VoidCallback onTests;
+  final VoidCallback onResults;
+  final VoidCallback onProfile;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _ContextAction(
+            icon: Icons.explore_outlined,
+            label: 'Tests',
+            onTap: onTests,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _ContextAction(
+            icon: Icons.insights_outlined,
+            label: 'Results',
+            onTap: onResults,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _ContextAction(
+            icon: Icons.person_outline_rounded,
+            label: 'Profile',
+            onTap: onProfile,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContextAction extends StatelessWidget {
+  const _ContextAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: theme.colorScheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.md,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+            border: Border.all(color: theme.colorScheme.outlineVariant),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 19, color: theme.colorScheme.primary),
+              const SizedBox(width: AppSpacing.xs),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PerformancePulse extends StatelessWidget {
+  const _PerformancePulse({required this.analytics, required this.onOpen});
+
+  final Analytics analytics;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final focusTopic = analytics.weakestTopics.isEmpty
         ? null
-        : analytics.strongestTopics.first;
+        : analytics.weakestTopics.first;
 
     return Card(
       elevation: 0,
@@ -482,68 +817,73 @@ class _PerformanceCard extends StatelessWidget {
         side: BorderSide(color: theme.colorScheme.outlineVariant),
       ),
       child: InkWell(
-        onTap: onOpenProfile,
+        onTap: onOpen,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Expanded(
-                    child: _Metric(
-                      icon: Icons.assignment_turned_in_outlined,
+                    child: _PulseMetric(
                       value: '${analytics.totalTestsAttempted}',
-                      label: 'Tests taken',
+                      label: 'Tests',
                     ),
                   ),
                   Expanded(
-                    child: _Metric(
-                      icon: Icons.stars_outlined,
+                    child: _PulseMetric(
                       value: '${analytics.averageScore.round()}%',
-                      label: 'Average score',
+                      label: 'Average',
                     ),
                   ),
                   Expanded(
-                    child: _Metric(
-                      icon: Icons.track_changes_outlined,
+                    child: _PulseMetric(
                       value: '${analytics.averageAccuracy.round()}%',
                       label: 'Accuracy',
                     ),
                   ),
                 ],
               ),
-              if (strongestTopic != null) ...[
+              if (focusTopic != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer
-                        .withValues(alpha: 0.55),
+                    color: theme.colorScheme.errorContainer
+                        .withValues(alpha: 0.32),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                   ),
                   child: Row(
                     children: [
                       Icon(
-                        Icons.workspace_premium_outlined,
-                        color: theme.colorScheme.onPrimaryContainer,
+                        Icons.track_changes_rounded,
+                        color: theme.colorScheme.error,
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: Text(
-                          'Strongest area: $strongestTopic',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onPrimaryContainer,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Focus next',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xxs),
+                            Text(
+                              focusTopic,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 18,
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
+                      const Icon(Icons.arrow_forward_rounded, size: 18),
                     ],
                   ),
                 ),
@@ -556,14 +896,9 @@ class _PerformanceCard extends StatelessWidget {
   }
 }
 
-class _Metric extends StatelessWidget {
-  const _Metric({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
+class _PulseMetric extends StatelessWidget {
+  const _PulseMetric({required this.value, required this.label});
 
-  final IconData icon;
   final String value;
   final String label;
 
@@ -572,81 +907,20 @@ class _Metric extends StatelessWidget {
     final theme = Theme.of(context);
     return Column(
       children: [
-        Icon(icon, color: theme.colorScheme.primary, size: 22),
-        const SizedBox(height: AppSpacing.xs),
         Text(
           value,
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.primary,
             fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
           label,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _ContinueSection extends StatelessWidget {
-  const _ContinueSection({required this.tests, required this.onOpen});
-
-  final List<Exam> tests;
-  final ValueChanged<Exam> onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    final test = tests.first;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: AppSpacing.lg),
-        _SectionHeading(
-          title: 'Continue learning',
-          subtitle: tests.length == 1
-              ? 'One active test is ready to resume'
-              : '${tests.length} active tests are ready to resume',
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        ExamCard(
-          title: test.title,
-          subject: test.category,
-          description: test.description,
-          duration: '${test.durationInSeconds ~/ 60} min',
-          totalQuestions: test.totalQuestions,
-          difficulty: test.difficulty,
-          status: 'In Progress',
-          onTap: () => onOpen(test),
-        ),
-      ],
-    );
-  }
-}
-
-class _LatestResultSection extends StatelessWidget {
-  const _LatestResultSection({required this.result, required this.onOpen});
-
-  final Result result;
-  final VoidCallback onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const _SectionHeading(
-          title: 'Latest result',
-          subtitle: 'Your most recent completed attempt',
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        _LatestResultCard(result: result, onOpen: onOpen),
       ],
     );
   }
@@ -662,14 +936,11 @@ class _LatestResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final score = result.percentageScore.round().clamp(0, 100);
-    final title = result.testName.trim().isEmpty
-        ? 'Completed test'
-        : result.testName;
 
     return Card(
       elevation: 0,
       clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.42),
+      color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.36),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
         side: BorderSide(color: theme.colorScheme.secondaryContainer),
@@ -681,8 +952,8 @@ class _LatestResultCard extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                width: 62,
-                height: 62,
+                width: 60,
+                height: 60,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -697,7 +968,6 @@ class _LatestResultCard extends StatelessWidget {
                         '$score%',
                         style: theme.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: theme.colorScheme.onSecondaryContainer,
                         ),
                       ),
                     ),
@@ -710,7 +980,9 @@ class _LatestResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      result.testName.trim().isEmpty
+                          ? 'Completed test'
+                          : result.testName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -724,9 +996,9 @@ class _LatestResultCard extends StatelessWidget {
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xxs),
                     Text(
-                      _formatDate(result.calculatedAt.toLocal()),
+                      _formatDate(result.calculatedAt),
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -734,11 +1006,7 @@ class _LatestResultCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Icon(
-                Icons.arrow_forward_rounded,
-                color: theme.colorScheme.secondary,
-              ),
+              const Icon(Icons.arrow_forward_rounded),
             ],
           ),
         ),
@@ -747,8 +1015,244 @@ class _LatestResultCard extends StatelessWidget {
   }
 }
 
-class _SectionErrorCard extends StatelessWidget {
-  const _SectionErrorCard({required this.title, required this.onRetry});
+enum _ExamRailMode { resume, discover }
+
+class _ExamRail extends StatelessWidget {
+  const _ExamRail({
+    required this.tests,
+    required this.mode,
+    required this.onOpen,
+  });
+
+  final List<Exam> tests;
+  final _ExamRailMode mode;
+  final ValueChanged<Exam> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 190,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: tests.length,
+        separatorBuilder: (context, index) =>
+            const SizedBox(width: AppSpacing.md),
+        itemBuilder: (context, index) => _CompactExamCard(
+          exam: tests[index],
+          mode: mode,
+          onTap: () => onOpen(tests[index]),
+        ),
+      ),
+    );
+  }
+}
+
+class _CompactExamCard extends StatelessWidget {
+  const _CompactExamCard({
+    required this.exam,
+    required this.mode,
+    required this.onTap,
+  });
+
+  final Exam exam;
+  final _ExamRailMode mode;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isPaid = exam.status.trim().toLowerCase() == 'paid';
+
+    return SizedBox(
+      width: 258,
+      child: Card(
+        elevation: 0,
+        clipBehavior: Clip.antiAlias,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+          side: BorderSide(color: theme.colorScheme.outlineVariant),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        exam.category,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: mode == _ExamRailMode.resume
+                            ? theme.colorScheme.secondaryContainer
+                            : isPaid
+                                ? theme.colorScheme.tertiaryContainer
+                                : theme.colorScheme.primaryContainer,
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
+                      child: Text(
+                        mode == _ExamRailMode.resume
+                            ? 'Resume'
+                            : isPaid
+                                ? 'Paid'
+                                : 'Free',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  exam.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    height: 1.25,
+                  ),
+                ),
+                const Spacer(),
+                Wrap(
+                  spacing: AppSpacing.md,
+                  runSpacing: AppSpacing.xs,
+                  children: [
+                    _CompactMeta(
+                      icon: Icons.timer_outlined,
+                      label: '${exam.durationInSeconds ~/ 60} min',
+                    ),
+                    _CompactMeta(
+                      icon: Icons.help_outline_rounded,
+                      label: '${exam.totalQuestions}',
+                    ),
+                    _CompactMeta(
+                      icon: Icons.signal_cellular_alt_rounded,
+                      label: exam.difficulty,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    Text(
+                      mode == _ExamRailMode.resume
+                          ? 'Continue test'
+                          : 'View details',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 19,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CompactMeta extends StatelessWidget {
+  const _CompactMeta({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 15, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: AppSpacing.xxs),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RecommendationEmpty extends StatelessWidget {
+  const _RecommendationEmpty({
+    required this.catalogueIsEmpty,
+    required this.onBrowse,
+  });
+
+  final bool catalogueIsEmpty;
+  final VoidCallback onBrowse;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            catalogueIsEmpty
+                ? Icons.event_busy_outlined
+                : Icons.task_alt_rounded,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              catalogueIsEmpty
+                  ? 'No tests are currently available. Pull down to check again.'
+                  : 'You are already seeing the most relevant available test above.',
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+          if (!catalogueIsEmpty)
+            IconButton(
+              tooltip: 'Browse tests',
+              onPressed: onBrowse,
+              icon: const Icon(Icons.arrow_forward_rounded),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeErrorCard extends StatelessWidget {
+  const _HomeErrorCard({required this.title, required this.onRetry});
 
   final String title;
   final VoidCallback onRetry;
@@ -759,7 +1263,7 @@ class _SectionErrorCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer.withValues(alpha: 0.42),
+        color: theme.colorScheme.errorContainer.withValues(alpha: 0.38),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
           color: theme.colorScheme.error.withValues(alpha: 0.18),
@@ -784,8 +1288,8 @@ class _SectionErrorCard extends StatelessWidget {
   }
 }
 
-class _DashboardSkeleton extends StatelessWidget {
-  const _DashboardSkeleton({required this.height});
+class _HomeSkeleton extends StatelessWidget {
+  const _HomeSkeleton({required this.height});
 
   final double height;
 
@@ -801,56 +1305,6 @@ class _DashboardSkeleton extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: const CircularProgressIndicator(strokeWidth: 2.5),
-    );
-  }
-}
-
-class _NoTestsCard extends StatelessWidget {
-  const _NoTestsCard({required this.onBrowse});
-
-  final VoidCallback onBrowse;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.event_available_outlined,
-            size: 44,
-            color: theme.colorScheme.outline,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'No recommendations yet',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Explore the complete catalogue or pull down to refresh.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          OutlinedButton.icon(
-            onPressed: onBrowse,
-            icon: const Icon(Icons.explore_outlined),
-            label: const Text('Explore tests'),
-          ),
-        ],
-      ),
     );
   }
 }
