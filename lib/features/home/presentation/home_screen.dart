@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
       try {
         await request;
       } catch (_) {
-        // Each home module presents its own recoverable error state.
+        // Each module renders its own recoverable error state.
       }
     }
 
@@ -49,9 +49,7 @@ class HomeScreen extends ConsumerWidget {
     final activeTests = activeAsync.value ?? const <Exam>[];
     final availableTests = availableAsync.value ?? const <Exam>[];
     final results = resultsAsync.value ?? const <Result>[];
-    final userName = _displayName(user?.displayName, user?.email);
-
-    final primaryState = _buildPrimaryState(
+    final actionState = _resolveActionState(
       activeAsync: activeAsync,
       resultsAsync: resultsAsync,
       availableAsync: availableAsync,
@@ -60,21 +58,19 @@ class HomeScreen extends ConsumerWidget {
       availableTests: availableTests,
     );
 
-    final excludedRecommendationIds = <String>{
-      ...activeTests.map((test) => test.id),
-      if (primaryState.action?.exam != null) primaryState.action!.exam!.id,
-    };
+    final primaryExamId = actionState.action?.exam?.id;
+    final activeIds = activeTests.map((test) => test.id).toSet();
     final recommendations = availableTests
-        .where((test) => !excludedRecommendationIds.contains(test.id))
+        .where(
+          (test) => test.id != primaryExamId && !activeIds.contains(test.id),
+        )
         .take(6)
         .toList(growable: false);
-    final latestResult = results.isEmpty ? null : _latestResult(results);
-    final primaryShowsLatestResult = primaryState.action?.kind ==
-        HomePrimaryActionKind.reviewResult;
-    final otherActiveTests = primaryState.action?.kind ==
+    final otherActive = actionState.action?.kind ==
             HomePrimaryActionKind.resumeTest
         ? activeTests.skip(1).toList(growable: false)
         : activeTests;
+    final latestResult = results.isEmpty ? null : _latestResult(results);
 
     return Scaffold(
       body: SafeArea(
@@ -93,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
                 sliver: SliverList.list(
                   children: [
                     _CommandHeader(
-                      name: userName,
+                      name: _displayName(user?.displayName, user?.email),
                       onSearch: () => context.go('/exams'),
                       onProfile: () => context.go('/profile'),
                     ),
@@ -103,43 +99,35 @@ class HomeScreen extends ConsumerWidget {
                       subtitle: 'One clear step based on your current activity',
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    if (primaryState.isLoading)
-                      const _HomeSkeleton(height: 210)
-                    else if (primaryState.hasError)
-                      _HomeErrorCard(
-                        title: 'Your next action could not be prepared',
-                        onRetry: () {
-                          ref
-                            ..invalidate(inProgressExamsProvider)
-                            ..invalidate(userResultsProvider)
-                            ..invalidate(availableExamsProvider);
-                        },
-                      )
-                    else
-                      _PrimaryActionCard(
-                        action: primaryState.action!,
-                        onOpen: () =>
-                            _openPrimaryAction(context, primaryState.action!),
-                        onBrowse: () => context.go('/exams'),
-                      ),
+                    _ActionStateView(
+                      state: actionState,
+                      onOpen: (action) => _openAction(context, action),
+                      onBrowse: () => context.go('/exams'),
+                      onRetry: () {
+                        ref
+                          ..invalidate(inProgressExamsProvider)
+                          ..invalidate(userResultsProvider)
+                          ..invalidate(availableExamsProvider);
+                      },
+                    ),
                     const SizedBox(height: AppSpacing.md),
-                    _ContextActions(
+                    _QuickLinks(
                       onTests: () => context.go('/exams'),
                       onResults: () => context.go('/results'),
                       onProfile: () => context.go('/profile'),
                     ),
-                    if (otherActiveTests.isNotEmpty) ...[
+                    if (otherActive.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.xl),
                       _SectionTitle(
                         title: 'Continue learning',
-                        subtitle: otherActiveTests.length == 1
+                        subtitle: otherActive.length == 1
                             ? 'One more active test is ready'
-                            : '${otherActiveTests.length} more active tests are ready',
+                            : '${otherActive.length} more active tests are ready',
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       _ExamRail(
-                        tests: otherActiveTests,
-                        mode: _ExamRailMode.resume,
+                        tests: otherActive,
+                        label: 'Resume',
                         onOpen: (test) => context.push(
                           '/test-attempt',
                           extra: test.id,
@@ -153,8 +141,8 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     analyticsAsync.when(
-                      loading: () => const _HomeSkeleton(height: 146),
-                      error: (error, stackTrace) => _HomeErrorCard(
+                      loading: () => const _Skeleton(height: 146),
+                      error: (error, stackTrace) => _ErrorCard(
                         title: 'Performance data is temporarily unavailable',
                         onRetry: () => ref.invalidate(userAnalyticsProvider),
                       ),
@@ -163,11 +151,13 @@ class HomeScreen extends ConsumerWidget {
                         onOpen: () => context.go('/profile'),
                       ),
                     ),
-                    if (latestResult != null && !primaryShowsLatestResult) ...[
+                    if (latestResult != null &&
+                        actionState.action?.kind !=
+                            HomePrimaryActionKind.reviewResult) ...[
                       const SizedBox(height: AppSpacing.xl),
                       const _SectionTitle(
                         title: 'Latest result',
-                        subtitle: 'Return to the questions that shaped this score',
+                        subtitle: 'Return to the questions behind this score',
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       _LatestResultCard(
@@ -187,27 +177,24 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     availableAsync.when(
-                      loading: () => const _HomeSkeleton(height: 190),
-                      error: (error, stackTrace) => _HomeErrorCard(
+                      loading: () => const _Skeleton(height: 190),
+                      error: (error, stackTrace) => _ErrorCard(
                         title: 'Recommendations could not be loaded',
                         onRetry: () => ref.invalidate(availableExamsProvider),
                       ),
-                      data: (tests) {
-                        if (recommendations.isEmpty) {
-                          return _RecommendationEmpty(
-                            catalogueIsEmpty: tests.isEmpty,
-                            onBrowse: () => context.go('/exams'),
-                          );
-                        }
-                        return _ExamRail(
-                          tests: recommendations,
-                          mode: _ExamRailMode.discover,
-                          onOpen: (test) => context.push(
-                            '/exam-details',
-                            extra: test.id,
-                          ),
-                        );
-                      },
+                      data: (tests) => recommendations.isEmpty
+                          ? _RecommendationEmpty(
+                              catalogueIsEmpty: tests.isEmpty,
+                              onBrowse: () => context.go('/exams'),
+                            )
+                          : _ExamRail(
+                              tests: recommendations,
+                              label: null,
+                              onOpen: (test) => context.push(
+                                '/exam-details',
+                                extra: test.id,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -220,21 +207,15 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _PrimaryState {
-  const _PrimaryState._({this.action, this.isLoading = false, this.hasError = false});
-
-  const _PrimaryState.loading() : this._(isLoading: true);
-
-  const _PrimaryState.error() : this._(hasError: true);
-
-  const _PrimaryState.data(HomePrimaryAction value) : this._(action: value);
+class _ActionState {
+  const _ActionState({this.action, this.loading = false, this.error = false});
 
   final HomePrimaryAction? action;
-  final bool isLoading;
-  final bool hasError;
+  final bool loading;
+  final bool error;
 }
 
-_PrimaryState _buildPrimaryState({
+_ActionState _resolveActionState({
   required AsyncValue<List<Exam>> activeAsync,
   required AsyncValue<List<Result>> resultsAsync,
   required AsyncValue<List<Exam>> availableAsync,
@@ -243,21 +224,19 @@ _PrimaryState _buildPrimaryState({
   required List<Exam> availableTests,
 }) {
   if (activeAsync.isLoading && activeTests.isEmpty) {
-    return const _PrimaryState.loading();
+    return const _ActionState(loading: true);
   }
-
   if (activeTests.isNotEmpty) {
-    return _PrimaryState.data(
-      resolveHomePrimaryAction(
+    return _ActionState(
+      action: resolveHomePrimaryAction(
         activeTests: activeTests,
         results: results,
         availableTests: availableTests,
       ),
     );
   }
-
   if (resultsAsync.isLoading && results.isEmpty) {
-    return const _PrimaryState.loading();
+    return const _ActionState(loading: true);
   }
 
   final provisional = resolveHomePrimaryAction(
@@ -266,21 +245,18 @@ _PrimaryState _buildPrimaryState({
     availableTests: availableTests,
   );
   if (provisional.kind == HomePrimaryActionKind.reviewResult) {
-    return _PrimaryState.data(provisional);
+    return _ActionState(action: provisional);
   }
-
   if (availableAsync.isLoading && availableTests.isEmpty) {
-    return const _PrimaryState.loading();
+    return const _ActionState(loading: true);
   }
-
   if (activeAsync.hasError &&
       resultsAsync.hasError &&
       availableAsync.hasError) {
-    return const _PrimaryState.error();
+    return const _ActionState(error: true);
   }
-
-  return _PrimaryState.data(
-    resolveHomePrimaryAction(
+  return _ActionState(
+    action: resolveHomePrimaryAction(
       activeTests: activeTests,
       results: results,
       availableTests: availableTests,
@@ -288,16 +264,20 @@ _PrimaryState _buildPrimaryState({
   );
 }
 
-void _openPrimaryAction(BuildContext context, HomePrimaryAction action) {
+void _openAction(BuildContext context, HomePrimaryAction action) {
   switch (action.kind) {
     case HomePrimaryActionKind.resumeTest:
       context.push('/test-attempt', extra: action.exam!.id);
+      return;
     case HomePrimaryActionKind.reviewResult:
       context.push('/review', extra: action.result!.attemptId);
+      return;
     case HomePrimaryActionKind.startTest:
       context.push('/exam-details', extra: action.exam!.id);
+      return;
     case HomePrimaryActionKind.browseTests:
       context.go('/exams');
+      return;
   }
 }
 
@@ -420,21 +400,17 @@ class _CommandHeader extends StatelessWidget {
           icon: const Icon(Icons.search_rounded),
         ),
         const SizedBox(width: AppSpacing.sm),
-        Semantics(
-          button: true,
-          label: 'Open profile',
-          child: InkWell(
-            onTap: onProfile,
-            customBorder: const CircleBorder(),
-            child: CircleAvatar(
-              radius: 24,
-              backgroundColor: theme.colorScheme.primaryContainer,
-              child: Text(
-                name.isEmpty ? 'S' : name[0].toUpperCase(),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w800,
-                ),
+        InkWell(
+          onTap: onProfile,
+          customBorder: const CircleBorder(),
+          child: CircleAvatar(
+            radius: 24,
+            backgroundColor: theme.colorScheme.primaryContainer,
+            child: Text(
+              name.isEmpty ? 'S' : name[0].toUpperCase(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),
@@ -444,48 +420,33 @@ class _CommandHeader extends StatelessWidget {
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({
-    required this.title,
-    required this.subtitle,
-    this.actionLabel,
-    this.onAction,
+class _ActionStateView extends StatelessWidget {
+  const _ActionStateView({
+    required this.state,
+    required this.onOpen,
+    required this.onBrowse,
+    required this.onRetry,
   });
 
-  final String title;
-  final String subtitle;
-  final String? actionLabel;
-  final VoidCallback? onAction;
+  final _ActionState state;
+  final ValueChanged<HomePrimaryAction> onOpen;
+  final VoidCallback onBrowse;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                subtitle,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (actionLabel != null && onAction != null)
-          TextButton(onPressed: onAction, child: Text(actionLabel!)),
-      ],
+    if (state.loading) return const _Skeleton(height: 210);
+    if (state.error) {
+      return _ErrorCard(
+        title: 'Your next action could not be prepared',
+        onRetry: onRetry,
+      );
+    }
+    final action = state.action!;
+    return _PrimaryActionCard(
+      action: action,
+      onOpen: () => onOpen(action),
+      onBrowse: onBrowse,
     );
   }
 }
@@ -583,7 +544,7 @@ class _PrimaryActionCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          _PrimaryMetadata(action: action),
+          _ActionMetadata(action: action),
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
@@ -622,17 +583,16 @@ class _PrimaryActionCard extends StatelessWidget {
   }
 }
 
-class _PrimaryMetadata extends StatelessWidget {
-  const _PrimaryMetadata({required this.action});
+class _ActionMetadata extends StatelessWidget {
+  const _ActionMetadata({required this.action});
 
   final HomePrimaryAction action;
 
   @override
   Widget build(BuildContext context) {
+    final items = <(IconData, String)>[];
     final exam = action.exam;
     final result = action.result;
-    final items = <(IconData, String)>[];
-
     if (exam != null) {
       items
         ..add((Icons.timer_outlined, '${exam.durationInSeconds ~/ 60} min'))
@@ -658,15 +618,15 @@ class _PrimaryMetadata extends StatelessWidget {
       runSpacing: AppSpacing.sm,
       children: items
           .map(
-            (item) => _PrimaryMetaChip(icon: item.$1, label: item.$2),
+            (item) => _MetaChip(icon: item.$1, label: item.$2),
           )
           .toList(),
     );
   }
 }
 
-class _PrimaryMetaChip extends StatelessWidget {
-  const _PrimaryMetaChip({required this.icon, required this.label});
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -701,8 +661,8 @@ class _PrimaryMetaChip extends StatelessWidget {
   }
 }
 
-class _ContextActions extends StatelessWidget {
-  const _ContextActions({
+class _QuickLinks extends StatelessWidget {
+  const _QuickLinks({
     required this.onTests,
     required this.onResults,
     required this.onProfile,
@@ -717,7 +677,7 @@ class _ContextActions extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: _ContextAction(
+          child: _QuickLink(
             icon: Icons.explore_outlined,
             label: 'Tests',
             onTap: onTests,
@@ -725,7 +685,7 @@ class _ContextActions extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: _ContextAction(
+          child: _QuickLink(
             icon: Icons.insights_outlined,
             label: 'Results',
             onTap: onResults,
@@ -733,7 +693,7 @@ class _ContextActions extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: _ContextAction(
+          child: _QuickLink(
             icon: Icons.person_outline_rounded,
             label: 'Profile',
             onTap: onProfile,
@@ -744,8 +704,8 @@ class _ContextActions extends StatelessWidget {
   }
 }
 
-class _ContextAction extends StatelessWidget {
-  const _ContextAction({
+class _QuickLink extends StatelessWidget {
+  const _QuickLink({
     required this.icon,
     required this.label,
     required this.onTap,
@@ -765,10 +725,7 @@ class _ContextAction extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm,
-            vertical: AppSpacing.md,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             border: Border.all(color: theme.colorScheme.outlineVariant),
@@ -796,6 +753,52 @@ class _ContextAction extends StatelessWidget {
   }
 }
 
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
+    required this.title,
+    required this.subtitle,
+    this.actionLabel,
+    this.onAction,
+  });
+
+  final String title;
+  final String subtitle;
+  final String? actionLabel;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (actionLabel != null && onAction != null)
+          TextButton(onPressed: onAction, child: Text(actionLabel!)),
+      ],
+    );
+  }
+}
+
 class _PerformancePulse extends StatelessWidget {
   const _PerformancePulse({required this.analytics, required this.onOpen});
 
@@ -805,10 +808,9 @@ class _PerformancePulse extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final focusTopic = analytics.weakestTopics.isEmpty
+    final focus = analytics.weakestTopics.isEmpty
         ? null
         : analytics.weakestTopics.first;
-
     return Card(
       elevation: 0,
       clipBehavior: Clip.antiAlias,
@@ -844,7 +846,7 @@ class _PerformancePulse extends StatelessWidget {
                   ),
                 ],
               ),
-              if (focusTopic != null) ...[
+              if (focus != null) ...[
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   width: double.infinity,
@@ -862,25 +864,13 @@ class _PerformancePulse extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Focus next',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xxs),
-                            Text(
-                              focusTopic,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Focus next: $focus',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                       const Icon(Icons.arrow_forward_rounded, size: 18),
@@ -936,7 +926,6 @@ class _LatestResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final score = result.percentageScore.round().clamp(0, 100);
-
     return Card(
       elevation: 0,
       clipBehavior: Clip.antiAlias,
@@ -1015,17 +1004,15 @@ class _LatestResultCard extends StatelessWidget {
   }
 }
 
-enum _ExamRailMode { resume, discover }
-
 class _ExamRail extends StatelessWidget {
   const _ExamRail({
     required this.tests,
-    required this.mode,
+    required this.label,
     required this.onOpen,
   });
 
   final List<Exam> tests;
-  final _ExamRailMode mode;
+  final String? label;
   final ValueChanged<Exam> onOpen;
 
   @override
@@ -1039,7 +1026,7 @@ class _ExamRail extends StatelessWidget {
             const SizedBox(width: AppSpacing.md),
         itemBuilder: (context, index) => _CompactExamCard(
           exam: tests[index],
-          mode: mode,
+          label: label,
           onTap: () => onOpen(tests[index]),
         ),
       ),
@@ -1050,19 +1037,19 @@ class _ExamRail extends StatelessWidget {
 class _CompactExamCard extends StatelessWidget {
   const _CompactExamCard({
     required this.exam,
-    required this.mode,
+    required this.label,
     required this.onTap,
   });
 
   final Exam exam;
-  final _ExamRailMode mode;
+  final String? label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isPaid = exam.status.trim().toLowerCase() == 'paid';
-
+    final badge = label ?? (isPaid ? 'Paid' : 'Free');
     return SizedBox(
       width: 258,
       child: Card(
@@ -1099,7 +1086,7 @@ class _CompactExamCard extends StatelessWidget {
                         vertical: AppSpacing.xxs,
                       ),
                       decoration: BoxDecoration(
-                        color: mode == _ExamRailMode.resume
+                        color: label != null
                             ? theme.colorScheme.secondaryContainer
                             : isPaid
                                 ? theme.colorScheme.tertiaryContainer
@@ -1108,11 +1095,7 @@ class _CompactExamCard extends StatelessWidget {
                             BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                       child: Text(
-                        mode == _ExamRailMode.resume
-                            ? 'Resume'
-                            : isPaid
-                                ? 'Paid'
-                                : 'Free',
+                        badge,
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -1153,9 +1136,7 @@ class _CompactExamCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      mode == _ExamRailMode.resume
-                          ? 'Continue test'
-                          : 'View details',
+                      label != null ? 'Continue test' : 'View details',
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.w700,
@@ -1235,7 +1216,7 @@ class _RecommendationEmpty extends StatelessWidget {
             child: Text(
               catalogueIsEmpty
                   ? 'No tests are currently available. Pull down to check again.'
-                  : 'You are already seeing the most relevant available test above.',
+                  : 'The most relevant available test is already shown above.',
               style: theme.textTheme.bodyMedium,
             ),
           ),
@@ -1251,8 +1232,8 @@ class _RecommendationEmpty extends StatelessWidget {
   }
 }
 
-class _HomeErrorCard extends StatelessWidget {
-  const _HomeErrorCard({required this.title, required this.onRetry});
+class _ErrorCard extends StatelessWidget {
+  const _ErrorCard({required this.title, required this.onRetry});
 
   final String title;
   final VoidCallback onRetry;
@@ -1288,8 +1269,8 @@ class _HomeErrorCard extends StatelessWidget {
   }
 }
 
-class _HomeSkeleton extends StatelessWidget {
-  const _HomeSkeleton({required this.height});
+class _Skeleton extends StatelessWidget {
+  const _Skeleton({required this.height});
 
   final double height;
 
