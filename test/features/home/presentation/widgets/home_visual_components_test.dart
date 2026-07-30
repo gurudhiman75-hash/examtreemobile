@@ -100,65 +100,74 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-    await tester.binding.setSurfaceSize(const Size(360, 500));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+    try {
+      await tester.binding.setSurfaceSize(const Size(360, 500));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    await tester.pumpWidget(
-      app(
-        HorizontalContentRail(
-          height: 180,
-          semanticLabel: 'Recommended tests',
-          children: List.generate(
-            4,
-            (index) => HomeModuleShell(
-              child: Text('Test ${index + 1}'),
+      await tester.pumpWidget(
+        app(
+          HorizontalContentRail(
+            height: 180,
+            semanticLabel: 'Recommended tests',
+            children: List.generate(
+              4,
+              (index) => HomeModuleShell(
+                child: Text('Test ${index + 1}'),
+              ),
             ),
           ),
+          size: const Size(360, 500),
         ),
-        size: const Size(360, 500),
-      ),
-    );
+      );
 
-    expect(find.bySemanticsLabel('Recommended tests'), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp('Item 1 of 4')), findsOneWidget);
-    await tester.drag(
-      find.byType(HorizontalContentRail),
-      const Offset(-190, 0),
-    );
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
-    expect(find.text('Test 2'), findsWidgets);
+      expect(find.bySemanticsLabel('Recommended tests'), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('Item 1 of 4')), findsOneWidget);
+      await tester.drag(
+        find.byType(HorizontalContentRail),
+        const Offset(-190, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Test 2'), findsWidgets);
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets('skeleton becomes static when reduced motion is requested', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-    await tester.pumpWidget(
-      app(
-        const HomeSkeleton(
-          height: 210,
-          variant: HomeSkeletonVariant.action,
+    try {
+      await tester.pumpWidget(
+        app(
+          const HomeSkeleton(
+            height: 210,
+            variant: HomeSkeletonVariant.action,
+          ),
+          disableAnimations: true,
         ),
-        disableAnimations: true,
-      ),
-    );
+      );
 
-    expect(find.bySemanticsLabel('Loading content'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 3));
-    expect(tester.binding.transientCallbackCount, 0);
-    expect(tester.takeException(), isNull);
+      expect(find.bySemanticsLabel('Loading content'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      expect(tester.binding.transientCallbackCount, 0);
+      expect(tester.takeException(), isNull);
+    } finally {
+      semantics.dispose();
+    }
   });
 
   testWidgets('compact metric supplies a spoken label', (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-    await tester.pumpWidget(
-      app(const CompactMetric(value: '82%', label: 'Accuracy')),
-    );
+    try {
+      await tester.pumpWidget(
+        app(const CompactMetric(value: '82%', label: 'Accuracy')),
+      );
 
-    expect(find.bySemanticsLabel('Accuracy: 82%'), findsOneWidget);
+      expect(find.bySemanticsLabel('Accuracy: 82%'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
   });
 }
