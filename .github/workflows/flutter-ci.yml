@@ -27,6 +27,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Capture HME-008 golden candidates
+        run: >-
+          flutter test --update-goldens
+          test/features/home/presentation/home_screen_golden_test.dart
+
+      - name: Upload HME-008 golden candidates
+        uses: actions/upload-artifact@v4
+        with:
+          name: hme-008-home-goldens
+          path: test/features/home/presentation/goldens/*.png
+          if-no-files-found: error
+
       - name: Analyse
         id: analyse
         continue-on-error: true
