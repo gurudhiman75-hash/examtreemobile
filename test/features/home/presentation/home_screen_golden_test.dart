@@ -142,7 +142,9 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
   }
 
   testWidgets('populated Home initial viewport matches its phone baseline', (
@@ -211,7 +213,7 @@ void main() {
       find.byType(CustomScrollView),
       const Offset(0, -780),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     await expectLater(
       find.byType(Scaffold),
