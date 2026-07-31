@@ -11,6 +11,7 @@ import '../../exams/presentation/providers/exam_providers.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
 import '../../results/presentation/providers/result_providers.dart';
 import 'home_primary_action.dart';
+import 'widgets/home_visual_components.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -94,7 +95,7 @@ class HomeScreen extends ConsumerWidget {
                       onProfile: () => context.go('/profile'),
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    const _SectionTitle(
+                    const HomeSectionHeader(
                       title: 'Next best action',
                       subtitle: 'One clear step based on your current activity',
                     ),
@@ -118,7 +119,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     if (otherActive.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.xl),
-                      _SectionTitle(
+                      HomeSectionHeader(
                         title: 'Continue learning',
                         subtitle: otherActive.length == 1
                             ? 'One more active test is ready'
@@ -135,13 +136,16 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                     const SizedBox(height: AppSpacing.xl),
-                    const _SectionTitle(
+                    const HomeSectionHeader(
                       title: 'Performance pulse',
                       subtitle: 'Enough insight to decide what to do next',
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     analyticsAsync.when(
-                      loading: () => const _Skeleton(height: 146),
+                      loading: () => const HomeSkeleton(
+                        height: 146,
+                        variant: HomeSkeletonVariant.metrics,
+                      ),
                       error: (error, stackTrace) => _ErrorCard(
                         title: 'Performance data is temporarily unavailable',
                         onRetry: () => ref.invalidate(userAnalyticsProvider),
@@ -155,7 +159,7 @@ class HomeScreen extends ConsumerWidget {
                         actionState.action?.kind !=
                             HomePrimaryActionKind.reviewResult) ...[
                       const SizedBox(height: AppSpacing.xl),
-                      const _SectionTitle(
+                      const HomeSectionHeader(
                         title: 'Latest result',
                         subtitle: 'Return to the questions behind this score',
                       ),
@@ -169,7 +173,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                     const SizedBox(height: AppSpacing.xl),
-                    _SectionTitle(
+                    HomeSectionHeader(
                       title: 'Recommended for you',
                       subtitle: 'Fresh tests from your available catalogue',
                       actionLabel: 'View all',
@@ -177,7 +181,10 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     availableAsync.when(
-                      loading: () => const _Skeleton(height: 190),
+                      loading: () => const HomeSkeleton(
+                        height: 190,
+                        variant: HomeSkeletonVariant.rail,
+                      ),
                       error: (error, stackTrace) => _ErrorCard(
                         title: 'Recommendations could not be loaded',
                         onRetry: () => ref.invalidate(availableExamsProvider),
@@ -435,7 +442,12 @@ class _ActionStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state.loading) return const _Skeleton(height: 210);
+    if (state.loading) {
+      return const HomeSkeleton(
+        height: 210,
+        variant: HomeSkeletonVariant.action,
+      );
+    }
     if (state.error) {
       return _ErrorCard(
         title: 'Your next action could not be prepared',
@@ -443,10 +455,12 @@ class _ActionStateView extends StatelessWidget {
       );
     }
     final action = state.action!;
-    return _PrimaryActionCard(
-      action: action,
-      onOpen: () => onOpen(action),
-      onBrowse: onBrowse,
+    return HomeReveal(
+      child: _PrimaryActionCard(
+        action: action,
+        onOpen: () => onOpen(action),
+        onBrowse: onBrowse,
+      ),
     );
   }
 }
@@ -464,199 +478,80 @@ class _PrimaryActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final icon = switch (action.kind) {
       HomePrimaryActionKind.resumeTest => Icons.play_circle_outline_rounded,
       HomePrimaryActionKind.reviewResult => Icons.fact_check_outlined,
       HomePrimaryActionKind.startTest => Icons.rocket_launch_outlined,
       HomePrimaryActionKind.browseTests => Icons.explore_outlined,
     };
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primary.withValues(alpha: 0.76),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.16),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onPrimary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                ),
-                child: Icon(icon, color: theme.colorScheme.onPrimary),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      action.eyebrow.toUpperCase(),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.onPrimary.withValues(alpha: 0.76),
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      action.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            action.description,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onPrimary.withValues(alpha: 0.86),
-              height: 1.45,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          _ActionMetadata(action: action),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: onOpen,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: theme.colorScheme.onPrimary,
-                    foregroundColor: theme.colorScheme.primary,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
-                  ),
-                  icon: Icon(icon),
-                  label: Text(action.actionLabel),
-                ),
-              ),
-              if (action.kind != HomePrimaryActionKind.browseTests) ...[
-                const SizedBox(width: AppSpacing.sm),
-                IconButton(
-                  tooltip: 'Browse all tests',
-                  onPressed: onBrowse,
-                  style: IconButton.styleFrom(
-                    backgroundColor:
-                        theme.colorScheme.onPrimary.withValues(alpha: 0.14),
-                    foregroundColor: theme.colorScheme.onPrimary,
-                  ),
-                  icon: const Icon(Icons.grid_view_rounded),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionMetadata extends StatelessWidget {
-  const _ActionMetadata({required this.action});
-
-  final HomePrimaryAction action;
-
-  @override
-  Widget build(BuildContext context) {
-    final items = <(IconData, String)>[];
+    final metadata = <HomeActionMetadata>[];
     final exam = action.exam;
     final result = action.result;
     if (exam != null) {
-      items
-        ..add((Icons.timer_outlined, '${exam.durationInSeconds ~/ 60} min'))
-        ..add((Icons.help_outline_rounded, '${exam.totalQuestions} questions'))
-        ..add((Icons.signal_cellular_alt_rounded, exam.difficulty));
+      metadata
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.timer_outlined,
+            label: '${exam.durationInSeconds ~/ 60} min',
+          ),
+        )
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.help_outline_rounded,
+            label: '${exam.totalQuestions} questions',
+          ),
+        )
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.signal_cellular_alt_rounded,
+            label: exam.difficulty,
+          ),
+        );
     } else if (result != null) {
-      items
-        ..add((
-          Icons.stars_outlined,
-          '${result.percentageScore.round().clamp(0, 100)}% score',
-        ))
-        ..add((
-          Icons.track_changes_outlined,
-          '${result.accuracy.round().clamp(0, 100)}% accuracy',
-        ))
-        ..add((Icons.check_circle_outline, '${result.correctCount} correct'));
+      metadata
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.stars_outlined,
+            label:
+                '${result.percentageScore.round().clamp(0, 100)}% score',
+          ),
+        )
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.track_changes_outlined,
+            label: '${result.accuracy.round().clamp(0, 100)}% accuracy',
+          ),
+        )
+        ..add(
+          HomeActionMetadata(
+            icon: Icons.check_circle_outline,
+            label: '${result.correctCount} correct',
+          ),
+        );
     } else {
-      items.add((Icons.auto_awesome_outlined, 'Live catalogue'));
+      metadata.add(
+        const HomeActionMetadata(
+          icon: Icons.auto_awesome_outlined,
+          label: 'Live catalogue',
+        ),
+      );
     }
 
-    return Wrap(
-      spacing: AppSpacing.sm,
-      runSpacing: AppSpacing.sm,
-      children: items
-          .map(
-            (item) => _MetaChip(icon: item.$1, label: item.$2),
-          )
-          .toList(),
-    );
-  }
-}
-
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 15, color: theme.colorScheme.onPrimary),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+    return LearningActionCard(
+      icon: icon,
+      eyebrow: action.eyebrow,
+      title: action.title,
+      description: action.description,
+      actionLabel: action.actionLabel,
+      metadata: metadata,
+      onAction: onOpen,
+      secondaryIcon: action.kind == HomePrimaryActionKind.browseTests
+          ? null
+          : Icons.grid_view_rounded,
+      secondaryTooltip: 'Browse all tests',
+      onSecondaryAction: action.kind == HomePrimaryActionKind.browseTests
+          ? null
+          : onBrowse,
     );
   }
 }
@@ -753,52 +648,6 @@ class _QuickLink extends StatelessWidget {
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({
-    required this.title,
-    required this.subtitle,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final String title;
-  final String subtitle;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                subtitle,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (actionLabel != null && onAction != null)
-          TextButton(onPressed: onAction, child: Text(actionLabel!)),
-      ],
-    );
-  }
-}
-
 class _PerformancePulse extends StatelessWidget {
   const _PerformancePulse({required this.analytics, required this.onOpen});
 
@@ -827,19 +676,19 @@ class _PerformancePulse extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _PulseMetric(
+                    child: CompactMetric(
                       value: '${analytics.totalTestsAttempted}',
                       label: 'Tests',
                     ),
                   ),
                   Expanded(
-                    child: _PulseMetric(
+                    child: CompactMetric(
                       value: '${analytics.averageScore.round()}%',
                       label: 'Average',
                     ),
                   ),
                   Expanded(
-                    child: _PulseMetric(
+                    child: CompactMetric(
                       value: '${analytics.averageAccuracy.round()}%',
                       label: 'Accuracy',
                     ),
@@ -882,36 +731,6 @@ class _PerformancePulse extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _PulseMetric extends StatelessWidget {
-  const _PulseMetric({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        Text(
-          value,
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: theme.colorScheme.primary,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xxs),
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -1017,19 +836,18 @@ class _ExamRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return HorizontalContentRail(
       height: 190,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: tests.length,
-        separatorBuilder: (context, index) =>
-            const SizedBox(width: AppSpacing.md),
-        itemBuilder: (context, index) => _CompactExamCard(
-          exam: tests[index],
-          label: label,
-          onTap: () => onOpen(tests[index]),
-        ),
-      ),
+      semanticLabel: label == null ? 'Recommended tests' : 'Active tests',
+      children: tests
+          .map(
+            (test) => _CompactExamCard(
+              exam: test,
+              label: label,
+              onTap: () => onOpen(test),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 }
@@ -1050,110 +868,96 @@ class _CompactExamCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isPaid = exam.status.trim().toLowerCase() == 'paid';
     final badge = label ?? (isPaid ? 'Paid' : 'Free');
-    return SizedBox(
-      width: 258,
-      child: Card(
-        elevation: 0,
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-          side: BorderSide(color: theme.colorScheme.outlineVariant),
-        ),
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        exam.category,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xxs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: label != null
-                            ? theme.colorScheme.secondaryContainer
-                            : isPaid
-                                ? theme.colorScheme.tertiaryContainer
-                                : theme.colorScheme.primaryContainer,
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusMd),
-                      ),
-                      child: Text(
-                        badge,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  exam.title,
-                  maxLines: 2,
+    return HomeModuleShell(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      onTap: onTap,
+      semanticLabel: '${exam.title}. $badge.',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  exam.category,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    height: 1.25,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const Spacer(),
-                Wrap(
-                  spacing: AppSpacing.md,
-                  runSpacing: AppSpacing.xs,
-                  children: [
-                    _CompactMeta(
-                      icon: Icons.timer_outlined,
-                      label: '${exam.durationInSeconds ~/ 60} min',
-                    ),
-                    _CompactMeta(
-                      icon: Icons.help_outline_rounded,
-                      label: '${exam.totalQuestions}',
-                    ),
-                    _CompactMeta(
-                      icon: Icons.signal_cellular_alt_rounded,
-                      label: exam.difficulty,
-                    ),
-                  ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xxs,
                 ),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    Text(
-                      label != null ? 'Continue test' : 'View details',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 19,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ],
+                decoration: BoxDecoration(
+                  color: label != null
+                      ? theme.colorScheme.secondaryContainer
+                      : isPaid
+                          ? theme.colorScheme.tertiaryContainer
+                          : theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-              ],
+                child: Text(
+                  badge,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            exam.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+              height: 1.25,
             ),
           ),
-        ),
+          const Spacer(),
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.xs,
+            children: [
+              _CompactMeta(
+                icon: Icons.timer_outlined,
+                label: '${exam.durationInSeconds ~/ 60} min',
+              ),
+              _CompactMeta(
+                icon: Icons.help_outline_rounded,
+                label: '${exam.totalQuestions}',
+              ),
+              _CompactMeta(
+                icon: Icons.signal_cellular_alt_rounded,
+                label: exam.difficulty,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Text(
+                label != null ? 'Continue test' : 'View details',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Spacer(),
+              Icon(
+                Icons.arrow_forward_rounded,
+                size: 19,
+                color: theme.colorScheme.primary,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -1269,23 +1073,3 @@ class _ErrorCard extends StatelessWidget {
   }
 }
 
-class _Skeleton extends StatelessWidget {
-  const _Skeleton({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
-      ),
-      alignment: Alignment.center,
-      child: const CircularProgressIndicator(strokeWidth: 2.5),
-    );
-  }
-}
