@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:examtree/core/models/analytics_model.dart';
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/models/result_model.dart';
@@ -10,9 +13,23 @@ import 'package:examtree/features/results/presentation/providers/result_provider
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  var goldenFontLoaded = false;
+
+  Future<void> loadGoldenFont() async {
+    if (goldenFontLoaded) return;
+    final bytes = await File(
+      'test/features/home/presentation/goldens/Roboto-Regular.ttf',
+    ).readAsBytes();
+    final loader = FontLoader('Roboto')
+      ..addFont(Future.value(ByteData.sublistView(bytes)));
+    await loader.load();
+    goldenFontLoaded = true;
+  }
+
   const phoneSize = Size(390, 844);
   final fixedNow = DateTime(2026, 7, 30, 9, 30);
 
@@ -88,6 +105,8 @@ void main() {
     required List<Result> results,
     required Analytics analyticsValue,
   }) async {
+    await loadGoldenFont();
+
     tester.view
       ..physicalSize = phoneSize
       ..devicePixelRatio = 1;
@@ -107,7 +126,11 @@ void main() {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
+          theme: AppTheme.lightTheme.copyWith(
+            textTheme: AppTheme.lightTheme.textTheme.apply(
+              fontFamily: 'Roboto',
+            ),
+          ),
           home: MediaQuery(
             data: const MediaQueryData(
               size: phoneSize,
