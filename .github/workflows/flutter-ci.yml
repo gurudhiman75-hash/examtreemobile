@@ -27,6 +27,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Stage pinned Roboto font for golden rendering
+        run: |
+          mkdir -p test/features/home/presentation/goldens
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/home/presentation/goldens/Roboto-Regular.ttf
+
       - name: Capture HME-008 golden candidates
         run: >-
           flutter test --update-goldens
@@ -36,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hme-008-home-goldens
-          path: test/features/home/presentation/goldens/*.png
+          path: test/features/home/presentation/goldens/*
           if-no-files-found: error
 
       - name: Analyse
