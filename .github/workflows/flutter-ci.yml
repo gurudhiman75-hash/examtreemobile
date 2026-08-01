@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -40,12 +42,34 @@ jobs:
           flutter test --update-goldens
           test/features/home/presentation/home_screen_golden_test.dart
 
+      - name: Verify reviewed HME-008 golden candidates
+        run: |
+          cd test/features/home/presentation/goldens
+          printf '%s  %s\n' \
+            'f359484720ee91d6928bf5f5085153084c9b121b23c05cce88aee3ca71002b6b' 'home_empty_390x844.png' \
+            '70a03e9709f8a8fa2caddbd5b0aa68097391514ea98d8cc68da50adb09e42de9' 'home_populated_initial_390x844.png' \
+            '61eb617460e54983c4a26047e57317d57d46c4f6fc3b54eda8be6f541b7f0d89' 'home_populated_lower_390x844.png' \
+            | sha256sum --check --strict -
+
       - name: Upload HME-008 golden candidates
         uses: actions/upload-artifact@v4
         with:
           name: hme-008-home-goldens
           path: test/features/home/presentation/goldens/*.png
           if-no-files-found: error
+
+      - name: Commit reviewed HME-008 golden baselines
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add test/features/home/presentation/goldens/*.png
+          if git diff --cached --quiet; then
+            echo 'Reviewed baselines are already committed.'
+            exit 0
+          fi
+          git commit -m 'Add reviewed Home golden baselines'
+          git push origin HEAD:"${{ github.head_ref }}"
 
       - name: Analyse
         id: analyse
