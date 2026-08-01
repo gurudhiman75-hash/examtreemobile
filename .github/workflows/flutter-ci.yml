@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Stage pinned fonts for golden rendering
+        run: |
+          mkdir -p test/features/home/presentation/goldens
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/home/presentation/goldens/Roboto-Regular.ttf
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
+            test/features/home/presentation/goldens/MaterialIcons-Regular.otf
+
       - name: Analyse
         id: analyse
         continue-on-error: true

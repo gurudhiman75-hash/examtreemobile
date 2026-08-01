@@ -14,7 +14,9 @@ import 'home_primary_action.dart';
 import 'widgets/home_visual_components.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.now});
+
+  final DateTime Function()? now;
 
   Future<void> _refreshAll(WidgetRef ref) async {
     ref
@@ -46,6 +48,7 @@ class HomeScreen extends ConsumerWidget {
     final availableAsync = ref.watch(availableExamsProvider);
     final resultsAsync = ref.watch(userResultsProvider);
     final user = ref.watch(authStateChangesProvider).value;
+    final currentTime = now?.call() ?? DateTime.now();
 
     final activeTests = activeAsync.value ?? const <Exam>[];
     final availableTests = availableAsync.value ?? const <Exam>[];
@@ -54,6 +57,7 @@ class HomeScreen extends ConsumerWidget {
       activeAsync: activeAsync,
       resultsAsync: resultsAsync,
       availableAsync: availableAsync,
+      now: currentTime,
       activeTests: activeTests,
       results: results,
       availableTests: availableTests,
@@ -91,6 +95,8 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     _CommandHeader(
                       name: _displayName(user?.displayName, user?.email),
+                      greeting: _greeting(currentTime),
+                      todayLabel: _todayLabel(currentTime),
                       onSearch: () => context.go('/exams'),
                       onProfile: () => context.go('/profile'),
                     ),
@@ -226,6 +232,7 @@ _ActionState _resolveActionState({
   required AsyncValue<List<Exam>> activeAsync,
   required AsyncValue<List<Result>> resultsAsync,
   required AsyncValue<List<Exam>> availableAsync,
+  required DateTime now,
   required List<Exam> activeTests,
   required List<Result> results,
   required List<Exam> availableTests,
@@ -239,6 +246,7 @@ _ActionState _resolveActionState({
         activeTests: activeTests,
         results: results,
         availableTests: availableTests,
+        now: now,
       ),
     );
   }
@@ -250,6 +258,7 @@ _ActionState _resolveActionState({
     activeTests: activeTests,
     results: results,
     availableTests: availableTests,
+    now: now,
   );
   if (provisional.kind == HomePrimaryActionKind.reviewResult) {
     return _ActionState(action: provisional);
@@ -267,6 +276,7 @@ _ActionState _resolveActionState({
       activeTests: activeTests,
       results: results,
       availableTests: availableTests,
+      now: now,
     ),
   );
 }
@@ -302,14 +312,14 @@ String _displayName(String? displayName, String? email) {
   return 'Student';
 }
 
-String _greeting() {
-  final hour = DateTime.now().hour;
+String _greeting(DateTime now) {
+  final hour = now.hour;
   if (hour < 12) return 'Good morning';
   if (hour < 17) return 'Good afternoon';
   return 'Good evening';
 }
 
-String _todayLabel() {
+String _todayLabel(DateTime now) {
   const weekdays = [
     'Monday',
     'Tuesday',
@@ -333,7 +343,6 @@ String _todayLabel() {
     'Nov',
     'Dec',
   ];
-  final now = DateTime.now();
   return '${weekdays[now.weekday - 1]}, ${now.day} ${months[now.month - 1]}';
 }
 
@@ -359,11 +368,15 @@ String _formatDate(DateTime date) {
 class _CommandHeader extends StatelessWidget {
   const _CommandHeader({
     required this.name,
+    required this.greeting,
+    required this.todayLabel,
     required this.onSearch,
     required this.onProfile,
   });
 
   final String name;
+  final String greeting;
+  final String todayLabel;
   final VoidCallback onSearch;
   final VoidCallback onProfile;
 
@@ -377,7 +390,7 @@ class _CommandHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${_greeting()},',
+                '$greeting,',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -393,7 +406,7 @@ class _CommandHeader extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xxs),
               Text(
-                _todayLabel(),
+                todayLabel,
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
