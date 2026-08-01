@@ -105,7 +105,7 @@ void main() {
     required List<Result> results,
     required Analytics analyticsValue,
   }) async {
-    await loadGoldenFont();
+    await tester.runAsync(loadGoldenFont);
 
     tester.view
       ..physicalSize = phoneSize
