@@ -17,17 +17,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  var goldenFontLoaded = false;
+  var goldenFontsLoaded = false;
 
-  Future<void> loadGoldenFont() async {
-    if (goldenFontLoaded) return;
-    final bytes = await File(
-      'test/features/home/presentation/goldens/Roboto-Regular.ttf',
-    ).readAsBytes();
-    final loader = FontLoader('Roboto')
+  Future<void> loadFont(String family, String path) async {
+    final bytes = await File(path).readAsBytes();
+    final loader = FontLoader(family)
       ..addFont(Future.value(ByteData.sublistView(bytes)));
     await loader.load();
-    goldenFontLoaded = true;
+  }
+
+  Future<void> loadGoldenFonts() async {
+    if (goldenFontsLoaded) return;
+    await loadFont(
+      'Roboto',
+      'test/features/home/presentation/goldens/Roboto-Regular.ttf',
+    );
+    await loadFont(
+      'MaterialIcons',
+      'test/features/home/presentation/goldens/MaterialIcons-Regular.otf',
+    );
+    goldenFontsLoaded = true;
   }
 
   const phoneSize = Size(390, 844);
@@ -105,7 +114,7 @@ void main() {
     required List<Result> results,
     required Analytics analyticsValue,
   }) async {
-    await tester.runAsync(loadGoldenFont);
+    await tester.runAsync(loadGoldenFonts);
 
     tester.view
       ..physicalSize = phoneSize
