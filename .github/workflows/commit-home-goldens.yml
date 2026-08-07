@@ -1,0 +1,56 @@
+name: Commit approved home goldens
+
+on:
+  push:
+    branches:
+      - design/mobile-home-command-centre-v3
+    paths:
+      - '.github/workflows/commit-home-goldens.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  commit-goldens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: design/mobile-home-command-centre-v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Stage pinned fonts
+        run: |
+          mkdir -p test/features/home/presentation/goldens
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/home/presentation/goldens/Roboto-Regular.ttf
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
+            test/features/home/presentation/goldens/MaterialIcons-Regular.otf
+
+      - name: Render approved home baselines
+        run: |
+          flutter test --update-goldens \
+            test/features/home/presentation/home_screen_golden_test.dart
+
+      - name: Commit approved PNG baselines
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add test/features/home/presentation/goldens/home_*.png
+          if git diff --cached --quiet; then
+            echo 'Approved goldens are already current.'
+            exit 0
+          fi
+          git commit -m 'test(home): approve command centre phone goldens'
+          git push origin HEAD:design/mobile-home-command-centre-v3
