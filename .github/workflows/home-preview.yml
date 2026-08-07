@@ -1,0 +1,64 @@
+name: Home visual preview
+
+on:
+  pull_request:
+    paths:
+      - 'lib/features/home/**'
+      - 'test/features/home/**'
+      - '.github/workflows/home-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Stage pinned fonts for golden rendering
+        run: |
+          mkdir -p test/features/home/presentation/goldens
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/home/presentation/goldens/Roboto-Regular.ttf
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
+            test/features/home/presentation/goldens/MaterialIcons-Regular.otf
+
+      - name: Render home phone previews
+        run: |
+          flutter test --update-goldens \
+            test/features/home/presentation/home_screen_golden_test.dart
+
+      - name: Publish home screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: examtree-home-command-centre-screenshots
+          path: test/features/home/presentation/goldens/home_*.png
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Build installable preview APK
+        run: |
+          flutter build apk --debug \
+            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api
+
+      - name: Publish installable preview APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: examtree-home-command-centre-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
