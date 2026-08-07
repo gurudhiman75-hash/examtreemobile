@@ -144,7 +144,7 @@ void main() {
           secondsRemaining: 45,
           alreadyShown: const {60},
         ),
-        300,
+        isNull,
       );
       expect(currentTimerWarningThreshold(secondsRemaining: 0), isNull);
     });
