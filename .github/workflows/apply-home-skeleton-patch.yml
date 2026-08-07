@@ -1,0 +1,36 @@
+name: Apply home skeleton correction
+
+on:
+  push:
+    branches:
+      - design/mobile-home-command-centre-v3
+    paths:
+      - 'tool/patch_home_v3_skeleton.py'
+      - '.github/workflows/apply-home-skeleton-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: design/mobile-home-command-centre-v3
+
+      - name: Apply deterministic source patch
+        run: python3 tool/patch_home_v3_skeleton.py
+
+      - name: Commit corrected loading state
+        run: |
+          if git diff --quiet; then
+            echo 'Loading state is already corrected.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add lib/features/home/presentation/home_screen_v3.dart
+          git commit -m 'fix(home): prevent compact skeleton overflow'
+          git push origin HEAD:design/mobile-home-command-centre-v3
