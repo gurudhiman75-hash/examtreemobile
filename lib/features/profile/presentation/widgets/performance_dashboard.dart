@@ -48,7 +48,6 @@ class _OverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final scoreChange = analytics.latestScoreChange;
 
     return _SectionCard(
