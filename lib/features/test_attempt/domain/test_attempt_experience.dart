@@ -114,10 +114,13 @@ int? currentTimerWarningThreshold({
   Set<int> alreadyShown = const <int>{},
 }) {
   if (secondsRemaining <= 0) return null;
-  for (final threshold in const [60, 300, 600]) {
-    if (secondsRemaining <= threshold && !alreadyShown.contains(threshold)) {
-      return threshold;
-    }
-  }
-  return null;
+  final threshold = secondsRemaining <= 60
+      ? 60
+      : secondsRemaining <= 300
+          ? 300
+          : secondsRemaining <= 600
+              ? 600
+              : null;
+  if (threshold == null || alreadyShown.contains(threshold)) return null;
+  return threshold;
 }
