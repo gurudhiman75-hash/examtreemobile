@@ -3,6 +3,7 @@ name: Home visual preview
 on:
   pull_request:
     paths:
+      - 'lib/core/theme/**'
       - 'lib/features/home/**'
       - 'test/features/home/**'
       - '.github/workflows/home-preview.yml'
