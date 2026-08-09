@@ -16,6 +16,8 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    env:
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID }}
 
     steps:
       - name: Check out repository
@@ -51,10 +53,23 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Verify Firebase Android build configuration
+        shell: bash
+        run: |
+          if [[ -z "${FIREBASE_ANDROID_APP_ID:-}" ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID is missing. Configure it as a repository secret or variable before publishing an APK."
+            exit 1
+          fi
+          if [[ ! "$FIREBASE_ANDROID_APP_ID" =~ ^1:1083299267005:android:[[:alnum:]]+$ ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID does not match the sarbedutech Android app-id format."
+            exit 1
+          fi
+
       - name: Build installable preview APK
         run: |
           flutter build apk --debug \
-            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api
+            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
+            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID"
 
       - name: Publish installable preview APK
         uses: actions/upload-artifact@v4
