@@ -13,6 +13,8 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    env:
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID }}
 
     steps:
       - name: Check out repository
@@ -35,6 +37,21 @@ jobs:
           cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
             test/features/home/presentation/goldens/MaterialIcons-Regular.otf
 
+      - name: Verify Firebase Android build configuration
+        id: firebase_config
+        continue-on-error: true
+        shell: bash
+        run: |
+          if [[ -z "${FIREBASE_ANDROID_APP_ID:-}" ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID is missing. Configure it as a repository secret or variable before publishing an APK."
+            exit 1
+          fi
+          if [[ ! "$FIREBASE_ANDROID_APP_ID" =~ ^1:1083299267005:android:[[:alnum:]]+$ ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID does not match the sarbedutech Android app-id format."
+            exit 1
+          fi
+          echo "Firebase Android build configuration is present."
+
       - name: Analyse
         id: analyse
         continue-on-error: true
@@ -55,10 +72,12 @@ jobs:
 
       - name: Build Android debug APK
         id: android_build
+        if: steps.firebase_config.outcome == 'success'
         continue-on-error: true
         run: |
           flutter build apk --debug \
             --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
+            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID" \
             > flutter-build.log 2>&1
           status=$?
           cat flutter-build.log
@@ -78,6 +97,7 @@ jobs:
       - name: Enforce verification result
         if: always()
         run: |
+          test "${{ steps.firebase_config.outcome }}" = "success"
           test "${{ steps.analyse.outcome }}" = "success"
           test "${{ steps.tests.outcome }}" = "success"
           test "${{ steps.android_build.outcome }}" = "success"
