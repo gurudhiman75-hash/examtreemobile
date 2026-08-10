@@ -25,30 +25,40 @@ replace_once(
 dto = 'lib/core/models/exam_api_dto.dart'
 replace_once(
     dto,
-    '''    this.languages = const [],
+    '''    this.marksPerQuestion,
+    this.negativeMarks,
+    this.languages = const [],
   });
 ''',
-    '''    this.languages = const [],
+    '''    this.marksPerQuestion,
+    this.negativeMarks,
+    this.languages = const [],
     this.maxAttempts = 99,
   });
 ''',
 )
 replace_once(
     dto,
-    '''  final List<String> languages;
+    '''  final double? negativeMarks;
+  final List<String> languages;
 
   factory TestDto.fromJson''',
-    '''  final List<String> languages;
+    '''  final double? negativeMarks;
+  final List<String> languages;
   final int maxAttempts;
 
   factory TestDto.fromJson''',
 )
 replace_once(
     dto,
-    '''        languages: _stringList(json['languages']),
+    '''        marksPerQuestion: json['marksPerQuestion'] == null ? null : _double(json['marksPerQuestion'], 1),
+        negativeMarks: json['negativeMarks'] == null ? null : _double(json['negativeMarks']),
+        languages: _stringList(json['languages']),
       );
 ''',
-    '''        languages: _stringList(json['languages']),
+    '''        marksPerQuestion: json['marksPerQuestion'] == null ? null : _double(json['marksPerQuestion'], 1),
+        negativeMarks: json['negativeMarks'] == null ? null : _double(json['negativeMarks']),
+        languages: _stringList(json['languages']),
         maxAttempts: _int(json['maxAttempts'], 99),
       );
 ''',
