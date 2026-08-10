@@ -15,6 +15,12 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 abstract interface class AuthSessionGateway {
   Future<void> signInWithEmailAndPassword(String email, String password);
 
+  Future<void> createUserWithEmailAndPassword({
+    required String displayName,
+    required String email,
+    required String password,
+  });
+
   Future<void> sendPasswordResetEmail(String email);
 
   Future<void> signOut();
@@ -44,6 +50,39 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     }
 
     try {
+      await user.getIdToken(true);
+    } catch (_) {
+      await _auth.signOut();
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> createUserWithEmailAndPassword({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    final user = credential.user;
+    if (user == null) {
+      await _auth.signOut();
+      throw FirebaseAuthException(
+        code: 'missing-user',
+        message: 'Firebase registration did not return a user.',
+      );
+    }
+
+    try {
+      final normalizedName = displayName.trim();
+      if (normalizedName.isNotEmpty) {
+        await user.updateDisplayName(normalizedName);
+      }
+      // Refresh after updating the profile so the canonical backend sees the
+      // latest Firebase identity claims during first-login provisioning.
       await user.getIdToken(true);
     } catch (_) {
       await _auth.signOut();
@@ -94,7 +133,36 @@ class AuthController {
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _sessionGateway.signInWithEmailAndPassword(email, password);
+    await _provisionOrSignOut();
+  }
 
+  Future<void> registerWithEmailAndPassword({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    await _sessionGateway.createUserWithEmailAndPassword(
+      displayName: displayName.trim(),
+      email: email.trim(),
+      password: password,
+    );
+
+    try {
+      await _profileProvisioner.provision();
+    } catch (_) {
+      try {
+        await _sessionGateway.signOut();
+      } catch (_) {
+        // Preserve the canonical provisioning failure as the user-facing error.
+      }
+      throw const AuthProfileSyncException(
+        message:
+            'Your account was created, but ExamTree could not finish setup. Sign in with the same email to retry.',
+      );
+    }
+  }
+
+  Future<void> _provisionOrSignOut() async {
     try {
       await _profileProvisioner.provision();
     } catch (_) {
