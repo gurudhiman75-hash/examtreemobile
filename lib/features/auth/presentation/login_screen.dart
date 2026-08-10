@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_spacing.dart';
+import '../domain/auth_error_messages.dart';
 import 'providers/auth_providers.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -16,6 +18,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -25,11 +28,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _login() async {
+    if (_isLoading) return;
+
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      _showMessage('Enter both email and password.');
+    if (!AuthErrorMessages.isValidEmail(email)) {
+      _showMessage('Enter a valid email address.');
+      return;
+    }
+    if (password.isEmpty) {
+      _showMessage('Enter your password.');
       return;
     }
 
@@ -40,7 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           .signInWithEmailAndPassword(email, password);
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
-      _showMessage(error.message ?? 'Login failed.');
+      _showMessage(AuthErrorMessages.login(error));
     } on AuthProfileSyncException catch (error) {
       if (!mounted) return;
       _showMessage('${error.message} Please try again.');
@@ -50,6 +59,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _openPasswordRecovery() {
+    if (_isLoading) return;
+    final email = _emailController.text.trim();
+    final query = AuthErrorMessages.isValidEmail(email)
+        ? '?email=${Uri.encodeQueryComponent(email)}'
+        : '';
+    context.push('/forgot-password$query');
   }
 
   void _showMessage(String message) {
@@ -117,19 +135,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   TextField(
                     controller: _passwordController,
                     enabled: !_isLoading,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     textInputAction: TextInputAction.done,
                     autofillHints: const [AutofillHints.password],
                     onSubmitted: (_) {
                       if (!_isLoading) _login();
                     },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock_outline),
-                      border: OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        tooltip: _obscurePassword
+                            ? 'Show password'
+                            : 'Hide password',
+                        onPressed: _isLoading
+                            ? null
+                            : () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _isLoading ? null : _openPasswordRecovery,
+                      child: const Text('Forgot password?'),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
