@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/network_failure_view.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../results/presentation/providers/result_providers.dart';
 import 'providers/exam_providers.dart';
@@ -31,7 +32,11 @@ class ExamDetailsScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Exam Details')),
       body: examAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => _ExamDetailsError(onRetry: refresh),
+        error: (error, stackTrace) => NetworkFailureView(
+          error: error,
+          fallbackTitle: 'Unable to load these exam details',
+          onRetry: refresh,
+        ),
         data: (exam) => _ExamDetailsBody(
           exam: exam,
           completedAttemptsAsync: completedAttemptsAsync,
