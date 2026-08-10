@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/test_attempt/data/local_attempt_draft_store.dart';
 import '../network/api_client.dart';
 import '../repositories/analytics_repository.dart';
 import '../repositories/api_attempt_session_repository.dart';
@@ -28,4 +29,8 @@ final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
 
 final attemptSessionRepositoryProvider = Provider<AttemptSessionRepository>((ref) {
   return ApiAttemptSessionRepository(ref.watch(apiClientProvider));
+});
+
+final attemptDraftStoreProvider = Provider<AttemptDraftStore>((ref) {
+  return SqfliteAttemptDraftStore();
 });
