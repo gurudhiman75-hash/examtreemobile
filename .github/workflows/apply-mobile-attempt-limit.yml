@@ -30,3 +30,4 @@ jobs:
                   tool/attempt_limit_mobile_patch.py .github/workflows/apply-mobile-attempt-limit.yml
           git commit -m 'feat(attempt): surface canonical attempt limits'
           git push origin HEAD:feat/attempt-resilience-completion-v3
+          # The temporary workflow removes itself in the commit above.
