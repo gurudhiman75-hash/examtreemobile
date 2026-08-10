@@ -240,12 +240,17 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
 
     try {
       final userId = _currentUserId;
-      final localDraft = userId == null || userId.isEmpty
-          ? null
-          : await ref.read(attemptDraftStoreProvider).read(
+      LocalAttemptDraft? localDraft;
+      if (userId != null && userId.isNotEmpty) {
+        try {
+          localDraft = await ref.read(attemptDraftStoreProvider).read(
                 userId: userId,
                 testId: widget.exam.id,
               );
+        } catch (_) {
+          // A local-cache problem must never prevent a canonical server resume.
+        }
+      }
       final session = await ref
           .read(attemptSessionRepositoryProvider)
           .startOrResume(testId: widget.exam.id);
@@ -485,7 +490,11 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     final activeSave = _activeSave;
     if (activeSave != null) {
       _saveQueued = true;
-      return activeSave;
+      final result = await activeSave;
+      if (_saveQueued && result && mounted) {
+        return _saveSession(quiet: quiet);
+      }
+      return result;
     }
 
     final future = _performSaveCycle(attemptId: attemptId, quiet: quiet);
