@@ -38,6 +38,70 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
+    test('provisions the canonical profile after registration', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await controller.registerWithEmailAndPassword(
+        displayName: ' Student Name ',
+        email: ' student@example.com ',
+        password: 'password',
+      );
+
+      expect(session.registrationCalls, 1);
+      expect(session.lastDisplayName, 'Student Name');
+      expect(session.lastEmail, 'student@example.com');
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('does not provision when Firebase registration fails', () async {
+      final session = _FakeAuthSessionGateway(
+        registrationError: StateError('registration failed'),
+      );
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.registerWithEmailAndPassword(
+          displayName: 'Student',
+          email: 'student@example.com',
+          password: 'password',
+        ),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(profile.provisionCalls, 0);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('registration signs out and explains partial setup failure', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: StateError('backend unavailable'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.registerWithEmailAndPassword(
+          displayName: 'Student',
+          email: 'student@example.com',
+          password: 'password',
+        ),
+        throwsA(
+          isA<AuthProfileSyncException>().having(
+            (error) => error.message,
+            'message',
+            contains('account was created'),
+          ),
+        ),
+      );
+
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 1);
+    });
+
     test('signs out when canonical profile provisioning fails', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner(
@@ -113,17 +177,21 @@ void main() {
 class _FakeAuthSessionGateway implements AuthSessionGateway {
   _FakeAuthSessionGateway({
     this.signInError,
+    this.registrationError,
     this.passwordResetError,
     this.signOutError,
   });
 
   final Object? signInError;
+  final Object? registrationError;
   final Object? passwordResetError;
   final Object? signOutError;
 
   int signInCalls = 0;
+  int registrationCalls = 0;
   int passwordResetCalls = 0;
   int signOutCalls = 0;
+  String? lastDisplayName;
   String? lastEmail;
   String? lastPassword;
   String? lastResetEmail;
@@ -137,6 +205,20 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
     lastEmail = email;
     lastPassword = password;
     final error = signInError;
+    if (error != null) throw error;
+  }
+
+  @override
+  Future<void> createUserWithEmailAndPassword({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {
+    registrationCalls++;
+    lastDisplayName = displayName;
+    lastEmail = email;
+    lastPassword = password;
+    final error = registrationError;
     if (error != null) throw error;
   }
 

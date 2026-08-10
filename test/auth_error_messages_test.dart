@@ -26,6 +26,21 @@ void main() {
       );
     });
 
+    test('registration explains existing account and weak password cases', () {
+      expect(
+        AuthErrorMessages.registration(
+          FirebaseAuthException(code: 'email-already-in-use'),
+        ),
+        contains('Sign in or reset'),
+      );
+      expect(
+        AuthErrorMessages.registration(
+          FirebaseAuthException(code: 'weak-password'),
+        ),
+        contains('too weak'),
+      );
+    });
+
     test('treats user-not-found reset as privacy-safe success', () {
       final failure = AuthErrorMessages.passwordReset(
         FirebaseAuthException(code: 'user-not-found'),
