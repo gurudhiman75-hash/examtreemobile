@@ -15,16 +15,30 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _registerMode = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (_registerMode) {
+      await _register();
+    } else {
+      await _login();
+    }
   }
 
   Future<void> _login() async {
@@ -61,6 +75,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _register() async {
+    if (_isLoading) return;
+
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmation = _confirmPasswordController.text;
+
+    if (name.length < 2) {
+      _showMessage('Enter your name.');
+      return;
+    }
+    if (name.length > 80) {
+      _showMessage('Name must be 80 characters or fewer.');
+      return;
+    }
+    if (!AuthErrorMessages.isValidEmail(email)) {
+      _showMessage('Enter a valid email address.');
+      return;
+    }
+    if (password.length < 6) {
+      _showMessage('Use at least 6 characters for your password.');
+      return;
+    }
+    if (password != confirmation) {
+      _showMessage('Passwords do not match.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(authControllerProvider).registerWithEmailAndPassword(
+            displayName: name,
+            email: email,
+            password: password,
+          );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(AuthErrorMessages.registration(error));
+    } on AuthProfileSyncException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to create your account. Please try again.');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _toggleMode() {
+    if (_isLoading) return;
+    setState(() {
+      _registerMode = !_registerMode;
+      _confirmPasswordController.clear();
+    });
+  }
+
   void _openPasswordRecovery() {
     if (_isLoading) return;
     final email = _emailController.text.trim();
@@ -80,9 +152,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final registering = _registerMode;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(title: Text(registering ? 'Create account' : 'Login')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -98,26 +171,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.account_circle_outlined,
+                    registering
+                        ? Icons.school_outlined
+                        : Icons.account_circle_outlined,
                     size: 64,
                     color: theme.colorScheme.primary,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Sign in to ExamTree',
+                    registering ? 'Join ExamTree' : 'Sign in to ExamTree',
+                    textAlign: TextAlign.center,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Your tests and progress stay synced across mobile and web.',
+                    registering
+                        ? 'Create one account for your tests, results and progress across mobile and web.'
+                        : 'Your tests and progress stay synced across mobile and web.',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
+                  if (registering) ...[
+                    TextField(
+                      controller: _nameController,
+                      enabled: !_isLoading,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      autofillHints: const [AutofillHints.name],
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
                   TextField(
                     controller: _emailController,
                     enabled: !_isLoading,
@@ -136,13 +229,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     controller: _passwordController,
                     enabled: !_isLoading,
                     obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.done,
-                    autofillHints: const [AutofillHints.password],
+                    textInputAction: registering
+                        ? TextInputAction.next
+                        : TextInputAction.done,
+                    autofillHints: [
+                      registering
+                          ? AutofillHints.newPassword
+                          : AutofillHints.password,
+                    ],
                     onSubmitted: (_) {
-                      if (!_isLoading) _login();
+                      if (!_isLoading && !registering) _submit();
                     },
                     decoration: InputDecoration(
                       labelText: 'Password',
+                      helperText: registering ? 'Use at least 6 characters.' : null,
                       prefixIcon: const Icon(Icons.lock_outline),
                       border: const OutlineInputBorder(),
                       suffixIcon: IconButton(
@@ -162,26 +262,53 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _isLoading ? null : _openPasswordRecovery,
-                      child: const Text('Forgot password?'),
+                  if (registering) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    TextField(
+                      controller: _confirmPasswordController,
+                      enabled: !_isLoading,
+                      obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.newPassword],
+                      onSubmitted: (_) {
+                        if (!_isLoading) _submit();
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm password',
+                        prefixIcon: Icon(Icons.lock_reset_outlined),
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
+                  ] else
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _isLoading ? null : _openPasswordRecovery,
+                        child: const Text('Forgot password?'),
+                      ),
+                    ),
+                  SizedBox(height: registering ? AppSpacing.xl : AppSpacing.md),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
                     child: FilledButton(
-                      onPressed: _isLoading ? null : _login,
+                      onPressed: _isLoading ? null : _submit,
                       child: _isLoading
                           ? const SizedBox(
                               width: 22,
                               height: 22,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Sign In'),
+                          : Text(registering ? 'Create Account' : 'Sign In'),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  TextButton(
+                    onPressed: _isLoading ? null : _toggleMode,
+                    child: Text(
+                      registering
+                          ? 'Already have an account? Sign in'
+                          : 'New to ExamTree? Create account',
                     ),
                   ),
                 ],
