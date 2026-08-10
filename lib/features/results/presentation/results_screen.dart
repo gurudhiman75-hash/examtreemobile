@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/network_failure_view.dart';
 import 'providers/result_providers.dart';
 import 'result_history_filter.dart';
 
@@ -71,7 +72,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
       ),
       body: resultsAsync.when(
         loading: () => const _ResultsStateView.loading(),
-        error: (error, stackTrace) => _ResultsStateView.error(
+        error: (error, stackTrace) => NetworkFailureView(
+          error: error,
+          fallbackTitle: 'Unable to load your attempt history',
           onRetry: () => ref.invalidate(userResultsProvider),
         ),
         data: (results) {

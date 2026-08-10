@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/network_failure_view.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import 'providers/analytics_providers.dart';
 import 'widgets/performance_dashboard.dart';
@@ -49,7 +50,9 @@ class ProfileScreen extends ConsumerWidget {
             ),
             analyticsAsync.when(
               loading: () => const _PerformanceLoadingState(),
-              error: (error, stackTrace) => _AnalyticsError(
+              error: (error, stackTrace) => NetworkFailureCard(
+                error: error,
+                fallbackTitle: 'Unable to load your performance',
                 onRetry: () => ref.invalidate(performanceAnalyticsProvider),
               ),
               data: (analytics) => PerformanceDashboard(

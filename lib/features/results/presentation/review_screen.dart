@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/network_failure_view.dart';
 import '../../../shared/widgets/primary_button.dart';
 import 'providers/result_providers.dart';
 import 'review_question_filter.dart';
@@ -20,8 +21,9 @@ class ReviewScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Answer review')),
       body: resultAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => _ReviewLoadState(
-          message: 'Unable to load this result.',
+        error: (error, stackTrace) => NetworkFailureView(
+          error: error,
+          fallbackTitle: 'Unable to load this result',
           onRetry: () => ref.invalidate(resultProvider(resultId)),
         ),
         data: (result) {
