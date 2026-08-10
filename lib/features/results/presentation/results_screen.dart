@@ -650,11 +650,11 @@ class _ResultCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: result.examId.isEmpty
+                    onPressed: result.examId.trim().isEmpty
                         ? null
                         : () => context.push(
-                              '/test-attempt',
-                              extra: result.examId,
+                              '/exam-details',
+                              extra: result.examId.trim(),
                             ),
                     icon: const Icon(Icons.replay_rounded),
                     label: const Text('Retake'),
