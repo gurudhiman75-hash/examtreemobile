@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/login_screen.dart';
+import '../features/auth/presentation/password_recovery_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
@@ -34,17 +35,24 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/home',
     redirect: (context, state) {
       final isAuthenticated = authState.value != null;
-      final isLoggingIn = state.matchedLocation == '/login';
+      final isPublicAuthRoute = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/forgot-password';
 
       if (authState.isLoading) return null;
-      if (!isAuthenticated && !isLoggingIn) return '/login';
-      if (isAuthenticated && isLoggingIn) return '/home';
+      if (!isAuthenticated && !isPublicAuthRoute) return '/login';
+      if (isAuthenticated && isPublicAuthRoute) return '/home';
       return null;
     },
     routes: [
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => PasswordRecoveryScreen(
+          initialEmail: state.uri.queryParameters['email'] ?? '',
+        ),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

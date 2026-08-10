@@ -15,6 +15,8 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 abstract interface class AuthSessionGateway {
   Future<void> signInWithEmailAndPassword(String email, String password);
 
+  Future<void> sendPasswordResetEmail(String email);
+
   Future<void> signOut();
 }
 
@@ -47,6 +49,11 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
       await _auth.signOut();
       rethrow;
     }
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) {
+    return _auth.sendPasswordResetEmail(email: email);
   }
 
   @override
@@ -98,6 +105,10 @@ class AuthController {
       }
       throw const AuthProfileSyncException();
     }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) {
+    return _sessionGateway.sendPasswordResetEmail(email.trim());
   }
 
   Future<void> signOut() => _sessionGateway.signOut();
