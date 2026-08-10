@@ -31,75 +31,20 @@ jobs:
               path.write_text(text.replace(old, new, 1))
 
           results = 'lib/features/results/presentation/results_screen.dart'
-          replace_once(
-              results,
-              "import '../../../core/theme/app_spacing.dart';\n",
-              "import '../../../core/theme/app_spacing.dart';\nimport '../../../shared/widgets/network_failure_view.dart';\n",
-          )
-          replace_once(
-              results,
-              """        error: (error, stackTrace) => _ResultsStateView.error(
-          onRetry: () => ref.invalidate(userResultsProvider),
-        ),""",
-              """        error: (error, stackTrace) => NetworkFailureView(
-          error: error,
-          fallbackTitle: 'Unable to load your attempt history',
-          onRetry: () => ref.invalidate(userResultsProvider),
-        ),""",
-          )
+          replace_once(results, "import '../../../core/theme/app_spacing.dart';\n", "import '../../../core/theme/app_spacing.dart';\nimport '../../../shared/widgets/network_failure_view.dart';\n")
+          replace_once(results, "        error: (error, stackTrace) => _ResultsStateView.error(\n          onRetry: () => ref.invalidate(userResultsProvider),\n        ),", "        error: (error, stackTrace) => NetworkFailureView(\n          error: error,\n          fallbackTitle: 'Unable to load your attempt history',\n          onRetry: () => ref.invalidate(userResultsProvider),\n        ),")
 
           details = 'lib/features/exams/presentation/exam_details_screen.dart'
-          replace_once(
-              details,
-              "import '../../../shared/widgets/primary_button.dart';\n",
-              "import '../../../shared/widgets/network_failure_view.dart';\nimport '../../../shared/widgets/primary_button.dart';\n",
-          )
-          replace_once(
-              details,
-              "        error: (error, stackTrace) => _ExamDetailsError(onRetry: refresh),",
-              """        error: (error, stackTrace) => NetworkFailureView(
-          error: error,
-          fallbackTitle: 'Unable to load these exam details',
-          onRetry: refresh,
-        ),""",
-          )
+          replace_once(details, "import '../../../shared/widgets/primary_button.dart';\n", "import '../../../shared/widgets/network_failure_view.dart';\nimport '../../../shared/widgets/primary_button.dart';\n")
+          replace_once(details, "        error: (error, stackTrace) => _ExamDetailsError(onRetry: refresh),", "        error: (error, stackTrace) => NetworkFailureView(\n          error: error,\n          fallbackTitle: 'Unable to load these exam details',\n          onRetry: refresh,\n        ),")
 
           review = 'lib/features/results/presentation/review_screen.dart'
-          replace_once(
-              review,
-              "import '../../../shared/widgets/primary_button.dart';\n",
-              "import '../../../shared/widgets/network_failure_view.dart';\nimport '../../../shared/widgets/primary_button.dart';\n",
-          )
-          replace_once(
-              review,
-              """        error: (error, stackTrace) => _ReviewLoadState(
-          message: 'Unable to load this result.',
-          onRetry: () => ref.invalidate(resultProvider(resultId)),
-        ),""",
-              """        error: (error, stackTrace) => NetworkFailureView(
-          error: error,
-          fallbackTitle: 'Unable to load this result',
-          onRetry: () => ref.invalidate(resultProvider(resultId)),
-        ),""",
-          )
+          replace_once(review, "import '../../../shared/widgets/primary_button.dart';\n", "import '../../../shared/widgets/network_failure_view.dart';\nimport '../../../shared/widgets/primary_button.dart';\n")
+          replace_once(review, "        error: (error, stackTrace) => _ReviewLoadState(\n          message: 'Unable to load this result.',\n          onRetry: () => ref.invalidate(resultProvider(resultId)),\n        ),", "        error: (error, stackTrace) => NetworkFailureView(\n          error: error,\n          fallbackTitle: 'Unable to load this result',\n          onRetry: () => ref.invalidate(resultProvider(resultId)),\n        ),")
 
           profile = 'lib/features/profile/presentation/profile_screen.dart'
-          replace_once(
-              profile,
-              "import '../../../core/theme/app_spacing.dart';\n",
-              "import '../../../core/theme/app_spacing.dart';\nimport '../../../shared/widgets/network_failure_view.dart';\n",
-          )
-          replace_once(
-              profile,
-              """              error: (error, stackTrace) => _AnalyticsError(
-                onRetry: () => ref.invalidate(performanceAnalyticsProvider),
-              ),""",
-              """              error: (error, stackTrace) => NetworkFailureCard(
-                error: error,
-                fallbackTitle: 'Unable to load your performance',
-                onRetry: () => ref.invalidate(performanceAnalyticsProvider),
-              ),""",
-          )
+          replace_once(profile, "import '../../../core/theme/app_spacing.dart';\n", "import '../../../core/theme/app_spacing.dart';\nimport '../../../shared/widgets/network_failure_view.dart';\n")
+          replace_once(profile, "              error: (error, stackTrace) => _AnalyticsError(\n                onRetry: () => ref.invalidate(performanceAnalyticsProvider),\n              ),", "              error: (error, stackTrace) => NetworkFailureCard(\n                error: error,\n                fallbackTitle: 'Unable to load your performance',\n                onRetry: () => ref.invalidate(performanceAnalyticsProvider),\n              ),")
           PY
           rm .github/workflows/apply-network-guidance.yml
       - name: Commit source-only integration
