@@ -20,6 +20,23 @@ class AuthErrorMessages {
     };
   }
 
+  static String registration(FirebaseAuthException error) {
+    return switch (error.code) {
+      'invalid-email' => 'Enter a valid email address.',
+      'email-already-in-use' =>
+        'An account already uses this email. Sign in or reset your password instead.',
+      'weak-password' =>
+        'This password is too weak. Use a longer or stronger password.',
+      'too-many-requests' =>
+        'Too many account requests. Wait a little and try again.',
+      'network-request-failed' =>
+        'No reliable internet connection. Check your connection and try again.',
+      'operation-not-allowed' =>
+        'Email registration is temporarily unavailable. Please try again later.',
+      _ => 'Unable to create your account. Please try again.',
+    };
+  }
+
   static PasswordResetFailure passwordReset(FirebaseAuthException error) {
     return switch (error.code) {
       // Keep account existence private. Firebase projects with email-enumeration
