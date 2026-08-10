@@ -83,6 +83,19 @@ void main() {
       expect(session.signOutCalls, 1);
     });
 
+    test('delegates password reset with a trimmed email', () async {
+      final session = _FakeAuthSessionGateway();
+      final controller = AuthController(
+        session,
+        _FakeStudentProfileProvisioner(),
+      );
+
+      await controller.sendPasswordResetEmail(' student@example.com ');
+
+      expect(session.passwordResetCalls, 1);
+      expect(session.lastResetEmail, 'student@example.com');
+    });
+
     test('delegates explicit sign-out', () async {
       final session = _FakeAuthSessionGateway();
       final controller = AuthController(
@@ -98,15 +111,22 @@ void main() {
 }
 
 class _FakeAuthSessionGateway implements AuthSessionGateway {
-  _FakeAuthSessionGateway({this.signInError, this.signOutError});
+  _FakeAuthSessionGateway({
+    this.signInError,
+    this.passwordResetError,
+    this.signOutError,
+  });
 
   final Object? signInError;
+  final Object? passwordResetError;
   final Object? signOutError;
 
   int signInCalls = 0;
+  int passwordResetCalls = 0;
   int signOutCalls = 0;
   String? lastEmail;
   String? lastPassword;
+  String? lastResetEmail;
 
   @override
   Future<void> signInWithEmailAndPassword(
@@ -117,6 +137,14 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
     lastEmail = email;
     lastPassword = password;
     final error = signInError;
+    if (error != null) throw error;
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    passwordResetCalls++;
+    lastResetEmail = email;
+    final error = passwordResetError;
     if (error != null) throw error;
   }
 
