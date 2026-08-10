@@ -10,7 +10,7 @@ import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/results/presentation/results_screen.dart';
-import '../features/results/presentation/review_screen.dart';
+import '../features/results/presentation/review_retry_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -136,7 +136,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               message: 'No attempt identifier was supplied. Open the result again from your history.',
             );
           }
-          return ReviewScreen(resultId: resultId);
+          return ReviewRetryScreen(resultId: resultId);
         },
       ),
     ],
