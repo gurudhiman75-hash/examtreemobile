@@ -219,6 +219,7 @@ class TestDto {
     this.marksPerQuestion,
     this.negativeMarks,
     this.languages = const [],
+    this.maxAttempts = 99,
   });
 
   final String id;
@@ -241,6 +242,7 @@ class TestDto {
   final double? marksPerQuestion;
   final double? negativeMarks;
   final List<String> languages;
+  final int maxAttempts;
 
   factory TestDto.fromJson(Map<String, dynamic> json) => TestDto(
         id: _string(json['id']),
@@ -263,6 +265,7 @@ class TestDto {
         marksPerQuestion: json['marksPerQuestion'] == null ? null : _double(json['marksPerQuestion'], 1),
         negativeMarks: json['negativeMarks'] == null ? null : _double(json['negativeMarks']),
         languages: _stringList(json['languages']),
+        maxAttempts: _int(json['maxAttempts'], 99),
       );
 
   Exam toExam({Map<String, CategoryDto> categories = const {}, Map<String, SubcategoryDto> subcategories = const {}}) {
@@ -280,7 +283,7 @@ class TestDto {
       durationInSeconds: duration * 60,
       totalQuestions: total,
       totalMarks: total * perQuestion,
-      maxAttempts: 99,
+      maxAttempts: maxAttempts > 0 ? maxAttempts : 99,
       negativeMarking: negativeMarks ?? 0,
       difficulty: difficulty,
       status: access == 'paid' ? 'paid' : 'published',

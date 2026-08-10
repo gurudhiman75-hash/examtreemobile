@@ -13,6 +13,8 @@ import '../../../core/providers/repository_providers.dart';
 import '../../../core/repositories/api_attempt_session_repository.dart';
 import '../../../core/repositories/api_exam_repository.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../auth/presentation/providers/auth_providers.dart';
+import '../data/local_attempt_draft_store.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../results/presentation/providers/result_providers.dart';
 import '../domain/test_attempt_experience.dart';
@@ -100,6 +102,14 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
   Timer? _timer;
   Timer? _autosaveDebounce;
   Timer? _periodicAutosave;
+  Timer? _localCheckpoint;
+
+  Future<bool>? _activeSave;
+  DateTime? _backgroundedAt;
+  int? _remainingAtBackground;
+  bool _isForeground = true;
+  bool _submissionPending = false;
+  final Map<String, int> _questionTimeSecondsById = <String, int>{};
 
   String? _attemptId;
   int _revision = 0;
@@ -136,27 +146,113 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     _timer?.cancel();
     _autosaveDebounce?.cancel();
     _periodicAutosave?.cancel();
+    _localCheckpoint?.cancel();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      _isForeground = false;
+      _backgroundedAt ??= DateTime.now();
+      _remainingAtBackground ??= _secondsRemaining;
+      unawaited(_persistLocalDraft());
       unawaited(_saveSession());
+      return;
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      _isForeground = true;
+      _applyBackgroundElapsed();
+      unawaited(_persistLocalDraft());
+      if (_secondsRemaining <= 0) {
+        unawaited(_handleTimeExpired());
+      } else {
+        unawaited(_saveSession());
+      }
+    }
+  }
+
+  void _applyBackgroundElapsed() {
+    final backgroundedAt = _backgroundedAt;
+    final remainingAtBackground = _remainingAtBackground;
+    _backgroundedAt = null;
+    _remainingAtBackground = null;
+    if (backgroundedAt == null || remainingAtBackground == null) return;
+
+    final elapsed = DateTime.now().difference(backgroundedAt).inSeconds;
+    final adjusted = (remainingAtBackground - elapsed)
+        .clamp(0, remainingAtBackground)
+        .toInt();
+    if (adjusted < _secondsRemaining && mounted) {
+      setState(() => _secondsRemaining = adjusted);
+    }
+  }
+
+  String? get _currentUserId =>
+      ref.read(firebaseAuthProvider).currentUser?.uid.trim();
+
+  Future<void> _persistLocalDraft() async {
+    final attemptId = _attemptId;
+    final userId = _currentUserId;
+    if (attemptId == null || userId == null || userId.isEmpty || _initialising) {
+      return;
+    }
+    try {
+      await ref.read(attemptDraftStoreProvider).write(
+            LocalAttemptDraft(
+              userId: userId,
+              testId: widget.exam.id,
+              attemptId: attemptId,
+              revision: _revision,
+              state: _buildState(),
+              localSavedAt: DateTime.now(),
+            ),
+          );
+    } catch (_) {
+      // Server autosave remains canonical. Local storage is a resilience mirror.
+    }
+  }
+
+  Future<void> _deleteLocalDraft() async {
+    final userId = _currentUserId;
+    if (userId == null || userId.isEmpty) return;
+    try {
+      await ref.read(attemptDraftStoreProvider).delete(
+            userId: userId,
+            testId: widget.exam.id,
+          );
+    } catch (_) {
+      // A stale local draft is ignored if the server returns a different attempt.
     }
   }
 
   Future<void> _initialiseAttempt() async {
     _timer?.cancel();
     _periodicAutosave?.cancel();
+    _localCheckpoint?.cancel();
     setState(() {
       _initialising = true;
       _startupError = null;
       _timeExpired = false;
+      _submissionPending = false;
     });
 
     try {
+      final userId = _currentUserId;
+      LocalAttemptDraft? localDraft;
+      if (userId != null && userId.isNotEmpty) {
+        try {
+          localDraft = await ref.read(attemptDraftStoreProvider).read(
+                userId: userId,
+                testId: widget.exam.id,
+              );
+        } catch (_) {
+          // A local-cache problem must never prevent a canonical server resume.
+        }
+      }
       final session = await ref
           .read(attemptSessionRepositoryProvider)
           .startOrResume(testId: widget.exam.id);
@@ -168,24 +264,54 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         );
       }
 
+      final recovered = recoverableLocalDraft(
+        local: localDraft,
+        activeAttemptId: session.id,
+        remoteState: session.state,
+      );
+      final restoredState = recovered?.state ?? session.state;
+
       setState(() {
         _attemptId = session.id;
         _revision = session.revision;
         _lastSavedAt = session.savedAt;
-        _syncFailed = false;
-        if (session.state != null) {
-          _restoreState(session.state!);
+        _syncFailed = recovered != null;
+        if (restoredState != null) {
+          _restoreState(restoredState);
         }
         _initialising = false;
+        _timeExpired = _secondsRemaining <= 0;
       });
 
-      _startTimer();
+      if (localDraft != null && localDraft.attemptId != session.id) {
+        await _deleteLocalDraft();
+      }
+
       _periodicAutosave = Timer.periodic(
         const Duration(seconds: 30),
         (_) => unawaited(_saveSession()),
       );
+      _localCheckpoint = Timer.periodic(
+        const Duration(seconds: 5),
+        (_) => unawaited(_persistLocalDraft()),
+      );
 
-      if (session.state != null && mounted) {
+      if (_secondsRemaining <= 0) {
+        unawaited(_handleTimeExpired());
+      } else {
+        _startTimer();
+      }
+
+      if (recovered != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Unsynced progress was recovered from this device. Syncing it to ExamTree now.',
+            ),
+          ),
+        );
+        unawaited(_saveSession(quiet: false));
+      } else if (session.state != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Saved progress restored from ExamTree.'),
@@ -221,7 +347,14 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
 
       final previous = _secondsRemaining;
       final current = previous - 1;
-      setState(() => _secondsRemaining = current);
+      setState(() {
+        _secondsRemaining = current;
+        if (_isForeground) {
+          final questionId = _questions[_currentIndex].id.toString();
+          _questionTimeSecondsById[questionId] =
+              (_questionTimeSecondsById[questionId] ?? 0) + 1;
+        }
+      });
 
       final threshold = crossedTimerWarningThreshold(
         previousSeconds: previous,
@@ -257,8 +390,11 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
   }
 
   Future<void> _handleTimeExpired() async {
-    if (_timeExpired || _submitting) return;
-    setState(() => _timeExpired = true);
+    if ((_timeExpired && _submissionPending) || _submitting) return;
+    setState(() {
+      _timeExpired = true;
+      _submissionPending = true;
+    });
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(
@@ -298,6 +434,9 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     if (_states[_currentIndex].status == QuestionStatus.notVisited) {
       _states[_currentIndex].status = QuestionStatus.notAnswered;
     }
+    _questionTimeSecondsById
+      ..clear()
+      ..addAll(state.questionTimeSecondsById);
   }
 
   AttemptSessionState _buildState() {
@@ -330,10 +469,14 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       attemptType: 'REAL',
       lockedSections: const <int>[],
       visitedQuestionIds: visited,
+      questionTimeSecondsById: Map<String, int>.unmodifiable(
+        _questionTimeSecondsById,
+      ),
     );
   }
 
   void _scheduleAutosave() {
+    unawaited(_persistLocalDraft());
     _autosaveDebounce?.cancel();
     _autosaveDebounce = Timer(
       const Duration(milliseconds: 900),
@@ -345,11 +488,30 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     final attemptId = _attemptId;
     if (attemptId == null || _initialising) return false;
 
-    if (_syncing) {
+    await _persistLocalDraft();
+    final activeSave = _activeSave;
+    if (activeSave != null) {
       _saveQueued = true;
-      return true;
+      final result = await activeSave;
+      if (_saveQueued && result && mounted) {
+        return _saveSession(quiet: quiet);
+      }
+      return result;
     }
 
+    final future = _performSaveCycle(attemptId: attemptId, quiet: quiet);
+    _activeSave = future;
+    try {
+      return await future;
+    } finally {
+      if (identical(_activeSave, future)) _activeSave = null;
+    }
+  }
+
+  Future<bool> _performSaveCycle({
+    required String attemptId,
+    required bool quiet,
+  }) async {
     var success = true;
     do {
       _saveQueued = false;
@@ -369,6 +531,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
           _lastSavedAt = session.savedAt;
           _syncFailed = false;
         });
+        await _persistLocalDraft();
       } on AttemptSessionConflict catch (conflict) {
         if (!mounted) return false;
         setState(() {
@@ -379,12 +542,13 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
             _restoreState(conflict.latestSession.state!);
           }
         });
+        await _persistLocalDraft();
         _saveQueued = false;
         success = false;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'This test changed on another device. The latest saved progress was loaded.',
+              'This test changed on another device. The latest server progress was loaded.',
             ),
           ),
         );
@@ -394,7 +558,11 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         success = false;
         if (!quiet) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Progress was not saved: $error')),
+            const SnackBar(
+              content: Text(
+                'Progress is saved on this device but has not reached ExamTree yet.',
+              ),
+            ),
           );
         }
       } finally {
@@ -434,7 +602,13 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
 
   Future<void> _submitAttempt({bool autoSubmit = false}) async {
     if (_submitting || _attemptId == null) return;
-    setState(() => _submitting = true);
+    setState(() {
+      _submitting = true;
+      if (autoSubmit) {
+        _timeExpired = true;
+        _submissionPending = true;
+      }
+    });
 
     var completed = false;
     try {
@@ -443,9 +617,11 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       if (!saved && !autoSubmit) return;
 
       final responses = _questions.asMap().entries.map((entry) {
+        final questionId = entry.value.id;
         return AttemptResponsePayload(
-          questionId: entry.value.id,
+          questionId: questionId,
           selectedOption: _states[entry.key].selectedOptionIndex,
+          timeTaken: _questionTimeSecondsById[questionId.toString()] ?? 0,
         );
       }).toList();
       final flags = <String, bool>{
@@ -468,21 +644,31 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       completed = true;
       _timer?.cancel();
       _periodicAutosave?.cancel();
+      _localCheckpoint?.cancel();
+      await _deleteLocalDraft();
       ref.invalidate(userResultsProvider);
+      if (!mounted) return;
       context.replace(
         '/review',
         extra: response.attemptId.isEmpty ? _attemptId! : response.attemptId,
       );
-    } catch (error) {
+    } catch (_) {
       if (!mounted) return;
+      await _persistLocalDraft();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unable to submit attempt: $error')),
+        SnackBar(
+          content: Text(
+            autoSubmit
+                ? 'Time is over. Your answers are safe on this device; reconnect and retry submission.'
+                : 'Unable to submit right now. Your answers remain saved; try again.',
+          ),
+        ),
       );
     } finally {
       if (mounted && !completed) {
         setState(() {
           _submitting = false;
-          if (autoSubmit) _timeExpired = false;
+          if (!autoSubmit) _submissionPending = false;
         });
       }
     }
@@ -688,6 +874,65 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     );
   }
 
+  Widget _buildSubmissionStatus(ThemeData theme) {
+    if (_submitting) {
+      return Material(
+        color: theme.colorScheme.primaryContainer,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                _timeExpired ? 'Time expired — submitting your test' : 'Submitting your test',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Material(
+      color: theme.colorScheme.errorContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.lock_clock_outlined, color: theme.colorScheme.onErrorContainer),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                'Time expired. Answers are locked and submission is pending.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onErrorContainer,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => unawaited(_submitAttempt(autoSubmit: true)),
+              child: Text(
+                'Retry submit',
+                style: TextStyle(color: theme.colorScheme.onErrorContainer),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_initialising || _startupError != null) {
@@ -786,31 +1031,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
               lastSavedAt: _lastSavedAt,
               onRetry: () => unawaited(_saveSession(quiet: false)),
             ),
-            if (_timeExpired || _submitting)
-              Material(
-                color: theme.colorScheme.primaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox.square(
-                        dimension: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        _timeExpired
-                            ? 'Time expired — submitting your test'
-                            : 'Submitting your test',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            if (_timeExpired || _submitting) _buildSubmissionStatus(theme),
             const Divider(height: 1),
             Expanded(
               child: SingleChildScrollView(

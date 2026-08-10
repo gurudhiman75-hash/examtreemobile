@@ -41,6 +41,7 @@ dependencies:
   json_annotation: ^4.9.0
   firebase_core: ^4.10.0
   firebase_auth: ^6.5.2
+  sqflite: ^2.4.3
 
 dev_dependencies:
   flutter_test:
@@ -99,4 +100,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  # see https://flutter.dev/to/font-package

@@ -207,8 +207,8 @@ class SyncStatusBanner extends StatelessWidget {
                   syncing
                       ? 'Saving your progress…'
                       : lastSavedAt == null
-                          ? 'Progress is not saved.'
-                          : 'Latest changes are not saved. Last saved earlier.',
+                          ? 'Progress is saved on this device and waiting to sync.'
+                          : 'Latest changes are saved on this device but not synced to ExamTree yet.',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foreground,
                     fontWeight: FontWeight.w600,

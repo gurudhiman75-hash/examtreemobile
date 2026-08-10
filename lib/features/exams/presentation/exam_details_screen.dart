@@ -80,6 +80,10 @@ class _ExamDetailsBody extends StatelessWidget {
     final attemptLimit = exam.maxAttempts >= 99
         ? 'Unlimited'
         : '${exam.maxAttempts}';
+    final completedAttemptCount = completedAttemptsAsync.value;
+    final attemptLimitReached = exam.maxAttempts < 99 &&
+        completedAttemptCount != null &&
+        completedAttemptCount >= exam.maxAttempts;
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -198,7 +202,29 @@ class _ExamDetailsBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          PrimaryButton(text: 'Start or Resume Test', onPressed: onStart),
+          if (attemptLimitReached) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
+              child: Text(
+                'You have used all ${exam.maxAttempts} allowed attempts for this test.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onErrorContainer,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          PrimaryButton(
+            text: attemptLimitReached ? 'Attempt limit reached' : 'Start or Resume Test',
+            onPressed: attemptLimitReached ? null : onStart,
+          ),
           const SizedBox(height: AppSpacing.xl),
         ],
       ),

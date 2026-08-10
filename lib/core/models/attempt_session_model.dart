@@ -15,6 +15,7 @@ class AttemptSessionState {
     this.originalAttemptId,
     this.sectionCompletionTimes,
     this.visitedQuestionIds,
+    this.questionTimeSecondsById = const <String, int>{},
   });
 
   final String testId;
@@ -32,6 +33,7 @@ class AttemptSessionState {
   final String? originalAttemptId;
   final Map<String, int>? sectionCompletionTimes;
   final List<int>? visitedQuestionIds;
+  final Map<String, int> questionTimeSecondsById;
 
   factory AttemptSessionState.fromJson(Map<String, dynamic> json) {
     return AttemptSessionState(
@@ -56,6 +58,7 @@ class AttemptSessionState {
       visitedQuestionIds: json['visitedQuestionIds'] is List
           ? _intList(json['visitedQuestionIds'])
           : null,
+      questionTimeSecondsById: _intMap(json['questionTimeSecondsById']),
     );
   }
 
@@ -78,6 +81,7 @@ class AttemptSessionState {
         'sectionCompletionTimes': sectionCompletionTimes,
       if (visitedQuestionIds != null)
         'visitedQuestionIds': visitedQuestionIds,
+      'questionTimeSecondsById': questionTimeSecondsById,
     };
   }
 }
