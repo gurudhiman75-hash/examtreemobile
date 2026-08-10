@@ -183,7 +183,9 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     if (backgroundedAt == null || remainingAtBackground == null) return;
 
     final elapsed = DateTime.now().difference(backgroundedAt).inSeconds;
-    final adjusted = (remainingAtBackground - elapsed).clamp(0, remainingAtBackground);
+    final adjusted = (remainingAtBackground - elapsed)
+        .clamp(0, remainingAtBackground)
+        .toInt();
     if (adjusted < _secondsRemaining && mounted) {
       setState(() => _secondsRemaining = adjusted);
     }
