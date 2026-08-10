@@ -23,21 +23,20 @@ jobs:
           from pathlib import Path
           path = Path('lib/features/results/presentation/results_screen.dart')
           text = path.read_text()
-          old = """                    onPressed: result.examId.isEmpty
-                        ? null
-                        : () => context.push(
-                              '/test-attempt',
-                              extra: result.examId,
-                            ),"""
-          new = """                    onPressed: result.examId.trim().isEmpty
-                        ? null
-                        : () => context.push(
-                              '/exam-details',
-                              extra: result.examId.trim(),
-                            ),"""
-          if old not in text:
-              raise SystemExit('Expected Results retake route was not found')
-          path.write_text(text.replace(old, new, 1))
+          checks = {
+              "result.examId.isEmpty": 1,
+              "'/test-attempt'": 1,
+              "extra: result.examId,": 1,
+              "label: const Text('Retake')": 1,
+          }
+          for needle, expected in checks.items():
+              actual = text.count(needle)
+              if actual != expected:
+                  raise SystemExit(f'Expected {expected} occurrence of {needle!r}, found {actual}')
+          text = text.replace('result.examId.isEmpty', 'result.examId.trim().isEmpty', 1)
+          text = text.replace("'/test-attempt'", "'/exam-details'", 1)
+          text = text.replace('extra: result.examId,', 'extra: result.examId.trim(),', 1)
+          path.write_text(text)
           PY
           rm .github/workflows/apply-safe-retake.yml
       - name: Commit source-only correction
