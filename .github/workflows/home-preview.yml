@@ -1,4 +1,5 @@
 name: Home visual preview
+# Temporary branch trigger: render reviewed baselines against the resolved companion dependency lock.
 
 on:
   pull_request:
