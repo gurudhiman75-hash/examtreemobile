@@ -56,6 +56,13 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   String? lastResetEmail;
 
   @override
+  Future<void> createUserWithEmailAndPassword({
+    required String displayName,
+    required String email,
+    required String password,
+  }) async {}
+
+  @override
   Future<void> sendPasswordResetEmail(String email) async {
     resetCalls++;
     lastResetEmail = email;
