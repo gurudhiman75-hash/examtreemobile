@@ -373,6 +373,7 @@ class _HistoryHeader extends StatelessWidget {
 class _ResultsStateView extends StatelessWidget {
   const _ResultsStateView.loading() : onRetry = null;
 
+  // ignore: unused_element
   const _ResultsStateView.error({required this.onRetry});
 
   final VoidCallback? onRetry;
