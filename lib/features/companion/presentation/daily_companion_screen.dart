@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
+import 'quick_revision_screen.dart';
 
 class DailyCompanionScreen extends ConsumerWidget {
   const DailyCompanionScreen({super.key});
@@ -36,6 +36,14 @@ class DailyCompanionScreen extends ConsumerWidget {
         );
       }
     }
+  }
+
+  void _openQuickRevision(BuildContext context, int minutes) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => QuickRevisionScreen(minutes: minutes),
+      ),
+    );
   }
 
   @override
@@ -74,37 +82,29 @@ class DailyCompanionScreen extends ConsumerWidget {
             },
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.xxl,
-              ),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
               children: [
                 _TodayCard(snapshot: snapshot, dueCount: due.length),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: 24),
                 Text(
                   'Quick revision',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: 8),
                 Row(
                   children: [5, 10, 20]
                       .map(
                         (minutes) => Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(
-                              right: minutes == 20 ? 0 : AppSpacing.sm,
+                              right: minutes == 20 ? 0 : 8,
                             ),
                             child: FilledButton.tonal(
                               onPressed: due.isEmpty
                                   ? null
-                                  : () => context.push(
-                                        '/quick-revision',
-                                        extra: minutes,
-                                      ),
+                                  : () => _openQuickRevision(context, minutes),
                               child: Text('$minutes min'),
                             ),
                           ),
@@ -112,27 +112,24 @@ class DailyCompanionScreen extends ConsumerWidget {
                       )
                       .toList(growable: false),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: 24),
                 Text(
                   'Revision queue',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: 4),
                 Text(
                   due.isEmpty
                       ? '${snapshot.items.length} saved questions • nothing due now'
                       : '${due.length} due now • ${snapshot.items.length} saved',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: 8),
                 if (snapshot.items.isEmpty)
                   const Card(
                     child: Padding(
-                      padding: EdgeInsets.all(AppSpacing.lg),
+                      padding: EdgeInsets.all(16),
                       child: Text(
                         'Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.',
                       ),
@@ -153,15 +150,19 @@ class DailyCompanionScreen extends ConsumerWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
-                              item.reasons.map((reason) => reason.label).join(' • '),
+                              item.reasons
+                                  .map((reason) => reason.label)
+                                  .join(' • '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            trailing: Text(item.isDue(now) ? 'Due' : _date(item.dueAt)),
+                            trailing: Text(
+                              item.isDue(now) ? 'Due' : _date(item.dueAt),
+                            ),
                           ),
                         ),
                       ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: 24),
                 _StudyPlanCard(
                   settings: snapshot.settings,
                   onChanged: (settings) => _save(context, ref, settings),
@@ -177,7 +178,6 @@ class DailyCompanionScreen extends ConsumerWidget {
 
 class _TodayCard extends StatelessWidget {
   const _TodayCard({required this.snapshot, required this.dueCount});
-
   final DailyCompanionSnapshot snapshot;
   final int dueCount;
 
@@ -187,9 +187,8 @@ class _TodayCard extends StatelessWidget {
     final scheme = theme.colorScheme;
     final goal = snapshot.settings.dailyQuestionGoal;
     final progress = (snapshot.completedToday / goal).clamp(0.0, 1.0);
-
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: scheme.primary,
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
@@ -204,25 +203,21 @@ class _TodayCard extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 8),
           Text(
             dueCount == 0 ? 'You are caught up.' : '$dueCount questions are due.',
-            style: theme.textTheme.bodyLarge?.copyWith(color: scheme.onPrimary),
+            style: TextStyle(color: scheme.onPrimary),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: 16),
           LinearProgressIndicator(
             value: progress,
             minHeight: 8,
             borderRadius: BorderRadius.circular(99),
-            backgroundColor: scheme.onPrimary.withValues(alpha: 0.22),
-            color: scheme.onPrimary,
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 8),
           Text(
             '${snapshot.completedToday} of $goal reviews completed today',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onPrimary.withValues(alpha: 0.9),
-            ),
+            style: TextStyle(color: scheme.onPrimary),
           ),
         ],
       ),
@@ -232,50 +227,35 @@ class _TodayCard extends StatelessWidget {
 
 class _StudyPlanCard extends StatelessWidget {
   const _StudyPlanCard({required this.settings, required this.onChanged});
-
   final StudyCompanionSettings settings;
   final ValueChanged<StudyCompanionSettings> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'My study plan',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
+            const Text('My study plan', style: TextStyle(fontWeight: FontWeight.w900)),
             Row(
               children: [
                 const Expanded(child: Text('Daily question goal')),
                 IconButton(
                   onPressed: settings.dailyQuestionGoal > 1
-                      ? () => onChanged(
-                            settings.copyWith(
-                              dailyQuestionGoal: settings.dailyQuestionGoal - 1,
-                            ),
-                          )
+                      ? () => onChanged(settings.copyWith(
+                            dailyQuestionGoal: settings.dailyQuestionGoal - 1,
+                          ))
                       : null,
                   icon: const Icon(Icons.remove_circle_outline),
                 ),
-                Text(
-                  '${settings.dailyQuestionGoal}',
-                  style: const TextStyle(fontWeight: FontWeight.w900),
-                ),
+                Text('${settings.dailyQuestionGoal}'),
                 IconButton(
                   onPressed: settings.dailyQuestionGoal < 100
-                      ? () => onChanged(
-                            settings.copyWith(
-                              dailyQuestionGoal: settings.dailyQuestionGoal + 1,
-                            ),
-                          )
+                      ? () => onChanged(settings.copyWith(
+                            dailyQuestionGoal: settings.dailyQuestionGoal + 1,
+                          ))
                       : null,
                   icon: const Icon(Icons.add_circle_outline),
                 ),
@@ -284,12 +264,10 @@ class _StudyPlanCard extends StatelessWidget {
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Local study reminder'),
-              subtitle: Text(
-                TimeOfDay(
-                  hour: settings.reminderHour,
-                  minute: settings.reminderMinute,
-                ).format(context),
-              ),
+              subtitle: Text(TimeOfDay(
+                hour: settings.reminderHour,
+                minute: settings.reminderMinute,
+              ).format(context)),
               value: settings.reminderEnabled,
               onChanged: (value) =>
                   onChanged(settings.copyWith(reminderEnabled: value)),
@@ -305,12 +283,10 @@ class _StudyPlanCard extends StatelessWidget {
                     ),
                   );
                   if (picked != null) {
-                    onChanged(
-                      settings.copyWith(
-                        reminderHour: picked.hour,
-                        reminderMinute: picked.minute,
-                      ),
-                    );
+                    onChanged(settings.copyWith(
+                      reminderHour: picked.hour,
+                      reminderMinute: picked.minute,
+                    ));
                   }
                 },
                 icon: const Icon(Icons.schedule_rounded),
@@ -325,6 +301,9 @@ class _StudyPlanCard extends StatelessWidget {
 
 String _date(DateTime value) {
   final local = value.toLocal();
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
   return '${local.day} ${months[local.month - 1]}';
 }
