@@ -170,6 +170,7 @@ class _PerformanceLoadingState extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _AnalyticsError extends StatelessWidget {
   const _AnalyticsError({required this.onRetry});
 
