@@ -2,6 +2,11 @@ name: Home visual preview
 # Temporary branch trigger: render reviewed baselines against the resolved companion dependency lock.
 
 on:
+  push:
+    branches:
+      - feat/mobile-daily-companion-v1
+    paths:
+      - '.github/workflows/home-preview.yml'
   pull_request:
     paths:
       - 'lib/core/theme/**'
