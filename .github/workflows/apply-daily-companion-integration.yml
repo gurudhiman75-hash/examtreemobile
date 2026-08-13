@@ -1,0 +1,86 @@
+name: Apply Daily Companion integration
+
+on:
+  push:
+    branches:
+      - feat/mobile-daily-companion-v1
+    paths:
+      - '.github/workflows/apply-daily-companion-integration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/mobile-daily-companion-v1
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Patch routes and home entry
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          router = Path('lib/routes/app_router.dart')
+          text = router.read_text()
+          old = "import '../features/auth/presentation/providers/auth_providers.dart';\nimport '../features/exams/presentation/exam_details_screen.dart';"
+          new = "import '../features/auth/presentation/providers/auth_providers.dart';\nimport '../features/companion/presentation/daily_companion_screen.dart';\nimport '../features/companion/presentation/quick_revision_screen.dart';\nimport '../features/exams/presentation/exam_details_screen.dart';"
+          if text.count(old) != 1:
+              raise SystemExit('router import anchor mismatch')
+          text = text.replace(old, new, 1)
+          anchor = "      GoRoute(\n        path: '/test-attempt',"
+          routes = """      GoRoute(
+            path: '/daily-companion',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) => const DailyCompanionScreen(),
+          ),
+          GoRoute(
+            path: '/quick-revision',
+            parentNavigatorKey: _rootNavigatorKey,
+            builder: (context, state) {
+              final raw = state.extra;
+              final minutes = raw is int ? raw.clamp(1, 30) : 10;
+              return QuickRevisionScreen(minutes: minutes);
+            },
+          ),
+"""
+          if text.count(anchor) != 1:
+              raise SystemExit('router route anchor mismatch')
+          text = text.replace(anchor, routes + anchor, 1)
+          router.write_text(text)
+
+          home = Path('lib/features/home/presentation/home_screen_v3.dart')
+          text = home.read_text()
+          anchor = "                    const SizedBox(height: AppSpacing.md),\n                    _ContextActions("
+          addition = """                    const SizedBox(height: AppSpacing.md),
+                    _ContextActionCard(
+                      key: const Key('home-daily-companion'),
+                      icon: Icons.auto_awesome_rounded,
+                      title: 'Daily Companion',
+                      subtitle: 'Offline revision queue and local study reminders',
+                      onTap: () => context.push('/daily-companion'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    _ContextActions("""
+          if text.count(anchor) != 1:
+              raise SystemExit('home action anchor mismatch')
+          home.write_text(text.replace(anchor, addition, 1))
+          PY
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Commit integration
+        run: |
+          rm .github/workflows/apply-daily-companion-integration.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add lib/routes/app_router.dart \
+                  lib/features/home/presentation/home_screen_v3.dart \
+                  pubspec.lock \
+                  .github/workflows/apply-daily-companion-integration.yml
+          git commit -m 'feat(companion): integrate mobile daily companion'
+          git push origin HEAD:feat/mobile-daily-companion-v1
