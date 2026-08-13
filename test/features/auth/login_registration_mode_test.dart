@@ -18,8 +18,10 @@ void main() {
     expect(find.text('Name'), findsNothing);
     expect(find.text('Confirm password'), findsNothing);
 
-    await tester.tap(find.text('New to ExamTree? Create account'));
-    await tester.pump();
+    final createAccount = find.text('New to ExamTree? Create account');
+    await tester.ensureVisible(createAccount);
+    await tester.tap(createAccount);
+    await tester.pumpAndSettle();
 
     expect(find.text('Join ExamTree'), findsOneWidget);
     expect(find.text('Name'), findsOneWidget);
@@ -27,8 +29,10 @@ void main() {
     expect(find.text('Forgot password?'), findsNothing);
     expect(find.text('Create Account'), findsOneWidget);
 
-    await tester.tap(find.text('Already have an account? Sign in'));
-    await tester.pump();
+    final signIn = find.text('Already have an account? Sign in');
+    await tester.ensureVisible(signIn);
+    await tester.tap(signIn);
+    await tester.pumpAndSettle();
 
     expect(find.text('Sign in to ExamTree'), findsOneWidget);
     expect(find.text('Forgot password?'), findsOneWidget);

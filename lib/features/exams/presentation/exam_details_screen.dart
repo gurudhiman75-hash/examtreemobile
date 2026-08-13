@@ -325,6 +325,7 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _ExamDetailsError extends StatelessWidget {
   const _ExamDetailsError({required this.onRetry});
 
