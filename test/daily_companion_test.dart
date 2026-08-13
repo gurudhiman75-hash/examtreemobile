@@ -24,6 +24,14 @@ void main() {
     expect(items[3].reasons, contains(RevisionReason.slow));
   });
 
+  test('clean correct questions do not enter the local revision queue', () {
+    final result = _result([
+      _question(1, selected: 0, correct: 0),
+    ]);
+
+    expect(deriveRevisionCandidates([result], now: now), isEmpty);
+  });
+
   test('remembered reviews use widening intervals', () {
     var item = _item(now);
     for (final days in [1, 3, 7, 14, 30, 60]) {
