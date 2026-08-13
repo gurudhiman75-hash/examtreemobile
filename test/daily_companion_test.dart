@@ -60,6 +60,16 @@ void main() {
     expect(selected, hasLength(5));
     expect(selected.every((item) => item.isDue(now)), isTrue);
   });
+
+  test('daily goal remaining never becomes negative', () {
+    final snapshot = DailyCompanionSnapshot(
+      settings: const StudyCompanionSettings(dailyQuestionGoal: 5),
+      items: const [],
+      completedToday: 8,
+    );
+
+    expect(snapshot.remainingGoal(now), 0);
+  });
 }
 
 Result _result(List<ResultQuestionReview> questions) => Result(
