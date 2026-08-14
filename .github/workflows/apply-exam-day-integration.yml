@@ -1,0 +1,79 @@
+name: Apply Exam-Day integration
+
+on:
+  push:
+    branches:
+      - feat/mobile-exam-day-mode-v1
+    paths:
+      - '.github/workflows/apply-exam-day-integration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/mobile-exam-day-mode-v1
+      - name: Apply focused integration patches
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          p = Path('lib/features/exam_day/presentation/exam_day_screen.dart')
+          s = p.read_text()
+          s = s.replace('_ActionCard(target: target),', 'const _ActionCard(),')
+          s = s.replace("class _ActionCard extends StatelessWidget {\n  const _ActionCard({required this.target});\n\n  final ExamDayTarget target;", "class _ActionCard extends StatelessWidget {\n  const _ActionCard();")
+          s = s.replace("hour: (_examAt.hour - 1).clamp(0, 23),", "hour: (_examAt.hour - 1).clamp(0, 23).toInt(),")
+          p.write_text(s)
+
+          p = Path('lib/routes/app_router.dart')
+          s = p.read_text()
+          anchor = "import '../features/exams/presentation/exam_details_screen.dart';"
+          s = s.replace(anchor, "import '../features/exam_day/presentation/exam_day_screen.dart';\n" + anchor)
+          anchor = "      GoRoute(\n        path: '/quick-revision',"
+          route = "      GoRoute(\n        path: '/exam-day',\n        parentNavigatorKey: _rootNavigatorKey,\n        builder: (context, state) => const ExamDayScreen(),\n      ),\n"
+          s = s.replace(anchor, route + anchor)
+          p.write_text(s)
+
+          p = Path('lib/features/companion/presentation/daily_companion_screen.dart')
+          s = p.read_text()
+          s = s.replace("import 'package:flutter_riverpod/flutter_riverpod.dart';", "import 'package:flutter_riverpod/flutter_riverpod.dart';\nimport 'package:go_router/go_router.dart';")
+          anchor = "                _TodayCard(snapshot: snapshot, dueCount: due.length),\n                const SizedBox(height: 24),"
+          replacement = "                _TodayCard(snapshot: snapshot, dueCount: due.length),\n                const SizedBox(height: 12),\n                Card(\n                  elevation: 0,\n                  child: ListTile(\n                    leading: const Icon(Icons.event_available_outlined),\n                    title: const Text('Exam-Day Mode'),\n                    subtitle: const Text('Countdown, logistics checklist and local reminders'),\n                    trailing: const Icon(Icons.chevron_right_rounded),\n                    onTap: () => context.push('/exam-day'),\n                  ),\n                ),\n                const SizedBox(height: 24),"
+          assert anchor in s
+          s = s.replace(anchor, replacement, 1)
+          p.write_text(s)
+
+          p = Path('lib/main.dart')
+          s = p.read_text()
+          anchor = "import 'features/companion/presentation/providers/daily_companion_providers.dart';"
+          s = s.replace(anchor, anchor + "\nimport 'features/exam_day/presentation/providers/exam_day_providers.dart';")
+          anchor = "          unawaited(ref.read(companionWidgetServiceProvider).clear());"
+          s = s.replace(anchor, anchor + "\n          unawaited(ref.read(examDayControllerProvider).cancelReminders());")
+          p.write_text(s)
+
+          p = Path('android/app/src/main/res/values/strings.xml')
+          s = p.read_text()
+          anchor = '    <string name="shortcut_tests_long">Browse ExamTree tests</string>'
+          addition = anchor + '\n    <string name="shortcut_exam_day_short">Exam day</string>\n    <string name="shortcut_exam_day_long">Open Exam-Day Mode</string>'
+          s = s.replace(anchor, addition)
+          p.write_text(s)
+
+          p = Path('android/app/src/main/res/xml/shortcuts.xml')
+          s = p.read_text()
+          anchor = '</shortcuts>'
+          shortcut = '''    <shortcut\n        android:shortcutId="exam_day"\n        android:enabled="true"\n        android:icon="@mipmap/ic_launcher"\n        android:shortcutShortLabel="@string/shortcut_exam_day_short"\n        android:shortcutLongLabel="@string/shortcut_exam_day_long">\n        <intent\n            android:action="android.intent.action.VIEW"\n            android:targetPackage="com.examtree.examtree"\n            android:targetClass="com.examtree.examtree.MainActivity"\n            android:data="examtree://app/exam-day" />\n    </shortcut>\n'''
+          s = s.replace(anchor, shortcut + anchor)
+          p.write_text(s)
+          PY
+      - name: Commit integration
+        run: |
+          rm .github/workflows/apply-exam-day-integration.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add lib android .github/workflows/apply-exam-day-integration.yml
+          git commit -m 'feat(exam-day): integrate mobile exam-day mode'
+          git push origin HEAD:feat/mobile-exam-day-mode-v1
