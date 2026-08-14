@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="daily_companion"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_daily_short"
+        android:shortcutLongLabel="@string/shortcut_daily_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.examtree.examtree"
+            android:targetClass="com.examtree.examtree.MainActivity"
+            android:data="examtree://app/daily" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="quick_revision_5"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_quick_short"
+        android:shortcutLongLabel="@string/shortcut_quick_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.examtree.examtree"
+            android:targetClass="com.examtree.examtree.MainActivity"
+            android:data="examtree://app/quick-revision?minutes=5" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="browse_tests"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_tests_short"
+        android:shortcutLongLabel="@string/shortcut_tests_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.examtree.examtree"
+            android:targetClass="com.examtree.examtree.MainActivity"
+            android:data="examtree://app/exams" />
+    </shortcut>
+</shortcuts>
