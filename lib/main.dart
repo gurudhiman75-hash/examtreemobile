@@ -63,6 +63,10 @@ class ExamTreeApp extends ConsumerWidget {
         if (user == null) {
           unawaited(ref.read(companionWidgetServiceProvider).clear());
           unawaited(ref.read(examDayControllerProvider).cancelReminders());
+        } else {
+          unawaited(
+            ref.read(examDayControllerProvider).restoreReminders(user.uid),
+          );
         }
       });
     });
