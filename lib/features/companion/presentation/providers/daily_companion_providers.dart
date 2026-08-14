@@ -4,6 +4,7 @@ import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../results/presentation/providers/result_providers.dart';
 import '../../data/local_daily_companion_store.dart';
 import '../../domain/daily_companion.dart';
+import '../../services/companion_widget_service.dart';
 import '../../services/study_reminder_service.dart';
 
 final dailyCompanionStoreProvider = Provider<DailyCompanionStore>((ref) {
@@ -12,6 +13,10 @@ final dailyCompanionStoreProvider = Provider<DailyCompanionStore>((ref) {
 
 final studyReminderServiceProvider = Provider<StudyReminderService>((ref) {
   return LocalStudyReminderService();
+});
+
+final companionWidgetServiceProvider = Provider<CompanionWidgetService>((ref) {
+  return const AndroidCompanionWidgetService();
 });
 
 final dailyCompanionClockProvider = Provider<DateTime Function()>((ref) {
@@ -46,7 +51,9 @@ final dailyCompanionSnapshotProvider = FutureProvider<DailyCompanionSnapshot>((
     await store.syncCandidates(userId: user.uid, candidates: candidates);
   }
 
-  return store.loadSnapshot(userId: user.uid, now: now);
+  final snapshot = await store.loadSnapshot(userId: user.uid, now: now);
+  await ref.read(companionWidgetServiceProvider).publish(snapshot, now: now);
+  return snapshot;
 });
 
 class DailyCompanionController {
