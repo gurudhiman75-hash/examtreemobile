@@ -61,6 +61,22 @@ class ExamDayController {
     return _store.saveTarget(userId: userId, target: target);
   }
 
+  Future<void> restoreReminders(String userId) async {
+    final target = await _store.loadTarget(userId);
+    if (target == null || !target.remindersEnabled) return;
+
+    final reminderReady = await _reminderService.schedule(target);
+    if (!reminderReady) {
+      await _store.saveTarget(
+        userId: userId,
+        target: target.copyWith(
+          remindersEnabled: false,
+          updatedAt: DateTime.now(),
+        ),
+      );
+    }
+  }
+
   Future<void> deleteTarget(String userId) async {
     await _reminderService.cancel();
     await _store.deleteTarget(userId);
