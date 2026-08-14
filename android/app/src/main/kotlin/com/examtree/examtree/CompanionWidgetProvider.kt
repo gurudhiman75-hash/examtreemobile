@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
+import java.text.DateFormat
+import java.util.Date
 
 class CompanionWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -80,6 +82,16 @@ class CompanionWidgetProvider : AppWidgetProvider() {
                 val completedToday = prefs.getInt(KEY_COMPLETED_TODAY, 0)
                 val remainingGoal = prefs.getInt(KEY_REMAINING_GOAL, dailyGoal)
                 val savedCount = prefs.getInt(KEY_SAVED_COUNT, 0)
+                val updatedAtMillis = prefs.getLong(KEY_UPDATED_AT, 0L)
+                val savedLabel =
+                    if (savedCount == 1) "1 saved review" else "$savedCount saved reviews"
+                val freshness = if (updatedAtMillis > 0L) {
+                    val time = DateFormat.getTimeInstance(DateFormat.SHORT)
+                        .format(Date(updatedAtMillis))
+                    "$savedLabel • Updated $time"
+                } else {
+                    savedLabel
+                }
 
                 views.setTextViewText(
                     R.id.widget_due,
@@ -89,10 +101,7 @@ class CompanionWidgetProvider : AppWidgetProvider() {
                     R.id.widget_goal,
                     "$completedToday/$dailyGoal today • $remainingGoal left",
                 )
-                views.setTextViewText(
-                    R.id.widget_saved,
-                    if (savedCount == 1) "1 saved review" else "$savedCount saved reviews",
-                )
+                views.setTextViewText(R.id.widget_saved, freshness)
             } else {
                 views.setTextViewText(R.id.widget_due, "Open ExamTree to load today’s revision")
                 views.setTextViewText(R.id.widget_goal, "Your private Daily Companion stays on-device")
