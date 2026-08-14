@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
@@ -85,6 +86,17 @@ class DailyCompanionScreen extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
               children: [
                 _TodayCard(snapshot: snapshot, dueCount: due.length),
+                const SizedBox(height: 12),
+                Card(
+                  elevation: 0,
+                  child: ListTile(
+                    leading: const Icon(Icons.event_available_outlined),
+                    title: const Text('Exam-Day Mode'),
+                    subtitle: const Text('Countdown, logistics checklist and local reminders'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push('/exam-day'),
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Text(
                   'Quick revision',

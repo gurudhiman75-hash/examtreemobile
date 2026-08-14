@@ -38,4 +38,16 @@
             android:targetClass="com.examtree.examtree.MainActivity"
             android:data="examtree://app/exams" />
     </shortcut>
+    <shortcut
+        android:shortcutId="exam_day"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/shortcut_exam_day_short"
+        android:shortcutLongLabel="@string/shortcut_exam_day_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.examtree.examtree"
+            android:targetClass="com.examtree.examtree.MainActivity"
+            android:data="examtree://app/exam-day" />
+    </shortcut>
 </shortcuts>

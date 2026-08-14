@@ -7,4 +7,6 @@
     <string name="shortcut_quick_long">Start a 5 minute revision session</string>
     <string name="shortcut_tests_short">Tests</string>
     <string name="shortcut_tests_long">Browse ExamTree tests</string>
+    <string name="shortcut_exam_day_short">Exam day</string>
+    <string name="shortcut_exam_day_long">Open Exam-Day Mode</string>
 </resources>

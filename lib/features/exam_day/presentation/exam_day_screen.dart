@@ -317,7 +317,7 @@ class _ExamDayBody extends StatelessWidget {
             body: '${examCountdownLabel(reporting, now)} until your saved reporting time.',
           ),
         if (reportingPending) const SizedBox(height: 16),
-        _ActionCard(target: target),
+        const _ActionCard(),
         const SizedBox(height: 16),
         _LogisticsCard(target: target, onEdit: onEdit),
         const SizedBox(height: 16),
@@ -419,9 +419,7 @@ class _CountdownCard extends StatelessWidget {
 }
 
 class _ActionCard extends StatelessWidget {
-  const _ActionCard({required this.target});
-
-  final ExamDayTarget target;
+  const _ActionCard();
 
   @override
   Widget build(BuildContext context) {
@@ -778,7 +776,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
   Future<void> _pickReportingTime() async {
     final initial = _reportingAt == null
         ? TimeOfDay(
-            hour: (_examAt.hour - 1).clamp(0, 23),
+            hour: (_examAt.hour - 1).clamp(0, 23).toInt(),
             minute: _examAt.minute,
           )
         : TimeOfDay.fromDateTime(_reportingAt!);
