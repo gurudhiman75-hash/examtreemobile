@@ -52,6 +52,14 @@ class _QuickRevisionScreenState extends ConsumerState<QuickRevisionScreen> {
     }
   }
 
+  void _finish(BuildContext context) {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/daily');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final snapshot = ref.watch(dailyCompanionSnapshotProvider);
@@ -69,7 +77,7 @@ class _QuickRevisionScreenState extends ConsumerState<QuickRevisionScreen> {
           if (_done || _items!.isEmpty) {
             return Center(
               child: FilledButton.icon(
-                onPressed: () => context.pop(),
+                onPressed: () => _finish(context),
                 icon: const Icon(Icons.task_alt_rounded),
                 label: Text(_items!.isEmpty ? 'Nothing due — Done' : 'Session complete'),
               ),
