@@ -38,6 +38,34 @@ void main() {
     expect(reminders.scheduleCalls, 0);
   });
 
+  test('enabled reminders are restored after the student signs back in', () async {
+    final store = _FakeStore()..savedTarget = _target(remindersEnabled: true);
+    final reminders = _FakeReminders(scheduleResult: true);
+    final controller = ExamDayController(
+      store: store,
+      reminderService: reminders,
+    );
+
+    await controller.restoreReminders('user-1');
+
+    expect(reminders.scheduleCalls, 1);
+    expect(store.saveCalls, 0);
+  });
+
+  test('failed reminder restoration disables the persisted reminder flag', () async {
+    final store = _FakeStore()..savedTarget = _target(remindersEnabled: true);
+    final reminders = _FakeReminders(scheduleResult: false);
+    final controller = ExamDayController(
+      store: store,
+      reminderService: reminders,
+    );
+
+    await controller.restoreReminders('user-1');
+
+    expect(reminders.scheduleCalls, 1);
+    expect(store.savedTarget?.remindersEnabled, isFalse);
+  });
+
   test('deleting target cancels reminders before local removal', () async {
     final order = <String>[];
     final store = _FakeStore(order: order);
