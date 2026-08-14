@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/password_recovery_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
+import '../features/companion/presentation/daily_companion_screen.dart';
+import '../features/companion/presentation/quick_revision_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -27,6 +29,24 @@ final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
 final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
+String _continuationFor(Uri uri) {
+  final path = uri.path.isEmpty ? '/home' : uri.path;
+  return uri.hasQuery ? '$path?${uri.query}' : path;
+}
+
+String? _validatedContinuation(String? location) {
+  if (location == null || !location.startsWith('/')) return null;
+  if (location.startsWith('/login') || location.startsWith('/forgot-password')) {
+    return null;
+  }
+  return location;
+}
+
+int _quickRevisionMinutes(Uri uri) {
+  final requested = int.tryParse(uri.queryParameters['minutes'] ?? '');
+  return const {5, 10, 20}.contains(requested) ? requested! : 5;
+}
+
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangesProvider);
 
@@ -35,12 +55,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/home',
     redirect: (context, state) {
       final isAuthenticated = authState.value != null;
-      final isPublicAuthRoute = state.matchedLocation == '/login' ||
+      final isLogin = state.matchedLocation == '/login';
+      final isPublicAuthRoute = isLogin ||
           state.matchedLocation == '/forgot-password';
 
       if (authState.isLoading) return null;
-      if (!isAuthenticated && !isPublicAuthRoute) return '/login';
-      if (isAuthenticated && isPublicAuthRoute) return '/home';
+      if (!isAuthenticated && !isPublicAuthRoute) {
+        final continuation = Uri.encodeQueryComponent(
+          _continuationFor(state.uri),
+        );
+        return '/login?continue=$continuation';
+      }
+      if (isAuthenticated && isPublicAuthRoute) {
+        if (isLogin) {
+          final continuation = _validatedContinuation(
+            state.uri.queryParameters['continue'],
+          );
+          if (continuation != null) return continuation;
+        }
+        return '/home';
+      }
       return null;
     },
     routes: [
@@ -96,6 +130,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/daily',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const DailyCompanionScreen(),
+      ),
+      GoRoute(
+        path: '/quick-revision',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => QuickRevisionScreen(
+          minutes: _quickRevisionMinutes(state.uri),
+        ),
       ),
       GoRoute(
         path: '/test-attempt',
