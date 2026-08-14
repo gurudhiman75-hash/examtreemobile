@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/companion/presentation/daily_companion_screen.dart';
+import '../../features/companion/presentation/providers/daily_companion_providers.dart';
 
-class AppScaffold extends StatelessWidget {
+class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const AppScaffold({
@@ -18,21 +19,17 @@ class AppScaffold extends StatelessWidget {
     );
   }
 
-  void _openDailyCompanion(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) => const DailyCompanionScreen(),
-        fullscreenDialog: true,
-      ),
-    );
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Warm the private local Daily Companion snapshot while the authenticated
+    // shell is active. The provider publishes the same truthful local counts
+    // to the Android home-screen widget when available.
+    ref.watch(dailyCompanionSnapshotProvider);
+
     return Scaffold(
       body: navigationShell,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openDailyCompanion(context),
+        onPressed: () => context.push('/daily'),
         tooltip: 'Open Daily Companion',
         icon: const Icon(Icons.auto_awesome_rounded),
         label: const Text('Daily'),
