@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
 import 'features/companion/presentation/providers/daily_companion_providers.dart';
+import 'features/exam_day/presentation/providers/exam_day_providers.dart';
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
 
@@ -61,6 +62,11 @@ class ExamTreeApp extends ConsumerWidget {
       next.whenData((user) {
         if (user == null) {
           unawaited(ref.read(companionWidgetServiceProvider).clear());
+          unawaited(ref.read(examDayControllerProvider).cancelReminders());
+        } else {
+          unawaited(
+            ref.read(examDayControllerProvider).restoreReminders(user.uid),
+          );
         }
       });
     });

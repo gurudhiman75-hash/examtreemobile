@@ -7,6 +7,7 @@ import '../features/auth/presentation/password_recovery_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
 import '../features/companion/presentation/daily_companion_screen.dart';
 import '../features/companion/presentation/quick_revision_screen.dart';
+import '../features/exam_day/presentation/exam_day_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -135,6 +136,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/daily',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const DailyCompanionScreen(),
+      ),
+      GoRoute(
+        path: '/exam-day',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ExamDayScreen(),
       ),
       GoRoute(
         path: '/quick-revision',
