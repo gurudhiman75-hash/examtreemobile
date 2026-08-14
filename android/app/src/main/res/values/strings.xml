@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="companion_widget_description">Daily revision target and quick ExamTree actions</string>
+    <string name="shortcut_daily_short">Daily review</string>
+    <string name="shortcut_daily_long">Open Daily Companion</string>
+    <string name="shortcut_quick_short">5 min revision</string>
+    <string name="shortcut_quick_long">Start a 5 minute revision session</string>
+    <string name="shortcut_tests_short">Tests</string>
+    <string name="shortcut_tests_long">Browse ExamTree tests</string>
+</resources>
