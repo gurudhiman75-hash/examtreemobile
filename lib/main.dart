@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/providers/auth_providers.dart';
+import 'features/companion/presentation/providers/daily_companion_providers.dart';
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
 
@@ -52,6 +56,14 @@ class ExamTreeApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
+
+    ref.listen(authStateChangesProvider, (previous, next) {
+      next.whenData((user) {
+        if (user == null) {
+          unawaited(ref.read(companionWidgetServiceProvider).clear());
+        }
+      });
+    });
 
     return MaterialApp.router(
       title: 'ExamTree',
