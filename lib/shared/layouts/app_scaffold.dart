@@ -4,6 +4,16 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/companion/presentation/providers/daily_companion_providers.dart';
 
+bool shouldResetBranchOnSelection({
+  required int selectedIndex,
+  required int currentIndex,
+}) {
+  // Home is the canonical dashboard root. Re-entering it should never restore a
+  // stale/offstage branch state; always rebuild from /home. Other branches keep
+  // their navigation stacks, while re-tapping the active tab resets as before.
+  return selectedIndex == 0 || selectedIndex == currentIndex;
+}
+
 class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -15,7 +25,10 @@ class AppScaffold extends ConsumerWidget {
   void _goBranch(int index) {
     navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: shouldResetBranchOnSelection(
+        selectedIndex: index,
+        currentIndex: navigationShell.currentIndex,
+      ),
     );
   }
 
