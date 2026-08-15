@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
-      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID }}
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID || '1:1083299267005:android:3986910db48dd12e3ad2d4' }}
 
     steps:
       - name: Check out repository
