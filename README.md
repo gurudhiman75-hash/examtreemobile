@@ -39,6 +39,14 @@ flutter run \
   --dart-define=FIREBASE_ANDROID_APP_ID=1:1083299267005:android:<app-specific-id>
 ```
 
+For GitHub-hosted installable APKs, configure the same value as an Actions repository variable or secret named:
+
+```text
+FIREBASE_ANDROID_APP_ID
+```
+
+The `Authenticated Android APK` workflow refuses to publish an APK when that value is missing or does not match the `sarbedutech` Android App ID shape. The Home preview workflow still publishes screenshots when Firebase registration is unavailable, but skips its installable APK rather than publishing a build that opens the setup-required screen.
+
 The repository contains the existing public Firebase web-client metadata for project `sarbedutech`. It does not contain service-account credentials or Firebase Admin secrets.
 
 The following values can be overridden when required:
@@ -61,6 +69,8 @@ When a required platform value is missing, ExamTree displays a configuration scr
 
 ## Verification
 
+Source verification remains independent of Firebase Android registration:
+
 ```bash
 flutter pub get
 flutter analyze --no-fatal-infos
@@ -69,4 +79,4 @@ flutter build apk --debug \
   --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api
 ```
 
-The debug build can compile without a Firebase Android app ID, but authentication is intentionally disabled at runtime until the real app registration is supplied.
+That debug build can compile without a Firebase Android app ID, but authentication is intentionally disabled at runtime until the real app registration is supplied. Use the `Authenticated Android APK` workflow for any APK intended for installation/testing with Firebase Auth.
