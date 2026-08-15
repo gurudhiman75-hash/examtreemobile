@@ -4,7 +4,8 @@ on:
   pull_request:
     paths:
       - '.github/workflows/authenticated-android-apk.yml'
-      - 'lib/firebase_options.dart'
+      - 'lib/**'
+      - 'test/**'
       - 'android/**'
       - 'pubspec.yaml'
       - 'pubspec.lock'
