@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -76,7 +77,7 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
-    test('registration signs out and explains partial setup failure', () async {
+    test('registration keeps session when backend setup is unavailable', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner(
         error: StateError('backend unavailable'),
@@ -99,10 +100,10 @@ void main() {
       );
 
       expect(profile.provisionCalls, 1);
-      expect(session.signOutCalls, 1);
+      expect(session.signOutCalls, 0);
     });
 
-    test('signs out when canonical profile provisioning fails', () async {
+    test('keeps Firebase session when canonical profile sync fails', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner(
         error: StateError('backend unavailable'),
@@ -124,15 +125,69 @@ void main() {
       );
 
       expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('keeps Firebase session when backend returns a recoverable 503', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: _apiFailure(503, 'ACCOUNT_STATUS_UNAVAILABLE'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithEmailAndPassword(
+          'student@example.com',
+          'password',
+        ),
+        throwsA(isA<AuthProfileSyncException>()),
+      );
+
+      expect(session.signOutCalls, 0);
+    });
+
+    test('ends Firebase session when backend reports session revoked', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: _apiFailure(401, 'SESSION_REVOKED'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithEmailAndPassword(
+          'student@example.com',
+          'password',
+        ),
+        throwsA(isA<AuthProfileSyncException>()),
+      );
+
       expect(session.signOutCalls, 1);
     });
 
-    test('preserves provisioning error when sign-out also fails', () async {
+    test('ends Firebase session when canonical account is suspended', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: _apiFailure(403, 'ACCOUNT_SUSPENDED'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithEmailAndPassword(
+          'student@example.com',
+          'password',
+        ),
+        throwsA(isA<AuthProfileSyncException>()),
+      );
+
+      expect(session.signOutCalls, 1);
+    });
+
+    test('preserves profile error when terminal sign-out also fails', () async {
       final session = _FakeAuthSessionGateway(
         signOutError: StateError('sign-out failed'),
       );
       final profile = _FakeStudentProfileProvisioner(
-        error: StateError('backend unavailable'),
+        error: _apiFailure(401, 'SESSION_REVOKED'),
       );
       final controller = AuthController(session, profile);
 
@@ -172,6 +227,19 @@ void main() {
       expect(session.signOutCalls, 1);
     });
   });
+}
+
+DioException _apiFailure(int statusCode, String code) {
+  final requestOptions = RequestOptions(path: '/users/me');
+  return DioException(
+    requestOptions: requestOptions,
+    response: Response<dynamic>(
+      requestOptions: requestOptions,
+      statusCode: statusCode,
+      data: <String, dynamic>{'code': code},
+    ),
+    type: DioExceptionType.badResponse,
+  );
 }
 
 class _FakeAuthSessionGateway implements AuthSessionGateway {
