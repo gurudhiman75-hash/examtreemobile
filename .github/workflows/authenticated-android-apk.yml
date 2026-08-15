@@ -1,0 +1,89 @@
+name: Authenticated Android APK
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/authenticated-android-apk.yml'
+      - 'lib/firebase_options.dart'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify Firebase Android build configuration
+        shell: bash
+        run: |
+          if [[ -z "${FIREBASE_ANDROID_APP_ID:-}" ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID is missing. Register com.examtree.examtree in Firebase project sarbedutech and configure the generated App ID as a GitHub Actions repository variable or secret."
+            exit 1
+          fi
+          if [[ ! "$FIREBASE_ANDROID_APP_ID" =~ ^1:1083299267005:android:[[:alnum:]]+$ ]]; then
+            echo "::error::FIREBASE_ANDROID_APP_ID does not match the sarbedutech Android app-id format."
+            exit 1
+          fi
+          echo "Firebase Android build configuration is present."
+
+      - name: Verify Firebase options consume the build definition
+        shell: bash
+        run: |
+          cat > test/_firebase_android_build_config_ci_test.dart <<'DART'
+          import 'package:examtree/firebase_options.dart';
+          import 'package:flutter_test/flutter_test.dart';
+
+          void main() {
+            test('authenticated Android build receives the registered Firebase App ID', () {
+              const appId = String.fromEnvironment('FIREBASE_ANDROID_APP_ID');
+              final configuration = DefaultFirebaseOptions.forValues(
+                platform: FirebaseClientPlatform.android,
+                androidAppId: appId,
+              );
+
+              expect(appId, startsWith('1:1083299267005:android:'));
+              expect(configuration.isConfigured, isTrue);
+              expect(configuration.options?.appId, appId);
+              expect(configuration.options?.projectId, 'sarbedutech');
+              expect(configuration.options?.messagingSenderId, '1083299267005');
+            });
+          }
+          DART
+          flutter test \
+            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID" \
+            test/_firebase_android_build_config_ci_test.dart
+          rm test/_firebase_android_build_config_ci_test.dart
+
+      - name: Build authenticated Android debug APK
+        run: |
+          flutter build apk --debug \
+            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
+            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID"
+
+      - name: Publish authenticated Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: examtree-authenticated-android-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
