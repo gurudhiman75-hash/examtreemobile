@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -125,6 +126,26 @@ class AuthProfileSyncException implements Exception {
   String toString() => message;
 }
 
+const _sessionEndingProfileCodes = <String>{
+  'SESSION_REVOKED',
+  'ACCOUNT_UNAVAILABLE',
+  'ACCOUNT_SUSPENDED',
+  'ACCOUNT_RECOVERY_COMPLETED',
+};
+
+bool shouldEndSessionForProfileFailure(Object error) {
+  if (error is! DioException) return false;
+
+  final data = error.response?.data;
+  final code = switch (data) {
+    Map<String, dynamic>() => data['code']?.toString(),
+    Map() => data['code']?.toString(),
+    _ => null,
+  };
+
+  return code != null && _sessionEndingProfileCodes.contains(code);
+}
+
 class AuthController {
   const AuthController(this._sessionGateway, this._profileProvisioner);
 
@@ -133,7 +154,7 @@ class AuthController {
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _sessionGateway.signInWithEmailAndPassword(email, password);
-    await _provisionOrSignOut();
+    await _provisionProfile();
   }
 
   Future<void> registerWithEmailAndPassword({
@@ -147,31 +168,26 @@ class AuthController {
       password: password,
     );
 
-    try {
-      await _profileProvisioner.provision();
-    } catch (_) {
-      try {
-        await _sessionGateway.signOut();
-      } catch (_) {
-        // Preserve the canonical provisioning failure as the user-facing error.
-      }
-      throw const AuthProfileSyncException(
-        message:
-            'Your account was created, but ExamTree could not finish setup. Sign in with the same email to retry.',
-      );
-    }
+    await _provisionProfile(
+      failureMessage:
+          'Your account was created, but ExamTree could not finish setup. Please try again.',
+    );
   }
 
-  Future<void> _provisionOrSignOut() async {
+  Future<void> _provisionProfile({
+    String failureMessage = 'Unable to prepare your ExamTree student profile.',
+  }) async {
     try {
       await _profileProvisioner.provision();
-    } catch (_) {
-      try {
-        await _sessionGateway.signOut();
-      } catch (_) {
-        // Preserve the canonical provisioning failure as the user-facing error.
+    } catch (error) {
+      if (shouldEndSessionForProfileFailure(error)) {
+        try {
+          await _sessionGateway.signOut();
+        } catch (_) {
+          // Preserve the canonical profile failure as the user-facing error.
+        }
       }
-      throw const AuthProfileSyncException();
+      throw AuthProfileSyncException(message: failureMessage);
     }
   }
 
