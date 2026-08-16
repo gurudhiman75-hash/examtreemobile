@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -48,36 +51,88 @@ int _quickRevisionMinutes(Uri uri) {
   return const {5, 10, 20}.contains(requested) ? requested! : 5;
 }
 
-final goRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateChangesProvider);
+String? resolveAuthRedirect({
+  required bool authReady,
+  required bool isAuthenticated,
+  required String matchedLocation,
+  required Uri uri,
+}) {
+  final isLogin = matchedLocation == '/login';
+  final isPublicAuthRoute =
+      isLogin || matchedLocation == '/forgot-password';
 
-  return GoRouter(
+  if (!authReady) return null;
+  if (!isAuthenticated && !isPublicAuthRoute) {
+    final continuation = Uri.encodeQueryComponent(_continuationFor(uri));
+    return '/login?continue=$continuation';
+  }
+  if (isAuthenticated && isPublicAuthRoute) {
+    if (isLogin) {
+      final continuation = _validatedContinuation(
+        uri.queryParameters['continue'],
+      );
+      if (continuation != null) return continuation;
+    }
+    return '/home';
+  }
+  return null;
+}
+
+class RouterAuthRefresh extends ChangeNotifier {
+  RouterAuthRefresh(FirebaseAuth auth) : _user = auth.currentUser {
+    _subscription = auth.authStateChanges().listen(
+      (user) {
+        _user = user;
+        _ready = true;
+        notifyListeners();
+      },
+      onError: (_) {
+        // Firebase normally emits the restored user (or null) immediately. If
+        // restoration itself errors, unlock routing with the last known user so
+        // the UI can render a recoverable state instead of leaving the shell in
+        // an indeterminate startup state.
+        _ready = true;
+        notifyListeners();
+      },
+    );
+  }
+
+  late final StreamSubscription<User?> _subscription;
+  User? _user;
+  bool _ready = false;
+
+  bool get isReady => _ready;
+  bool get isAuthenticated => _user != null;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
+final routerAuthRefreshProvider = Provider<RouterAuthRefresh>((ref) {
+  final refresh = RouterAuthRefresh(ref.watch(firebaseAuthProvider));
+  ref.onDispose(refresh.dispose);
+  return refresh;
+});
+
+final goRouterProvider = Provider<GoRouter>((ref) {
+  // Keep one GoRouter instance for the lifetime of this provider. Firebase auth
+  // changes refresh redirect evaluation through ChangeNotifier rather than
+  // reconstructing the stateful navigation shell with the same GlobalKeys.
+  final authRefresh = ref.watch(routerAuthRefreshProvider);
+
+  final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/home',
-    redirect: (context, state) {
-      final isAuthenticated = authState.value != null;
-      final isLogin = state.matchedLocation == '/login';
-      final isPublicAuthRoute = isLogin ||
-          state.matchedLocation == '/forgot-password';
-
-      if (authState.isLoading) return null;
-      if (!isAuthenticated && !isPublicAuthRoute) {
-        final continuation = Uri.encodeQueryComponent(
-          _continuationFor(state.uri),
-        );
-        return '/login?continue=$continuation';
-      }
-      if (isAuthenticated && isPublicAuthRoute) {
-        if (isLogin) {
-          final continuation = _validatedContinuation(
-            state.uri.queryParameters['continue'],
-          );
-          if (continuation != null) return continuation;
-        }
-        return '/home';
-      }
-      return null;
-    },
+    refreshListenable: authRefresh,
+    redirect: (context, state) => resolveAuthRedirect(
+      authReady: authRefresh.isReady,
+      isAuthenticated: authRefresh.isAuthenticated,
+      matchedLocation: state.matchedLocation,
+      uri: state.uri,
+    ),
     routes: [
       GoRoute(
         path: '/login',
@@ -157,7 +212,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (examId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Test unavailable',
-              message: 'No test identifier was supplied. Open the test again from the exam catalogue.',
+              message:
+                  'No test identifier was supplied. Open the test again from the exam catalogue.',
             );
           }
           return CanonicalTestAttemptScreen(examId: examId);
@@ -171,7 +227,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (examId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Exam unavailable',
-              message: 'No exam identifier was supplied. Choose an exam from the catalogue.',
+              message:
+                  'No exam identifier was supplied. Choose an exam from the catalogue.',
             );
           }
           return ExamDetailsScreen(examId: examId);
@@ -185,7 +242,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (resultId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Result unavailable',
-              message: 'No attempt identifier was supplied. Open the result again from your history.',
+              message:
+                  'No attempt identifier was supplied. Open the result again from your history.',
             );
           }
           return ReviewRetryScreen(resultId: resultId);
@@ -193,6 +251,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+
+  ref.onDispose(router.dispose);
+  return router;
 });
 
 class _MissingRouteIdentifierScreen extends StatelessWidget {
