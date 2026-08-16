@@ -13,6 +13,19 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
   return ref.watch(firebaseAuthProvider).authStateChanges();
 });
 
+class AuthEmailVerificationRequiredException implements Exception {
+  const AuthEmailVerificationRequiredException(this.email);
+
+  final String email;
+
+  String get message => email.trim().isEmpty
+      ? 'Verify your email address before signing in to ExamTree. A verification link has been sent.'
+      : 'Verify $email before signing in to ExamTree. A verification link has been sent.';
+
+  @override
+  String toString() => message;
+}
+
 abstract interface class AuthSessionGateway {
   Future<void> signInWithEmailAndPassword(String email, String password);
 
@@ -31,6 +44,34 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
   const FirebaseAuthSessionGateway(this._auth);
 
   final FirebaseAuth _auth;
+
+  Future<void> _requireVerifiedEmail(User user) async {
+    await user.reload();
+    final refreshed = _auth.currentUser;
+    if (refreshed == null) {
+      await _auth.signOut();
+      throw FirebaseAuthException(
+        code: 'missing-user',
+        message: 'Firebase sign-in did not return a user.',
+      );
+    }
+
+    if (refreshed.emailVerified) {
+      await refreshed.getIdToken(true);
+      return;
+    }
+
+    try {
+      await refreshed.sendEmailVerification();
+    } catch (_) {
+      await _auth.signOut();
+      rethrow;
+    }
+
+    final email = refreshed.email?.trim() ?? '';
+    await _auth.signOut();
+    throw AuthEmailVerificationRequiredException(email);
+  }
 
   @override
   Future<void> signInWithEmailAndPassword(
@@ -51,7 +92,9 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     }
 
     try {
-      await user.getIdToken(true);
+      await _requireVerifiedEmail(user);
+    } on AuthEmailVerificationRequiredException {
+      rethrow;
     } catch (_) {
       await _auth.signOut();
       rethrow;
@@ -82,9 +125,9 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
       if (normalizedName.isNotEmpty) {
         await user.updateDisplayName(normalizedName);
       }
-      // Refresh after updating the profile so the canonical backend sees the
-      // latest Firebase identity claims during first-login provisioning.
-      await user.getIdToken(true);
+      await _requireVerifiedEmail(user);
+    } on AuthEmailVerificationRequiredException {
+      rethrow;
     } catch (_) {
       await _auth.signOut();
       rethrow;

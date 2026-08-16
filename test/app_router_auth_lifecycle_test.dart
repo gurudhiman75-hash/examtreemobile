@@ -52,5 +52,14 @@ void main() {
       expect(source, contains('auth.authStateChanges().listen'));
       expect(source, isNot(contains('ref.watch(authStateChangesProvider)')));
     });
+
+    test('restored unverified Firebase sessions cannot enter protected routes', () {
+      final source = File('lib/routes/app_router.dart').readAsStringSync();
+
+      expect(
+        source,
+        contains('bool get isAuthenticated => _user != null && _user!.emailVerified;'),
+      );
+    });
   });
 }

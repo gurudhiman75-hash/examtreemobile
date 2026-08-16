@@ -61,6 +61,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await ref
           .read(authControllerProvider)
           .signInWithEmailAndPassword(email, password);
+    } on AuthEmailVerificationRequiredException catch (error) {
+      if (!mounted) return;
+      _showMessage(
+        '${error.message} Open the link in your email, then return here and sign in again.',
+      );
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
       _showMessage(AuthErrorMessages.login(error));
@@ -111,6 +116,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             email: email,
             password: password,
           );
+    } on AuthEmailVerificationRequiredException catch (error) {
+      if (!mounted) return;
+      _showMessage(
+        '${error.message} Open the link in your email, then return here and sign in.',
+      );
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
       _showMessage(AuthErrorMessages.registration(error));
