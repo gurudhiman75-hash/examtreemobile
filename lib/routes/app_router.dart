@@ -102,7 +102,12 @@ class RouterAuthRefresh extends ChangeNotifier {
   bool _ready = false;
 
   bool get isReady => _ready;
-  bool get isAuthenticated => _user != null;
+
+  // Email/password Firebase users are not allowed into protected ExamTree
+  // routes until Firebase has verified ownership of their email. This also
+  // catches an unverified session restored from an older APK after an in-place
+  // update, ensuring it returns through the login verification flow.
+  bool get isAuthenticated => _user != null && _user!.emailVerified;
 
   @override
   void dispose() {
