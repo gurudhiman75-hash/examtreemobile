@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:examtree/core/network/api_server_readiness.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -30,6 +31,49 @@ void main() {
       expect(session.googleSignInCalls, 1);
       expect(profile.provisionCalls, 1);
       expect(session.signOutCalls, 0);
+    });
+
+    test('waits for server readiness before Google authentication', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final readiness = _FakeApiServerReadiness();
+      final controller = AuthController(session, profile, null, readiness);
+      final stages = <AuthSetupStage>[];
+
+      await controller.signInWithGoogle(onSetupStage: stages.add);
+
+      expect(readiness.ensureReadyCalls, 1);
+      expect(session.googleSignInCalls, 1);
+      expect(profile.provisionCalls, 1);
+      expect(
+        stages,
+        <AuthSetupStage>[
+          AuthSetupStage.startingServer,
+          AuthSetupStage.authenticating,
+          AuthSetupStage.syncingProfile,
+        ],
+      );
+    });
+
+    test('does not authenticate when the server cannot wake', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final readiness = _FakeApiServerReadiness(
+        error: StateError('server still asleep'),
+      );
+      final controller = AuthController(session, profile, null, readiness);
+      final stages = <AuthSetupStage>[];
+
+      await expectLater(
+        controller.signInWithGoogle(onSetupStage: stages.add),
+        throwsA(isA<AuthServerStartException>()),
+      );
+
+      expect(readiness.ensureReadyCalls, 1);
+      expect(session.googleSignInCalls, 0);
+      expect(profile.provisionCalls, 0);
+      expect(session.signOutCalls, 0);
+      expect(stages, <AuthSetupStage>[AuthSetupStage.startingServer]);
     });
 
     test('does not provision when Google authentication fails', () async {
@@ -67,7 +111,7 @@ void main() {
       );
 
       expect(profile.provisionCalls, 1);
-      expect(session.signOutCalls, 0);
+      expect(session.signOutCalls, 1);
     });
 
     test('does not provision when Firebase authentication fails', () async {
@@ -378,5 +422,19 @@ class _FakeStudentProfileProvisioner implements StudentProfileProvisioner {
     provisionCalls++;
     final provisionError = error;
     if (provisionError != null) throw provisionError;
+  }
+}
+
+class _FakeApiServerReadiness implements ApiServerReadiness {
+  _FakeApiServerReadiness({this.error});
+
+  final Object? error;
+  int ensureReadyCalls = 0;
+
+  @override
+  Future<void> ensureReady() async {
+    ensureReadyCalls++;
+    final readinessError = error;
+    if (readinessError != null) throw readinessError;
   }
 }

@@ -1,6 +1,16 @@
 name: Authenticated Android APK
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/authenticated-android-apk.yml'
+      - 'lib/**'
+      - 'test/**'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
   pull_request:
     paths:
       - '.github/workflows/authenticated-android-apk.yml'
@@ -94,10 +104,32 @@ jobs:
           cp build/app/outputs/flutter-apk/app-debug.apk \
             build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
 
+      - name: Report APK signing fingerprint
+        shell: bash
+        run: |
+          APK="build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner -print | sort -V | tail -n 1)"
+          if [[ -z "$APKSIGNER" ]]; then
+            echo "::error::Unable to locate apksigner in the Android SDK."
+            exit 1
+          fi
+          "$APKSIGNER" verify --print-certs "$APK" > build/app/outputs/flutter-apk/signing-certs.txt
+          RAW_SHA1="$(awk -F': ' '/certificate SHA-1 digest:/{print $2; exit}' build/app/outputs/flutter-apk/signing-certs.txt)"
+          if [[ -z "$RAW_SHA1" ]]; then
+            echo "::error::Unable to determine Android signing SHA-1 from the built APK."
+            cat build/app/outputs/flutter-apk/signing-certs.txt
+            exit 1
+          fi
+          SHA1="$(printf '%s' "$RAW_SHA1" | sed 's/../&:/g; s/:$//' | tr '[:lower:]' '[:upper:]')"
+          echo "APK signing SHA-1: $SHA1"
+          printf '%s\n' "$SHA1" > build/app/outputs/flutter-apk/signing-sha1.txt
+
       - name: Publish authenticated Android APK
         uses: actions/upload-artifact@v4
         with:
           name: ExamTree-1.0.1-auth-debug
-          path: build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
+          path: |
+            build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
+            build/app/outputs/flutter-apk/signing-sha1.txt
           if-no-files-found: error
           retention-days: 14

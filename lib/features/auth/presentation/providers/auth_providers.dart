@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_server_readiness.dart';
 import '../../../../core/providers/repository_providers.dart';
 import '../../domain/google_sign_in_config.dart';
 
@@ -275,6 +276,30 @@ class ApiStudentProfileProvisioner implements StudentProfileProvisioner {
   }
 }
 
+enum AuthSetupStage {
+  startingServer,
+  authenticating,
+  syncingProfile,
+}
+
+extension AuthSetupStageMessage on AuthSetupStage {
+  String get message => switch (this) {
+        AuthSetupStage.startingServer => 'Starting ExamTree server…',
+        AuthSetupStage.authenticating => 'Signing in…',
+        AuthSetupStage.syncingProfile => 'Finishing account setup…',
+      };
+}
+
+class AuthServerStartException implements Exception {
+  const AuthServerStartException();
+
+  String get message =>
+      'ExamTree server is taking longer than expected to start. Check your connection and try again.';
+
+  @override
+  String toString() => message;
+}
+
 class AuthProfileSyncException implements Exception {
   const AuthProfileSyncException({
     this.message = 'Unable to prepare your ExamTree student profile.',
@@ -311,30 +336,48 @@ class AuthController {
     this._sessionGateway,
     this._profileProvisioner, [
     this._navigationGate,
+    this._serverReadiness,
   ]);
 
   final AuthSessionGateway _sessionGateway;
   final StudentProfileProvisioner _profileProvisioner;
   final AuthNavigationGate? _navigationGate;
+  final ApiServerReadiness? _serverReadiness;
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
+  Future<void> signInWithEmailAndPassword(
+    String email,
+    String password, {
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  }) async {
+    await _ensureServerReady(onSetupStage);
+    onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.signInWithEmailAndPassword(email, password);
+    onSetupStage?.call(AuthSetupStage.syncingProfile);
     await _provisionProfile();
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle({
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  }) async {
     _navigationGate?.beginGoogleSignIn();
+    var authenticated = false;
     try {
+      await _ensureServerReady(onSetupStage);
+      onSetupStage?.call(AuthSetupStage.authenticating);
       await _sessionGateway.signInWithGoogle();
+      authenticated = true;
+      onSetupStage?.call(AuthSetupStage.syncingProfile);
       await _provisionProfile(
         failureMessage:
             'Google sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
       );
     } catch (_) {
-      try {
-        await _sessionGateway.signOut();
-      } catch (_) {
-        // Preserve the original Google/Firebase/profile failure.
+      if (authenticated) {
+        try {
+          await _sessionGateway.signOut();
+        } catch (_) {
+          // Preserve the original profile failure.
+        }
       }
       rethrow;
     } finally {
@@ -346,17 +389,35 @@ class AuthController {
     required String displayName,
     required String email,
     required String password,
+    ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
+    await _ensureServerReady(onSetupStage);
+    onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.createUserWithEmailAndPassword(
       displayName: displayName.trim(),
       email: email.trim(),
       password: password,
     );
 
+    onSetupStage?.call(AuthSetupStage.syncingProfile);
     await _provisionProfile(
       failureMessage:
           'Your account was created, but ExamTree could not finish setup. Please try again.',
     );
+  }
+
+  Future<void> _ensureServerReady(
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  ) async {
+    final serverReadiness = _serverReadiness;
+    if (serverReadiness == null) return;
+
+    onSetupStage?.call(AuthSetupStage.startingServer);
+    try {
+      await serverReadiness.ensureReady();
+    } catch (_) {
+      throw const AuthServerStartException();
+    }
   }
 
   Future<void> _provisionProfile({
@@ -398,5 +459,6 @@ final authControllerProvider = Provider<AuthController>((ref) {
     ref.watch(authSessionGatewayProvider),
     ref.watch(studentProfileProvisionerProvider),
     ref.watch(authNavigationGateProvider),
+    ref.watch(apiServerReadinessProvider),
   );
 });

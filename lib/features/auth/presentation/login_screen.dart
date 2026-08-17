@@ -24,6 +24,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _registerMode = false;
+  String? _loadingMessage;
 
   @override
   void dispose() {
@@ -57,11 +58,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    _beginLoading('Preparing sign-in…');
     try {
-      await ref
-          .read(authControllerProvider)
-          .signInWithEmailAndPassword(email, password);
+      await ref.read(authControllerProvider).signInWithEmailAndPassword(
+            email,
+            password,
+            onSetupStage: _onSetupStage,
+          );
+    } on AuthServerStartException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
     } on AuthEmailVerificationRequiredException catch (error) {
       if (!mounted) return;
       _showMessage(
@@ -77,15 +83,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       _showMessage('Unable to sign in. Please try again.');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _endLoading();
     }
   }
 
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
-    setState(() => _isLoading = true);
+    _beginLoading('Preparing Google sign-in…');
     try {
-      await ref.read(authControllerProvider).signInWithGoogle();
+      await ref.read(authControllerProvider).signInWithGoogle(
+            onSetupStage: _onSetupStage,
+          );
+    } on AuthServerStartException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
     } on GoogleSignInException catch (error) {
       if (!mounted) return;
       final detail = error.description?.trim();
@@ -127,7 +138,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       _showMessage('Unable to sign in with Google: $error');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _endLoading();
     }
   }
 
@@ -160,13 +171,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    _beginLoading('Preparing account setup…');
     try {
       await ref.read(authControllerProvider).registerWithEmailAndPassword(
             displayName: name,
             email: email,
             password: password,
+            onSetupStage: _onSetupStage,
           );
+    } on AuthServerStartException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
     } on AuthEmailVerificationRequiredException catch (error) {
       if (!mounted) return;
       _showMessage(
@@ -182,8 +197,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       _showMessage('Unable to create your account. Please try again.');
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _endLoading();
     }
+  }
+
+  void _beginLoading(String message) {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = true;
+      _loadingMessage = message;
+    });
+  }
+
+  void _onSetupStage(AuthSetupStage stage) {
+    if (!mounted) return;
+    setState(() => _loadingMessage = stage.message);
+  }
+
+  void _endLoading() {
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      _loadingMessage = null;
+    });
   }
 
   void _toggleMode() {
@@ -271,6 +307,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       label: const Text('Continue with Google'),
                     ),
                   ),
+                  if (_isLoading && _loadingMessage != null) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Flexible(
+                          child: Text(
+                            _loadingMessage!,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.lg),
                   Row(
                     children: [
