@@ -19,18 +19,38 @@ Uri apiHealthUriForBase(String apiBaseUrl) {
   );
 }
 
+bool isRetryableApiReadinessError(Object error) {
+  if (error is! DioException) return false;
+
+  return switch (error.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.sendTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.connectionError ||
+    DioExceptionType.unknown => true,
+    DioExceptionType.badResponse => switch (error.response?.statusCode) {
+        408 || 425 || 429 => true,
+        final status? when status >= 500 => true,
+        _ => false,
+      },
+    DioExceptionType.badCertificate || DioExceptionType.cancel => false,
+  };
+}
+
 class DioApiServerReadiness implements ApiServerReadiness {
   DioApiServerReadiness({
     required String apiBaseUrl,
     Dio? probeClient,
     this.readyTtl = const Duration(minutes: 3),
+    this.startupTimeout = const Duration(minutes: 3),
+    this.retryDelay = const Duration(seconds: 2),
   })  : healthUri = apiHealthUriForBase(apiBaseUrl),
         _probeClient = probeClient ??
             Dio(
               BaseOptions(
-                connectTimeout: const Duration(seconds: 90),
-                sendTimeout: const Duration(seconds: 30),
-                receiveTimeout: const Duration(seconds: 90),
+                connectTimeout: const Duration(seconds: 20),
+                sendTimeout: const Duration(seconds: 20),
+                receiveTimeout: const Duration(seconds: 35),
                 headers: const {
                   'Accept': 'application/json',
                   'x-examtree-device': 'android-warmup',
@@ -41,6 +61,8 @@ class DioApiServerReadiness implements ApiServerReadiness {
 
   final Uri healthUri;
   final Duration readyTtl;
+  final Duration startupTimeout;
+  final Duration retryDelay;
   final Dio _probeClient;
   final bool _ownsProbeClient;
 
@@ -69,8 +91,29 @@ class DioApiServerReadiness implements ApiServerReadiness {
   }
 
   Future<void> _probe() async {
-    await _probeClient.getUri<Object?>(healthUri);
-    _lastReadyAt = DateTime.now();
+    final stopwatch = Stopwatch()..start();
+    Object? lastError;
+
+    while (true) {
+      try {
+        await _probeClient.getUri<Object?>(healthUri);
+        _lastReadyAt = DateTime.now();
+        return;
+      } catch (error) {
+        lastError = error;
+        if (!isRetryableApiReadinessError(error)) {
+          rethrow;
+        }
+      }
+
+      final remaining = startupTimeout - stopwatch.elapsed;
+      if (remaining <= Duration.zero) {
+        throw lastError!;
+      }
+
+      final wait = remaining < retryDelay ? remaining : retryDelay;
+      await Future<void>.delayed(wait);
+    }
   }
 
   void close() {
