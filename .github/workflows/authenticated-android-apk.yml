@@ -114,7 +114,7 @@ jobs:
             exit 1
           fi
           "$APKSIGNER" verify --print-certs "$APK" > build/app/outputs/flutter-apk/signing-certs.txt
-          RAW_SHA1="$(awk -F': ' '/Signer #1 certificate SHA-1 digest:/{print $2; exit}' build/app/outputs/flutter-apk/signing-certs.txt)"
+          RAW_SHA1="$(awk -F': ' '/certificate SHA-1 digest:/{print $2; exit}' build/app/outputs/flutter-apk/signing-certs.txt)"
           if [[ -z "$RAW_SHA1" ]]; then
             echo "::error::Unable to determine Android signing SHA-1 from the built APK."
             cat build/app/outputs/flutter-apk/signing-certs.txt
