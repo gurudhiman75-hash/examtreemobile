@@ -107,17 +107,20 @@ jobs:
       - name: Report APK signing fingerprint
         shell: bash
         run: |
-          SHA1="$(keytool -list -v \
-            -keystore "$HOME/.android/debug.keystore" \
-            -alias androiddebugkey \
-            -storepass android \
-            -keypass android \
-            | sed -n 's/^[[:space:]]*SHA1:[[:space:]]*//p' \
-            | head -n 1)"
-          if [[ -z "$SHA1" ]]; then
-            echo "::error::Unable to determine Android signing SHA-1."
+          APK="build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner -print | sort -V | tail -n 1)"
+          if [[ -z "$APKSIGNER" ]]; then
+            echo "::error::Unable to locate apksigner in the Android SDK."
             exit 1
           fi
+          "$APKSIGNER" verify --print-certs "$APK" > build/app/outputs/flutter-apk/signing-certs.txt
+          RAW_SHA1="$(awk -F': ' '/Signer #1 certificate SHA-1 digest:/{print $2; exit}' build/app/outputs/flutter-apk/signing-certs.txt)"
+          if [[ -z "$RAW_SHA1" ]]; then
+            echo "::error::Unable to determine Android signing SHA-1 from the built APK."
+            cat build/app/outputs/flutter-apk/signing-certs.txt
+            exit 1
+          fi
+          SHA1="$(printf '%s' "$RAW_SHA1" | sed 's/../&:/g; s/:$//' | tr '[:lower:]' '[:upper:]')"
           echo "APK signing SHA-1: $SHA1"
           printf '%s\n' "$SHA1" > build/app/outputs/flutter-apk/signing-sha1.txt
 
