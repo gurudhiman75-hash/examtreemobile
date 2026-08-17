@@ -108,7 +108,7 @@ class DioApiServerReadiness implements ApiServerReadiness {
 
       final remaining = startupTimeout - stopwatch.elapsed;
       if (remaining <= Duration.zero) {
-        throw lastError!;
+        throw lastError;
       }
 
       final wait = remaining < retryDelay ? remaining : retryDelay;
