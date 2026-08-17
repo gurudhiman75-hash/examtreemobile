@@ -297,6 +297,7 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
     this.signInError,
     this.googleSignInError,
     this.registrationError,
+    // ignore: unused_element_parameter
     this.passwordResetError,
     this.signOutError,
   });
