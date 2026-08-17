@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/providers/repository_providers.dart';
+import '../../domain/google_sign_in_config.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;
@@ -29,6 +31,8 @@ class AuthEmailVerificationRequiredException implements Exception {
 abstract interface class AuthSessionGateway {
   Future<void> signInWithEmailAndPassword(String email, String password);
 
+  Future<void> signInWithGoogle();
+
   Future<void> createUserWithEmailAndPassword({
     required String displayName,
     required String email,
@@ -41,11 +45,29 @@ abstract interface class AuthSessionGateway {
 }
 
 class FirebaseAuthSessionGateway implements AuthSessionGateway {
-  const FirebaseAuthSessionGateway(this._auth);
+  FirebaseAuthSessionGateway(
+    this._auth, {
+    GoogleSignIn? googleSignIn,
+  }) : _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
 
   final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
+  Future<void>? _googleInitialization;
 
-  Future<void> _requireVerifiedEmail(User user) async {
+  Future<void> _ensureGoogleInitialized() {
+    if (!isGoogleSignInConfigured) {
+      throw FirebaseAuthException(
+        code: 'google-sign-in-not-configured',
+        message: 'Google Sign-In is not configured for this ExamTree build.',
+      );
+    }
+
+    return _googleInitialization ??= _googleSignIn.initialize(
+      serverClientId: googleServerClientId,
+    );
+  }
+
+  Future<User> _reloadCurrentUser(User user) async {
     await user.reload();
     final refreshed = _auth.currentUser;
     if (refreshed == null) {
@@ -55,7 +77,11 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
         message: 'Firebase sign-in did not return a user.',
       );
     }
+    return refreshed;
+  }
 
+  Future<void> _requireVerifiedPasswordEmail(User user) async {
+    final refreshed = await _reloadCurrentUser(user);
     if (refreshed.emailVerified) {
       await refreshed.getIdToken(true);
       return;
@@ -71,6 +97,30 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     final email = refreshed.email?.trim() ?? '';
     await _auth.signOut();
     throw AuthEmailVerificationRequiredException(email);
+  }
+
+  Future<void> _requireVerifiedGoogleEmail(User user) async {
+    final refreshed = await _reloadCurrentUser(user);
+    if (!refreshed.emailVerified) {
+      await _auth.signOut();
+      await _signOutGoogleIfInitialized();
+      throw FirebaseAuthException(
+        code: 'google-email-unverified',
+        message: 'Google did not provide a verified email address.',
+      );
+    }
+    await refreshed.getIdToken(true);
+  }
+
+  Future<void> _signOutGoogleIfInitialized() async {
+    final initialization = _googleInitialization;
+    if (initialization == null) return;
+    try {
+      await initialization;
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Firebase remains the canonical app session. Google cleanup is best-effort.
+    }
   }
 
   @override
@@ -92,11 +142,50 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     }
 
     try {
-      await _requireVerifiedEmail(user);
+      await _requireVerifiedPasswordEmail(user);
     } on AuthEmailVerificationRequiredException {
       rethrow;
     } catch (_) {
       await _auth.signOut();
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> signInWithGoogle() async {
+    await _ensureGoogleInitialized();
+    if (!_googleSignIn.supportsAuthenticate()) {
+      throw FirebaseAuthException(
+        code: 'google-sign-in-unsupported',
+        message: 'Google Sign-In is not supported on this device.',
+      );
+    }
+
+    final googleUser = await _googleSignIn.authenticate();
+    final googleAuthentication = googleUser.authentication;
+    final idToken = googleAuthentication.idToken;
+    if (idToken == null || idToken.trim().isEmpty) {
+      await _signOutGoogleIfInitialized();
+      throw FirebaseAuthException(
+        code: 'google-id-token-missing',
+        message: 'Google Sign-In did not return an ID token.',
+      );
+    }
+
+    try {
+      final firebaseCredential = GoogleAuthProvider.credential(idToken: idToken);
+      final credential = await _auth.signInWithCredential(firebaseCredential);
+      final user = credential.user;
+      if (user == null) {
+        throw FirebaseAuthException(
+          code: 'missing-user',
+          message: 'Firebase Google sign-in did not return a user.',
+        );
+      }
+      await _requireVerifiedGoogleEmail(user);
+    } catch (_) {
+      await _auth.signOut();
+      await _signOutGoogleIfInitialized();
       rethrow;
     }
   }
@@ -125,7 +214,7 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
       if (normalizedName.isNotEmpty) {
         await user.updateDisplayName(normalizedName);
       }
-      await _requireVerifiedEmail(user);
+      await _requireVerifiedPasswordEmail(user);
     } on AuthEmailVerificationRequiredException {
       rethrow;
     } catch (_) {
@@ -140,7 +229,10 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
   }
 
   @override
-  Future<void> signOut() => _auth.signOut();
+  Future<void> signOut() async {
+    await _auth.signOut();
+    await _signOutGoogleIfInitialized();
+  }
 }
 
 abstract interface class StudentProfileProvisioner {
@@ -198,6 +290,14 @@ class AuthController {
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _sessionGateway.signInWithEmailAndPassword(email, password);
     await _provisionProfile();
+  }
+
+  Future<void> signInWithGoogle() async {
+    await _sessionGateway.signInWithGoogle();
+    await _provisionProfile(
+      failureMessage:
+          'Google sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
+    );
   }
 
   Future<void> registerWithEmailAndPassword({
