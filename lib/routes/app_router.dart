@@ -79,7 +79,10 @@ String? resolveAuthRedirect({
 }
 
 class RouterAuthRefresh extends ChangeNotifier {
-  RouterAuthRefresh(FirebaseAuth auth) : _user = auth.currentUser {
+  RouterAuthRefresh(FirebaseAuth auth, AuthNavigationGate navigationGate)
+      : _navigationGate = navigationGate,
+        _user = auth.currentUser {
+    _navigationGate.addListener(_handleNavigationGateChanged);
     _subscription = auth.authStateChanges().listen(
       (user) {
         _user = user;
@@ -98,26 +101,38 @@ class RouterAuthRefresh extends ChangeNotifier {
   }
 
   late final StreamSubscription<User?> _subscription;
+  final AuthNavigationGate _navigationGate;
   User? _user;
   bool _ready = false;
 
   bool get isReady => _ready;
 
   // Email/password Firebase users are not allowed into protected ExamTree
-  // routes until Firebase has verified ownership of their email. This also
-  // catches an unverified session restored from an older APK after an in-place
-  // update, ensuring it returns through the login verification flow.
-  bool get isAuthenticated => _user != null && _user!.emailVerified;
+  // routes until Firebase has verified ownership of their email. Google
+  // interactive sign-in additionally remains on the login route until the
+  // canonical /users/me profile sync has completed successfully.
+  bool get isAuthenticated =>
+      _user != null &&
+      _user!.emailVerified &&
+      !_navigationGate.blocksAuthenticatedRedirect;
+
+  void _handleNavigationGateChanged() {
+    notifyListeners();
+  }
 
   @override
   void dispose() {
+    _navigationGate.removeListener(_handleNavigationGateChanged);
     _subscription.cancel();
     super.dispose();
   }
 }
 
 final routerAuthRefreshProvider = Provider<RouterAuthRefresh>((ref) {
-  final refresh = RouterAuthRefresh(ref.watch(firebaseAuthProvider));
+  final refresh = RouterAuthRefresh(
+    ref.watch(firebaseAuthProvider),
+    ref.watch(authNavigationGateProvider),
+  );
   ref.onDispose(refresh.dispose);
   return refresh;
 });
