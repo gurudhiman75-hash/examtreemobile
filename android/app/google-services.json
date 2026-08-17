@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1083299267005",
+    "project_id": "sarbedutech",
+    "storage_bucket": "sarbedutech.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083299267005:android:3986910db48dd12e3ad2d4",
+        "android_client_info": {
+          "package_name": "com.examtree.examtree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1083299267005-98usbfnsiagh5eimsqc0vhlq3vd92tev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.examtree.examtree",
+            "certificate_hash": "7166a1935ef3b5680a62370dbe67a08a091f583c"
+          }
+        },
+        {
+          "client_id": "1083299267005-s50rpi93utao2k8m7446ht8ql782ov1q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9VjPYM_rVIkvTUqrPOuN_qjCcVorXK7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083299267005-s50rpi93utao2k8m7446ht8ql782ov1q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

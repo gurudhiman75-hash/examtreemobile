@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -13,6 +14,30 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
 
 final authStateChangesProvider = StreamProvider<User?>((ref) {
   return ref.watch(firebaseAuthProvider).authStateChanges();
+});
+
+class AuthNavigationGate extends ChangeNotifier {
+  bool _googleSignInInProgress = false;
+
+  bool get blocksAuthenticatedRedirect => _googleSignInInProgress;
+
+  void beginGoogleSignIn() {
+    if (_googleSignInInProgress) return;
+    _googleSignInInProgress = true;
+    notifyListeners();
+  }
+
+  void endGoogleSignIn() {
+    if (!_googleSignInInProgress) return;
+    _googleSignInInProgress = false;
+    notifyListeners();
+  }
+}
+
+final authNavigationGateProvider = Provider<AuthNavigationGate>((ref) {
+  final gate = AuthNavigationGate();
+  ref.onDispose(gate.dispose);
+  return gate;
 });
 
 class AuthEmailVerificationRequiredException implements Exception {
@@ -282,10 +307,15 @@ bool shouldEndSessionForProfileFailure(Object error) {
 }
 
 class AuthController {
-  const AuthController(this._sessionGateway, this._profileProvisioner);
+  const AuthController(
+    this._sessionGateway,
+    this._profileProvisioner, [
+    this._navigationGate,
+  ]);
 
   final AuthSessionGateway _sessionGateway;
   final StudentProfileProvisioner _profileProvisioner;
+  final AuthNavigationGate? _navigationGate;
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     await _sessionGateway.signInWithEmailAndPassword(email, password);
@@ -293,11 +323,23 @@ class AuthController {
   }
 
   Future<void> signInWithGoogle() async {
-    await _sessionGateway.signInWithGoogle();
-    await _provisionProfile(
-      failureMessage:
-          'Google sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
-    );
+    _navigationGate?.beginGoogleSignIn();
+    try {
+      await _sessionGateway.signInWithGoogle();
+      await _provisionProfile(
+        failureMessage:
+            'Google sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
+      );
+    } catch (_) {
+      try {
+        await _sessionGateway.signOut();
+      } catch (_) {
+        // Preserve the original Google/Firebase/profile failure.
+      }
+      rethrow;
+    } finally {
+      _navigationGate?.endGoogleSignIn();
+    }
   }
 
   Future<void> registerWithEmailAndPassword({
@@ -355,5 +397,6 @@ final authControllerProvider = Provider<AuthController>((ref) {
   return AuthController(
     ref.watch(authSessionGatewayProvider),
     ref.watch(studentProfileProvisionerProvider),
+    ref.watch(authNavigationGateProvider),
   );
 });
