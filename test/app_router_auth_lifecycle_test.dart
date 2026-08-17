@@ -56,10 +56,18 @@ void main() {
     test('restored unverified Firebase sessions cannot enter protected routes', () {
       final source = File('lib/routes/app_router.dart').readAsStringSync();
 
+      expect(source, contains('_user!.emailVerified'));
+    });
+
+    test('Google auth stays on login until canonical profile sync finishes', () {
+      final source = File('lib/routes/app_router.dart').readAsStringSync();
+
       expect(
         source,
-        contains('bool get isAuthenticated => _user != null && _user!.emailVerified;'),
+        contains('!_navigationGate.blocksAuthenticatedRedirect'),
       );
+      expect(source, contains('_navigationGate.addListener'));
+      expect(source, contains('_navigationGate.removeListener'));
     });
   });
 }
