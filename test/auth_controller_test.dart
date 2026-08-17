@@ -20,6 +20,56 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
+    test('provisions the canonical profile after Google sign-in', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await controller.signInWithGoogle();
+
+      expect(session.googleSignInCalls, 1);
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('does not provision when Google authentication fails', () async {
+      final session = _FakeAuthSessionGateway(
+        googleSignInError: StateError('google sign-in failed'),
+      );
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithGoogle(),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(session.googleSignInCalls, 1);
+      expect(profile.provisionCalls, 0);
+    });
+
+    test('Google profile setup reports a Google-specific message', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: StateError('backend unavailable'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithGoogle(),
+        throwsA(
+          isA<AuthProfileSyncException>().having(
+            (error) => error.message,
+            'message',
+            contains('Google sign-in succeeded'),
+          ),
+        ),
+      );
+
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
     test('does not provision when Firebase authentication fails', () async {
       final session = _FakeAuthSessionGateway(
         signInError: StateError('invalid credentials'),
@@ -245,18 +295,20 @@ DioException _apiFailure(int statusCode, String code) {
 class _FakeAuthSessionGateway implements AuthSessionGateway {
   _FakeAuthSessionGateway({
     this.signInError,
+    this.googleSignInError,
     this.registrationError,
-    // ignore: unused_element_parameter
     this.passwordResetError,
     this.signOutError,
   });
 
   final Object? signInError;
+  final Object? googleSignInError;
   final Object? registrationError;
   final Object? passwordResetError;
   final Object? signOutError;
 
   int signInCalls = 0;
+  int googleSignInCalls = 0;
   int registrationCalls = 0;
   int passwordResetCalls = 0;
   int signOutCalls = 0;
@@ -274,6 +326,13 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
     lastEmail = email;
     lastPassword = password;
     final error = signInError;
+    if (error != null) throw error;
+  }
+
+  @override
+  Future<void> signInWithGoogle() async {
+    googleSignInCalls++;
+    final error = googleSignInError;
     if (error != null) throw error;
   }
 
