@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/providers/repository_providers.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
 import 'features/companion/presentation/providers/daily_companion_providers.dart';
@@ -65,6 +66,11 @@ class ExamTreeApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
+
+    // Free Render instances may be asleep when the app opens. Start the wakeup
+    // request in the background immediately; authentication will await the same
+    // shared readiness probe if the user reaches Login before it completes.
+    ref.watch(apiServerWarmupProvider);
 
     ref.listen(authStateChangesProvider, (previous, next) {
       next.whenData((user) {
