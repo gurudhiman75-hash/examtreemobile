@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/test_attempt/data/local_attempt_draft_store.dart';
 import '../network/api_client.dart';
+import '../network/api_server_readiness.dart';
 import '../repositories/analytics_repository.dart';
 import '../repositories/api_attempt_session_repository.dart';
 import '../repositories/api_exam_repository.dart';
@@ -13,6 +14,23 @@ import '../repositories/result_repository.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient();
+});
+
+final apiServerReadinessProvider = Provider<ApiServerReadiness>((ref) {
+  final readiness = DioApiServerReadiness(
+    apiBaseUrl: ref.watch(apiClientProvider).dio.options.baseUrl,
+  );
+  ref.onDispose(readiness.close);
+  return readiness;
+});
+
+final apiServerWarmupProvider = FutureProvider<void>((ref) async {
+  try {
+    await ref.watch(apiServerReadinessProvider).ensureReady();
+  } catch (_) {
+    // Startup warmup is best-effort. Authentication retries the same readiness
+    // probe with a visible status before creating or synchronizing a session.
+  }
 });
 
 final examRepositoryProvider = Provider<ExamRepository>((ref) {
