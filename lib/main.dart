@@ -37,7 +37,15 @@ Future<void> main() async {
   }
 
   try {
-    await Firebase.initializeApp(options: configuration.options);
+    if (configuration.platform == FirebaseClientPlatform.android) {
+      // Android uses the refreshed google-services.json processed by the
+      // Google Services Gradle plugin. This keeps Firebase Auth, Google Sign-In,
+      // the Android OAuth client, API key, package name and SHA registration on
+      // the same native configuration source.
+      await Firebase.initializeApp();
+    } else {
+      await Firebase.initializeApp(options: configuration.options);
+    }
   } catch (error) {
     runApp(
       FirebaseStartupErrorApp(
