@@ -47,6 +47,24 @@ jobs:
           path: ~/.android/debug.keystore
           key: examtree-android-debug-keystore-v1
 
+      - name: Ensure stable debug signing key exists
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.android"
+          if [[ ! -s "$HOME/.android/debug.keystore" ]]; then
+            keytool -genkeypair \
+              -keystore "$HOME/.android/debug.keystore" \
+              -storetype JKS \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          test -s "$HOME/.android/debug.keystore"
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -114,8 +132,8 @@ jobs:
             exit 1
           fi
           "$APKSIGNER" verify --print-certs "$APK" > build/app/outputs/flutter-apk/signing-certs.txt
-          RAW_SHA1="$(awk -F': ' '/certificate SHA-1 digest:/{print $2; exit}' build/app/outputs/flutter-apk/signing-certs.txt)"
-          if [[ -z "$RAW_SHA1" ]]; then
+          RAW_SHA1="$(sed -n 's/^.*certificate SHA-1 digest: //p' build/app/outputs/flutter-apk/signing-certs.txt | head -n 1)"
+          if [[ ! "$RAW_SHA1" =~ ^[0-9a-fA-F]{40}$ ]]; then
             echo "::error::Unable to determine Android signing SHA-1 from the built APK."
             cat build/app/outputs/flutter-apk/signing-certs.txt
             exit 1
