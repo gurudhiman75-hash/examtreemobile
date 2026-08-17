@@ -1,6 +1,16 @@
 name: Authenticated Android APK
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/authenticated-android-apk.yml'
+      - 'lib/**'
+      - 'test/**'
+      - 'android/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
   pull_request:
     paths:
       - '.github/workflows/authenticated-android-apk.yml'
@@ -94,10 +104,29 @@ jobs:
           cp build/app/outputs/flutter-apk/app-debug.apk \
             build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
 
+      - name: Report APK signing fingerprint
+        shell: bash
+        run: |
+          SHA1="$(keytool -list -v \
+            -keystore "$HOME/.android/debug.keystore" \
+            -alias androiddebugkey \
+            -storepass android \
+            -keypass android \
+            | sed -n 's/^[[:space:]]*SHA1:[[:space:]]*//p' \
+            | head -n 1)"
+          if [[ -z "$SHA1" ]]; then
+            echo "::error::Unable to determine Android signing SHA-1."
+            exit 1
+          fi
+          echo "APK signing SHA-1: $SHA1"
+          printf '%s\n' "$SHA1" > build/app/outputs/flutter-apk/signing-sha1.txt
+
       - name: Publish authenticated Android APK
         uses: actions/upload-artifact@v4
         with:
           name: ExamTree-1.0.1-auth-debug
-          path: build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
+          path: |
+            build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
+            build/app/outputs/flutter-apk/signing-sha1.txt
           if-no-files-found: error
           retention-days: 14
