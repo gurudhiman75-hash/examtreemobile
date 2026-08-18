@@ -135,6 +135,11 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Performance'), findsOneWidget);
+
+    await tester.drag(find.byType(ListView), const Offset(0, -1200));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
     expect(find.text('Account'), findsOneWidget);
   });
 }
