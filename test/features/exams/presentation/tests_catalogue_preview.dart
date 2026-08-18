@@ -71,6 +71,9 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    final baseTheme = AppTheme.lightTheme;
+    final pinnedTextTheme = baseTheme.textTheme.apply(fontFamily: 'Roboto');
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -79,8 +82,11 @@ void main() {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme.copyWith(
-            textTheme: AppTheme.lightTheme.textTheme.apply(fontFamily: 'Roboto'),
+          theme: baseTheme.copyWith(
+            textTheme: pinnedTextTheme,
+            chipTheme: baseTheme.chipTheme.copyWith(
+              labelStyle: pinnedTextTheme.labelMedium,
+            ),
           ),
           home: const MediaQuery(
             data: MediaQueryData(
