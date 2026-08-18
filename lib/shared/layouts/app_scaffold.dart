@@ -14,6 +14,8 @@ bool shouldResetBranchOnSelection({
   return selectedIndex == 0 || selectedIndex == currentIndex;
 }
 
+bool shouldUseExtendedDailyAction(int currentIndex) => currentIndex == 0;
+
 class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -40,19 +42,28 @@ class AppScaffold extends ConsumerWidget {
     ref.watch(dailyCompanionSnapshotProvider);
 
     final scheme = Theme.of(context).colorScheme;
+    final extendedDaily = shouldUseExtendedDailyAction(
+      navigationShell.currentIndex,
+    );
 
     return Scaffold(
       body: navigationShell,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/daily'),
-        tooltip: 'Open Daily Companion',
-        elevation: 1,
-        highlightElevation: 2,
-        backgroundColor: scheme.tertiaryContainer,
-        foregroundColor: scheme.onTertiaryContainer,
-        icon: const Icon(Icons.auto_awesome_rounded, size: 20),
-        label: const Text('Daily'),
-      ),
+      floatingActionButton: extendedDaily
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push('/daily'),
+              tooltip: 'Open Daily Companion',
+              backgroundColor: scheme.tertiaryContainer,
+              foregroundColor: scheme.onTertiaryContainer,
+              icon: const Icon(Icons.auto_awesome_rounded, size: 20),
+              label: const Text('Daily'),
+            )
+          : FloatingActionButton.small(
+              onPressed: () => context.push('/daily'),
+              tooltip: 'Open Daily Companion',
+              backgroundColor: scheme.tertiaryContainer,
+              foregroundColor: scheme.onTertiaryContainer,
+              child: const Icon(Icons.auto_awesome_rounded, size: 20),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
@@ -64,7 +75,6 @@ class AppScaffold extends ConsumerWidget {
         child: SafeArea(
           top: false,
           child: NavigationBar(
-            height: 72,
             elevation: 0,
             backgroundColor: Colors.transparent,
             indicatorColor: scheme.primaryContainer,
