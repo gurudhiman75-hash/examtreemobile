@@ -1,6 +1,6 @@
 # ExamTree Mobile Home Experience Roadmap
 
-Status: Implementation in progress — UI foundation + Home Command Centre V4  
+Status: Phase A implementation and visual audit active  
 Scope: Student mobile application  
 Primary surface: Home tab  
 Principle: The home screen is the student's daily learning command centre, not a collection of promotional cards.
@@ -22,10 +22,10 @@ Implemented on `ui/mobile-foundation-v1` / PR #46:
 - compact recent-result review card;
 - horizontally-scannable test discovery rail with duplicate active/primary tests removed;
 - independent loading/error/empty states preserved;
-- new Home V4 widget coverage including empty-catalogue truthfulness and 200% text-scale smoke coverage;
-- existing golden preview workflow remains the visual review authority;
-- visual audit now checks generated 390×844 phone screenshots rather than relying on build success alone;
-- button themes inherit canonical label typography so screenshot rendering and production typography do not diverge.
+- Home V4 widget coverage including empty-catalogue truthfulness and 200% text-scale smoke coverage;
+- golden preview workflow remains the visual review authority;
+- generated 390×844 phone screenshots are inspected as part of the UI gate rather than relying on build success alone;
+- button themes inherit canonical `labelLarge` typography so golden rendering and runtime typography stay on one path.
 
 Still intentionally not surfaced without canonical contracts:
 
@@ -525,4 +525,4 @@ Product metrics to instrument after the event pipeline exists:
 
 ## 12. Decision
 
-Home Command Centre V4 is now the active implementation candidate on PR #46. Keep current canonical APIs and action priority unchanged while validating visual hierarchy, golden previews, large-text behavior and Android packaging. Planner, streak, courses, current affairs and live-class modules remain gated until their data contracts exist.
+Home Command Centre V4 is the active implementation candidate on PR #46. Keep current canonical APIs and action priority unchanged while validating visual hierarchy, golden previews, large-text behavior and Android packaging. Planner, streak, courses, current affairs and live-class modules remain gated until their data contracts exist.
