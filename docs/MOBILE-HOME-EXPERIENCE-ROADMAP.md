@@ -1,9 +1,40 @@
 # ExamTree Mobile Home Experience Roadmap
 
-Status: Design baseline  
+Status: Phase A implementation and visual audit active  
 Scope: Student mobile application  
 Primary surface: Home tab  
 Principle: The home screen is the student's daily learning command centre, not a collection of promotional cards.
+
+## Current implementation checkpoint — 18 August 2026
+
+Implemented on `ui/mobile-foundation-v1` / PR #46:
+
+- shared deep-indigo + teal mobile visual foundation;
+- cleaner neutral surfaces and tighter mobile typography hierarchy;
+- standardized Material 3 cards, buttons, inputs, chips, navigation, FABs and progress indicators;
+- 48dp minimum primary/secondary button touch target contract;
+- Home Command Centre V4 routed as the active Home implementation;
+- compact identity/date/search/profile header replacing the oversized decorative greeting surface;
+- one dominant state-aware learning action using the existing canonical Resume → Review → Start → Browse priority;
+- active-attempt continuation rail before analytics when additional saved attempts exist;
+- compact Performance Pulse using canonical attempt analytics only;
+- reduced secondary action density for Tests and Results;
+- compact recent-result review card;
+- horizontally-scannable test discovery rail with duplicate active/primary tests removed;
+- independent loading/error/empty states preserved;
+- Home V4 widget coverage including empty-catalogue truthfulness and 200% text-scale smoke coverage;
+- golden preview workflow remains the visual review authority;
+- generated 390×844 phone screenshots are inspected as part of the UI gate rather than relying on build success alone;
+- button themes inherit canonical `labelLarge` typography so golden rendering and runtime typography stay on one path.
+
+Still intentionally not surfaced without canonical contracts:
+
+- fabricated streaks or daily missions;
+- readiness scores;
+- planner tasks;
+- course/library entitlement modules;
+- adaptive weakness prescriptions beyond truthful weakest-topic display;
+- live-class/community placeholders.
 
 ## 1. Product vision
 
@@ -345,7 +376,7 @@ Until Learn and Practice have canonical content services, the existing Home, Tes
 
 ### Phase A — Home foundation, front-end first
 
-Can be implemented while backend deployment is unavailable.
+Current status: HME-001 through HME-006 substantially implemented; HME-007 feature gating exists for future modules; HME-008 coverage is active and being extended.
 
 - HME-001: modular home feed architecture;
 - HME-002: compact header and state-aware primary action;
@@ -423,33 +454,34 @@ Requires event and community services.
 
 ## 9. Immediate implementation sequence
 
-The first implementation batch should remain truthful with current APIs.
+### Batch 1: Home Command Centre v2 → superseded by V4 active implementation
 
-### Batch 1: Home Command Centre v2
+Implemented:
 
-1. Replace the large decorative greeting card with a compact command header.
-2. Introduce a state-aware primary action using active attempts and latest results.
-3. Put Continue Learning before analytics when an active test exists.
-4. Present analytics as a compact performance pulse.
-5. Replace the fixed quick-action row with context actions.
-6. Use a horizontal recommendation rail rather than long full-width repeated cards.
-7. Add feature-gated visual slots for target exam and daily mission without fake data.
-8. Preserve section-level failure isolation and pull-to-refresh.
+1. Compact command header.
+2. State-aware primary action using active attempts and latest results.
+3. Continue Learning before analytics when additional active tests exist.
+4. Compact Performance Pulse.
+5. Context actions instead of a fixed broad quick-action row.
+6. Horizontal recommendation rail.
+7. Future modules remain hidden/feature-gated rather than populated with fake data.
+8. Section-level failure isolation and pull-to-refresh preserved.
 
 ### Batch 2: Home component system
+
+Implemented shared components include:
 
 - HomeModuleShell;
 - HomeSectionHeader;
 - LearningActionCard;
 - CompactMetric;
 - HorizontalContentRail;
-- FeatureUnavailableCard;
 - SyncStateBanner;
 - HomeSkeleton variants.
 
 ### Batch 3: Home state tests
 
-Required states:
+Coverage target remains:
 
 - new learner with no attempts;
 - learner with an active test;
@@ -493,4 +525,4 @@ Product metrics to instrument after the event pipeline exists:
 
 ## 12. Decision
 
-The next code slice is HME-001 through HME-004: Home Command Centre v2 using only current canonical mobile data. Planner, streak, courses, current affairs and live-class modules remain feature-gated until their data contracts exist.
+Home Command Centre V4 is the active implementation candidate on PR #46. Keep current canonical APIs and action priority unchanged while validating visual hierarchy, golden previews, large-text behavior and Android packaging. Planner, streak, courses, current affairs and live-class modules remain gated until their data contracts exist.
