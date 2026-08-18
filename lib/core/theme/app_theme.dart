@@ -73,20 +73,20 @@ class AppTheme {
         backgroundColor: AppColors.surfaceContainerLowest,
         indicatorColor: AppColors.primaryContainer,
         elevation: 0,
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
           return TextStyle(
-            color: states.contains(MaterialState.selected)
+            color: states.contains(WidgetState.selected)
                 ? AppColors.primary
                 : AppColors.onSurfaceVariant,
             fontSize: 11,
-            fontWeight: states.contains(MaterialState.selected)
+            fontWeight: states.contains(WidgetState.selected)
                 ? FontWeight.w700
                 : FontWeight.w600,
           );
         }),
-        iconTheme: MaterialStateProperty.resolveWith((states) {
+        iconTheme: WidgetStateProperty.resolveWith((states) {
           return IconThemeData(
-            color: states.contains(MaterialState.selected)
+            color: states.contains(WidgetState.selected)
                 ? AppColors.primary
                 : AppColors.onSurfaceVariant,
             size: 23,
@@ -148,6 +148,21 @@ class AppTheme {
           borderRadius: controlRadius,
           borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
+      ),
+      searchBarTheme: const SearchBarThemeData(
+        elevation: WidgetStatePropertyAll(0),
+        backgroundColor: WidgetStatePropertyAll(
+          AppColors.surfaceContainerLowest,
+        ),
+        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+        surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: AppColors.outlineVariant),
+        ),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: controlRadius),
+        ),
+        constraints: BoxConstraints(minHeight: 52),
       ),
       chipTheme: const ChipThemeData(
         backgroundColor: AppColors.surfaceContainerLow,
