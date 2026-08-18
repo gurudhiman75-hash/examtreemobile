@@ -242,8 +242,7 @@ class AuthEntryView extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const Spacer(),
-                        const SizedBox(height: AppSpacing.lg),
+                        const SizedBox(height: AppSpacing.xl),
                         Text(
                           'One ExamTree account keeps your attempts and results together across mobile and web.',
                           textAlign: TextAlign.center,
