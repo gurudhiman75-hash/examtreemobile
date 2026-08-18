@@ -93,9 +93,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Ready to submit?'), findsOneWidget);
-    expect(find.text('Review 2 unanswered'), findsOneWidget);
-    expect(find.text('Submit test'), findsOneWidget);
+    expect(find.text('Submit test?'), findsOneWidget);
+    expect(find.text('Review unanswered'), findsOneWidget);
+    expect(find.text('Submit now'), findsOneWidget);
     expect(find.text('Continue test'), findsOneWidget);
   });
 
@@ -122,7 +122,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Submit test'), findsOneWidget);
+    expect(find.text('Submit now'), findsOneWidget);
     expect(find.text('Continue test'), findsOneWidget);
   });
 
@@ -136,6 +136,6 @@ void main() {
 
     final saveButton = tester.widget<FilledButton>(find.byType(FilledButton));
     expect(saveButton.onPressed, isNull);
-    expect(find.text('Stay in test'), findsOneWidget);
+    expect(find.text('Stay'), findsOneWidget);
   });
 }
