@@ -108,11 +108,6 @@ class AppTheme {
           minimumSize: const Size(0, 48),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           shape: const RoundedRectangleBorder(borderRadius: controlRadius),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.05,
-          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -121,21 +116,12 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
           side: const BorderSide(color: AppColors.outlineVariant),
           shape: const RoundedRectangleBorder(borderRadius: controlRadius),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.05,
-          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           minimumSize: const Size(48, 44),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
         ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
