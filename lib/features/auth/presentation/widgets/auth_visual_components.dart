@@ -69,8 +69,7 @@ class AuthBrandHeader extends StatelessWidget {
       header: true,
       label: 'ExamTree',
       child: ExcludeSemantics(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
           children: [
             Container(
               width: 48,
@@ -86,27 +85,25 @@ class AuthBrandHeader extends StatelessWidget {
                 size: 26,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'ExamTree',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: scheme.onSurface,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.35,
-                  ),
-                ),
-                Text(
-                  'LEARN • PRACTISE • IMPROVE',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.7,
-                  ),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'ExamTree',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: scheme.onSurface,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.35,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxs),
+            Text(
+              'LEARN • PRACTISE • IMPROVE',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: scheme.primary,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.7,
+              ),
             ),
           ],
         ),
@@ -123,9 +120,12 @@ class AuthSurfaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final padding = MediaQuery.sizeOf(context).width < 360
+        ? AppSpacing.md
+        : AppSpacing.lg;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
