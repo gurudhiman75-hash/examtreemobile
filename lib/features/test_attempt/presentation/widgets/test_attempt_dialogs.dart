@@ -22,7 +22,7 @@ class SubmissionSummaryDialog extends StatelessWidget {
 
     return AlertDialog(
       scrollable: true,
-      title: const Text('Ready to submit?'),
+      title: const Text('Submit test?'),
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
         child: Column(
@@ -85,17 +85,14 @@ class SubmissionSummaryDialog extends StatelessWidget {
                   SubmissionDecision.reviewUnanswered,
                 ),
                 icon: const Icon(Icons.fact_check_outlined),
-                label: Text(
-                  'Review ${summary.totalUnanswered} unanswered',
-                  textAlign: TextAlign.center,
-                ),
+                label: const Text('Review unanswered'),
               ),
               const SizedBox(height: AppSpacing.sm),
             ],
             FilledButton.icon(
               onPressed: () => Navigator.pop(context, SubmissionDecision.submit),
               icon: const Icon(Icons.check_circle_outline_rounded),
-              label: const Text('Submit test'),
+              label: const Text('Submit now'),
             ),
             const SizedBox(height: AppSpacing.xs),
             TextButton(
@@ -117,57 +114,38 @@ class _SubmissionSummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final stack = constraints.maxWidth < 300 ||
-            MediaQuery.textScalerOf(context).scale(1) > 1.5;
-        final metrics = [
-          _SubmissionMetric(
-            label: 'Answered',
-            value: summary.totalAnswered,
-            icon: Icons.check_circle_outline,
-          ),
-          _SubmissionMetric(
-            label: 'Unanswered',
-            value: summary.totalUnanswered,
-            icon: Icons.remove_circle_outline,
-          ),
-          _SubmissionMetric(
-            label: 'Marked',
-            value: summary.totalMarked,
-            icon: Icons.bookmark_border_rounded,
-          ),
-          _SubmissionMetric(
-            label: 'Answered + marked',
-            value: summary.answeredAndMarkedForReview,
-            icon: Icons.bookmarks_outlined,
-          ),
-        ];
+    final metrics = [
+      _SubmissionMetric(
+        label: 'Answered',
+        value: summary.totalAnswered,
+        icon: Icons.check_circle_outline,
+      ),
+      _SubmissionMetric(
+        label: 'Unanswered',
+        value: summary.totalUnanswered,
+        icon: Icons.remove_circle_outline,
+      ),
+      _SubmissionMetric(
+        label: 'Marked for review',
+        value: summary.totalMarked,
+        icon: Icons.bookmark_border_rounded,
+      ),
+      _SubmissionMetric(
+        label: 'Answered + marked',
+        value: summary.answeredAndMarkedForReview,
+        icon: Icons.bookmarks_outlined,
+      ),
+    ];
 
-        if (stack) {
-          return Column(
-            children: [
-              for (var index = 0; index < metrics.length; index++) ...[
-                metrics[index],
-                if (index != metrics.length - 1)
-                  const SizedBox(height: AppSpacing.sm),
-              ],
-            ],
-          );
-        }
-
-        return Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          children: [
-            for (final metric in metrics)
-              SizedBox(
-                width: (constraints.maxWidth - AppSpacing.sm) / 2,
-                child: metric,
-              ),
-          ],
-        );
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var index = 0; index < metrics.length; index++) ...[
+          metrics[index],
+          if (index != metrics.length - 1)
+            const SizedBox(height: AppSpacing.sm),
+        ],
+      ],
     );
   }
 }
@@ -190,7 +168,8 @@ class _SubmissionMetric extends StatelessWidget {
       label: '$label: $value',
       excludeSemantics: true,
       child: Container(
-        constraints: const BoxConstraints(minHeight: 62),
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 58),
         padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
           color: theme.colorScheme.surfaceContainerLow,
@@ -201,26 +180,21 @@ class _SubmissionMetric extends StatelessWidget {
           children: [
             Icon(icon, size: 19, color: theme.colorScheme.primary),
             const SizedBox(width: AppSpacing.sm),
+            Text(
+              '$value',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$value',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  Text(
-                    label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+              child: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           ],
@@ -262,10 +236,16 @@ class ExitAttemptDialog extends StatelessWidget {
               );
 
     return AlertDialog(
+      scrollable: true,
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: syncFailed ? theme.colorScheme.error : theme.colorScheme.primary),
+          Icon(
+            icon,
+            color: syncFailed
+                ? theme.colorScheme.error
+                : theme.colorScheme.primary,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(title)),
         ],
@@ -276,17 +256,22 @@ class ExitAttemptDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(message, style: theme.textTheme.bodyMedium?.copyWith(height: 1.4)),
+            Text(
+              message,
+              style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+            ),
             const SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: syncing ? null : () => Navigator.pop(context, true),
-              icon: Icon(syncFailed ? Icons.sync_rounded : Icons.save_outlined),
+              icon: Icon(
+                syncFailed ? Icons.sync_rounded : Icons.save_outlined,
+              ),
               label: Text(syncFailed ? 'Retry save' : 'Save and leave'),
             ),
             const SizedBox(height: AppSpacing.xs),
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Stay in test'),
+              child: const Text('Stay'),
             ),
           ],
         ),
