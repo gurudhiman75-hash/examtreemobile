@@ -185,6 +185,7 @@ class _MetricTile extends StatelessWidget {
     final scheme = theme.colorScheme;
     return Semantics(
       label: metric.semanticLabel ?? '${metric.label}: ${metric.value}',
+      excludeSemantics: true,
       child: Container(
         constraints: const BoxConstraints(minHeight: 64),
         padding: const EdgeInsets.symmetric(
