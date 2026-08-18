@@ -51,19 +51,19 @@ class AppTypography {
     titleMedium: TextStyle(
       fontSize: 16,
       height: 1.25,
-      fontWeight: FontWeight.w650,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0,
     ),
     titleSmall: TextStyle(
       fontSize: 14,
       height: 1.25,
-      fontWeight: FontWeight.w650,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0,
     ),
     labelLarge: TextStyle(
       fontSize: 14,
       height: 1.2,
-      fontWeight: FontWeight.w650,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.1,
     ),
     labelMedium: TextStyle(
