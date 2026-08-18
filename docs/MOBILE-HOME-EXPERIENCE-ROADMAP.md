@@ -23,7 +23,9 @@ Implemented on `ui/mobile-foundation-v1` / PR #46:
 - horizontally-scannable test discovery rail with duplicate active/primary tests removed;
 - independent loading/error/empty states preserved;
 - new Home V4 widget coverage including empty-catalogue truthfulness and 200% text-scale smoke coverage;
-- existing golden preview workflow remains the visual review authority.
+- existing golden preview workflow remains the visual review authority;
+- visual audit now checks generated 390×844 phone screenshots rather than relying on build success alone;
+- button themes inherit canonical label typography so screenshot rendering and production typography do not diverge.
 
 Still intentionally not surfaced without canonical contracts:
 
