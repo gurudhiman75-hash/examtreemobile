@@ -1,5 +1,6 @@
 import 'package:examtree/core/theme/app_colors.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,6 +15,7 @@ void main() {
     expect(theme.progressIndicatorTheme.color, AppColors.secondary);
     expect(theme.navigationBarTheme.height, 68);
     expect(theme.cardTheme.elevation, 0);
+    expect(theme.textTheme.labelLarge, AppTypography.textTheme.labelLarge);
   });
 
   testWidgets('shared controls preserve mobile touch-target sizing', (tester) async {
@@ -33,5 +35,14 @@ void main() {
 
     expect(tester.getSize(find.byType(FilledButton)).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(find.byType(OutlinedButton)).height, greaterThanOrEqualTo(48));
+  });
+
+  test('buttons inherit the canonical label typography', () {
+    final theme = AppTheme.lightTheme;
+
+    expect(theme.filledButtonTheme.style?.textStyle, isNull);
+    expect(theme.outlinedButtonTheme.style?.textStyle, isNull);
+    expect(theme.textButtonTheme.style?.textStyle, isNull);
+    expect(theme.textTheme.labelLarge?.fontWeight, FontWeight.w700);
   });
 }
