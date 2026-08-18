@@ -61,34 +61,36 @@ void main() {
 
   testWidgets('metric strip exposes complete semantic labels', (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.lightTheme,
-        home: const Scaffold(
-          body: AppMetricStrip(
-            metrics: [
-              AppMetricData(
-                value: '76%',
-                label: 'Average score',
-                semanticLabel: 'Average score: 76 percent',
-              ),
-              AppMetricData(
-                value: '84%',
-                label: 'Accuracy',
-                semanticLabel: 'Accuracy: 84 percent',
-              ),
-            ],
+    try {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const Scaffold(
+            body: AppMetricStrip(
+              metrics: [
+                AppMetricData(
+                  value: '76%',
+                  label: 'Average score',
+                  semanticLabel: 'Average score: 76 percent',
+                ),
+                AppMetricData(
+                  value: '84%',
+                  label: 'Accuracy',
+                  semanticLabel: 'Accuracy: 84 percent',
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    expect(
-      find.bySemanticsLabel('Average score: 76 percent'),
-      findsOneWidget,
-    );
-    expect(find.bySemanticsLabel('Accuracy: 84 percent'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('Average score: 76 percent'),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('Accuracy: 84 percent'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
   });
 }
