@@ -102,6 +102,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
   }
 
+  Future<void> scrollHome(WidgetTester tester, double distance) async {
+    await tester.drag(
+      find.byType(CustomScrollView),
+      Offset(0, -distance),
+    );
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('active learner sees one dominant resume action first', (tester) async {
     await pumpHome(
       tester,
@@ -117,6 +125,8 @@ void main() {
     expect(find.text('SSC CGL full mock'), findsOneWidget);
     expect(find.text('Performance pulse'), findsOneWidget);
     expect(find.text('Continue learning'), findsOneWidget);
+
+    await scrollHome(tester, 620);
     expect(find.byKey(const Key('home-context-tests')), findsOneWidget);
     expect(find.byKey(const Key('home-context-results')), findsOneWidget);
   });
@@ -131,9 +141,11 @@ void main() {
 
     expect(find.text('Choose your next test'), findsOneWidget);
     expect(find.text('Browse tests'), findsOneWidget);
-    expect(find.text('No tests are available right now.'), findsOneWidget);
     expect(find.textContaining('streak', findRichText: true), findsNothing);
     expect(find.textContaining('readiness', findRichText: true), findsNothing);
+
+    await scrollHome(tester, 900);
+    expect(find.text('No tests are available right now.'), findsOneWidget);
   });
 
   testWidgets('home remains usable at 200 percent text scaling', (tester) async {
