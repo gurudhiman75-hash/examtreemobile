@@ -16,7 +16,6 @@ class ReviewScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final resultAsync = ref.watch(resultProvider(resultId));
-
     return Scaffold(
       appBar: AppBar(title: const Text('Answer review')),
       body: resultAsync.when(
@@ -26,15 +25,12 @@ class ReviewScreen extends ConsumerWidget {
           fallbackTitle: 'Unable to load this result',
           onRetry: () => ref.invalidate(resultProvider(resultId)),
         ),
-        data: (result) {
-          if (result.questionReview.isEmpty) {
-            return _ReviewLoadState(
-              message: 'Question-level review is unavailable for this attempt.',
-              onRetry: () => ref.invalidate(resultProvider(resultId)),
-            );
-          }
-          return _ReviewBody(result: result);
-        },
+        data: (result) => result.questionReview.isEmpty
+            ? _ReviewLoadState(
+                message: 'Question-level review is unavailable for this attempt.',
+                onRetry: () => ref.invalidate(resultProvider(resultId)),
+              )
+            : _ReviewBody(result: result),
       ),
     );
   }
@@ -50,7 +46,7 @@ class _ReviewLoadState extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -95,7 +91,6 @@ class _ReviewBodyState extends State<_ReviewBody> {
   int _visiblePosition = 0;
 
   List<ResultQuestionReview> get _questions => widget.result.questionReview;
-
   List<int> get _visibleIndexes => reviewQuestionIndexes(_questions, _filter);
 
   void _selectFilter(ReviewQuestionFilter filter) {
@@ -120,7 +115,6 @@ class _ReviewBodyState extends State<_ReviewBody> {
   @override
   Widget build(BuildContext context) {
     final visibleIndexes = _visibleIndexes;
-
     return Column(
       children: [
         _ReviewOverview(
@@ -161,7 +155,6 @@ class _ReviewBodyState extends State<_ReviewBody> {
   }
 
   Future<void> _showPalette(BuildContext context) async {
-    final visibleIndexes = _visibleIndexes;
     final position = await showModalBottomSheet<int>(
       context: context,
       showDragHandle: true,
@@ -169,7 +162,7 @@ class _ReviewBodyState extends State<_ReviewBody> {
       useSafeArea: true,
       builder: (context) => _QuestionPalette(
         questions: _questions,
-        visibleIndexes: visibleIndexes,
+        visibleIndexes: _visibleIndexes,
         selectedPosition: _visiblePosition,
         filter: _filter,
       ),
@@ -194,12 +187,18 @@ class _ReviewOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     final correct = questions.where((question) => question.isCorrect).length;
     final incorrect = questions
         .where((question) => question.isAnswered && !question.isCorrect)
         .length;
     final unanswered = questions.where((question) => !question.isAnswered).length;
-    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final metrics = <_MetricData>[
+      _MetricData('$correct', 'Correct', Colors.green),
+      _MetricData('$incorrect', 'Incorrect', theme.colorScheme.error),
+      _MetricData('$unanswered', 'Unanswered', theme.colorScheme.outline),
+      _MetricData('${result.accuracy.round()}%', 'Accuracy', theme.colorScheme.primary),
+    ];
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -225,31 +224,12 @@ class _ReviewOverview extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final compact = textScale >= 1.5 || constraints.maxWidth < 340;
-              final metrics = <Widget>[
-                _OverviewMetric(
-                  value: '$correct',
-                  label: 'Correct',
-                  color: Colors.green,
-                ),
-                _OverviewMetric(
-                  value: '$incorrect',
-                  label: 'Incorrect',
-                  color: theme.colorScheme.error,
-                ),
-                _OverviewMetric(
-                  value: '$unanswered',
-                  label: 'Unanswered',
-                  color: theme.colorScheme.outline,
-                ),
-                _OverviewMetric(
-                  value: '${result.accuracy.round()}%',
-                  label: 'Accuracy',
-                  color: theme.colorScheme.primary,
-                ),
-              ];
               if (!compact) {
                 return Row(
-                  children: [for (final metric in metrics) Expanded(child: metric)],
+                  children: [
+                    for (final metric in metrics)
+                      Expanded(child: _OverviewMetric(data: metric)),
+                  ],
                 );
               }
               final width = (constraints.maxWidth - AppSpacing.sm) / 2;
@@ -258,14 +238,14 @@ class _ReviewOverview extends StatelessWidget {
                 runSpacing: AppSpacing.sm,
                 children: [
                   for (final metric in metrics)
-                    SizedBox(width: width, child: metric),
+                    SizedBox(width: width, child: _OverviewMetric(data: metric)),
                 ],
               );
             },
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(
-            height: 44,
+            height: textScale >= 1.5 ? 58 : 44,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: ReviewQuestionFilter.values.length,
@@ -289,22 +269,24 @@ class _ReviewOverview extends StatelessWidget {
   }
 }
 
-class _OverviewMetric extends StatelessWidget {
-  const _OverviewMetric({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
+class _MetricData {
+  const _MetricData(this.value, this.label, this.color);
 
   final String value;
   final String label;
   final Color color;
+}
+
+class _OverviewMetric extends StatelessWidget {
+  const _OverviewMetric({required this.data});
+
+  final _MetricData data;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Semantics(
-      label: '$label: $value',
+      label: '${data.label}: ${data.value}',
       excludeSemantics: true,
       child: Container(
         constraints: const BoxConstraints(minHeight: 58),
@@ -320,15 +302,15 @@ class _OverviewMetric extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              value,
+              data.value,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: color,
+                color: data.color,
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(
-              label,
+              data.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -364,7 +346,6 @@ class _QuestionReviewPane extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-
     return Column(
       children: [
         Padding(
@@ -410,7 +391,13 @@ class _QuestionReviewPane extends StatelessWidget {
                       const SizedBox(height: AppSpacing.sm),
                       Row(
                         children: [
-                          Expanded(child: Align(alignment: Alignment.centerLeft, child: status)),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: status,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
                           palette,
                         ],
                       ),
@@ -521,13 +508,11 @@ class _QuestionStatusBadge extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: color),
           const SizedBox(width: AppSpacing.xs),
-          Flexible(
-            child: Text(
-              label,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -560,7 +545,15 @@ class _MetaChip extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: theme.colorScheme.onSurfaceVariant),
           const SizedBox(width: AppSpacing.xs),
-          Flexible(child: Text(label, style: theme.textTheme.labelSmall)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 220),
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelSmall,
+            ),
+          ),
         ],
       ),
     );
@@ -628,11 +621,14 @@ class _OptionReviewTile extends StatelessWidget {
               shape: BoxShape.circle,
               color: foreground.withValues(alpha: 0.1),
             ),
-            child: Text(
-              optionKey,
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w800,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                optionKey,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
           ),
@@ -741,7 +737,6 @@ class _ReviewNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-
     return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -855,10 +850,10 @@ class _QuestionPalette extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final height = MediaQuery.sizeOf(context).height * 0.72;
-
+    final requestedHeight = MediaQuery.sizeOf(context).height * 0.72;
+    final height = requestedHeight.clamp(360.0, 620.0).toDouble();
     return SizedBox(
-      height: height.clamp(360.0, 620.0),
+      height: height,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.md,
