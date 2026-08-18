@@ -32,6 +32,7 @@ void main() {
             children: [
               FilledButton(onPressed: () {}, child: const Text('Continue')),
               OutlinedButton(onPressed: () {}, child: const Text('Browse')),
+              const SearchBar(hintText: 'Search tests'),
             ],
           ),
         ),
@@ -40,6 +41,7 @@ void main() {
 
     expect(tester.getSize(find.byType(FilledButton)).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(find.byType(OutlinedButton)).height, greaterThanOrEqualTo(48));
+    expect(tester.getSize(find.byType(SearchBar)).height, greaterThanOrEqualTo(52));
   });
 
   test('buttons inherit the canonical label typography', () {
@@ -49,5 +51,21 @@ void main() {
     expect(theme.outlinedButtonTheme.style?.textStyle?.resolve({}), isNull);
     expect(theme.textButtonTheme.style?.textStyle?.resolve({}), isNull);
     expect(theme.textTheme.labelLarge?.fontWeight, FontWeight.w700);
+  });
+
+  test('search bars use a flat neutral surface instead of default elevation', () {
+    final search = AppTheme.lightTheme.searchBarTheme;
+    const states = <WidgetState>{};
+
+    expect(search.elevation?.resolve(states), 0);
+    expect(
+      search.backgroundColor?.resolve(states),
+      AppColors.surfaceContainerLowest,
+    );
+    expect(search.shadowColor?.resolve(states), Colors.transparent);
+    expect(
+      search.side?.resolve(states),
+      const BorderSide(color: AppColors.outlineVariant),
+    );
   });
 }
