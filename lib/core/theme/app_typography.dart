@@ -63,8 +63,8 @@ class AppTypography {
     labelLarge: TextStyle(
       fontSize: 14,
       height: 1.2,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0.1,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.05,
     ),
     labelMedium: TextStyle(
       fontSize: 12,
