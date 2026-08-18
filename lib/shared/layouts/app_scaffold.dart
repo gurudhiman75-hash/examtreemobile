@@ -39,40 +39,66 @@ class AppScaffold extends ConsumerWidget {
     // to the Android home-screen widget when available.
     ref.watch(dailyCompanionSnapshotProvider);
 
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: navigationShell,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/daily'),
         tooltip: 'Open Daily Companion',
-        icon: const Icon(Icons.auto_awesome_rounded),
+        elevation: 1,
+        highlightElevation: 2,
+        backgroundColor: scheme.tertiaryContainer,
+        foregroundColor: scheme.onTertiaryContainer,
+        icon: const Icon(Icons.auto_awesome_rounded, size: 20),
         label: const Text('Daily'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: _goBranch,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLowest,
+          border: Border(
+            top: BorderSide(color: scheme.outlineVariant),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.assignment_outlined),
-            selectedIcon: Icon(Icons.assignment),
-            label: 'Tests',
+        ),
+        child: SafeArea(
+          top: false,
+          child: NavigationBar(
+            height: 72,
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            indicatorColor: scheme.primaryContainer,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                selectedIcon: Icon(Icons.home_rounded),
+                label: 'Home',
+                tooltip: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.assignment_outlined),
+                selectedIcon: Icon(Icons.assignment_rounded),
+                label: 'Tests',
+                tooltip: 'Tests',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.bar_chart_outlined),
+                selectedIcon: Icon(Icons.bar_chart_rounded),
+                label: 'Results',
+                tooltip: 'Results',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person_outline_rounded),
+                selectedIcon: Icon(Icons.person_rounded),
+                label: 'Profile',
+                tooltip: 'Profile',
+              ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart),
-            label: 'Results',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        ),
       ),
     );
   }
