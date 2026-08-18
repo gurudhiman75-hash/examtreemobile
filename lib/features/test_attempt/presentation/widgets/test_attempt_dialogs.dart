@@ -18,75 +18,162 @@ class SubmissionSummaryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasUnanswered = summary.hasUnanswered;
+
     return AlertDialog(
-      title: const Text('Submit test?'),
+      scrollable: true,
+      title: const Text('Ready to submit?'),
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                testName,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              testName,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _SubmissionSummaryGrid(summary: summary),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: hasUnanswered
+                    ? theme.colorScheme.tertiaryContainer
+                    : theme.colorScheme.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    hasUnanswered
+                        ? Icons.warning_amber_rounded
+                        : Icons.lock_outline_rounded,
+                    size: 20,
+                    color: hasUnanswered
+                        ? theme.colorScheme.onTertiaryContainer
+                        : theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      hasUnanswered
+                          ? '${summary.totalUnanswered} unanswered ${summary.totalUnanswered == 1 ? 'question is' : 'questions are'} still left. You can review them before submitting.'
+                          : 'After submission, answers cannot be changed.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: hasUnanswered
+                            ? theme.colorScheme.onTertiaryContainer
+                            : theme.colorScheme.onSurfaceVariant,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (hasUnanswered) ...[
+              FilledButton.tonalIcon(
+                onPressed: () => Navigator.pop(
+                  context,
+                  SubmissionDecision.reviewUnanswered,
+                ),
+                icon: const Icon(Icons.fact_check_outlined),
+                label: Text(
+                  'Review ${summary.totalUnanswered} unanswered',
+                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-              _SummaryRow(
-                label: 'Answered',
-                value: summary.totalAnswered,
-                icon: Icons.check_circle_outline,
-              ),
-              _SummaryRow(
-                label: 'Unanswered',
-                value: summary.totalUnanswered,
-                icon: Icons.remove_circle_outline,
-              ),
-              _SummaryRow(
-                label: 'Marked for review',
-                value: summary.totalMarked,
-                icon: Icons.bookmark_border,
-              ),
-              _SummaryRow(
-                label: 'Answered and marked',
-                value: summary.answeredAndMarkedForReview,
-                icon: Icons.bookmarks_outlined,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                'After submission, answers cannot be changed.',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              const SizedBox(height: AppSpacing.sm),
             ],
-          ),
+            FilledButton.icon(
+              onPressed: () => Navigator.pop(context, SubmissionDecision.submit),
+              icon: const Icon(Icons.check_circle_outline_rounded),
+              label: const Text('Submit test'),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            TextButton(
+              onPressed: () => Navigator.pop(context, SubmissionDecision.cancel),
+              child: const Text('Continue test'),
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, SubmissionDecision.cancel),
-          child: const Text('Continue test'),
-        ),
-        if (summary.hasUnanswered)
-          OutlinedButton(
-            onPressed: () =>
-                Navigator.pop(context, SubmissionDecision.reviewUnanswered),
-            child: const Text('Review unanswered'),
-          ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, SubmissionDecision.submit),
-          child: const Text('Submit now'),
-        ),
-      ],
+      actions: const [],
     );
   }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({
+class _SubmissionSummaryGrid extends StatelessWidget {
+  const _SubmissionSummaryGrid({required this.summary});
+
+  final AttemptSubmissionSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final stack = constraints.maxWidth < 300 ||
+            MediaQuery.textScalerOf(context).scale(1) > 1.5;
+        final metrics = [
+          _SubmissionMetric(
+            label: 'Answered',
+            value: summary.totalAnswered,
+            icon: Icons.check_circle_outline,
+          ),
+          _SubmissionMetric(
+            label: 'Unanswered',
+            value: summary.totalUnanswered,
+            icon: Icons.remove_circle_outline,
+          ),
+          _SubmissionMetric(
+            label: 'Marked',
+            value: summary.totalMarked,
+            icon: Icons.bookmark_border_rounded,
+          ),
+          _SubmissionMetric(
+            label: 'Answered + marked',
+            value: summary.answeredAndMarkedForReview,
+            icon: Icons.bookmarks_outlined,
+          ),
+        ];
+
+        if (stack) {
+          return Column(
+            children: [
+              for (var index = 0; index < metrics.length; index++) ...[
+                metrics[index],
+                if (index != metrics.length - 1)
+                  const SizedBox(height: AppSpacing.sm),
+              ],
+            ],
+          );
+        }
+
+        return Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            for (final metric in metrics)
+              SizedBox(
+                width: (constraints.maxWidth - AppSpacing.sm) / 2,
+                child: metric,
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SubmissionMetric extends StatelessWidget {
+  const _SubmissionMetric({
     required this.label,
     required this.value,
     required this.icon,
@@ -99,20 +186,45 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(child: Text(label)),
-          Text(
-            '$value',
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
+    return Semantics(
+      label: '$label: $value',
+      excludeSemantics: true,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 62),
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 19, color: theme.colorScheme.primary),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$value',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -130,25 +242,56 @@ class ExitAttemptDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final (icon, title, message) = syncFailed
+        ? (
+            Icons.cloud_off_outlined,
+            'Progress still needs to sync',
+            'Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.',
+          )
+        : syncing
+            ? (
+                Icons.cloud_sync_outlined,
+                'Saving your progress',
+                'ExamTree is still saving your latest changes. Keep the test open until this save finishes.',
+              )
+            : (
+                Icons.pause_circle_outline_rounded,
+                'Save and leave test?',
+                'Your attempt will stay active and can be resumed later from this device or the ExamTree website.',
+              );
+
     return AlertDialog(
-      title: const Text('Save and leave test?'),
-      content: Text(
-        syncFailed
-            ? 'Your latest progress is not synced yet. Retry saving before leaving the test.'
-            : syncing
-                ? 'ExamTree is still saving your latest progress.'
-                : 'Your attempt will remain active and can be resumed later.',
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: syncFailed ? theme.colorScheme.error : theme.colorScheme.primary),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(child: Text(title)),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: const Text('Stay'),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(message, style: theme.textTheme.bodyMedium?.copyWith(height: 1.4)),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton.icon(
+              onPressed: syncing ? null : () => Navigator.pop(context, true),
+              icon: Icon(syncFailed ? Icons.sync_rounded : Icons.save_outlined),
+              label: Text(syncFailed ? 'Retry save' : 'Save and leave'),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Stay in test'),
+            ),
+          ],
         ),
-        FilledButton(
-          onPressed: syncing ? null : () => Navigator.pop(context, true),
-          child: Text(syncFailed ? 'Retry save' : 'Save and leave'),
-        ),
-      ],
+      ),
+      actions: const [],
     );
   }
 }
@@ -205,10 +348,10 @@ class SyncStatusBanner extends StatelessWidget {
               Expanded(
                 child: Text(
                   syncing
-                      ? 'Saving your progress…'
+                      ? 'Saving progress…'
                       : lastSavedAt == null
-                          ? 'Progress is saved on this device and waiting to sync.'
-                          : 'Latest changes are saved on this device but not synced to ExamTree yet.',
+                          ? 'Saved on this device. Waiting to sync with ExamTree.'
+                          : 'Latest changes are safe on this device but not synced yet.',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foreground,
                     fontWeight: FontWeight.w600,
