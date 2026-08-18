@@ -23,7 +23,8 @@ void main() {
       options: const ['Option A', 'Option B', 'Option C', 'Option D'],
       optionKeys: const ['A', 'B', 'C', 'D'],
       selected: selected,
-      selectedOptionKey: selected == null ? null : String.fromCharCode(65 + selected),
+      selectedOptionKey:
+          selected == null ? null : String.fromCharCode(65 + selected),
       correct: correct,
       correctOptionKey: String.fromCharCode(65 + correct),
       timeTakenSeconds: 75,
@@ -35,9 +36,24 @@ void main() {
 
   Result result() {
     final questions = [
-      question(id: 1, selected: 0, correct: 0, text: 'A correct sample question?'),
-      question(id: 2, selected: 1, correct: 2, text: 'An incorrect sample question?'),
-      question(id: 3, selected: null, correct: 3, text: 'An unanswered sample question?'),
+      question(
+        id: 1,
+        selected: 0,
+        correct: 0,
+        text: 'A correct sample question?',
+      ),
+      question(
+        id: 2,
+        selected: 1,
+        correct: 2,
+        text: 'An incorrect sample question?',
+      ),
+      question(
+        id: 3,
+        selected: null,
+        correct: 3,
+        text: 'An unanswered sample question?',
+      ),
     ];
     return Result(
       id: 'attempt-1',
@@ -61,8 +77,9 @@ void main() {
     WidgetTester tester, {
     double textScale = 1,
   }) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
+    tester.view
+      ..physicalSize = const Size(390, 844)
+      ..devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
@@ -74,7 +91,11 @@ void main() {
         child: MaterialApp(
           theme: AppTheme.lightTheme,
           home: MediaQuery(
-            data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+            data: MediaQueryData(
+              size: const Size(390, 844),
+              textScaler: TextScaler.linear(textScale),
+              disableAnimations: true,
+            ),
             child: const ReviewScreen(resultId: 'attempt-1'),
           ),
         ),
@@ -82,6 +103,7 @@ void main() {
     );
     await tester.pump();
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
   }
 
   testWidgets('review keeps answer semantics and moves between questions', (
