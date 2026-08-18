@@ -72,16 +72,11 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.sm),
               analyticsAsync.when(
                 loading: () => const _PerformanceLoadingState(),
-                error: (error, stackTrace) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                  ),
-                  child: NetworkFailureCard(
-                    error: error,
-                    fallbackTitle: 'Unable to load your performance',
-                    onRetry: () =>
-                        ref.invalidate(performanceAnalyticsProvider),
-                  ),
+                error: (error, stackTrace) => NetworkFailureCard(
+                  error: error,
+                  fallbackTitle: 'Unable to load your performance',
+                  onRetry: () =>
+                      ref.invalidate(performanceAnalyticsProvider),
                 ),
                 data: (analytics) => PerformanceDashboard(
                   analytics: analytics,
