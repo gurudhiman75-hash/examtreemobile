@@ -3,6 +3,7 @@ import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:examtree/features/results/presentation/review_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -106,6 +107,43 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
   }
 
+  void traceHorizontalRowOverflows() {
+    for (final element in find.byType(Row).evaluate()) {
+      final renderObject = element.renderObject;
+      if (renderObject is! RenderFlex ||
+          renderObject.direction != Axis.horizontal) {
+        continue;
+      }
+
+      var maxRight = 0.0;
+      final childLayout = <String>[];
+      RenderBox? child = renderObject.firstChild;
+      while (child != null) {
+        final parentData = child.parentData;
+        if (parentData is! FlexParentData) break;
+        final right = parentData.offset.dx + child.size.width;
+        if (right > maxRight) maxRight = right;
+        childLayout.add('${child.runtimeType}:${child.size}@${parentData.offset}');
+        child = parentData.nextSibling;
+      }
+
+      final overflow = maxRight - renderObject.size.width;
+      if (overflow <= 0.5) continue;
+
+      final ancestors = <String>[];
+      element.visitAncestorElements((ancestor) {
+        ancestors.add(ancestor.widget.runtimeType.toString());
+        return ancestors.length < 8;
+      });
+      debugPrint(
+        'ROW_OVERFLOW=${overflow.toStringAsFixed(1)} '
+        'rowSize=${renderObject.size} '
+        'ancestors=${ancestors.join(' > ')} '
+        'children=${childLayout.join(' | ')}',
+      );
+    }
+  }
+
   testWidgets('review keeps answer semantics and moves between questions', (
     tester,
   ) async {
@@ -154,11 +192,8 @@ void main() {
   testWidgets('review remains usable at 200 percent text scale', (tester) async {
     await pumpReview(tester, textScale: 2);
 
-    final initialException = tester.takeException();
-    if (initialException is FlutterError) {
-      debugPrint(initialException.toStringDeep());
-    }
-    expect(initialException, isNull);
+    traceHorizontalRowOverflows();
+    expect(tester.takeException(), isNull);
     expect(find.text('Question 1 of 3'), findsOneWidget);
     expect(find.byKey(const Key('review-next-finish')), findsOneWidget);
     expect(find.byKey(const Key('review-previous')), findsOneWidget);
