@@ -35,6 +35,11 @@ void main() {
         createdAt: DateTime(2020, 1, 1),
       );
 
+  Finder revisionScrollable() => find.descendant(
+        of: find.byKey(const Key('quick-revision-scroll')),
+        matching: find.byType(Scrollable),
+      );
+
   Future<void> pumpRevision(
     WidgetTester tester, {
     required List<RevisionItem> items,
@@ -91,6 +96,14 @@ void main() {
     expect(find.text('Correct answer'), findsOneWidget);
     expect(find.text('Your answer'), findsOneWidget);
     expect(find.byKey(const Key('quick-revision-explanation')), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('quick-revision-got-it')),
+      220,
+      scrollable: revisionScrollable(),
+    );
+    await tester.pump();
+
     expect(find.byKey(const Key('quick-revision-got-it')), findsOneWidget);
     expect(find.byKey(const Key('quick-revision-review-again')), findsOneWidget);
   });
@@ -113,7 +126,7 @@ void main() {
     await tester.scrollUntilVisible(
       reveal,
       250,
-      scrollable: find.byKey(const Key('quick-revision-scroll')),
+      scrollable: revisionScrollable(),
     );
     await tester.tap(reveal);
     await tester.pump();
@@ -121,7 +134,7 @@ void main() {
     await tester.scrollUntilVisible(
       find.byKey(const Key('quick-revision-got-it')),
       300,
-      scrollable: find.byKey(const Key('quick-revision-scroll')),
+      scrollable: revisionScrollable(),
     );
     await tester.pump();
 
