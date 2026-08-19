@@ -131,7 +131,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Question 2 of 3'), findsOneWidget);
-    expect(find.text('An incorrect sample question?'), findsOneWidget);
+    expect(find.text('Q2. An incorrect sample question?'), findsOneWidget);
     expect(find.text('Finish'), findsOneWidget);
   });
 
@@ -148,13 +148,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Question 3 of 3'), findsOneWidget);
-    expect(find.text('An unanswered sample question?'), findsOneWidget);
+    expect(find.text('Q3. An unanswered sample question?'), findsOneWidget);
   });
 
   testWidgets('review remains usable at 200 percent text scale', (tester) async {
     await pumpReview(tester, textScale: 2);
 
-    expect(tester.takeException(), isNull);
+    final initialException = tester.takeException();
+    if (initialException is FlutterError) {
+      debugPrint(initialException.toStringDeep());
+    }
+    expect(initialException, isNull);
     expect(find.text('Question 1 of 3'), findsOneWidget);
     expect(find.byKey(const Key('review-next-finish')), findsOneWidget);
     expect(find.byKey(const Key('review-previous')), findsOneWidget);
