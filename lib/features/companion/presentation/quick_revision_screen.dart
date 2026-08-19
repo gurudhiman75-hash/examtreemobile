@@ -556,17 +556,20 @@ class _ExplanationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 Icons.lightbulb_outline_rounded,
                 color: theme.colorScheme.primary,
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Explanation',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w800,
+              Expanded(
+                child: Text(
+                  'Explanation',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ],
