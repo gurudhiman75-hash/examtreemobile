@@ -97,7 +97,9 @@ void main() {
         loadingMessage: 'Starting ExamTree server…',
       ),
     );
-    await tester.pumpAndSettle();
+    // The loading surface intentionally contains an indeterminate progress
+    // indicator, so pumpAndSettle would wait forever for animation to stop.
+    await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Starting ExamTree server…'), findsOneWidget);
     final google = tester.widget<OutlinedButton>(
