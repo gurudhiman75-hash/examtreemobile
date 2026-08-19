@@ -12,12 +12,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   preview:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
-    env:
-      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID }}
+    timeout-minutes: 25
 
     steps:
       - name: Check out repository
@@ -56,39 +58,3 @@ jobs:
           path: test/features/home/presentation/goldens/home_*.png
           if-no-files-found: error
           retention-days: 14
-
-      - name: Verify Firebase Android build configuration
-        id: firebase_config
-        continue-on-error: true
-        shell: bash
-        run: |
-          if [[ -z "${FIREBASE_ANDROID_APP_ID:-}" ]]; then
-            echo "::error::FIREBASE_ANDROID_APP_ID is missing; screenshots remain valid but no installable preview APK will be published."
-            exit 1
-          fi
-          if [[ ! "$FIREBASE_ANDROID_APP_ID" =~ ^1:1083299267005:android:[[:alnum:]]+$ ]]; then
-            echo "::error::FIREBASE_ANDROID_APP_ID does not match the sarbedutech Android app-id format."
-            exit 1
-          fi
-
-      - name: Build installable preview APK
-        if: steps.firebase_config.outcome == 'success'
-        run: |
-          flutter build apk --debug \
-            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
-            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID"
-
-      - name: Publish installable preview APK
-        if: steps.firebase_config.outcome == 'success'
-        uses: actions/upload-artifact@v4
-        with:
-          name: examtree-home-command-centre-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: Note unavailable preview APK
-        if: steps.firebase_config.outcome != 'success'
-        run: |
-          echo '### Installable preview APK not published' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Configure FIREBASE_ANDROID_APP_ID after registering com.examtree.examtree in Firebase project sarbedutech.' >> "$GITHUB_STEP_SUMMARY"

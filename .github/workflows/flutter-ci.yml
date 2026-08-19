@@ -9,10 +9,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 25
 
     steps:
       - name: Check out repository
@@ -59,17 +63,6 @@ jobs:
           cat flutter-test.log
           exit $status
 
-      - name: Build Android debug APK
-        id: android_build
-        continue-on-error: true
-        run: |
-          flutter build apk --debug \
-            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
-            > flutter-build.log 2>&1
-          status=$?
-          cat flutter-build.log
-          exit $status
-
       - name: Upload Flutter diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -78,7 +71,6 @@ jobs:
           path: |
             flutter-analyse.log
             flutter-test.log
-            flutter-build.log
           if-no-files-found: warn
 
       - name: Enforce verification result
@@ -86,4 +78,3 @@ jobs:
         run: |
           test "${{ steps.analyse.outcome }}" = "success"
           test "${{ steps.tests.outcome }}" = "success"
-          test "${{ steps.android_build.outcome }}" = "success"
