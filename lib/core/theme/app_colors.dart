@@ -51,6 +51,7 @@ class AppColors {
   // separate from Material roles so meaning is never inferred from brand colour.
   static const Color success = Color(0xFF147D64);
   static const Color successContainer = Color(0xFFD1F5E9);
+  static const Color onSuccessContainer = Color(0xFF004D3A);
   static const Color warning = Color(0xFF9A6700);
   static const Color warningContainer = Color(0xFFFFE6A6);
 }
