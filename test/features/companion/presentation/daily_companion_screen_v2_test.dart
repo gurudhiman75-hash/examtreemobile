@@ -33,6 +33,11 @@ void main() {
     );
   }
 
+  Finder dailyScrollable() => find.descendant(
+        of: find.byKey(const Key('daily-companion-scroll')),
+        matching: find.byType(Scrollable),
+      );
+
   Future<void> pumpDaily(
     WidgetTester tester, {
     required DailyCompanionSnapshot snapshot,
@@ -152,12 +157,19 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('quick-revision-5')),
+      220,
+      scrollable: dailyScrollable(),
+    );
+    await tester.pump();
     expect(find.byKey(const Key('quick-revision-5')), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('study-plan')),
       300,
-      scrollable: find.byKey(const Key('daily-companion-scroll')),
+      scrollable: dailyScrollable(),
     );
     await tester.pump();
 
