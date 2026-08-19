@@ -253,17 +253,18 @@ class _RevisionSessionBody extends StatelessWidget {
         AppSpacing.xxl,
       ),
       children: [
-        Row(
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.xs,
           children: [
-            Expanded(
-              child: Text(
-                'Question ${index + 1} of $total',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+            Text(
+              'Question ${index + 1} of $total',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
             Text(
               '$minutes min session',
               style: theme.textTheme.labelMedium?.copyWith(
