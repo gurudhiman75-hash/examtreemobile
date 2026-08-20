@@ -35,8 +35,11 @@ void main() {
       expect(router, contains("path: '/account'"));
       expect(account, contains('account-delete-confirmation-field'));
       expect(account, contains('account-delete-confirm-button'));
-      expect(account, contains('examtree.in/privacy'));
-      expect(account, contains('examtree.in/account-deletion'));
+      expect(account, contains('https://sarbedutech.web.app/privacy'));
+      expect(
+        account,
+        contains('https://sarbedutech.web.app/account-deletion'),
+      );
       expect(account, contains("'/login?continue=%2Faccount'"));
     });
 
