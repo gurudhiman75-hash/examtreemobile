@@ -42,21 +42,18 @@ void main() {
     );
   }
 
-  test('review learning action becomes compact when navigation stacks', () {
-    expect(useCompactReviewLearningAction(1), isFalse);
-    expect(useCompactReviewLearningAction(1.49), isFalse);
-    expect(useCompactReviewLearningAction(1.5), isTrue);
-    expect(useCompactReviewLearningAction(2), isTrue);
-  });
-
-  test('large-text learning action clears the taller review navigation', () {
+  test('revision footer stacks only when width or text scale needs it', () {
     expect(
-      reviewLearningBottomOffset(textScale: 1, safeBottom: 24),
-      112,
+      shouldStackReviewLearningFooter(width: 390, textScale: 1),
+      isFalse,
     );
     expect(
-      reviewLearningBottomOffset(textScale: 2, safeBottom: 24),
-      180,
+      shouldStackReviewLearningFooter(width: 320, textScale: 1),
+      isTrue,
+    );
+    expect(
+      shouldStackReviewLearningFooter(width: 390, textScale: 2),
+      isTrue,
     );
   });
 
