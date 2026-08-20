@@ -57,6 +57,7 @@ final promotionsForPlacementProvider = FutureProvider.family<
 
 class PromotionSessionRegistry {
   final Set<String> _presentedBeforeLogin = <String>{};
+  final Set<String> _presentedPostLogin = <String>{};
 
   void markLoginCampaignsPresented(Iterable<PromotionCampaign> campaigns) {
     _presentedBeforeLogin.addAll(campaigns.map((campaign) => campaign.id));
@@ -65,7 +66,18 @@ class PromotionSessionRegistry {
   bool wasPresentedBeforeLogin(String campaignId) =>
       _presentedBeforeLogin.contains(campaignId);
 
-  void clear() => _presentedBeforeLogin.clear();
+  bool shouldPresentPostLogin(PromotionCampaign campaign) =>
+      !wasPresentedBeforeLogin(campaign.id) &&
+      !_presentedPostLogin.contains(campaign.id);
+
+  void markPostLoginCampaignPresented(String campaignId) {
+    _presentedPostLogin.add(campaignId);
+  }
+
+  void clear() {
+    _presentedBeforeLogin.clear();
+    _presentedPostLogin.clear();
+  }
 }
 
 final promotionSessionRegistryProvider = Provider<PromotionSessionRegistry>((ref) {
