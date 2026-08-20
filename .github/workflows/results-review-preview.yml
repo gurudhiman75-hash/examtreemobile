@@ -1,0 +1,56 @@
+name: Results and review preview
+
+on:
+  pull_request:
+    paths:
+      - 'lib/core/theme/**'
+      - 'lib/features/results/**'
+      - 'test/features/results/**'
+      - '.github/workflows/results-review-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Stage pinned fonts for preview rendering
+        run: |
+          mkdir -p test/features/results/presentation/previews
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/results/presentation/previews/Roboto-Regular.ttf
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
+            test/features/results/presentation/previews/MaterialIcons-Regular.otf
+
+      - name: Render Results and Review phone previews
+        run: |
+          flutter test --update-goldens \
+            test/features/results/presentation/results_review_preview.dart
+
+      - name: Publish Results and Review screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: examtree-results-review-screenshots
+          path: test/features/results/presentation/previews/*.png
+          if-no-files-found: error
+          retention-days: 14
