@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/models/exam_model.dart';
+import '../../core/models/result_model.dart';
 import '../../features/companion/presentation/providers/daily_companion_providers.dart';
+import '../../features/exams/presentation/providers/exam_providers.dart';
+import '../../features/home/presentation/home_primary_action.dart';
+import '../../features/results/presentation/providers/result_providers.dart';
 
 bool shouldResetBranchOnSelection({
   required int selectedIndex,
@@ -14,7 +19,32 @@ bool shouldResetBranchOnSelection({
   return selectedIndex == 0 || selectedIndex == currentIndex;
 }
 
-bool shouldShowDailyAction(int currentIndex) => currentIndex == 0;
+bool shouldShowDailyAction(
+  int currentIndex, {
+  bool revisionIsPrimary = false,
+}) =>
+    currentIndex == 0 && !revisionIsPrimary;
+
+bool isRevisionPrimaryOnHome({
+  required AsyncValue<List<Exam>> activeAsync,
+  required AsyncValue<List<Result>> resultsAsync,
+  required int dueCount,
+  required DateTime now,
+}) {
+  if (dueCount <= 0) return false;
+  final active = activeAsync.value;
+  final results = resultsAsync.value;
+  if (active == null || results == null) return false;
+
+  final action = resolveHomePrimaryAction(
+    activeTests: active,
+    results: results,
+    availableTests: const <Exam>[],
+    dueRevisionCount: dueCount,
+    now: now,
+  );
+  return action.kind == HomePrimaryActionKind.reviseDue;
+}
 
 String dailyActionLabel({
   required int dueCount,
@@ -61,8 +91,22 @@ class AppScaffold extends ConsumerWidget {
             dailyGoal: dailySnapshot.settings.dailyQuestionGoal,
           );
 
+    final onHome = navigationShell.currentIndex == 0;
+    var revisionIsPrimary = false;
+    if (onHome && dueCount > 0) {
+      revisionIsPrimary = isRevisionPrimaryOnHome(
+        activeAsync: ref.watch(inProgressExamsProvider),
+        resultsAsync: ref.watch(userResultsProvider),
+        dueCount: dueCount,
+        now: now,
+      );
+    }
+
     final scheme = Theme.of(context).colorScheme;
-    final showDailyAction = shouldShowDailyAction(navigationShell.currentIndex);
+    final showDailyAction = shouldShowDailyAction(
+      navigationShell.currentIndex,
+      revisionIsPrimary: revisionIsPrimary,
+    );
 
     return Scaffold(
       body: navigationShell,
