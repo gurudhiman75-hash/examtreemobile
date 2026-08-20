@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../promotions/domain/promotion_campaign.dart';
+import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../domain/auth_error_messages.dart';
 import 'providers/auth_providers.dart';
 import 'widgets/auth_entry_view.dart';
@@ -249,6 +251,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       emailController: _emailController,
       passwordController: _passwordController,
       confirmPasswordController: _confirmPasswordController,
+      promotionalContent: const PromotionPlacementView(
+        placement: PromotionPlacement.login,
+        compact: true,
+        markLoginCampaignsPresented: true,
+      ),
       onGoogle: _signInWithGoogle,
       onSubmit: _submit,
       onTogglePassword: () {

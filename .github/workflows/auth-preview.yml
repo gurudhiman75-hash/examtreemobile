@@ -1,0 +1,57 @@
+name: Auth preview
+
+on:
+  pull_request:
+    paths:
+      - 'lib/core/theme/**'
+      - 'lib/features/auth/**'
+      - 'lib/features/promotions/**'
+      - 'test/features/auth/**'
+      - '.github/workflows/auth-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Stage pinned fonts for preview rendering
+        run: |
+          mkdir -p test/features/auth/presentation/previews
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/Roboto-Regular.ttf" \
+            test/features/auth/presentation/previews/Roboto-Regular.ttf
+          cp "$FLUTTER_ROOT/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf" \
+            test/features/auth/presentation/previews/MaterialIcons-Regular.otf
+
+      - name: Render Login phone previews
+        run: |
+          flutter test --update-goldens \
+            test/features/auth/presentation/auth_preview.dart
+
+      - name: Publish Login screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: examtree-auth-screenshots
+          path: test/features/auth/presentation/previews/*.png
+          if-no-files-found: error
+          retention-days: 14
