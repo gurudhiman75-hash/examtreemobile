@@ -1,9 +1,29 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.isFile) {
+    FileInputStream(keystorePropertiesFile).use(keystoreProperties::load)
+}
+
+val releaseStoreFilePath = keystoreProperties.getProperty("storeFile")?.trim()
+val releaseStorePassword = keystoreProperties.getProperty("storePassword")?.trim()
+val releaseKeyAlias = keystoreProperties.getProperty("keyAlias")?.trim()
+val releaseKeyPassword = keystoreProperties.getProperty("keyPassword")?.trim()
+val releaseSigningReady = listOf(
+    releaseStoreFilePath,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
 
 android {
     namespace = "com.examtree.examtree"
@@ -17,10 +37,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.examtree.examtree"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -37,6 +54,15 @@ android {
                 keyPassword = "android"
             }
         }
+
+        if (releaseSigningReady) {
+            create("release") {
+                storeFile = file(releaseStoreFilePath!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
     }
 
     buildTypes {
@@ -44,10 +70,40 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            // TODO: Add your own unique release signing config before store distribution.
-            // Signing with the pinned debug key for authenticated development APKs only.
-            signingConfig = signingConfigs.getByName("debug")
+            // Never fall back to the debug certificate for a production build.
+            // verifyReleaseSigning below makes release tasks fail before packaging
+            // when the private upload-key configuration is unavailable.
+            if (releaseSigningReady) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
+    }
+}
+
+val verifyReleaseSigning by tasks.registering {
+    group = "verification"
+    description = "Fails release builds unless the production upload key is configured."
+
+    doLast {
+        if (!releaseSigningReady) {
+            throw GradleException(
+                "Android release signing is not configured. Provide android/key.properties " +
+                    "with storeFile, storePassword, keyAlias and keyPassword."
+            )
+        }
+
+        val storeFile = file(releaseStoreFilePath!!)
+        if (!storeFile.isFile) {
+            throw GradleException(
+                "Android release keystore does not exist at ${storeFile.absolutePath}."
+            )
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "preReleaseBuild") {
+        dependsOn(verifyReleaseSigning)
     }
 }
 
