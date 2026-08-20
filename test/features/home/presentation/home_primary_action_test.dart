@@ -55,6 +55,7 @@ void main() {
       activeTests: [exam(id: 'active', title: 'Active test')],
       results: [result(id: 'recent', calculatedAt: now)],
       availableTests: [exam(id: 'available', title: 'Available test')],
+      dueRevisionCount: 8,
       now: now,
     );
 
@@ -62,7 +63,7 @@ void main() {
     expect(action.exam?.id, 'active');
   });
 
-  test('recent result is promoted when no attempt is active', () {
+  test('recent result outranks due revision when no attempt is active', () {
     final action = resolveHomePrimaryAction(
       activeTests: const [],
       results: [
@@ -72,6 +73,7 @@ void main() {
         ),
       ],
       availableTests: [exam(id: 'available', title: 'Available test')],
+      dueRevisionCount: 8,
       now: now,
     );
 
@@ -79,7 +81,7 @@ void main() {
     expect(action.result?.attemptId, 'recent');
   });
 
-  test('stale result does not block the next available test', () {
+  test('due revision outranks a generic new test after fresh review window', () {
     final action = resolveHomePrimaryAction(
       activeTests: const [],
       results: [
@@ -89,14 +91,36 @@ void main() {
         ),
       ],
       availableTests: [exam(id: 'available', title: 'Available test')],
+      dueRevisionCount: 6,
+      now: now,
+    );
+
+    expect(action.kind, HomePrimaryActionKind.reviseDue);
+    expect(action.dueRevisionCount, 6);
+    expect(action.title, '6 questions to revisit');
+    expect(action.actionLabel, 'Start revision');
+  });
+
+  test('available test is next when nothing is due for revision', () {
+    final action = resolveHomePrimaryAction(
+      activeTests: const [],
+      results: [
+        result(
+          id: 'old',
+          calculatedAt: now.subtract(const Duration(days: 3)),
+        ),
+      ],
+      availableTests: [exam(id: 'available', title: 'Available test')],
+      dueRevisionCount: 0,
       now: now,
     );
 
     expect(action.kind, HomePrimaryActionKind.startTest);
     expect(action.exam?.id, 'available');
+    expect(action.eyebrow, 'Next test');
   });
 
-  test('free tests are recommended before newer paid tests', () {
+  test('free tests are ordered before newer paid tests', () {
     final action = resolveHomePrimaryAction(
       activeTests: const [],
       results: const [],
@@ -118,6 +142,18 @@ void main() {
 
     expect(action.kind, HomePrimaryActionKind.startTest);
     expect(action.exam?.id, 'free');
+  });
+
+  test('negative due count is treated as no revision work', () {
+    final action = resolveHomePrimaryAction(
+      activeTests: const [],
+      results: const [],
+      availableTests: [exam(id: 'available', title: 'Available test')],
+      dueRevisionCount: -2,
+      now: now,
+    );
+
+    expect(action.kind, HomePrimaryActionKind.startTest);
   });
 
   test('falls back to browse when no actionable data exists', () {

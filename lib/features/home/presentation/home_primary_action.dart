@@ -1,7 +1,13 @@
 import '../../../core/models/exam_model.dart';
 import '../../../core/models/result_model.dart';
 
-enum HomePrimaryActionKind { resumeTest, reviewResult, startTest, browseTests }
+enum HomePrimaryActionKind {
+  resumeTest,
+  reviewResult,
+  reviseDue,
+  startTest,
+  browseTests,
+}
 
 class HomePrimaryAction {
   const HomePrimaryAction({
@@ -12,6 +18,7 @@ class HomePrimaryAction {
     required this.actionLabel,
     this.exam,
     this.result,
+    this.dueRevisionCount = 0,
   });
 
   final HomePrimaryActionKind kind;
@@ -21,12 +28,14 @@ class HomePrimaryAction {
   final String actionLabel;
   final Exam? exam;
   final Result? result;
+  final int dueRevisionCount;
 }
 
 HomePrimaryAction resolveHomePrimaryAction({
   required Iterable<Exam> activeTests,
   required Iterable<Result> results,
   required Iterable<Exam> availableTests,
+  int dueRevisionCount = 0,
   DateTime? now,
   Duration reviewWindow = const Duration(hours: 24),
 }) {
@@ -67,6 +76,19 @@ HomePrimaryAction resolveHomePrimaryAction({
     }
   }
 
+  final normalizedDueCount = dueRevisionCount < 0 ? 0 : dueRevisionCount;
+  if (normalizedDueCount > 0) {
+    return HomePrimaryAction(
+      kind: HomePrimaryActionKind.reviseDue,
+      eyebrow: 'Due for revision',
+      title: '$normalizedDueCount ${normalizedDueCount == 1 ? 'question' : 'questions'} to revisit',
+      description:
+          'Strengthen mistakes you have already found before adding another test.',
+      actionLabel: 'Start revision',
+      dueRevisionCount: normalizedDueCount,
+    );
+  }
+
   final available = availableTests.toList()
     ..sort((left, right) {
       final leftPaid = left.status.trim().toLowerCase() == 'paid' ? 1 : 0;
@@ -80,10 +102,10 @@ HomePrimaryAction resolveHomePrimaryAction({
   if (available.isNotEmpty) {
     return HomePrimaryAction(
       kind: HomePrimaryActionKind.startTest,
-      eyebrow: 'Recommended next',
+      eyebrow: 'Next test',
       title: available.first.title,
       description:
-          'Start with a focused paper selected from the tests currently available to you.',
+          'Open a focused paper from the tests currently available to you.',
       actionLabel: 'View test',
       exam: available.first,
     );

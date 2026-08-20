@@ -3,6 +3,8 @@ import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/models/result_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
+import 'package:examtree/features/companion/domain/daily_companion.dart';
+import 'package:examtree/features/companion/presentation/providers/daily_companion_providers.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
 import 'package:examtree/features/home/presentation/home_screen.dart';
 import 'package:examtree/features/profile/presentation/providers/analytics_providers.dart';
@@ -60,11 +62,38 @@ void main() {
         updatedAt: now,
       );
 
+  RevisionItem revisionItem(int index) => RevisionItem(
+        id: 'revision-$index',
+        sourceAttemptId: 'attempt-$index',
+        testId: 'test-$index',
+        testName: 'Mock $index',
+        section: 'Quantitative Aptitude',
+        questionText: 'Question $index',
+        options: const ['A', 'B', 'C', 'D'],
+        selectedIndex: 0,
+        correctIndex: 1,
+        explanation: 'Explanation $index',
+        reasons: const {RevisionReason.incorrect},
+        timeTakenSeconds: 45,
+        dueAt: now.subtract(const Duration(minutes: 5)),
+        stage: 0,
+        createdAt: now.subtract(const Duration(days: 1)),
+      );
+
+  DailyCompanionSnapshot companionSnapshot({int dueCount = 0}) {
+    return DailyCompanionSnapshot(
+      settings: const StudyCompanionSettings(dailyQuestionGoal: 10),
+      items: List.generate(dueCount, revisionItem),
+      completedToday: 0,
+    );
+  }
+
   Future<void> pumpHome(
     WidgetTester tester, {
     required List<Exam> active,
     required List<Exam> available,
     required List<Result> results,
+    int dueRevisionCount = 0,
     double textScale = 1,
   }) async {
     tester.view
@@ -73,17 +102,33 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    final container = ProviderContainer(
+      overrides: [
+        authStateChangesProvider.overrideWith(
+          (ref) => Stream<User?>.value(null),
+        ),
+        userAnalyticsProvider.overrideWith((ref) async => analytics()),
+        inProgressExamsProvider.overrideWith((ref) async => active),
+        availableExamsProvider.overrideWith((ref) async => available),
+        userResultsProvider.overrideWith((ref) async => results),
+        dailyCompanionSnapshotProvider.overrideWith(
+          (ref) async => companionSnapshot(dueCount: dueRevisionCount),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await Future.wait<Object?>([
+      container.read(userAnalyticsProvider.future),
+      container.read(inProgressExamsProvider.future),
+      container.read(availableExamsProvider.future),
+      container.read(userResultsProvider.future),
+      container.read(dailyCompanionSnapshotProvider.future),
+    ]);
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authStateChangesProvider.overrideWith(
-            (ref) => Stream<User?>.value(null),
-          ),
-          userAnalyticsProvider.overrideWith((ref) async => analytics()),
-          inProgressExamsProvider.overrideWith((ref) async => active),
-          availableExamsProvider.overrideWith((ref) async => available),
-          userResultsProvider.overrideWith((ref) async => results),
-        ],
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           theme: AppTheme.lightTheme,
           home: MediaQuery(
@@ -98,8 +143,6 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
   }
 
   Future<void> scrollHome(WidgetTester tester, double distance) async {
@@ -119,6 +162,7 @@ void main() {
       ],
       available: [exam('available-1', 'Reasoning mixed practice')],
       results: [result()],
+      dueRevisionCount: 4,
     );
 
     expect(find.text('Resume test'), findsOneWidget);
@@ -129,6 +173,21 @@ void main() {
     await scrollHome(tester, 620);
     expect(find.byKey(const Key('home-context-tests')), findsOneWidget);
     expect(find.byKey(const Key('home-context-results')), findsOneWidget);
+  });
+
+  testWidgets('due revision becomes primary before generic test discovery', (tester) async {
+    await pumpHome(
+      tester,
+      active: const [],
+      available: [exam('available-1', 'Reasoning mixed practice')],
+      results: [result()],
+      dueRevisionCount: 3,
+    );
+
+    expect(find.text('DUE FOR REVISION'), findsOneWidget);
+    expect(find.text('3 questions to revisit'), findsOneWidget);
+    expect(find.text('Start revision'), findsOneWidget);
+    expect(find.text('Next test'), findsNothing);
   });
 
   testWidgets('new learner stays truthful when catalogue is empty', (tester) async {
@@ -154,6 +213,7 @@ void main() {
       active: [exam('active-1', 'SSC CGL full mock')],
       available: [exam('available-1', 'Reasoning mixed practice')],
       results: [result()],
+      dueRevisionCount: 2,
       textScale: 2,
     );
 

@@ -7,6 +7,7 @@ import '../../../core/models/exam_model.dart';
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
+import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
 import '../../results/presentation/providers/result_providers.dart';
@@ -23,7 +24,8 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(userAnalyticsProvider)
       ..invalidate(inProgressExamsProvider)
       ..invalidate(availableExamsProvider)
-      ..invalidate(userResultsProvider);
+      ..invalidate(userResultsProvider)
+      ..invalidate(dailyCompanionSnapshotProvider);
 
     Future<void> settle(Future<Object?> request) async {
       try {
@@ -38,6 +40,7 @@ class HomeScreen extends ConsumerWidget {
       settle(ref.read(inProgressExamsProvider.future)),
       settle(ref.read(availableExamsProvider.future)),
       settle(ref.read(userResultsProvider.future)),
+      settle(ref.read(dailyCompanionSnapshotProvider.future)),
     ]);
   }
 
@@ -47,16 +50,22 @@ class HomeScreen extends ConsumerWidget {
     final activeAsync = ref.watch(inProgressExamsProvider);
     final availableAsync = ref.watch(availableExamsProvider);
     final resultsAsync = ref.watch(userResultsProvider);
+    final companionAsync = ref.watch(dailyCompanionSnapshotProvider);
     final user = ref.watch(authStateChangesProvider).value;
     final currentTime = now?.call() ?? DateTime.now();
 
     final activeTests = activeAsync.value ?? const <Exam>[];
     final availableTests = availableAsync.value ?? const <Exam>[];
     final results = resultsAsync.value ?? const <Result>[];
+    final companionSnapshot = companionAsync.value;
+    final dueRevisionCount =
+        companionSnapshot?.dueItems(currentTime).length ?? 0;
     final actionState = _resolveActionState(
       activeAsync: activeAsync,
       resultsAsync: resultsAsync,
       availableAsync: availableAsync,
+      companionLoading: companionAsync.isLoading && companionSnapshot == null,
+      dueRevisionCount: dueRevisionCount,
       now: currentTime,
       activeTests: activeTests,
       results: results,
@@ -106,7 +115,8 @@ class HomeScreen extends ConsumerWidget {
                         ref
                           ..invalidate(inProgressExamsProvider)
                           ..invalidate(userResultsProvider)
-                          ..invalidate(availableExamsProvider);
+                          ..invalidate(availableExamsProvider)
+                          ..invalidate(dailyCompanionSnapshotProvider);
                       },
                     ),
                     if (remainingActive.isNotEmpty) ...[
@@ -192,7 +202,7 @@ class HomeScreen extends ConsumerWidget {
                           : _ExamRail(
                               key: const Key('home-recommendations'),
                               tests: recommendations,
-                              semanticLabel: 'Recommended tests',
+                              semanticLabel: 'Available tests',
                               onOpen: (exam) => context.push(
                                 '/exam-details',
                                 extra: exam.id,
@@ -222,6 +232,8 @@ _ActionState _resolveActionState({
   required AsyncValue<List<Exam>> activeAsync,
   required AsyncValue<List<Result>> resultsAsync,
   required AsyncValue<List<Exam>> availableAsync,
+  required bool companionLoading,
+  required int dueRevisionCount,
   required DateTime now,
   required List<Exam> activeTests,
   required List<Result> results,
@@ -236,6 +248,7 @@ _ActionState _resolveActionState({
         activeTests: activeTests,
         results: results,
         availableTests: availableTests,
+        dueRevisionCount: dueRevisionCount,
         now: now,
       ),
     );
@@ -253,20 +266,29 @@ _ActionState _resolveActionState({
   if (provisional.kind == HomePrimaryActionKind.reviewResult) {
     return _ActionState(action: provisional);
   }
+
+  if (companionLoading) {
+    return const _ActionState(loading: true);
+  }
+
+  final revisionAware = resolveHomePrimaryAction(
+    activeTests: activeTests,
+    results: results,
+    availableTests: availableTests,
+    dueRevisionCount: dueRevisionCount,
+    now: now,
+  );
+  if (revisionAware.kind == HomePrimaryActionKind.reviseDue) {
+    return _ActionState(action: revisionAware);
+  }
+
   if (availableAsync.isLoading && availableTests.isEmpty) {
     return const _ActionState(loading: true);
   }
   if (activeAsync.hasError && resultsAsync.hasError && availableAsync.hasError) {
     return const _ActionState(error: true);
   }
-  return _ActionState(
-    action: resolveHomePrimaryAction(
-      activeTests: activeTests,
-      results: results,
-      availableTests: availableTests,
-      now: now,
-    ),
-  );
+  return _ActionState(action: revisionAware);
 }
 
 class _CommandHeader extends StatelessWidget {
@@ -397,6 +419,7 @@ class _PrimaryActionStateView extends StatelessWidget {
     }
 
     final action = state.action!;
+    final focusRevision = action.kind == HomePrimaryActionKind.reviseDue;
     return LearningActionCard(
       key: const Key('home-primary-action'),
       icon: _actionIcon(action.kind),
@@ -406,11 +429,11 @@ class _PrimaryActionStateView extends StatelessWidget {
       actionLabel: action.actionLabel,
       metadata: _actionMetadata(action),
       onAction: () => onOpen(action),
-      secondaryIcon: action.kind == HomePrimaryActionKind.browseTests
+      secondaryIcon: action.kind == HomePrimaryActionKind.browseTests || focusRevision
           ? null
           : Icons.grid_view_rounded,
       secondaryTooltip: 'Browse all tests',
-      onSecondaryAction: action.kind == HomePrimaryActionKind.browseTests
+      onSecondaryAction: action.kind == HomePrimaryActionKind.browseTests || focusRevision
           ? null
           : onBrowse,
     );
@@ -880,7 +903,7 @@ class _CatalogueEmpty extends StatelessWidget {
             child: Text(
               catalogueIsEmpty
                   ? 'No tests are available right now.'
-                  : 'You have already surfaced the most relevant available tests.',
+                  : 'You have already surfaced the available tests shown here.',
               style: theme.textTheme.bodyMedium,
             ),
           ),
@@ -893,6 +916,19 @@ class _CatalogueEmpty extends StatelessWidget {
 }
 
 List<HomeActionMetadata> _actionMetadata(HomePrimaryAction action) {
+  if (action.kind == HomePrimaryActionKind.reviseDue) {
+    return [
+      HomeActionMetadata(
+        icon: Icons.update_rounded,
+        label: '${action.dueRevisionCount} due now',
+      ),
+      const HomeActionMetadata(
+        icon: Icons.psychology_alt_outlined,
+        label: 'Mistake-based revision',
+      ),
+    ];
+  }
+
   final exam = action.exam;
   final result = action.result;
   if (exam != null) {
@@ -940,6 +976,7 @@ IconData _actionIcon(HomePrimaryActionKind kind) {
   return switch (kind) {
     HomePrimaryActionKind.resumeTest => Icons.play_arrow_rounded,
     HomePrimaryActionKind.reviewResult => Icons.fact_check_rounded,
+    HomePrimaryActionKind.reviseDue => Icons.auto_awesome_rounded,
     HomePrimaryActionKind.startTest => Icons.rocket_launch_rounded,
     HomePrimaryActionKind.browseTests => Icons.explore_rounded,
   };
@@ -952,6 +989,9 @@ void _openAction(BuildContext context, HomePrimaryAction action) {
       return;
     case HomePrimaryActionKind.reviewResult:
       context.push('/review', extra: action.result!.attemptId);
+      return;
+    case HomePrimaryActionKind.reviseDue:
+      context.push('/quick-revision?minutes=5');
       return;
     case HomePrimaryActionKind.startTest:
       context.push('/exam-details', extra: action.exam!.id);
