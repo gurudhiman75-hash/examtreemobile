@@ -4,21 +4,25 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../companion/domain/daily_companion.dart';
 import 'providers/result_providers.dart';
 import 'review_screen.dart';
 
-String? retryExamId(Result? result) {
-  final examId = result?.examId.trim() ?? '';
-  return examId.isEmpty ? null : examId;
+bool shouldOfferRevisionAction(Result? result) {
+  if (result == null || result.questionReview.isEmpty) return false;
+  return deriveRevisionCandidates(
+    [result],
+    now: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
+  ).isNotEmpty;
 }
 
-bool useCompactReviewRetryAction(double textScale) => textScale >= 1.5;
+bool useCompactReviewLearningAction(double textScale) => textScale >= 1.5;
 
-double reviewRetryBottomOffset({
+double reviewLearningBottomOffset({
   required double textScale,
   required double safeBottom,
 }) {
-  return safeBottom + (useCompactReviewRetryAction(textScale) ? 156 : 88);
+  return safeBottom + (useCompactReviewLearningAction(textScale) ? 156 : 88);
 }
 
 class ReviewRetryScreen extends ConsumerWidget {
@@ -30,41 +34,39 @@ class ReviewRetryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultAsync = ref.watch(resultProvider(resultId));
     final result = resultAsync.value;
-    final examId = retryExamId(result);
+    final showRevisionAction = shouldOfferRevisionAction(result);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final compactRetry = useCompactReviewRetryAction(textScale);
+    final compactAction = useCompactReviewLearningAction(textScale);
 
     return Stack(
       fit: StackFit.expand,
       children: [
         ReviewScreen(resultId: resultId),
-        if (examId != null)
+        if (showRevisionAction)
           Positioned(
             right: AppSpacing.md,
-            bottom: reviewRetryBottomOffset(
+            bottom: reviewLearningBottomOffset(
               textScale: textScale,
               safeBottom: MediaQuery.paddingOf(context).bottom,
             ),
             child: Semantics(
               button: true,
-              label: result?.testName.trim().isNotEmpty == true
-                  ? 'Retry ${result!.testName}'
-                  : 'Retry this test',
-              child: compactRetry
+              label: 'Start a 5-minute revision session from saved mistakes',
+              child: compactAction
                   ? FloatingActionButton.small(
-                      heroTag: 'review-retry-$resultId',
-                      tooltip: 'Retry test',
+                      heroTag: 'review-revise-$resultId',
+                      tooltip: 'Revise mistakes',
                       onPressed: () =>
-                          context.push('/exam-details', extra: examId),
-                      child: const Icon(Icons.replay_rounded),
+                          context.push('/quick-revision?minutes=5'),
+                      child: const Icon(Icons.auto_awesome_rounded),
                     )
                   : FloatingActionButton.extended(
-                      heroTag: 'review-retry-$resultId',
-                      tooltip: 'Retry test',
+                      heroTag: 'review-revise-$resultId',
+                      tooltip: 'Revise mistakes',
                       onPressed: () =>
-                          context.push('/exam-details', extra: examId),
-                      icon: const Icon(Icons.replay_rounded),
-                      label: const Text('Retry test'),
+                          context.push('/quick-revision?minutes=5'),
+                      icon: const Icon(Icons.auto_awesome_rounded),
+                      label: const Text('Revise mistakes'),
                     ),
             ),
           ),
