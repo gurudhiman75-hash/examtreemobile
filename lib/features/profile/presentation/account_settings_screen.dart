@@ -7,6 +7,8 @@ import '../../../core/repositories/account_repository.dart';
 import '../../../core/repositories/api_account_repository.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
+import '../../companion/presentation/providers/daily_companion_providers.dart';
+import '../../exam_day/presentation/providers/exam_day_providers.dart';
 
 class AccountSettingsScreen extends ConsumerStatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -28,14 +30,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
     setState(() => _deleting = true);
     try {
       final result = await ref.read(accountRepositoryProvider).deleteAccount();
-      if (userId.isNotEmpty) {
-        try {
-          await ref.read(attemptDraftStoreProvider).deleteAllForUser(userId);
-        } catch (_) {
-          // Canonical deletion is already complete/pending. Local cleanup is
-          // best-effort and must never keep a deleted account signed in.
-        }
-      }
+      await _clearDeletedUserDeviceData(userId);
       try {
         await ref.read(authControllerProvider).signOut();
       } catch (_) {
@@ -64,6 +59,43 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
       _showMessage('Account deletion could not be completed. Please try again.');
     } finally {
       if (mounted) setState(() => _deleting = false);
+    }
+  }
+
+  Future<void> _clearDeletedUserDeviceData(String userId) async {
+    final normalized = userId.trim();
+    if (normalized.isNotEmpty) {
+      try {
+        await ref.read(attemptDraftStoreProvider).deleteAllForUser(normalized);
+      } catch (_) {
+        // Server erasure is canonical. Continue with the remaining device data.
+      }
+      try {
+        await ref.read(dailyCompanionStoreProvider).deleteAllForUser(normalized);
+      } catch (_) {
+        // Continue clearing independent caches/reminders even if one DB fails.
+      }
+      try {
+        await ref.read(examDayControllerProvider).deleteTarget(normalized);
+      } catch (_) {
+        // Reminder cancellation is retried separately below.
+      }
+    }
+
+    try {
+      await ref.read(studyReminderServiceProvider).cancel();
+    } catch (_) {
+      // Local notification cleanup is best-effort after canonical deletion.
+    }
+    try {
+      await ref.read(examDayControllerProvider).cancelReminders();
+    } catch (_) {
+      // Local notification cleanup is best-effort after canonical deletion.
+    }
+    try {
+      await ref.read(companionWidgetServiceProvider).clear();
+    } catch (_) {
+      // Never keep a deleted learner's revision snapshot in the home widget.
     }
   }
 
