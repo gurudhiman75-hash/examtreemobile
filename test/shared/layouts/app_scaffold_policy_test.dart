@@ -17,10 +17,25 @@ void main() {
     );
   });
 
-  test('Daily action is extended only on Home', () {
-    expect(shouldUseExtendedDailyAction(0), isTrue);
-    expect(shouldUseExtendedDailyAction(1), isFalse);
-    expect(shouldUseExtendedDailyAction(2), isFalse);
-    expect(shouldUseExtendedDailyAction(3), isFalse);
+  test('Daily Companion action appears only on Home', () {
+    expect(shouldShowDailyAction(0), isTrue);
+    expect(shouldShowDailyAction(1), isFalse);
+    expect(shouldShowDailyAction(2), isFalse);
+    expect(shouldShowDailyAction(3), isFalse);
+  });
+
+  test('Daily Companion action reflects real revision state', () {
+    expect(
+      dailyActionLabel(dueCount: 4, completedToday: 3, dailyGoal: 10),
+      '4 due',
+    );
+    expect(
+      dailyActionLabel(dueCount: 0, completedToday: 10, dailyGoal: 10),
+      'Revision done',
+    );
+    expect(
+      dailyActionLabel(dueCount: 0, completedToday: 3, dailyGoal: 10),
+      'Daily plan',
+    );
   });
 }
