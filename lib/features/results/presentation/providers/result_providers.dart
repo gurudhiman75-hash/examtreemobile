@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/result_model.dart';
 import '../../../../core/providers/repository_providers.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../preferences/domain/question_language.dart';
+import '../../../preferences/presentation/providers/question_language_providers.dart';
 
 final userResultsProvider = FutureProvider<List<Result>>((ref) async {
   final repository = ref.watch(resultRepositoryProvider);
@@ -10,12 +12,18 @@ final userResultsProvider = FutureProvider<List<Result>>((ref) async {
   if (user == null) {
     throw StateError('Authentication is required to load result history.');
   }
-  return repository.getUserResults(user.uid);
+  final language = await ref.watch(questionLanguageProvider.future);
+  final results = await repository.getUserResults(user.uid);
+  return results
+      .map((result) => localizeResult(result, language))
+      .toList(growable: false);
 });
 
 final resultProvider = FutureProvider.family<Result, String>((ref, attemptId) async {
   final repository = ref.watch(resultRepositoryProvider);
-  return repository.getResult(attemptId);
+  final language = await ref.watch(questionLanguageProvider.future);
+  final result = await repository.getResult(attemptId);
+  return localizeResult(result, language);
 });
 
 final completedAttemptCountProvider = FutureProvider.family<int, String>((

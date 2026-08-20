@@ -15,6 +15,12 @@ class ResultQuestionReview {
     required this.timeTakenSeconds,
     required this.flagged,
     required this.explanation,
+    this.textHi,
+    this.optionsHi,
+    this.explanationHi,
+    this.textPa,
+    this.optionsPa,
+    this.explanationPa,
   });
 
   final int questionId;
@@ -32,6 +38,12 @@ class ResultQuestionReview {
   final int? timeTakenSeconds;
   final bool flagged;
   final String explanation;
+  final String? textHi;
+  final List<String>? optionsHi;
+  final String? explanationHi;
+  final String? textPa;
+  final List<String>? optionsPa;
+  final String? explanationPa;
 
   bool get isAnswered => selected != null;
   bool get isCorrect => selected != null && selected == correct;
@@ -64,6 +76,46 @@ class ResultQuestionReview {
           : _asInt(json['timeTakenSeconds']),
       flagged: json['flagged'] == true,
       explanation: _asString(json['explanation']),
+      textHi: _nullableString(json['textHi']),
+      optionsHi: json['optionsHi'] is List
+          ? _stringList(json['optionsHi'])
+          : null,
+      explanationHi: _nullableString(json['explanationHi']),
+      textPa: _nullableString(json['textPa']),
+      optionsPa: json['optionsPa'] is List
+          ? _stringList(json['optionsPa'])
+          : null,
+      explanationPa: _nullableString(json['explanationPa']),
+    );
+  }
+
+  ResultQuestionReview copyWith({
+    String? text,
+    List<String>? options,
+    String? explanation,
+  }) {
+    return ResultQuestionReview(
+      questionId: questionId,
+      questionVersionId: questionVersionId,
+      testQuestionId: testQuestionId,
+      testSectionId: testSectionId,
+      section: section,
+      text: text ?? this.text,
+      options: options ?? this.options,
+      optionKeys: optionKeys,
+      selected: selected,
+      selectedOptionKey: selectedOptionKey,
+      correct: correct,
+      correctOptionKey: correctOptionKey,
+      timeTakenSeconds: timeTakenSeconds,
+      flagged: flagged,
+      explanation: explanation ?? this.explanation,
+      textHi: textHi,
+      optionsHi: optionsHi,
+      explanationHi: explanationHi,
+      textPa: textPa,
+      optionsPa: optionsPa,
+      explanationPa: explanationPa,
     );
   }
 }
@@ -209,11 +261,42 @@ class Result {
       sectionStats: sectionStats,
     );
   }
+
+  Result copyWith({List<ResultQuestionReview>? questionReview}) {
+    return Result(
+      id: id,
+      attemptId: attemptId,
+      userId: userId,
+      examId: examId,
+      score: score,
+      maxScore: maxScore,
+      accuracy: accuracy,
+      correctCount: correctCount,
+      incorrectCount: incorrectCount,
+      skippedCount: skippedCount,
+      calculatedAt: calculatedAt,
+      testName: testName,
+      category: category,
+      percentageScore: percentageScore,
+      rawScore: rawScore,
+      totalQuestions: totalQuestions,
+      attemptType: attemptType,
+      rank: rank,
+      percentile: percentile,
+      questionReview: questionReview ?? this.questionReview,
+      sectionStats: sectionStats,
+    );
+  }
 }
 
 String _asString(Object? value, {String fallback = ''}) {
   final text = value?.toString();
   return text == null || text.isEmpty ? fallback : text;
+}
+
+String? _nullableString(Object? value) {
+  final text = value?.toString().trim();
+  return text == null || text.isEmpty ? null : text;
 }
 
 int _asInt(Object? value, {int fallback = 0}) {
