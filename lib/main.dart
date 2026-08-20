@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -121,7 +122,7 @@ class FirebaseConfigurationRequiredApp extends StatelessWidget {
                   const Icon(Icons.build_circle_outlined, size: 64),
                   const SizedBox(height: 20),
                   Text(
-                    'Firebase client configuration is incomplete.',
+                    'This ExamTree build is not configured correctly.',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -129,23 +130,27 @@ class FirebaseConfigurationRequiredApp extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Register this platform in the sarbedutech Firebase project, then supply the missing build definitions.',
+                    'Install the latest official build, then try again.',
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
+                  if (kDebugMode) ...[
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: SelectableText(
+                        missingDefines
+                            .map((name) => '--dart-define=$name=<value>')
+                            .join('\n'),
+                      ),
                     ),
-                    child: SelectableText(
-                      missingDefines.map((name) => '--dart-define=$name=<value>').join('\n'),
-                    ),
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -189,15 +194,22 @@ class FirebaseStartupErrorApp extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'ExamTree could not connect to its authentication service.',
+                    'ExamTree could not start its authentication service.',
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  SelectableText(
-                    message,
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Close and reopen the app. If the problem continues, try again later.',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
+                  if (kDebugMode) ...[
+                    const SizedBox(height: 16),
+                    SelectableText(
+                      message,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ],
               ),
             ),
