@@ -8,7 +8,13 @@ final questionLanguageStoreProvider = Provider<QuestionLanguageStore>((ref) {
 });
 
 final questionLanguageProvider = FutureProvider<QuestionLanguage>((ref) async {
-  return ref.watch(questionLanguageStoreProvider).load();
+  try {
+    return await ref.watch(questionLanguageStoreProvider).load();
+  } catch (_) {
+    // Question rendering must never be blocked by a damaged or unavailable
+    // device preference store. English is the canonical content fallback.
+    return QuestionLanguage.english;
+  }
 });
 
 Future<void> setQuestionLanguage(
