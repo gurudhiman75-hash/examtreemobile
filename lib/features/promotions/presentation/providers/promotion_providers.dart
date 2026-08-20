@@ -34,12 +34,21 @@ class PromotionCampaignSource {
   }
 }
 
-final promotionCampaignSourceProvider = Provider<PromotionCampaignSource>((ref) {
-  return PromotionCampaignSource(FirebaseRemoteConfig.instance);
+final promotionCampaignSourceProvider = Provider<PromotionCampaignSource?>((ref) {
+  try {
+    return PromotionCampaignSource(FirebaseRemoteConfig.instance);
+  } catch (_) {
+    // Widget tests and partially configured clients may not have a Firebase app.
+    // Promotions are optional, so this must resolve to an empty campaign set
+    // instead of entering Riverpod's retry cycle.
+    return null;
+  }
 });
 
-final promotionCampaignsProvider = FutureProvider<List<PromotionCampaign>>((ref) {
-  return ref.watch(promotionCampaignSourceProvider).load();
+final promotionCampaignsProvider = FutureProvider<List<PromotionCampaign>>((ref) async {
+  final source = ref.watch(promotionCampaignSourceProvider);
+  if (source == null) return const <PromotionCampaign>[];
+  return source.load();
 });
 
 final promotionClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
