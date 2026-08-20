@@ -14,7 +14,7 @@ extension ExamAccessFilterLabel on ExamAccessFilter {
 
 extension ExamSortOptionLabel on ExamSortOption {
   String get label => switch (this) {
-        ExamSortOption.recommended => 'Recommended',
+        ExamSortOption.recommended => 'Default',
         ExamSortOption.newest => 'Newest',
         ExamSortOption.shortest => 'Shortest',
         ExamSortOption.mostQuestions => 'Most questions',
@@ -63,7 +63,7 @@ List<Exam> filterAndSortExams({
     return searchable.contains(normalizedQuery);
   }).toList();
 
-  int compareRecommended(Exam left, Exam right) {
+  int compareDefault(Exam left, Exam right) {
     final leftPaid = left.status.trim().toLowerCase() == 'paid' ? 1 : 0;
     final rightPaid = right.status.trim().toLowerCase() == 'paid' ? 1 : 0;
     if (leftPaid != rightPaid) return leftPaid.compareTo(rightPaid);
@@ -75,7 +75,7 @@ List<Exam> filterAndSortExams({
 
   filtered.sort(
     switch (sort) {
-      ExamSortOption.recommended => compareRecommended,
+      ExamSortOption.recommended => compareDefault,
       ExamSortOption.newest => (left, right) {
           final updated = right.updatedAt.compareTo(left.updatedAt);
           return updated != 0
