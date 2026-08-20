@@ -184,7 +184,7 @@ void main() {
       dueRevisionCount: 3,
     );
 
-    expect(find.text('Due for revision'), findsOneWidget);
+    expect(find.text('DUE FOR REVISION'), findsOneWidget);
     expect(find.text('3 questions to revisit'), findsOneWidget);
     expect(find.text('Start revision'), findsOneWidget);
     expect(find.text('Next test'), findsNothing);
