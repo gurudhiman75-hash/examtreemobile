@@ -26,6 +26,8 @@ abstract interface class DailyCompanionStore {
     required bool remembered,
     required DateTime reviewedAt,
   });
+
+  Future<void> deleteAllForUser(String userId);
 }
 
 class SqfliteDailyCompanionStore implements DailyCompanionStore {
@@ -260,6 +262,30 @@ class SqfliteDailyCompanionStore implements DailyCompanionStore {
           'remembered': remembered ? 1 : 0,
           'reviewed_at': reviewedAt.millisecondsSinceEpoch,
         },
+      );
+    });
+  }
+
+  @override
+  Future<void> deleteAllForUser(String userId) async {
+    final normalized = userId.trim();
+    if (normalized.isEmpty) return;
+    final db = await _open();
+    await db.transaction((txn) async {
+      await txn.delete(
+        _eventTable,
+        where: 'user_id = ?',
+        whereArgs: [normalized],
+      );
+      await txn.delete(
+        _revisionTable,
+        where: 'user_id = ?',
+        whereArgs: [normalized],
+      );
+      await txn.delete(
+        _settingsTable,
+        where: 'user_id = ?',
+        whereArgs: [normalized],
       );
     });
   }

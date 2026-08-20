@@ -39,6 +39,8 @@ abstract interface class AttemptDraftStore {
     required String userId,
     required String testId,
   });
+
+  Future<void> deleteAllForUser(String userId);
 }
 
 class SqfliteAttemptDraftStore implements AttemptDraftStore {
@@ -132,6 +134,18 @@ class SqfliteAttemptDraftStore implements AttemptDraftStore {
       _tableName,
       where: 'user_id = ? AND test_id = ?',
       whereArgs: [userId, testId],
+    );
+  }
+
+  @override
+  Future<void> deleteAllForUser(String userId) async {
+    final normalized = userId.trim();
+    if (normalized.isEmpty) return;
+    final db = await _open();
+    await db.delete(
+      _tableName,
+      where: 'user_id = ?',
+      whereArgs: [normalized],
     );
   }
 }
