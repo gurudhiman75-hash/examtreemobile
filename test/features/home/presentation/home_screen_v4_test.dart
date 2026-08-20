@@ -102,20 +102,33 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    final container = ProviderContainer(
+      overrides: [
+        authStateChangesProvider.overrideWith(
+          (ref) => Stream<User?>.value(null),
+        ),
+        userAnalyticsProvider.overrideWith((ref) async => analytics()),
+        inProgressExamsProvider.overrideWith((ref) async => active),
+        availableExamsProvider.overrideWith((ref) async => available),
+        userResultsProvider.overrideWith((ref) async => results),
+        dailyCompanionSnapshotProvider.overrideWith(
+          (ref) async => companionSnapshot(dueCount: dueRevisionCount),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await Future.wait<Object?>([
+      container.read(userAnalyticsProvider.future),
+      container.read(inProgressExamsProvider.future),
+      container.read(availableExamsProvider.future),
+      container.read(userResultsProvider.future),
+      container.read(dailyCompanionSnapshotProvider.future),
+    ]);
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authStateChangesProvider.overrideWith(
-            (ref) => Stream<User?>.value(null),
-          ),
-          userAnalyticsProvider.overrideWith((ref) async => analytics()),
-          inProgressExamsProvider.overrideWith((ref) async => active),
-          availableExamsProvider.overrideWith((ref) async => available),
-          userResultsProvider.overrideWith((ref) async => results),
-          dailyCompanionSnapshotProvider.overrideWith(
-            (ref) async => companionSnapshot(dueCount: dueRevisionCount),
-          ),
-        ],
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           theme: AppTheme.lightTheme,
           home: MediaQuery(
@@ -130,9 +143,6 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 50));
-    await tester.pumpAndSettle();
   }
 
   Future<void> scrollHome(WidgetTester tester, double distance) async {
