@@ -16,14 +16,11 @@ bool shouldOfferRevisionAction(Result? result) {
   ).isNotEmpty;
 }
 
-bool useCompactReviewLearningAction(double textScale) => textScale >= 1.5;
-
-double reviewLearningBottomOffset({
+bool shouldStackReviewLearningFooter({
+  required double width,
   required double textScale,
-  required double safeBottom,
-}) {
-  return safeBottom + (useCompactReviewLearningAction(textScale) ? 156 : 88);
-}
+}) =>
+    width < 330 || textScale > 1.5;
 
 class ReviewRetryScreen extends ConsumerWidget {
   const ReviewRetryScreen({super.key, required this.resultId});
@@ -32,45 +29,123 @@ class ReviewRetryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsync = ref.watch(resultProvider(resultId));
-    final result = resultAsync.value;
+    final result = ref.watch(resultProvider(resultId)).value;
     final showRevisionAction = shouldOfferRevisionAction(result);
-    final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final compactAction = useCompactReviewLearningAction(textScale);
 
-    return Stack(
-      fit: StackFit.expand,
+    return Column(
       children: [
-        ReviewScreen(resultId: resultId),
+        Expanded(child: ReviewScreen(resultId: resultId)),
         if (showRevisionAction)
-          Positioned(
-            right: AppSpacing.md,
-            bottom: reviewLearningBottomOffset(
-              textScale: textScale,
-              safeBottom: MediaQuery.paddingOf(context).bottom,
-            ),
-            child: Semantics(
-              button: true,
-              label: 'Start a 5-minute revision session from saved mistakes',
-              child: compactAction
-                  ? FloatingActionButton.small(
-                      heroTag: 'review-revise-$resultId',
-                      tooltip: 'Revise mistakes',
-                      onPressed: () =>
-                          context.push('/quick-revision?minutes=5'),
-                      child: const Icon(Icons.auto_awesome_rounded),
-                    )
-                  : FloatingActionButton.extended(
-                      heroTag: 'review-revise-$resultId',
-                      tooltip: 'Revise mistakes',
-                      onPressed: () =>
-                          context.push('/quick-revision?minutes=5'),
-                      icon: const Icon(Icons.auto_awesome_rounded),
-                      label: const Text('Revise mistakes'),
-                    ),
-            ),
+          _ReviewLearningFooter(
+            onStart: () => context.replace('/quick-revision?minutes=5'),
           ),
       ],
+    );
+  }
+}
+
+class _ReviewLearningFooter extends StatelessWidget {
+  const _ReviewLearningFooter({required this.onStart});
+
+  final VoidCallback onStart;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Material(
+      color: scheme.surfaceContainerLowest,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.xs,
+            AppSpacing.md,
+            AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: scheme.outlineVariant)),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final textScale = MediaQuery.textScalerOf(context).scale(1);
+              final stack = shouldStackReviewLearningFooter(
+                width: constraints.maxWidth,
+                textScale: textScale,
+              );
+              final copy = Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: scheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 19,
+                      color: scheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Revision ready',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Text(
+                          'Revisit mistakes for 5 minutes.',
+                          maxLines: stack ? 2 : 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+              final start = FilledButton.tonalIcon(
+                key: const Key('review-start-revision'),
+                onPressed: onStart,
+                icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                label: const Text('Start 5 min'),
+              );
+
+              if (stack) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    copy,
+                    const SizedBox(height: AppSpacing.xs),
+                    start,
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(child: copy),
+                  const SizedBox(width: AppSpacing.sm),
+                  start,
+                ],
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
