@@ -99,44 +99,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } on GoogleSignInException catch (error) {
       if (!mounted) return;
-      final detail = error.description?.trim();
       if (error.code == GoogleSignInExceptionCode.canceled) {
-        _showMessage(
-          detail == null || detail.isEmpty
-              ? 'Google sign-in was canceled. If you already selected an account, Android OAuth configuration was not accepted. Please try once more.'
-              : 'Google sign-in stopped after account selection: $detail',
-        );
+        _showMessage('Google sign-in was canceled. Please try again.');
         return;
       }
-      _showMessage(
-        detail == null || detail.isEmpty
-            ? 'Google sign-in failed (${error.code.name}). Please try again.'
-            : 'Google sign-in failed (${error.code.name}): $detail',
-      );
+      _showMessage('Google sign-in could not be completed. Please try again.');
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
       final message = switch (error.code) {
         'operation-not-allowed' =>
-          'Google sign-in is not enabled in Firebase Authentication.',
+          'Google sign-in is temporarily unavailable. Please try again later.',
         'account-exists-with-different-credential' =>
           'This email already has an ExamTree sign-in method. Sign in with that method first, then try Google again.',
-        'invalid-credential' =>
-          'Firebase rejected the Google credential. Check the Android Google sign-in configuration.',
         'google-email-unverified' =>
           'Google did not provide a verified email for this account.',
         'network-request-failed' =>
-          'Google sign-in could not reach Firebase. Check your connection and try again.',
-        _ => error.message?.trim().isNotEmpty == true
-            ? 'Google sign-in failed (${error.code}): ${error.message!.trim()}'
-            : 'Google sign-in failed (${error.code}). Please try again.',
+          'Google sign-in could not reach the service. Check your connection and try again.',
+        _ => 'Google sign-in could not be completed. Please try again.',
       };
       _showMessage(message);
     } on AuthProfileSyncException catch (error) {
       if (!mounted) return;
       _showMessage(error.message);
-    } catch (error) {
+    } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to sign in with Google: $error');
+      _showMessage('Unable to sign in with Google. Please try again.');
     } finally {
       _endLoading();
     }
