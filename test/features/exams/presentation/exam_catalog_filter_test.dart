@@ -122,7 +122,8 @@ void main() {
     );
   });
 
-  test('recommended order keeps free tests before paid tests', () {
+  test('default order keeps free tests before paid tests without claiming personalization', () {
+    expect(ExamSortOption.recommended.label, 'Default');
     expect(
       filterAndSortExams(exams: exams).map((e) => e.id),
       ['ssc-speed', 'ssc-free', 'punjab-paid'],
