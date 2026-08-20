@@ -132,6 +132,7 @@ void main() {
     await tester.pump();
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
+    await tester.pumpAndSettle();
   }
 
   Future<void> scrollHome(WidgetTester tester, double distance) async {
