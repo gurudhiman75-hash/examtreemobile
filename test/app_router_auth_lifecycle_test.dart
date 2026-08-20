@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:examtree/routes/app_router.dart';
+import 'package:examtree/routes/route_extra.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -30,6 +31,58 @@ void main() {
       expect(
         login.queryParameters['continue'],
         '/exam-details?source=home',
+      );
+    });
+
+    test('signed-out protected route carries extra identifier into continuation', () {
+      final redirect = resolveAuthRedirect(
+        authReady: true,
+        isAuthenticated: false,
+        matchedLocation: '/exam-details',
+        uri: Uri.parse('/exam-details?source=home'),
+        routeExtra: 'exam-123',
+      );
+
+      final login = Uri.parse(redirect!);
+      expect(
+        login.queryParameters['continue'],
+        '/exam-details?source=home&id=exam-123',
+      );
+    });
+
+    test('existing URI identifier remains authoritative during continuation', () {
+      final redirect = resolveAuthRedirect(
+        authReady: true,
+        isAuthenticated: false,
+        matchedLocation: '/review',
+        uri: Uri.parse('/review?id=result-from-uri'),
+        routeExtra: 'stale-result-extra',
+      );
+
+      final login = Uri.parse(redirect!);
+      expect(
+        login.queryParameters['continue'],
+        '/review?id=result-from-uri',
+      );
+    });
+
+    test('route identifier can be restored from the durable URI', () {
+      expect(
+        readRequiredRouteId(
+          null,
+          uri: Uri.parse('/test-attempt?id=attempt-exam-42'),
+        ),
+        'attempt-exam-42',
+      );
+    });
+
+    test('URI identifier takes precedence over transient extra', () {
+      expect(
+        readRequiredRouteId(
+          'old-extra',
+          uri: Uri.parse('/exam-details?id=current-uri-id'),
+        ),
+        'current-uri-id',
       );
     });
 
