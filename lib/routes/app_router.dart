@@ -33,9 +33,29 @@ final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
 final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
-String _continuationFor(Uri uri) {
-  final path = uri.path.isEmpty ? '/home' : uri.path;
-  return uri.hasQuery ? '$path?${uri.query}' : path;
+bool _routeNeedsIdentifier(String path) => const {
+      '/exam-details',
+      '/test-attempt',
+      '/review',
+    }.contains(path);
+
+String _continuationFor(Uri uri, {Object? routeExtra}) {
+  var durableUri = uri;
+  if (_routeNeedsIdentifier(uri.path) &&
+      (uri.queryParameters['id']?.trim().isEmpty ?? true)) {
+    final routeId = readRequiredRouteId(routeExtra);
+    if (routeId != null) {
+      durableUri = uri.replace(
+        queryParameters: {
+          ...uri.queryParameters,
+          'id': routeId,
+        },
+      );
+    }
+  }
+
+  final path = durableUri.path.isEmpty ? '/home' : durableUri.path;
+  return durableUri.hasQuery ? '$path?${durableUri.query}' : path;
 }
 
 String? _validatedContinuation(String? location) {
@@ -56,6 +76,7 @@ String? resolveAuthRedirect({
   required bool isAuthenticated,
   required String matchedLocation,
   required Uri uri,
+  Object? routeExtra,
 }) {
   final isLogin = matchedLocation == '/login';
   final isPublicAuthRoute =
@@ -63,7 +84,9 @@ String? resolveAuthRedirect({
 
   if (!authReady) return null;
   if (!isAuthenticated && !isPublicAuthRoute) {
-    final continuation = Uri.encodeQueryComponent(_continuationFor(uri));
+    final continuation = Uri.encodeQueryComponent(
+      _continuationFor(uri, routeExtra: routeExtra),
+    );
     return '/login?continue=$continuation';
   }
   if (isAuthenticated && isPublicAuthRoute) {
@@ -152,6 +175,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       isAuthenticated: authRefresh.isAuthenticated,
       matchedLocation: state.matchedLocation,
       uri: state.uri,
+      routeExtra: state.extra,
     ),
     routes: [
       GoRoute(
@@ -228,7 +252,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/test-attempt',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final examId = readRequiredRouteId(state.extra);
+          final examId = readRequiredRouteId(state.extra, uri: state.uri);
           if (examId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Test unavailable',
@@ -243,7 +267,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/exam-details',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final examId = readRequiredRouteId(state.extra);
+          final examId = readRequiredRouteId(state.extra, uri: state.uri);
           if (examId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Exam unavailable',
@@ -258,7 +282,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/review',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final resultId = readRequiredRouteId(state.extra);
+          final resultId = readRequiredRouteId(state.extra, uri: state.uri);
           if (resultId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Result unavailable',
