@@ -202,12 +202,13 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
               style: theme.textTheme.bodyLarge,
             ),
             const SizedBox(height: AppSpacing.md),
-            _InfoCard(
+            const _InfoCard(
               icon: Icons.shield_outlined,
               title: 'Privacy policy',
               body:
-                  'The production privacy policy is available at examtree.in/privacy. '
-                  'It describes data use, retention, deletion and contact details.',
+                  'The production privacy policy is available at '
+                  'https://sarbedutech.web.app/privacy. It describes data use, '
+                  'retention, deletion and contact details.',
             ),
             const SizedBox(height: AppSpacing.sm),
             const _InfoCard(
@@ -215,7 +216,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
               title: 'Account deletion on the web',
               body:
                   'You can also start an account-deletion request at '
-                  'examtree.in/account-deletion.',
+                  'https://sarbedutech.web.app/account-deletion.',
             ),
             const SizedBox(height: AppSpacing.xl),
             Text(
