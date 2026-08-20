@@ -9,13 +9,37 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final now = DateTime(2026, 8, 18, 12);
 
+  ResultQuestionReview reviewQuestion({bool correct = false}) {
+    return ResultQuestionReview(
+      questionId: 1,
+      questionVersionId: 'qv-1',
+      testQuestionId: 'tq-1',
+      testSectionId: 'section-1',
+      section: 'Quantitative Aptitude',
+      text: 'Sample question',
+      options: const ['A', 'B', 'C', 'D'],
+      optionKeys: const ['A', 'B', 'C', 'D'],
+      selected: correct ? 1 : 0,
+      selectedOptionKey: correct ? 'B' : 'A',
+      correct: 1,
+      correctOptionKey: 'B',
+      timeTakenSeconds: 42,
+      flagged: false,
+      explanation: 'Sample explanation',
+    );
+  }
+
   Result result({
     required String id,
     required String name,
     required String category,
     required double score,
     required double accuracy,
+    bool withReview = true,
+    bool cleanAttempt = false,
   }) {
+    final correctCount = cleanAttempt ? 100 : score.round();
+    final incorrectCount = cleanAttempt ? 0 : 100 - score.round();
     return Result(
       id: id,
       attemptId: 'attempt-$id',
@@ -24,8 +48,8 @@ void main() {
       score: score,
       maxScore: 100,
       accuracy: accuracy,
-      correctCount: score.round(),
-      incorrectCount: 100 - score.round(),
+      correctCount: correctCount,
+      incorrectCount: incorrectCount,
       skippedCount: 0,
       calculatedAt: now.subtract(Duration(days: int.parse(id))),
       testName: name,
@@ -33,6 +57,9 @@ void main() {
       percentageScore: score,
       rawScore: score,
       totalQuestions: 100,
+      questionReview: withReview
+          ? [reviewQuestion(correct: cleanAttempt)]
+          : const [],
     );
   }
 
@@ -84,6 +111,60 @@ void main() {
     expect(find.text('2'), findsWidgets);
     expect(find.text('Attempt history'), findsOneWidget);
     expect(find.text('SSC CGL Mock'), findsOneWidget);
+  });
+
+  testWidgets('review mistakes is primary before retake when review exists', (tester) async {
+    await pumpResults(
+      tester,
+      results: [
+        result(id: '1', name: 'SSC CGL Mock', category: 'SSC', score: 74, accuracy: 82),
+      ],
+    );
+
+    expect(find.text('Review mistakes'), findsOneWidget);
+    expect(find.byKey(const Key('results-review-primary')), findsOneWidget);
+    expect(find.byKey(const Key('results-retake-secondary')), findsOneWidget);
+    expect(find.byKey(const Key('results-retake-primary')), findsNothing);
+  });
+
+  testWidgets('clean attempt uses truthful review answers label', (tester) async {
+    await pumpResults(
+      tester,
+      results: [
+        result(
+          id: '1',
+          name: 'Perfect mock',
+          category: 'SSC',
+          score: 100,
+          accuracy: 100,
+          cleanAttempt: true,
+        ),
+      ],
+    );
+
+    expect(find.text('Review answers'), findsOneWidget);
+    expect(find.byKey(const Key('results-review-primary')), findsOneWidget);
+    expect(find.byKey(const Key('results-retake-secondary')), findsOneWidget);
+  });
+
+  testWidgets('legacy result without question review keeps retake usable as primary', (tester) async {
+    await pumpResults(
+      tester,
+      results: [
+        result(
+          id: '1',
+          name: 'Older attempt',
+          category: 'SSC',
+          score: 74,
+          accuracy: 82,
+          withReview: false,
+        ),
+      ],
+    );
+
+    expect(find.byKey(const Key('results-review-primary')), findsNothing);
+    expect(find.byKey(const Key('results-retake-primary')), findsOneWidget);
+    expect(find.byKey(const Key('results-retake-secondary')), findsNothing);
   });
 
   testWidgets('search filters attempt history and exposes reset', (tester) async {
