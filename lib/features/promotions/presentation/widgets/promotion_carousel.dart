@@ -84,7 +84,11 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
   @override
   Widget build(BuildContext context) {
     if (widget.campaigns.isEmpty) return const SizedBox.shrink();
-    final height = widget.compact ? 164.0 : 176.0;
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final largeText = textScale > 1.5;
+    final height = widget.compact
+        ? (largeText ? 216.0 : 164.0)
+        : (largeText ? 228.0 : 176.0);
 
     return Semantics(
       container: true,
@@ -229,7 +233,7 @@ class _PromotionCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         campaign.subtitle,
-                        maxLines: compact ? 2 : 2,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: scheme.onPrimaryContainer.withValues(alpha: 0.82),
