@@ -1,0 +1,156 @@
+name: Android Release AAB
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release-aab
+  cancel-in-progress: false
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID || '1:1083299267005:android:3986910db48dd12e3ad2d4' }}
+      ANDROID_RELEASE_KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+      ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
+      ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+      ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+      ANDROID_RELEASE_CERT_SHA1: ${{ secrets.ANDROID_RELEASE_CERT_SHA1 || vars.ANDROID_RELEASE_CERT_SHA1 }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Validate release signing inputs
+        shell: bash
+        run: |
+          missing=0
+          for name in \
+            ANDROID_RELEASE_KEYSTORE_BASE64 \
+            ANDROID_RELEASE_STORE_PASSWORD \
+            ANDROID_RELEASE_KEY_ALIAS \
+            ANDROID_RELEASE_KEY_PASSWORD \
+            ANDROID_RELEASE_CERT_SHA1; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::$name is required for a production Android release."
+              missing=1
+            fi
+          done
+          if [[ "$missing" -ne 0 ]]; then
+            exit 1
+          fi
+
+          EXPECTED_SHA1="$(printf '%s' "$ANDROID_RELEASE_CERT_SHA1" \
+            | tr -d '[:space:]:-' \
+            | tr '[:lower:]' '[:upper:]')"
+          if [[ ! "$EXPECTED_SHA1" =~ ^[0-9A-F]{40}$ ]]; then
+            echo "::error::ANDROID_RELEASE_CERT_SHA1 must contain a valid SHA-1 certificate fingerprint."
+            exit 1
+          fi
+          echo "EXPECTED_SHA1=$EXPECTED_SHA1" >> "$GITHUB_ENV"
+
+      - name: Restore production upload key
+        shell: bash
+        run: |
+          KEYSTORE="$RUNNER_TEMP/examtree-upload.jks"
+          printf '%s' "$ANDROID_RELEASE_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          if [[ ! -s "$KEYSTORE" ]]; then
+            echo "::error::Decoded Android release keystore is empty."
+            exit 1
+          fi
+
+          KEY_SHA1="$(keytool -list -v \
+            -keystore "$KEYSTORE" \
+            -storepass "$ANDROID_RELEASE_STORE_PASSWORD" \
+            -alias "$ANDROID_RELEASE_KEY_ALIAS" \
+            -keypass "$ANDROID_RELEASE_KEY_PASSWORD" \
+            | sed -n 's/^[[:space:]]*SHA1: //p' \
+            | head -n 1 \
+            | tr -d '[:space:]:-' \
+            | tr '[:lower:]' '[:upper:]')"
+
+          if [[ ! "$KEY_SHA1" =~ ^[0-9A-F]{40}$ ]]; then
+            echo "::error::Unable to read the upload-key certificate SHA-1."
+            exit 1
+          fi
+          if [[ "$KEY_SHA1" != "$EXPECTED_SHA1" ]]; then
+            echo "::error::The supplied keystore does not match ANDROID_RELEASE_CERT_SHA1."
+            exit 1
+          fi
+
+          cat > android/key.properties <<EOF
+          storePassword=$ANDROID_RELEASE_STORE_PASSWORD
+          keyPassword=$ANDROID_RELEASE_KEY_PASSWORD
+          keyAlias=$ANDROID_RELEASE_KEY_ALIAS
+          storeFile=$KEYSTORE
+          EOF
+          chmod 600 android/key.properties
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build production Android App Bundle
+        shell: bash
+        run: |
+          flutter build appbundle --release \
+            --build-number="$GITHUB_RUN_NUMBER" \
+            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
+            --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID"
+
+          AAB="$(find build/app/outputs/bundle/release -maxdepth 1 -type f -name '*.aab' -print | head -n 1)"
+          if [[ -z "$AAB" || ! -s "$AAB" ]]; then
+            echo "::error::Flutter did not produce a release App Bundle."
+            exit 1
+          fi
+          cp "$AAB" build/app/outputs/bundle/release/ExamTree-release.aab
+
+      - name: Verify release bundle certificate
+        shell: bash
+        run: |
+          AAB="build/app/outputs/bundle/release/ExamTree-release.aab"
+          AAB_SHA1="$(keytool -printcert -jarfile "$AAB" \
+            | sed -n 's/^[[:space:]]*SHA1: //p' \
+            | head -n 1 \
+            | tr -d '[:space:]:-' \
+            | tr '[:lower:]' '[:upper:]')"
+
+          if [[ ! "$AAB_SHA1" =~ ^[0-9A-F]{40}$ ]]; then
+            echo "::error::Unable to determine the release App Bundle signing SHA-1."
+            exit 1
+          fi
+          if [[ "$AAB_SHA1" != "$EXPECTED_SHA1" ]]; then
+            echo "::error::Release App Bundle was not signed by the expected upload certificate."
+            exit 1
+          fi
+
+          printf '%s\n' "$AAB_SHA1" \
+            | sed 's/../&:/g; s/:$//' \
+            > build/app/outputs/bundle/release/signing-sha1.txt
+
+      - name: Publish release bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExamTree-android-release-aab
+          path: |
+            build/app/outputs/bundle/release/ExamTree-release.aab
+            build/app/outputs/bundle/release/signing-sha1.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Remove signing material
+        if: always()
+        shell: bash
+        run: |
+          rm -f android/key.properties "$RUNNER_TEMP/examtree-upload.jks"
