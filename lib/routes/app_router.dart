@@ -14,10 +14,12 @@ import '../features/exam_day/presentation/exam_day_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/learn/presentation/learn_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
-import '../features/profile/presentation/profile_screen.dart';
+import '../features/profile/presentation/profile_route_screen.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
+import '../features/store/presentation/store_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -29,10 +31,10 @@ final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellHome');
 final GlobalKey<NavigatorState> _shellNavigatorExamsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellExams');
+final GlobalKey<NavigatorState> _shellNavigatorLearnKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellLearn');
 final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellResults');
-final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
 bool _routeNeedsIdentifier(String path) => const {
       '/exam-details',
@@ -114,10 +116,6 @@ class RouterAuthRefresh extends ChangeNotifier {
         notifyListeners();
       },
       onError: (_) {
-        // Firebase normally emits the restored user (or null) immediately. If
-        // restoration itself errors, unlock routing with the last known user so
-        // the UI can render a recoverable state instead of leaving the shell in
-        // an indeterminate startup state.
         _ready = true;
         notifyListeners();
       },
@@ -131,10 +129,6 @@ class RouterAuthRefresh extends ChangeNotifier {
 
   bool get isReady => _ready;
 
-  // Email/password Firebase users are not allowed into protected ExamTree
-  // routes until Firebase has verified ownership of their email. Google
-  // interactive sign-in additionally remains on the login route until the
-  // canonical /users/me profile sync has completed successfully.
   bool get isAuthenticated =>
       _user != null &&
       _user!.emailVerified &&
@@ -162,9 +156,6 @@ final routerAuthRefreshProvider = Provider<RouterAuthRefresh>((ref) {
 });
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  // Keep one GoRouter instance for the lifetime of this provider. Firebase auth
-  // changes refresh redirect evaluation through ChangeNotifier rather than
-  // reconstructing the stateful navigation shell with the same GlobalKeys.
   final authRefresh = ref.watch(routerAuthRefreshProvider);
 
   final router = GoRouter(
@@ -213,6 +204,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
+            navigatorKey: _shellNavigatorLearnKey,
+            routes: [
+              GoRoute(
+                path: '/learn',
+                builder: (context, state) => const LearnScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
             navigatorKey: _shellNavigatorResultsKey,
             routes: [
               GoRoute(
@@ -221,21 +221,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          StatefulShellBranch(
-            navigatorKey: _shellNavigatorProfileKey,
-            routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
-              ),
-            ],
-          ),
         ],
+      ),
+      GoRoute(
+        path: '/profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileRouteScreen(),
       ),
       GoRoute(
         path: '/account',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AccountSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/store',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => StoreScreen(
+          initialSection: storeSectionFromQuery(
+            state.uri.queryParameters['section'],
+          ),
+        ),
       ),
       GoRoute(
         path: '/daily',
