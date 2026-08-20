@@ -43,18 +43,31 @@ void main() {
       expect(account, contains("'/login?continue=%2Faccount'"));
     });
 
-    test('successful deletion clears user-owned device drafts and signs out', () {
+    test('successful deletion erases learner-owned device data and reminders', () {
       final account = File(
         'lib/features/profile/presentation/account_settings_screen.dart',
       ).readAsStringSync();
       final drafts = File(
         'lib/features/test_attempt/data/local_attempt_draft_store.dart',
       ).readAsStringSync();
+      final companion = File(
+        'lib/features/companion/data/local_daily_companion_store.dart',
+      ).readAsStringSync();
 
-      expect(account, contains('deleteAllForUser(userId)'));
+      expect(account, contains('attemptDraftStoreProvider).deleteAllForUser'));
+      expect(account, contains('dailyCompanionStoreProvider).deleteAllForUser'));
+      expect(account, contains('examDayControllerProvider).deleteTarget'));
+      expect(account, contains('studyReminderServiceProvider).cancel()'));
+      expect(account, contains('examDayControllerProvider).cancelReminders()'));
+      expect(account, contains('companionWidgetServiceProvider).clear()'));
       expect(account, contains('authControllerProvider).signOut()'));
+
       expect(drafts, contains('Future<void> deleteAllForUser(String userId)'));
       expect(drafts, contains("where: 'user_id = ?'"));
+      expect(companion, contains('Future<void> deleteAllForUser(String userId)'));
+      expect(companion, contains('_eventTable'));
+      expect(companion, contains('_revisionTable'));
+      expect(companion, contains('_settingsTable'));
     });
 
     test('learner-facing deletion errors do not expose raw exceptions', () {
