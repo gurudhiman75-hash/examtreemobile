@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/observability/crash_reporting.dart';
 import 'core/providers/repository_providers.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
@@ -56,6 +57,14 @@ Future<void> main() async {
       ),
     );
     return;
+  }
+
+  try {
+    await configureCrashReporting();
+  } catch (_) {
+    // Observability must never prevent a learner from opening ExamTree. Firebase
+    // startup itself has already succeeded; a Crashlytics-specific setup issue
+    // remains non-blocking and can be diagnosed during release verification.
   }
 
   runApp(const ProviderScope(child: ExamTreeApp()));

@@ -71,6 +71,7 @@ jobs:
           path: |
             flutter-analyse.log
             flutter-test.log
+            pubspec.lock
           if-no-files-found: warn
 
       - name: Enforce verification result
