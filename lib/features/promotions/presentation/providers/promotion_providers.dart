@@ -1,0 +1,73 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/promotion_campaign.dart';
+
+const promotionCampaignsRemoteKey = 'promotion_campaigns_json';
+
+class PromotionCampaignSource {
+  PromotionCampaignSource(this._remoteConfig);
+
+  final FirebaseRemoteConfig _remoteConfig;
+
+  Future<List<PromotionCampaign>> load() async {
+    await _remoteConfig.setDefaults(const {
+      promotionCampaignsRemoteKey: '[]',
+    });
+    await _remoteConfig.setConfigSettings(
+      RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 4),
+        minimumFetchInterval: const Duration(hours: 1),
+      ),
+    );
+
+    try {
+      await _remoteConfig.fetchAndActivate();
+    } catch (_) {
+      // Remote promotions are optional. Use the last activated/default value so
+      // authentication and preparation never depend on the campaign service.
+    }
+
+    return parsePromotionCampaigns(
+      _remoteConfig.getString(promotionCampaignsRemoteKey),
+    );
+  }
+}
+
+final promotionCampaignSourceProvider = Provider<PromotionCampaignSource>((ref) {
+  return PromotionCampaignSource(FirebaseRemoteConfig.instance);
+});
+
+final promotionCampaignsProvider = FutureProvider<List<PromotionCampaign>>((ref) {
+  return ref.watch(promotionCampaignSourceProvider).load();
+});
+
+final promotionClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+
+final promotionsForPlacementProvider = FutureProvider.family<
+    List<PromotionCampaign>, PromotionPlacement>((ref, placement) async {
+  final campaigns = await ref.watch(promotionCampaignsProvider.future);
+  final now = ref.watch(promotionClockProvider)();
+  return selectPromotionCampaigns(
+    campaigns: campaigns,
+    placement: placement,
+    now: now,
+  );
+});
+
+class PromotionSessionRegistry {
+  final Set<String> _presentedBeforeLogin = <String>{};
+
+  void markLoginCampaignsPresented(Iterable<PromotionCampaign> campaigns) {
+    _presentedBeforeLogin.addAll(campaigns.map((campaign) => campaign.id));
+  }
+
+  bool wasPresentedBeforeLogin(String campaignId) =>
+      _presentedBeforeLogin.contains(campaignId);
+
+  void clear() => _presentedBeforeLogin.clear();
+}
+
+final promotionSessionRegistryProvider = Provider<PromotionSessionRegistry>((ref) {
+  return PromotionSessionRegistry();
+});
