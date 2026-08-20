@@ -15,15 +15,15 @@ if (keystorePropertiesFile.isFile) {
 }
 
 val releaseStoreFilePath = keystoreProperties.getProperty("storeFile")?.trim()
-val releaseStorePassword = keystoreProperties.getProperty("storePassword")?.trim()
+val releaseStorePassword = keystoreProperties.getProperty("storePassword")
 val releaseKeyAlias = keystoreProperties.getProperty("keyAlias")?.trim()
-val releaseKeyPassword = keystoreProperties.getProperty("keyPassword")?.trim()
+val releaseKeyPassword = keystoreProperties.getProperty("keyPassword")
 val releaseSigningReady = listOf(
     releaseStoreFilePath,
     releaseStorePassword,
     releaseKeyAlias,
     releaseKeyPassword,
-).all { !it.isNullOrBlank() }
+).all { !it.isNullOrEmpty() }
 
 android {
     namespace = "com.examtree.examtree"
