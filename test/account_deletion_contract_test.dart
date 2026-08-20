@@ -5,14 +5,20 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('mobile account deletion contract', () {
     test('uses canonical destructive endpoint and typed confirmation', () {
-      final repository = File(
+      final apiRepository = File(
         'lib/core/repositories/api_account_repository.dart',
       ).readAsStringSync();
+      final contract = File(
+        'lib/core/repositories/account_repository.dart',
+      ).readAsStringSync();
 
-      expect(repository, contains("'/users/me'"));
-      expect(repository, contains("confirmation = 'DELETE MY ACCOUNT'"));
-      expect(repository, contains("data: const {'confirmation': confirmation}"));
-      expect(repository, contains("code == 'REAUTH_REQUIRED'"));
+      expect(apiRepository, contains("'/users/me'"));
+      expect(apiRepository, contains("confirmation = 'DELETE MY ACCOUNT'"));
+      expect(
+        apiRepository,
+        contains("data: const {'confirmation': confirmation}"),
+      );
+      expect(contract, contains("code == 'REAUTH_REQUIRED'"));
     });
 
     test('profile exposes privacy and account controls', () {
