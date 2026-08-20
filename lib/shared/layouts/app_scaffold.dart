@@ -14,7 +14,17 @@ bool shouldResetBranchOnSelection({
   return selectedIndex == 0 || selectedIndex == currentIndex;
 }
 
-bool shouldUseExtendedDailyAction(int currentIndex) => currentIndex == 0;
+bool shouldShowDailyAction(int currentIndex) => currentIndex == 0;
+
+String dailyActionLabel({
+  required int dueCount,
+  required int completedToday,
+  required int dailyGoal,
+}) {
+  if (dueCount > 0) return '$dueCount due';
+  if (dailyGoal > 0 && completedToday >= dailyGoal) return 'Revision done';
+  return 'Daily plan';
+}
 
 class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -39,31 +49,35 @@ class AppScaffold extends ConsumerWidget {
     // Warm the private local Daily Companion snapshot while the authenticated
     // shell is active. The provider publishes the same truthful local counts
     // to the Android home-screen widget when available.
-    ref.watch(dailyCompanionSnapshotProvider);
+    final dailyAsync = ref.watch(dailyCompanionSnapshotProvider);
+    final dailySnapshot = dailyAsync.value;
+    final now = ref.watch(dailyCompanionClockProvider)();
+    final dueCount = dailySnapshot?.dueItems(now).length ?? 0;
+    final dailyLabel = dailySnapshot == null
+        ? 'Daily plan'
+        : dailyActionLabel(
+            dueCount: dueCount,
+            completedToday: dailySnapshot.completedToday,
+            dailyGoal: dailySnapshot.settings.dailyQuestionGoal,
+          );
 
     final scheme = Theme.of(context).colorScheme;
-    final extendedDaily = shouldUseExtendedDailyAction(
-      navigationShell.currentIndex,
-    );
+    final showDailyAction = shouldShowDailyAction(navigationShell.currentIndex);
 
     return Scaffold(
       body: navigationShell,
-      floatingActionButton: extendedDaily
+      floatingActionButton: showDailyAction
           ? FloatingActionButton.extended(
               onPressed: () => context.push('/daily'),
-              tooltip: 'Open Daily Companion',
+              tooltip: dueCount > 0
+                  ? 'Open Daily Companion with $dueCount revision ${dueCount == 1 ? 'question' : 'questions'} due'
+                  : 'Open Daily Companion',
               backgroundColor: scheme.tertiaryContainer,
               foregroundColor: scheme.onTertiaryContainer,
               icon: const Icon(Icons.auto_awesome_rounded, size: 20),
-              label: const Text('Daily'),
+              label: Text(dailyLabel),
             )
-          : FloatingActionButton.small(
-              onPressed: () => context.push('/daily'),
-              tooltip: 'Open Daily Companion',
-              backgroundColor: scheme.tertiaryContainer,
-              foregroundColor: scheme.onTertiaryContainer,
-              child: const Icon(Icons.auto_awesome_rounded, size: 20),
-            ),
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
