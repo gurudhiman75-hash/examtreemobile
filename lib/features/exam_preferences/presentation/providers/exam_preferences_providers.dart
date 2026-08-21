@@ -25,3 +25,15 @@ final selectedExamIdsProvider = Provider<AsyncValue<List<String>>>((ref) {
         (snapshot) => snapshot.preferences.selectedExamIds,
       );
 });
+
+final selectedExamCodesProvider = Provider<AsyncValue<List<String>>>((ref) {
+  return ref.watch(examPreferenceSnapshotProvider).whenData((snapshot) {
+    final codeById = {
+      for (final exam in snapshot.catalogue.exams) exam.id: exam.code,
+    };
+    return snapshot.preferences.selectedExamIds
+        .map((id) => codeById[id]?.trim() ?? '')
+        .where((code) => code.isNotEmpty)
+        .toList(growable: false);
+  });
+});
