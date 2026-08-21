@@ -526,7 +526,7 @@ class _ResumeRail extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final itemWidth = (width * 0.78).clamp(270.0, 330.0).toDouble();
-    final railHeight = textScale > 1.5 ? 278.0 : 176.0;
+    final railHeight = textScale > 1.5 ? 336.0 : 180.0;
     return SizedBox(
       height: railHeight,
       child: ListView.separated(
@@ -770,27 +770,41 @@ class _MetadataLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurfaceVariant;
+    final items = <Widget>[
+      _Meta(
+        icon: Icons.timer_outlined,
+        label: '${exam.durationInSeconds ~/ 60} min',
+        color: color,
+      ),
+      _Meta(
+        icon: Icons.help_outline_rounded,
+        label: '${exam.totalQuestions} questions',
+        color: color,
+      ),
+      if (exam.difficulty.trim().isNotEmpty)
+        _Meta(
+          icon: Icons.signal_cellular_alt_rounded,
+          label: exam.difficulty,
+          color: color,
+        ),
+    ];
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    if (textScale > 1.5) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < items.length; index++) ...[
+            items[index],
+            if (index != items.length - 1)
+              const SizedBox(height: AppSpacing.xs),
+          ],
+        ],
+      );
+    }
     return Wrap(
       spacing: AppSpacing.md,
       runSpacing: AppSpacing.xs,
-      children: [
-        _Meta(
-          icon: Icons.timer_outlined,
-          label: '${exam.durationInSeconds ~/ 60} min',
-          color: color,
-        ),
-        _Meta(
-          icon: Icons.help_outline_rounded,
-          label: '${exam.totalQuestions} questions',
-          color: color,
-        ),
-        if (exam.difficulty.trim().isNotEmpty)
-          _Meta(
-            icon: Icons.signal_cellular_alt_rounded,
-            label: exam.difficulty,
-            color: color,
-          ),
-      ],
+      children: items,
     );
   }
 }
@@ -804,18 +818,22 @@ class _Meta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final labelWidget = Text(
+      label,
+      maxLines: largeText ? 2 : 1,
+      overflow: TextOverflow.ellipsis,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+    );
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: largeText ? MainAxisSize.max : MainAxisSize.min,
       children: [
         Icon(icon, size: 15, color: color),
         const SizedBox(width: AppSpacing.xxs),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w600,
-              ),
-        ),
+        if (largeText) Expanded(child: labelWidget) else labelWidget,
       ],
     );
   }
@@ -928,7 +946,7 @@ class _ResumeSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 176,
+      height: 180,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(22),
@@ -966,7 +984,7 @@ class _CatalogueLoadingView extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         block(42),
         const SizedBox(height: AppSpacing.xl),
-        block(176),
+        block(180),
         const SizedBox(height: AppSpacing.sm),
         block(126),
         const SizedBox(height: AppSpacing.sm),
