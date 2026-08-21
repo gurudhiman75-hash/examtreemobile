@@ -1,6 +1,8 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
 import '../../domain/promotion_campaign.dart';
 
 const promotionCampaignsRemoteKey = 'promotion_campaigns_json';
@@ -53,14 +55,36 @@ final promotionCampaignsProvider = FutureProvider<List<PromotionCampaign>>((ref)
 
 final promotionClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
+/// Returns My Exams only for a verified authenticated learner. Firebase-less
+/// tests, signed-out clients, loading preferences and preference failures all
+/// fail closed for exam-targeted campaigns while general campaigns remain safe.
+final promotionAudienceExamIdsProvider = Provider<AsyncValue<List<String>>?>((ref) {
+  try {
+    final user = ref.watch(firebaseAuthProvider).currentUser;
+    if (user == null || !user.emailVerified) return null;
+    return ref.watch(selectedExamIdsProvider);
+  } catch (_) {
+    return null;
+  }
+});
+
 final promotionsForPlacementProvider = FutureProvider.family<
     List<PromotionCampaign>, PromotionPlacement>((ref, placement) async {
+  final audience = placement == PromotionPlacement.login
+      ? null
+      : ref.watch(promotionAudienceExamIdsProvider);
   final campaigns = await ref.watch(promotionCampaignsProvider.future);
   final now = ref.watch(promotionClockProvider)();
+  final selectedExamIds = audience?.value?.toSet() ?? const <String>{};
+
   return selectPromotionCampaigns(
     campaigns: campaigns,
     placement: placement,
     now: now,
+    selectedExamIds: selectedExamIds,
+    // Login remains unchanged because the learner is not authenticated there.
+    // Home/post-login require a real My Exams match before targeted copy appears.
+    requireExplicitExamMatch: placement != PromotionPlacement.login,
   );
 });
 
