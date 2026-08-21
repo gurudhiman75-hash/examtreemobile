@@ -919,7 +919,6 @@ class _ExamCard extends StatelessWidget {
     final paid = exam.status.trim().toLowerCase() == 'paid';
     return _SurfaceCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1021,20 +1020,18 @@ class _TinyMeta extends StatelessWidget {
 }
 
 class _SurfaceCard extends StatelessWidget {
-  const _SurfaceCard({
-    required this.child,
-    this.onTap,
-    this.padding = const EdgeInsets.all(AppSpacing.lg),
-  });
+  const _SurfaceCard({required this.child, this.onTap});
 
   final Widget child;
   final VoidCallback? onTap;
-  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(22);
-    final content = Padding(padding: padding, child: child);
+    final content = Padding(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: child,
+    );
     return Material(
       color: Colors.transparent,
       child: Ink(
