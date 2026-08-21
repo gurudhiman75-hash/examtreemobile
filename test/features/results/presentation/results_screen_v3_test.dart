@@ -87,7 +87,10 @@ void main() {
               textScaler: TextScaler.linear(textScale),
               disableAnimations: true,
             ),
-            child: const ResultsScreen(),
+            child: Scaffold(
+              appBar: AppBar(title: const Text('Results')),
+              body: const ResultsScreen(),
+            ),
           ),
         ),
       ),
