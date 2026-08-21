@@ -353,8 +353,9 @@ class _CategoryRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     return SizedBox(
-      height: 42,
+      height: textScale > 1.5 ? 56 : 42,
       child: ListView.separated(
         key: const Key('tests-category-rail'),
         scrollDirection: Axis.horizontal,
@@ -391,7 +392,7 @@ class _AccessAndSortBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final accessRail = SizedBox(
-      height: 42,
+      height: textScale > 1.5 ? 56 : 42,
       child: ListView.separated(
         key: const Key('tests-access-filter'),
         scrollDirection: Axis.horizontal,
