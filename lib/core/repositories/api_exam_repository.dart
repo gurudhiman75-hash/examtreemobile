@@ -45,7 +45,13 @@ class ApiExamRepository implements ExamRepository {
       final categories = _categoryMap(responses[0].data);
       final subcategories = _subcategoryMap(responses[1].data);
       return _testList(responses[2].data)
-          .map((test) => test.toExam(categories: categories, subcategories: subcategories))
+          .map(
+            (test) => _toExam(
+              test,
+              categories: categories,
+              subcategories: subcategories,
+            ),
+          )
           .toList();
     });
   }
@@ -60,7 +66,7 @@ class ApiExamRepository implements ExamRepository {
   Future<Exam> getExamDetails(String examId) async {
     return _request(() async {
       final response = await _dio.get<Map<String, dynamic>>('/tests/$examId');
-      return TestDto.fromJson(response.data ?? {}).toExam();
+      return _toExam(TestDto.fromJson(response.data ?? {}));
     });
   }
 
@@ -70,6 +76,22 @@ class ApiExamRepository implements ExamRepository {
       final response = await _dio.get<Map<String, dynamic>>('/tests/$examId');
       return TestDto.fromJson(response.data ?? {}).toQuestions();
     });
+  }
+
+  Exam _toExam(
+    TestDto test, {
+    Map<String, CategoryDto> categories = const {},
+    Map<String, SubcategoryDto> subcategories = const {},
+  }) {
+    final exam = test.toExam(
+      categories: categories,
+      subcategories: subcategories,
+    );
+    final canonicalExamCode = test.subcategoryId?.trim();
+    if (canonicalExamCode == null || canonicalExamCode.isEmpty) return exam;
+    final identityTag = 'exam-code:$canonicalExamCode';
+    if (exam.tags.contains(identityTag)) return exam;
+    return exam.copyWith(tags: [...exam.tags, identityTag]);
   }
 
   Future<T> _request<T>(Future<T> Function() action) async {

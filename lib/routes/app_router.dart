@@ -11,6 +11,7 @@ import '../features/auth/presentation/providers/auth_providers.dart';
 import '../features/companion/presentation/daily_companion_screen.dart';
 import '../features/companion/presentation/quick_revision_screen.dart';
 import '../features/exam_day/presentation/exam_day_screen.dart';
+import '../features/exam_preferences/presentation/my_exams_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -232,6 +233,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/account',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const AccountSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/my-exams',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const MyExamsScreen(),
       ),
       GoRoute(
         path: '/store',

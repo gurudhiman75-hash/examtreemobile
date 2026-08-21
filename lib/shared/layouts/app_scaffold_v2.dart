@@ -14,8 +14,6 @@ bool shouldResetBranchOnSelection({
   required int selectedIndex,
   required int currentIndex,
 }) {
-  // Home remains the canonical dashboard root. Re-entering it should always
-  // rebuild from /home. Other branches preserve their stack unless re-tapped.
   return selectedIndex == 0 || selectedIndex == currentIndex;
 }
 
@@ -166,6 +164,11 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
+                        tooltip: 'My exams',
+                        onPressed: () => context.push('/my-exams'),
+                        icon: const Icon(Icons.bookmarks_outlined),
+                      ),
+                      IconButton(
                         tooltip: 'Daily Companion',
                         onPressed: () => context.push('/daily'),
                         icon: const Icon(Icons.auto_awesome_rounded),
@@ -268,18 +271,20 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                 }
                 switch (index) {
                   case 4:
-                    _closeDrawerAnd(() => context.push('/daily'));
+                    _closeDrawerAnd(() => context.push('/my-exams'));
                   case 5:
-                    _closeDrawerAnd(() => context.push('/exam-day'));
+                    _closeDrawerAnd(() => context.push('/daily'));
                   case 6:
+                    _closeDrawerAnd(() => context.push('/exam-day'));
+                  case 7:
                     _closeDrawerAnd(
                       () => context.push('/store?section=tests'),
                     );
-                  case 7:
+                  case 8:
                     _closeDrawerAnd(
                       () => context.push('/store?section=batches'),
                     );
-                  case 8:
+                  case 9:
                     _closeDrawerAnd(() => context.push('/profile'));
                 }
               },
@@ -354,6 +359,11 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                 const Padding(
                   padding: EdgeInsets.fromLTRB(28, 18, 16, 8),
                   child: Text('PREPARATION'),
+                ),
+                const NavigationDrawerDestination(
+                  icon: Icon(Icons.bookmarks_outlined),
+                  selectedIcon: Icon(Icons.bookmarks_rounded),
+                  label: Text('My exams'),
                 ),
                 const NavigationDrawerDestination(
                   icon: Icon(Icons.auto_awesome_outlined),

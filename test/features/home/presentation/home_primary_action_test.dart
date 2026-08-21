@@ -1,5 +1,6 @@
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/models/result_model.dart';
+import 'package:examtree/features/home/presentation/home_exam_priority.dart';
 import 'package:examtree/features/home/presentation/home_primary_action.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,6 +12,7 @@ void main() {
     required String title,
     String status = 'published',
     DateTime? updatedAt,
+    List<String> tags = const [],
   }) {
     final updated = updatedAt ?? now;
     return Exam(
@@ -25,6 +27,7 @@ void main() {
       difficulty: 'Medium',
       status: status,
       category: 'SSC',
+      tags: tags,
       createdAt: updated.subtract(const Duration(days: 1)),
       updatedAt: updated,
     );
@@ -142,6 +145,51 @@ void main() {
 
     expect(action.kind, HomePrimaryActionKind.startTest);
     expect(action.exam?.id, 'free');
+  });
+
+  test('selected free exam outranks a newer unselected free exam', () {
+    final action = resolveHomePrimaryAction(
+      activeTests: const [],
+      results: const [],
+      availableTests: [
+        exam(id: 'newer', title: 'Newer free test', updatedAt: now),
+        exam(
+          id: 'selected',
+          title: 'My SSC test',
+          updatedAt: now.subtract(const Duration(days: 3)),
+          tags: const [homeSelectedExamTag],
+        ),
+      ],
+      now: now,
+    );
+
+    expect(action.kind, HomePrimaryActionKind.startTest);
+    expect(action.exam?.id, 'selected');
+    expect(action.eyebrow, 'From My exams');
+  });
+
+  test('selected paid exam does not displace an immediately usable free test', () {
+    final action = resolveHomePrimaryAction(
+      activeTests: const [],
+      results: const [],
+      availableTests: [
+        exam(
+          id: 'selected-paid',
+          title: 'Selected paid test',
+          status: 'paid',
+          tags: const [homeSelectedExamTag],
+        ),
+        exam(
+          id: 'free',
+          title: 'Free test',
+          updatedAt: now.subtract(const Duration(days: 10)),
+        ),
+      ],
+      now: now,
+    );
+
+    expect(action.exam?.id, 'free');
+    expect(action.eyebrow, 'Next test');
   });
 
   test('negative due count is treated as no revision work', () {
