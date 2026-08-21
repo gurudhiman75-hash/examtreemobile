@@ -45,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
       try {
         await request;
       } catch (_) {
-        // Home modules recover independently and keep the rest of the page useful.
+        // Each Home module owns its own recovery state.
       }
     }
 
@@ -69,45 +69,38 @@ class HomeScreen extends ConsumerWidget {
     final campaignsAsync = ref.watch(
       promotionsForPlacementProvider(PromotionPlacement.home),
     );
-
     final user = ref.watch(authStateChangesProvider).value;
     final currentTime = now?.call() ?? DateTime.now();
-    final activeTests = activeAsync.value ?? const <Exam>[];
-    final availableTests = availableAsync.value ?? const <Exam>[];
+
+    final active = activeAsync.value ?? const <Exam>[];
+    final available = availableAsync.value ?? const <Exam>[];
     final results = resultsAsync.value ?? const <Result>[];
     final selectedCodes = selectedCodesAsync.value ?? const <String>[];
     final prioritizedAvailable = prioritizeHomeExams(
-      exams: availableTests,
+      exams: available,
       selectedExamCodes: selectedCodes,
     );
-    final companionSnapshot = companionAsync.value;
-    final dueRevisionCount =
-        companionSnapshot?.dueItems(currentTime).length ?? 0;
+    final snapshot = companionAsync.value;
+    final dueCount = snapshot?.dueItems(currentTime).length ?? 0;
     final actionState = _resolveActionState(
       activeAsync: activeAsync,
       resultsAsync: resultsAsync,
       availableAsync: availableAsync,
-      companionLoading: companionAsync.isLoading && companionSnapshot == null,
-      dueRevisionCount: dueRevisionCount,
+      companionLoading: companionAsync.isLoading && snapshot == null,
+      dueRevisionCount: dueCount,
       now: currentTime,
-      activeTests: activeTests,
+      activeTests: active,
       results: results,
       availableTests: prioritizedAvailable,
     );
-
-    final actionExamId = actionState.action?.exam?.id;
-    final activeIds = activeTests.map((test) => test.id).toSet();
+    final hiddenIds = <String>{
+      ...active.map((item) => item.id),
+      if (actionState.action?.exam != null) actionState.action!.exam!.id,
+    };
     final recommendations = prioritizedAvailable
-        .where(
-          (test) => test.id != actionExamId && !activeIds.contains(test.id),
-        )
+        .where((exam) => !hiddenIds.contains(exam.id))
         .take(6)
         .toList(growable: false);
-    final remainingActive = actionState.action?.kind ==
-            HomePrimaryActionKind.resumeTest
-        ? activeTests.skip(1).take(4).toList(growable: false)
-        : activeTests.take(4).toList(growable: false);
-    final latestResult = results.isEmpty ? null : _latestResult(results);
     final campaigns = campaignsAsync.value ?? const <PromotionCampaign>[];
 
     return SafeArea(
@@ -121,14 +114,14 @@ class HomeScreen extends ConsumerWidget {
                 AppSpacing.md,
                 AppSpacing.sm,
                 AppSpacing.md,
-                108,
+                112,
               ),
               sliver: SliverList.list(
                 children: [
                   _HomeHeader(
                     name: _displayName(user?.displayName, user?.email),
                     greeting: _greeting(currentTime),
-                    todayLabel: _todayLabel(currentTime),
+                    dateLabel: _dateLabel(currentTime),
                     onMenu: MediaQuery.sizeOf(context).width < 840
                         ? () => Scaffold.maybeOf(context)?.openDrawer()
                         : null,
@@ -140,7 +133,8 @@ class HomeScreen extends ConsumerWidget {
                     PromotionCarousel(campaigns: campaigns, compact: true),
                   ],
                   const SizedBox(height: AppSpacing.md),
-                  _PrimaryHero(
+                  _NextActionHero(
+                    key: const Key('home-primary-action'),
                     state: actionState,
                     onOpen: (action) => _openAction(context, action),
                     onRetry: () {
@@ -158,58 +152,44 @@ class HomeScreen extends ConsumerWidget {
                     onRevision: () => context.push('/daily'),
                     onStore: () => context.push('/store?section=tests'),
                   ),
-                  if (remainingActive.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.xl),
-                    _SectionHeading(
-                      title: 'Continue learning',
-                      actionLabel: 'All tests',
-                      onAction: () => context.go('/exams'),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _ContinueRail(
-                      exams: remainingActive,
-                      onOpen: (exam) =>
-                          context.push('/test-attempt', extra: exam.id),
-                    ),
-                  ],
                   const SizedBox(height: AppSpacing.xl),
-                  _SectionHeading(
+                  _SectionTitle(
                     title: 'Your progress',
-                    actionLabel: 'Details',
+                    action: 'Details',
                     onAction: () => context.push('/profile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   analyticsAsync.when(
-                    loading: () => const _LoadingSurface(height: 176),
-                    error: (error, stack) => _CompactError(
+                    loading: () => const _LoadingCard(height: 170),
+                    error: (error, stack) => _ErrorCard(
                       title: 'Progress is temporarily unavailable',
                       onRetry: () => ref.invalidate(userAnalyticsProvider),
                     ),
                     data: (analytics) => _ProgressCard(
                       key: const Key('home-progress-overview'),
                       analytics: analytics,
-                      onOpen: () => context.push('/profile'),
+                      onTap: () => context.push('/profile'),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  _SectionHeading(
+                  _SectionTitle(
                     title: 'Recommended for you',
-                    actionLabel: 'View all',
+                    action: 'View all',
                     onAction: () => context.go('/exams'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   availableAsync.when(
-                    loading: () => const _LoadingSurface(height: 184),
-                    error: (error, stack) => _CompactError(
+                    loading: () => const _LoadingCard(height: 182),
+                    error: (error, stack) => _ErrorCard(
                       title: 'Tests could not be loaded',
                       onRetry: () => ref.invalidate(availableExamsProvider),
                     ),
                     data: (tests) => recommendations.isEmpty
-                        ? _CatalogueEmpty(
-                            catalogueIsEmpty: tests.isEmpty,
+                        ? _EmptyRecommendations(
+                            catalogueEmpty: tests.isEmpty,
                             onBrowse: () => context.go('/exams'),
                           )
-                        : _RecommendationRail(
+                        : _ExamRail(
                             key: const Key('home-recommendations'),
                             exams: recommendations,
                             onOpen: (exam) => context.push(
@@ -218,20 +198,6 @@ class HomeScreen extends ConsumerWidget {
                             ),
                           ),
                   ),
-                  if (latestResult != null &&
-                      actionState.action?.kind !=
-                          HomePrimaryActionKind.reviewResult) ...[
-                    const SizedBox(height: AppSpacing.xl),
-                    const _SectionHeading(title: 'Latest result'),
-                    const SizedBox(height: AppSpacing.sm),
-                    _LatestResultCard(
-                      result: latestResult,
-                      onOpen: () => context.push(
-                        '/review',
-                        extra: latestResult.attemptId,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -313,7 +279,7 @@ class _HomeHeader extends StatelessWidget {
   const _HomeHeader({
     required this.name,
     required this.greeting,
-    required this.todayLabel,
+    required this.dateLabel,
     required this.onMenu,
     required this.onSearch,
     required this.onProfile,
@@ -321,7 +287,7 @@ class _HomeHeader extends StatelessWidget {
 
   final String name;
   final String greeting;
-  final String todayLabel;
+  final String dateLabel;
   final VoidCallback? onMenu;
   final VoidCallback onSearch;
   final VoidCallback onProfile;
@@ -330,94 +296,89 @@ class _HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    return Semantics(
-      container: true,
-      label: '$greeting, $name. $todayLabel.',
-      child: Row(
-        children: [
-          if (onMenu != null) ...[
-            _HeaderIconButton(
-              tooltip: 'Open navigation',
-              icon: Icons.menu_rounded,
-              onTap: onMenu!,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$greeting, $name',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: scheme.onSurface,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.55,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  todayLabel,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _HeaderIconButton(
-            tooltip: 'Search tests',
-            icon: Icons.search_rounded,
-            onTap: onSearch,
+    return Row(
+      children: [
+        if (onMenu != null) ...[
+          _HeaderButton(
+            icon: Icons.menu_rounded,
+            tooltip: 'Open navigation',
+            onTap: onMenu!,
           ),
           const SizedBox(width: AppSpacing.sm),
-          Semantics(
-            button: true,
-            label: 'Open profile',
-            child: InkWell(
-              onTap: onProfile,
-              borderRadius: BorderRadius.circular(16),
-              child: Ink(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primary, AppColors.tertiary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
+        ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$greeting, $name',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.55,
                 ),
-                child: Center(
-                  child: Text(
-                    name.isEmpty ? 'S' : name[0].toUpperCase(),
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                    ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                dateLabel,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        _HeaderButton(
+          icon: Icons.search_rounded,
+          tooltip: 'Search tests',
+          onTap: onSearch,
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Semantics(
+          button: true,
+          label: 'Open profile',
+          child: InkWell(
+            onTap: onProfile,
+            borderRadius: BorderRadius.circular(16),
+            child: Ink(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, AppColors.tertiary],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  name.isEmpty ? 'S' : name[0].toUpperCase(),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class _HeaderIconButton extends StatelessWidget {
-  const _HeaderIconButton({
-    required this.tooltip,
+class _HeaderButton extends StatelessWidget {
+  const _HeaderButton({
     required this.icon,
+    required this.tooltip,
     required this.onTap,
   });
 
-  final String tooltip;
   final IconData icon;
+  final String tooltip;
   final VoidCallback onTap;
 
   @override
@@ -433,8 +394,9 @@ class _HeaderIconButton extends StatelessWidget {
   }
 }
 
-class _PrimaryHero extends StatelessWidget {
-  const _PrimaryHero({
+class _NextActionHero extends StatelessWidget {
+  const _NextActionHero({
+    super.key,
     required this.state,
     required this.onOpen,
     required this.onRetry,
@@ -446,9 +408,9 @@ class _PrimaryHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state.loading) return const _HeroSkeleton();
+    if (state.loading) return const _HeroLoading();
     if (state.error) {
-      return _CompactError(
+      return _ErrorCard(
         title: 'Your next action could not be prepared',
         onRetry: onRetry,
       );
@@ -457,126 +419,121 @@ class _PrimaryHero extends StatelessWidget {
     final action = state.action!;
     final theme = Theme.of(context);
     final metadata = _actionMetadata(action);
-    return Semantics(
-      container: true,
-      label: '${action.eyebrow}. ${action.title}. ${action.description}',
-      child: Container(
-        key: const Key('home-primary-action'),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF4F46E5), Color(0xFF6D4AE8), Color(0xFF7C3AED)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.22),
-              blurRadius: 30,
-              offset: const Offset(0, 14),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4F46E5), Color(0xFF6D4AE8), Color(0xFF7C3AED)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            const Positioned(
-              right: -42,
-              top: -52,
-              child: _HeroOrb(size: 150, opacity: 0.09),
-            ),
-            const Positioned(
-              right: 42,
-              bottom: -58,
-              child: _HeroOrb(size: 118, opacity: 0.07),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          action.eyebrow.toUpperCase(),
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.8,
-                          ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.22),
+            blurRadius: 30,
+            offset: const Offset(0, 14),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            right: -48,
+            top: -56,
+            child: _DecorativeOrb(size: 154, opacity: 0.09),
+          ),
+          Positioned(
+            right: 34,
+            bottom: -62,
+            child: _DecorativeOrb(size: 122, opacity: 0.07),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        action.eyebrow.toUpperCase(),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.75,
                         ),
                       ),
-                      const Spacer(),
-                      Icon(
-                        _actionIcon(action.kind),
-                        color: Colors.white.withValues(alpha: 0.82),
-                        size: 28,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    action.title,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      height: 1.12,
-                      letterSpacing: -0.65,
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    action.description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.82),
-                      height: 1.42,
-                    ),
-                  ),
-                  if (metadata.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    Wrap(
-                      spacing: AppSpacing.sm,
-                      runSpacing: AppSpacing.sm,
-                      children: metadata
-                          .map((label) => _HeroMeta(label: label))
-                          .toList(growable: false),
+                    const Spacer(),
+                    Icon(
+                      _actionIcon(action.kind),
+                      color: Colors.white.withValues(alpha: 0.84),
+                      size: 28,
                     ),
                   ],
-                  const SizedBox(height: AppSpacing.lg),
-                  FilledButton.icon(
-                    onPressed: () => onOpen(action),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: AppColors.primary,
-                    ),
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: Text(action.actionLabel),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  action.title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    height: 1.12,
+                    letterSpacing: -0.65,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  action.description,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.82),
+                    height: 1.4,
+                  ),
+                ),
+                if (metadata.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: metadata
+                        .map((item) => _HeroMeta(text: item))
+                        .toList(growable: false),
                   ),
                 ],
-              ),
+                const SizedBox(height: AppSpacing.lg),
+                FilledButton.icon(
+                  onPressed: () => onOpen(action),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primary,
+                  ),
+                  icon: const Icon(Icons.arrow_forward_rounded),
+                  label: Text(action.actionLabel),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _HeroOrb extends StatelessWidget {
-  const _HeroOrb({required this.size, required this.opacity});
+class _DecorativeOrb extends StatelessWidget {
+  const _DecorativeOrb({required this.size, required this.opacity});
 
   final double size;
   final double opacity;
@@ -595,9 +552,9 @@ class _HeroOrb extends StatelessWidget {
 }
 
 class _HeroMeta extends StatelessWidget {
-  const _HeroMeta({required this.label});
+  const _HeroMeta({required this.text});
 
-  final String label;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -608,7 +565,7 @@ class _HeroMeta extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        label,
+        text,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w700,
@@ -639,8 +596,8 @@ class _QuickActions extends StatelessWidget {
           child: _QuickAction(
             icon: Icons.assignment_rounded,
             label: 'Tests',
-            containerColor: AppColors.skyContainer,
-            foregroundColor: AppColors.onSkyContainer,
+            background: AppColors.skyContainer,
+            foreground: AppColors.onSkyContainer,
             onTap: onTests,
           ),
         ),
@@ -649,8 +606,8 @@ class _QuickActions extends StatelessWidget {
           child: _QuickAction(
             icon: Icons.menu_book_rounded,
             label: 'Learn',
-            containerColor: AppColors.mintContainer,
-            foregroundColor: AppColors.onMintContainer,
+            background: AppColors.mintContainer,
+            foreground: AppColors.onMintContainer,
             onTap: onLearn,
           ),
         ),
@@ -659,8 +616,8 @@ class _QuickActions extends StatelessWidget {
           child: _QuickAction(
             icon: Icons.replay_circle_filled_rounded,
             label: 'Revision',
-            containerColor: AppColors.amberContainer,
-            foregroundColor: AppColors.onAmberContainer,
+            background: AppColors.amberContainer,
+            foreground: AppColors.onAmberContainer,
             onTap: onRevision,
           ),
         ),
@@ -669,8 +626,8 @@ class _QuickActions extends StatelessWidget {
           child: _QuickAction(
             icon: Icons.shopping_bag_rounded,
             label: 'Store',
-            containerColor: AppColors.tertiaryContainer,
-            foregroundColor: AppColors.onTertiaryContainer,
+            background: AppColors.tertiaryContainer,
+            foreground: AppColors.onTertiaryContainer,
             onTap: onStore,
           ),
         ),
@@ -683,114 +640,130 @@ class _QuickAction extends StatelessWidget {
   const _QuickAction({
     required this.icon,
     required this.label,
-    required this.containerColor,
-    required this.foregroundColor,
+    required this.background,
+    required this.foreground,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final Color containerColor;
-  final Color foregroundColor;
+  final Color background;
+  final Color foreground;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Semantics(
-      button: true,
-      label: label,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: _softShadow(),
-          ),
-          child: Column(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: containerColor,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(icon, color: foregroundColor, size: 22),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Ink(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: _softShadow(),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: BorderRadius.circular(14),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.onSurface,
-                  fontWeight: FontWeight.w800,
-                ),
+              child: Icon(icon, color: foreground, size: 22),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.w800,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
     required this.title,
-    this.actionLabel,
-    this.onAction,
+    required this.action,
+    required this.onAction,
   });
 
   final String title;
-  final String? actionLabel;
-  final VoidCallback? onAction;
+  final String action;
+  final VoidCallback onAction;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
           child: Text(
             title,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.35,
-            ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.35,
+                ),
           ),
         ),
-        if (actionLabel != null && onAction != null)
-          TextButton(
-            onPressed: onAction,
-            child: Text(actionLabel!),
-          ),
+        TextButton(onPressed: onAction, child: Text(action)),
       ],
     );
   }
 }
 
 class _ProgressCard extends StatelessWidget {
-  const _ProgressCard({super.key, required this.analytics, required this.onOpen});
+  const _ProgressCard({
+    super.key,
+    required this.analytics,
+    required this.onTap,
+  });
 
   final Analytics analytics;
-  final VoidCallback onOpen;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final accuracy = analytics.averageAccuracy.clamp(0, 100).toDouble();
     return _SurfaceCard(
-      onTap: onOpen,
+      onTap: onTap,
       child: Column(
         children: [
           Row(
             children: [
-              _ProgressRing(value: accuracy),
+              SizedBox(
+                width: 74,
+                height: 74,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CircularProgressIndicator(
+                      value: accuracy / 100,
+                      strokeWidth: 8,
+                      strokeCap: StrokeCap.round,
+                    ),
+                    Center(
+                      child: Text(
+                        '${accuracy.round()}%',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: Column(
@@ -803,12 +776,15 @@ class _ProgressCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
-                      '${accuracy.round()}%',
-                      style: theme.textTheme.headlineMedium?.copyWith(
+                      accuracy >= 75
+                          ? 'Strong momentum'
+                          : accuracy >= 55
+                              ? 'Keep building consistency'
+                              : 'Focus on accuracy first',
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
-                        letterSpacing: -0.6,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -833,52 +809,21 @@ class _ProgressCard extends StatelessWidget {
                   label: 'Tests',
                 ),
               ),
-              _MetricDivider(),
+              _VerticalMetricDivider(),
               Expanded(
                 child: _Metric(
                   value: '${analytics.averageScore.round()}%',
                   label: 'Avg score',
                 ),
               ),
-              _MetricDivider(),
+              _VerticalMetricDivider(),
               Expanded(
                 child: _Metric(
-                  value: '${analytics.totalQuestionsAttempted}',
-                  label: 'Questions',
+                  value: '${analytics.averageTimePerQuestion}s',
+                  label: 'Per question',
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProgressRing extends StatelessWidget {
-  const _ProgressRing({required this.value});
-
-  final double value;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 78,
-      height: 78,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          CircularProgressIndicator(
-            value: value / 100,
-            strokeWidth: 8,
-            strokeCap: StrokeCap.round,
-          ),
-          Center(
-            child: Icon(
-              Icons.track_changes_rounded,
-              color: Theme.of(context).colorScheme.primary,
-              size: 26,
-            ),
           ),
         ],
       ),
@@ -916,7 +861,7 @@ class _Metric extends StatelessWidget {
   }
 }
 
-class _MetricDivider extends StatelessWidget {
+class _VerticalMetricDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -927,8 +872,8 @@ class _MetricDivider extends StatelessWidget {
   }
 }
 
-class _ContinueRail extends StatelessWidget {
-  const _ContinueRail({required this.exams, required this.onOpen});
+class _ExamRail extends StatelessWidget {
+  const _ExamRail({super.key, required this.exams, required this.onOpen});
 
   final List<Exam> exams;
   final ValueChanged<Exam> onOpen;
@@ -936,84 +881,7 @@ class _ContinueRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 116,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: exams.length,
-        separatorBuilder: (context, index) =>
-            const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final exam = exams[index];
-          return SizedBox(
-            width: 252,
-            child: _SurfaceCard(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              onTap: () => onOpen(exam),
-              child: Row(
-                children: [
-                  Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      color: AppColors.mintContainer,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Icon(
-                      Icons.play_arrow_rounded,
-                      color: AppColors.onMintContainer,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          exam.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Resume saved attempt',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _RecommendationRail extends StatelessWidget {
-  const _RecommendationRail({
-    super.key,
-    required this.exams,
-    required this.onOpen,
-  });
-
-  final List<Exam> exams;
-  final ValueChanged<Exam> onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 190,
+      height: 188,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -1023,7 +891,7 @@ class _RecommendationRail extends StatelessWidget {
         itemBuilder: (context, index) {
           final exam = exams[index];
           return SizedBox(
-            width: 280,
+            width: 278,
             child: _ExamCard(exam: exam, onTap: () => onOpen(exam)),
           );
         },
@@ -1081,9 +949,9 @@ class _ExamCard extends StatelessWidget {
                     color: paid
                         ? AppColors.onTertiaryContainer
                         : AppColors.onMintContainer,
-                    fontWeight: FontWeight.w900,
                     fontSize: 9,
-                    letterSpacing: 0.55,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ),
@@ -1145,68 +1013,6 @@ class _TinyMeta extends StatelessWidget {
   }
 }
 
-class _LatestResultCard extends StatelessWidget {
-  const _LatestResultCard({required this.result, required this.onOpen});
-
-  final Result result;
-  final VoidCallback onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return _SurfaceCard(
-      onTap: onOpen,
-      child: Row(
-        children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: BoxDecoration(
-              color: AppColors.primaryContainer,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Center(
-              child: Text(
-                '${result.percentageScore.round()}%',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: AppColors.onPrimaryContainer,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  result.testName.trim().isEmpty
-                      ? 'Latest test result'
-                      : result.testName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  '${result.accuracy.round()}% accuracy • ${result.correctCount} correct',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Icon(Icons.chevron_right_rounded),
-        ],
-      ),
-    );
-  }
-}
-
 class _SurfaceCard extends StatelessWidget {
   const _SurfaceCard({
     required this.child,
@@ -1238,43 +1044,8 @@ class _SurfaceCard extends StatelessWidget {
   }
 }
 
-class _LoadingSurface extends StatelessWidget {
-  const _LoadingSurface({required this.height});
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: _softShadow(),
-      ),
-      child: const Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
-class _HeroSkeleton extends StatelessWidget {
-  const _HeroSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 240,
-      decoration: BoxDecoration(
-        color: AppColors.primaryContainer,
-        borderRadius: BorderRadius.circular(28),
-      ),
-      child: const Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
-class _CompactError extends StatelessWidget {
-  const _CompactError({required this.title, required this.onRetry});
+class _ErrorCard extends StatelessWidget {
+  const _ErrorCard({required this.title, required this.onRetry});
 
   final String title;
   final VoidCallback onRetry;
@@ -1294,13 +1065,13 @@ class _CompactError extends StatelessWidget {
   }
 }
 
-class _CatalogueEmpty extends StatelessWidget {
-  const _CatalogueEmpty({
-    required this.catalogueIsEmpty,
+class _EmptyRecommendations extends StatelessWidget {
+  const _EmptyRecommendations({
+    required this.catalogueEmpty,
     required this.onBrowse,
   });
 
-  final bool catalogueIsEmpty;
+  final bool catalogueEmpty;
   final VoidCallback onBrowse;
 
   @override
@@ -1323,14 +1094,49 @@ class _CatalogueEmpty extends StatelessWidget {
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
-              catalogueIsEmpty
+              catalogueEmpty
                   ? 'No tests are published right now.'
-                  : 'You are caught up on the current recommendations.',
+                  : 'You are caught up on current recommendations.',
             ),
           ),
           TextButton(onPressed: onBrowse, child: const Text('Browse')),
         ],
       ),
+    );
+  }
+}
+
+class _LoadingCard extends StatelessWidget {
+  const _LoadingCard({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: _softShadow(),
+      ),
+      child: const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _HeroLoading extends StatelessWidget {
+  const _HeroLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 236,
+      decoration: BoxDecoration(
+        color: AppColors.primaryContainer,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -1376,21 +1182,20 @@ void _openAction(BuildContext context, HomePrimaryAction action) {
   switch (action.kind) {
     case HomePrimaryActionKind.resumeTest:
       context.push('/test-attempt', extra: action.exam!.id);
+      return;
     case HomePrimaryActionKind.reviewResult:
       context.push('/review', extra: action.result!.attemptId);
+      return;
     case HomePrimaryActionKind.reviseDue:
       context.push('/daily');
+      return;
     case HomePrimaryActionKind.startTest:
       context.push('/exam-details', extra: action.exam!.id);
+      return;
     case HomePrimaryActionKind.browseTests:
       context.go('/exams');
+      return;
   }
-}
-
-Result _latestResult(List<Result> results) {
-  final sorted = [...results]
-    ..sort((left, right) => right.calculatedAt.compareTo(left.calculatedAt));
-  return sorted.first;
 }
 
 String _displayName(String? displayName, String? email) {
@@ -1407,7 +1212,7 @@ String _greeting(DateTime now) {
   return 'Good evening';
 }
 
-String _todayLabel(DateTime now) {
+String _dateLabel(DateTime now) {
   const weekdays = [
     'Monday',
     'Tuesday',
