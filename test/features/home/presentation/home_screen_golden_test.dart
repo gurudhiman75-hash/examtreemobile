@@ -140,13 +140,15 @@ void main() {
               fontFamily: 'Roboto',
             ),
           ),
-          home: MediaQuery(
-            data: const MediaQueryData(
-              size: phoneSize,
-              devicePixelRatio: 1,
-              disableAnimations: true,
+          home: Scaffold(
+            body: MediaQuery(
+              data: const MediaQueryData(
+                size: phoneSize,
+                devicePixelRatio: 1,
+                disableAnimations: true,
+              ),
+              child: HomeScreen(now: () => fixedNow),
             ),
-            child: HomeScreen(now: () => fixedNow),
           ),
         ),
       ),
