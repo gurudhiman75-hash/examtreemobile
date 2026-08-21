@@ -16,6 +16,7 @@ import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
+import '../features/learn/presentation/learning_resource_detail_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_route_screen.dart';
 import '../features/results/presentation/results_screen.dart';
@@ -41,6 +42,7 @@ bool _routeNeedsIdentifier(String path) => const {
       '/exam-details',
       '/test-attempt',
       '/review',
+      '/learn-resource',
     }.contains(path);
 
 String _continuationFor(Uri uri, {Object? routeExtra}) {
@@ -264,6 +266,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => QuickRevisionScreen(
           minutes: _quickRevisionMinutes(state.uri),
         ),
+      ),
+      GoRoute(
+        path: '/learn-resource',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final resourceId = readRequiredRouteId(state.extra, uri: state.uri);
+          if (resourceId == null) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Resource unavailable',
+              message:
+                  'No learning resource identifier was supplied. Open the resource again from Learn.',
+            );
+          }
+          return LearningResourceDetailScreen(resourceId: resourceId);
+        },
       ),
       GoRoute(
         path: '/test-attempt',
