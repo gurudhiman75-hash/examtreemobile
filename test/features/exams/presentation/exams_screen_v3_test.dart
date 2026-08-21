@@ -53,13 +53,15 @@ void main() {
         ],
         child: MaterialApp(
           theme: AppTheme.lightTheme,
-          home: MediaQuery(
-            data: MediaQueryData(
-              size: const Size(390, 844),
-              textScaler: TextScaler.linear(textScale),
-              disableAnimations: true,
+          home: Scaffold(
+            body: MediaQuery(
+              data: MediaQueryData(
+                size: const Size(390, 844),
+                textScaler: TextScaler.linear(textScale),
+                disableAnimations: true,
+              ),
+              child: const ExamsScreen(),
             ),
-            child: const ExamsScreen(),
           ),
         ),
       ),
@@ -81,7 +83,7 @@ void main() {
       ],
     );
 
-    expect(find.text('Tests'), findsOneWidget);
+    expect(find.text('Find your next test'), findsOneWidget);
     expect(find.byKey(const Key('tests-search')), findsOneWidget);
     expect(find.text('Continue learning'), findsOneWidget);
     expect(find.byKey(const Key('tests-resume-rail')), findsOneWidget);
