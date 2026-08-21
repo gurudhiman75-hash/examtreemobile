@@ -919,6 +919,7 @@ class _ExamCard extends StatelessWidget {
     final paid = exam.status.trim().toLowerCase() == 'paid';
     return _SurfaceCard(
       onTap: onTap,
+      padding: const EdgeInsets.all(AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
