@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/features/exams/presentation/exam_details_screen.dart';
 import 'package:examtree/features/exams/presentation/exams_screen.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
+import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,16 +42,18 @@ void main() {
     required String category,
     String status = 'published',
     String difficulty = 'Medium',
+    String? description,
+    int maxAttempts = 5,
   }) {
     return Exam(
       id: id,
       title: title,
-      description: '$title preparation paper',
+      description: description ?? '$title preparation paper',
       durationInSeconds: 3600,
       totalQuestions: 100,
-      totalMarks: 100,
-      maxAttempts: 5,
-      negativeMarking: 0.25,
+      totalMarks: 200,
+      maxAttempts: maxAttempts,
+      negativeMarking: 0.5,
       difficulty: difficulty,
       status: status,
       category: category,
@@ -59,21 +62,37 @@ void main() {
     );
   }
 
-  Future<void> pumpCatalogue(
-    WidgetTester tester, {
-    required List<Exam> available,
-    required List<Exam> inProgress,
-  }) async {
+  ThemeData previewTheme() {
+    final baseTheme = AppTheme.lightTheme;
+    final pinnedTextTheme = baseTheme.textTheme.apply(fontFamily: 'Roboto');
+    return baseTheme.copyWith(
+      textTheme: pinnedTextTheme,
+      appBarTheme: baseTheme.appBarTheme.copyWith(
+        titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(
+          fontFamily: 'Roboto',
+        ),
+      ),
+      chipTheme: baseTheme.chipTheme.copyWith(
+        labelStyle: pinnedTextTheme.labelMedium,
+      ),
+    );
+  }
+
+  Future<void> configurePhone(WidgetTester tester) async {
     await tester.runAsync(loadFonts);
     tester.view
       ..physicalSize = phoneSize
       ..devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
+  }
 
-    final baseTheme = AppTheme.lightTheme;
-    final pinnedTextTheme = baseTheme.textTheme.apply(fontFamily: 'Roboto');
-
+  Future<void> pumpCatalogue(
+    WidgetTester tester, {
+    required List<Exam> available,
+    required List<Exam> inProgress,
+  }) async {
+    await configurePhone(tester);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -82,19 +101,52 @@ void main() {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: baseTheme.copyWith(
-            textTheme: pinnedTextTheme,
-            chipTheme: baseTheme.chipTheme.copyWith(
-              labelStyle: pinnedTextTheme.labelMedium,
+          theme: previewTheme(),
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: phoneSize,
+              devicePixelRatio: 1,
+              disableAnimations: true,
+            ),
+            child: Scaffold(
+              appBar: AppBar(title: const Text('Tests')),
+              body: const ExamsScreen(),
             ),
           ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+
+  Future<void> pumpDetails(WidgetTester tester) async {
+    await configurePhone(tester);
+    final details = exam(
+      id: 'details-1',
+      title: 'SSC CGL Full Length Mock 1',
+      category: 'SSC',
+      description:
+          'A full-length practice paper built around the current SSC CGL pattern.',
+      maxAttempts: 3,
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          examDetailsProvider.overrideWith((ref, id) async => details),
+          completedAttemptCountProvider.overrideWith((ref, id) async => 1),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
           home: const MediaQuery(
             data: MediaQueryData(
               size: phoneSize,
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
-            child: ExamsScreen(),
+            child: ExamDetailsScreen(examId: 'details-1'),
           ),
         ),
       ),
@@ -196,6 +248,15 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('previews/tests_empty_390x844.png'),
+    );
+  });
+
+  testWidgets('render refreshed Exam Details', (tester) async {
+    await pumpDetails(tester);
+
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/tests_details_390x844.png'),
     );
   });
 }
