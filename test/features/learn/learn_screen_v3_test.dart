@@ -81,9 +81,9 @@ void main() {
               textScaler: TextScaler.linear(textScale),
               disableAnimations: true,
             ),
-            child: const Scaffold(
-              appBar: AppBar(title: Text('Learn')),
-              body: LearnScreen(),
+            child: Scaffold(
+              appBar: AppBar(title: const Text('Learn')),
+              body: const LearnScreen(),
             ),
           ),
         ),
