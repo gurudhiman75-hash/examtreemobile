@@ -296,76 +296,82 @@ class _HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    return Row(
-      children: [
-        if (onMenu != null) ...[
+    final compact = MediaQuery.sizeOf(context).width < 430;
+    final title = compact ? 'Hi, $name' : '$greeting, $name';
+    return Semantics(
+      container: true,
+      label: '$greeting, $name. $dateLabel.',
+      child: Row(
+        children: [
+          if (onMenu != null) ...[
+            _HeaderButton(
+              icon: Icons.menu_rounded,
+              tooltip: 'Open navigation',
+              onTap: onMenu!,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.55,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  dateLabel,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
           _HeaderButton(
-            icon: Icons.menu_rounded,
-            tooltip: 'Open navigation',
-            onTap: onMenu!,
+            icon: Icons.search_rounded,
+            tooltip: 'Search tests',
+            onTap: onSearch,
           ),
           const SizedBox(width: AppSpacing.sm),
-        ],
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '$greeting, $name',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.55,
+          Semantics(
+            button: true,
+            label: 'Open profile',
+            child: InkWell(
+              onTap: onProfile,
+              borderRadius: BorderRadius.circular(16),
+              child: Ink(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.primary, AppColors.tertiary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                dateLabel,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
-        _HeaderButton(
-          icon: Icons.search_rounded,
-          tooltip: 'Search tests',
-          onTap: onSearch,
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Semantics(
-          button: true,
-          label: 'Open profile',
-          child: InkWell(
-            onTap: onProfile,
-            borderRadius: BorderRadius.circular(16),
-            child: Ink(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, AppColors.tertiary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: Text(
-                  name.isEmpty ? 'S' : name[0].toUpperCase(),
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                child: Center(
+                  child: Text(
+                    name.isEmpty ? 'S' : name[0].toUpperCase(),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
