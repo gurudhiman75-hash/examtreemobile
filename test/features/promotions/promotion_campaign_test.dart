@@ -76,6 +76,77 @@ void main() {
     expect(selected.map((item) => item.id), ['high', 'low']);
   });
 
+  test('authenticated placements require an explicit My Exams match', () {
+    final now = DateTime.utc(2026, 8, 21, 7);
+    const general = PromotionCampaign(
+      id: 'general',
+      title: 'General',
+      subtitle: 'For everyone',
+      placements: {PromotionPlacement.home},
+      priority: 1,
+    );
+    const ssc = PromotionCampaign(
+      id: 'ssc',
+      title: 'SSC',
+      subtitle: 'SSC campaign',
+      placements: {PromotionPlacement.home},
+      examIds: ['exam-ssc'],
+      priority: 10,
+    );
+    const banking = PromotionCampaign(
+      id: 'banking',
+      title: 'Banking',
+      subtitle: 'Banking campaign',
+      placements: {PromotionPlacement.home},
+      examIds: ['exam-bank'],
+      priority: 20,
+    );
+
+    final unknownAudience = selectPromotionCampaigns(
+      campaigns: const [general, ssc, banking],
+      placement: PromotionPlacement.home,
+      now: now,
+      requireExplicitExamMatch: true,
+    );
+    expect(unknownAudience.map((item) => item.id), ['general']);
+
+    final sscAudience = selectPromotionCampaigns(
+      campaigns: const [general, ssc, banking],
+      placement: PromotionPlacement.home,
+      now: now,
+      selectedExamIds: const {'exam-ssc'},
+      requireExplicitExamMatch: true,
+    );
+    expect(sscAudience.map((item) => item.id), ['ssc', 'general']);
+
+    final unrelatedAudience = selectPromotionCampaigns(
+      campaigns: const [general, ssc, banking],
+      placement: PromotionPlacement.home,
+      now: now,
+      selectedExamIds: const {'exam-other'},
+      requireExplicitExamMatch: true,
+    );
+    expect(unrelatedAudience.map((item) => item.id), ['general']);
+  });
+
+  test('login retains pre-auth campaign behavior', () {
+    final now = DateTime.utc(2026, 8, 21, 7);
+    const targetedLogin = PromotionCampaign(
+      id: 'targeted-login',
+      title: 'Targeted login',
+      subtitle: 'Pre-auth discovery',
+      placements: {PromotionPlacement.login},
+      examIds: ['exam-ssc'],
+    );
+
+    final selected = selectPromotionCampaigns(
+      campaigns: const [targetedLogin],
+      placement: PromotionPlacement.login,
+      now: now,
+    );
+    expect(selected.map((item) => item.id), ['targeted-login']);
+  });
+
   test('invalid JSON safely resolves to no campaigns', () {
     expect(parsePromotionCampaigns('{not-json'), isEmpty);
     expect(parsePromotionCampaigns('{}'), isEmpty);

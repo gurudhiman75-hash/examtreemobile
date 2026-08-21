@@ -8,6 +8,7 @@ import 'package:examtree/features/companion/presentation/providers/daily_compani
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
 import 'package:examtree/features/home/presentation/home_screen.dart';
 import 'package:examtree/features/profile/presentation/providers/analytics_providers.dart';
+import 'package:examtree/features/promotions/presentation/providers/promotion_providers.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -106,6 +107,9 @@ void main() {
       overrides: [
         authStateChangesProvider.overrideWith(
           (ref) => Stream<User?>.value(null),
+        ),
+        promotionAudienceExamIdsProvider.overrideWith(
+          (ref) => const AsyncData<List<String>>(<String>[]),
         ),
         userAnalyticsProvider.overrideWith((ref) async => analytics()),
         inProgressExamsProvider.overrideWith((ref) async => active),

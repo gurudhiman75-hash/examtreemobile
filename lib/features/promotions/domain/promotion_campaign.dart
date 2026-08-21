@@ -64,8 +64,12 @@ class PromotionCampaign {
     return languageCodes.any((code) => code.toLowerCase() == normalized);
   }
 
-  bool targetsAnyExam(Set<String> selectedExamIds) {
-    if (examIds.isEmpty || selectedExamIds.isEmpty) return true;
+  bool targetsAnyExam(
+    Set<String> selectedExamIds, {
+    bool requireExplicitMatch = false,
+  }) {
+    if (examIds.isEmpty) return true;
+    if (selectedExamIds.isEmpty) return !requireExplicitMatch;
     return examIds.any(selectedExamIds.contains);
   }
 
@@ -153,13 +157,17 @@ List<PromotionCampaign> selectPromotionCampaigns({
   required DateTime now,
   String? languageCode,
   Set<String> selectedExamIds = const <String>{},
+  bool requireExplicitExamMatch = false,
   int maxItems = 5,
 }) {
   final active = campaigns
       .where((campaign) => campaign.placements.contains(placement))
       .where((campaign) => campaign.isActiveAt(now.toUtc()))
       .where((campaign) => campaign.supportsLanguage(languageCode))
-      .where((campaign) => campaign.targetsAnyExam(selectedExamIds))
+      .where((campaign) => campaign.targetsAnyExam(
+            selectedExamIds,
+            requireExplicitMatch: requireExplicitExamMatch,
+          ))
       .toList(growable: false)
     ..sort((a, b) {
       final priorityOrder = b.priority.compareTo(a.priority);
