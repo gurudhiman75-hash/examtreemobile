@@ -3,6 +3,7 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../domain/learning_resource.dart';
@@ -71,7 +72,6 @@ class _ResourceDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final resource = detail.summary;
     final date = resource.contentDate ?? resource.publishedAt;
     final target = resource.isGeneral
@@ -83,87 +83,62 @@ class _ResourceDetail extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
-        AppSpacing.md,
+        AppSpacing.sm,
         AppSpacing.md,
         AppSpacing.xxl,
       ),
       children: [
-        Text(
-          resource.title,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.35,
-          ),
+        _ResourceHero(
+          resource: resource,
+          date: date,
+          target: target,
         ),
-        if (resource.summary.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.xl),
+        if (detail.bodyMarkdown.trim().isNotEmpty) ...[
           Text(
-            resource.summary,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: scheme.onSurfaceVariant,
-              height: 1.5,
+            'Resource',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.25,
             ),
           ),
-        ],
-        const SizedBox(height: AppSpacing.md),
-        _MetaLine(
-          icon: resource.category == LearningResourceCategory.currentAffairs
-              ? Icons.newspaper_outlined
-              : resource.category == LearningResourceCategory.formulaSheet
-                  ? Icons.functions_rounded
-                  : Icons.menu_book_outlined,
-          label: resource.category.label,
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        _MetaLine(
-          icon: resource.format == LearningResourceFormat.pdf
-              ? Icons.picture_as_pdf_outlined
-              : Icons.article_outlined,
-          label: resource.format == LearningResourceFormat.pdf
-              ? 'PDF document'
-              : 'Article',
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        _MetaLine(
-          icon: Icons.translate_rounded,
-          label: resource.languageCode.toUpperCase(),
-        ),
-        if (date != null) ...[
-          const SizedBox(height: AppSpacing.xs),
-          _MetaLine(
-            icon: Icons.calendar_today_outlined,
-            label: _dateLabel(date),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.xs),
-        _MetaLine(icon: Icons.flag_outlined, label: target),
-        const SizedBox(height: AppSpacing.lg),
-        Divider(color: scheme.outlineVariant),
-        const SizedBox(height: AppSpacing.md),
-        if (detail.bodyMarkdown.trim().isNotEmpty)
+          const SizedBox(height: AppSpacing.md),
           MarkdownBody(
             data: detail.bodyMarkdown,
             selectable: true,
             onTapLink: (text, href, title) =>
                 _openMarkdownLink(context, href),
             styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-              p: theme.textTheme.bodyLarge?.copyWith(height: 1.55),
+              p: theme.textTheme.bodyLarge?.copyWith(height: 1.62),
               h1: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
+                height: 1.25,
               ),
               h2: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
+                height: 1.3,
               ),
               h3: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
               ),
+              blockquotePadding: const EdgeInsets.all(AppSpacing.md),
               blockquoteDecoration: BoxDecoration(
-                color: scheme.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                color: AppColors.primaryContainer,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              codeblockPadding: const EdgeInsets.all(AppSpacing.md),
+              codeblockDecoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              horizontalRuleDecoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: theme.colorScheme.outlineVariant),
+                ),
               ),
             ),
-          )
-        else if (resource.contentUrl != null)
+          ),
+        ] else if (resource.contentUrl != null)
           _DocumentCard(
             onOpen: () => _openUrl(context, resource.contentUrl!),
           )
@@ -183,38 +158,151 @@ class _ResourceDetail extends StatelessWidget {
   }
 }
 
-class _MetaLine extends StatelessWidget {
-  const _MetaLine({required this.icon, required this.label});
+class _ResourceHero extends StatelessWidget {
+  const _ResourceHero({
+    required this.resource,
+    required this.date,
+    required this.target,
+  });
 
-  final IconData icon;
-  final String label;
+  final LearningResourceSummary resource;
+  final DateTime? date;
+  final String target;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 2),
-          child: Icon(
-            icon,
-            size: 18,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+    final formula = resource.category == LearningResourceCategory.formulaSheet;
+    final currentAffairs =
+        resource.category == LearningResourceCategory.currentAffairs;
+    final icon = currentAffairs
+        ? Icons.newspaper_rounded
+        : formula
+            ? Icons.functions_rounded
+            : Icons.menu_book_rounded;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFEEF2FF), Color(0xFFF4F0FF), Color(0xFFE0F2FE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        const SizedBox(width: AppSpacing.xs),
-        Expanded(
-          child: Text(
-            label,
-            softWrap: true,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.35,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.82),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  icon,
+                  color: currentAffairs
+                      ? AppColors.sky
+                      : formula
+                          ? AppColors.amber
+                          : AppColors.tertiary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Wrap(
+                  spacing: AppSpacing.xs,
+                  runSpacing: AppSpacing.xs,
+                  children: [
+                    _HeroBadge(label: resource.category.label),
+                    _HeroBadge(
+                      label: resource.format == LearningResourceFormat.pdf
+                          ? 'PDF'
+                          : 'Article',
+                    ),
+                    _HeroBadge(label: resource.languageCode.toUpperCase()),
+                    if (date != null) _HeroBadge(label: _dateLabel(date!)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            resource.title,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: AppColors.onPrimaryContainer,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.45,
+              height: 1.18,
             ),
           ),
-        ),
-      ],
+          if (resource.summary.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              resource.summary,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: AppColors.onPrimaryContainer.withValues(alpha: 0.74),
+                height: 1.48,
+              ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 2),
+                child: Icon(
+                  Icons.flag_outlined,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  target,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: AppColors.onPrimaryContainer,
+                    fontWeight: FontWeight.w800,
+                    height: 1.35,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroBadge extends StatelessWidget {
+  const _HeroBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.76),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: AppColors.onPrimaryContainer,
+              fontWeight: FontWeight.w800,
+            ),
+      ),
     );
   }
 }
@@ -227,38 +315,45 @@ class _DocumentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: scheme.outlineVariant),
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: _softShadow(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.picture_as_pdf_outlined,
-            size: 34,
-            color: scheme.primary,
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: AppColors.roseContainer,
+              borderRadius: BorderRadius.circular(17),
+            ),
+            child: const Icon(
+              Icons.picture_as_pdf_rounded,
+              color: AppColors.onRoseContainer,
+              size: 27,
+            ),
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.md),
           Text(
             'Document ready',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Open this published resource in your device browser or PDF app.',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-              height: 1.4,
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
           FilledButton.icon(
             onPressed: onOpen,
             icon: const Icon(Icons.open_in_new_rounded),
@@ -277,14 +372,26 @@ class _UnavailableBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        color: theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        'This published resource has no readable content right now.',
-        style: theme.textTheme.bodyMedium,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.info_outline_rounded,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'This published resource has no readable content right now.',
+              style: theme.textTheme.bodyMedium,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -295,27 +402,22 @@ class _DetailLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    Widget block(double height) => Container(
+          height: height,
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(22),
+          ),
+        );
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
-        Container(
-          height: 72,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          ),
-        ),
+        block(250),
+        const SizedBox(height: AppSpacing.xl),
+        block(32),
         const SizedBox(height: AppSpacing.md),
-        for (var index = 0; index < 5; index++) ...[
-          Container(
-            height: 22,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-        ],
+        block(180),
       ],
     );
   }
@@ -339,3 +441,11 @@ String _dateLabel(DateTime value) {
   ];
   return '${local.day} ${months[local.month - 1]} ${local.year}';
 }
+
+List<BoxShadow> _softShadow() => [
+      BoxShadow(
+        color: AppColors.shadow.withValues(alpha: 0.05),
+        blurRadius: 20,
+        offset: const Offset(0, 7),
+      ),
+    ];
