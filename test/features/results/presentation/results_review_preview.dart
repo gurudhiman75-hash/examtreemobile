@@ -168,6 +168,11 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
+  Widget resultsShell() => Scaffold(
+        appBar: AppBar(title: const Text('Results')),
+        body: const ResultsScreen(),
+      );
+
   testWidgets('render populated Results initial viewport', (tester) async {
     await configurePhone(tester);
     await tester.pumpWidget(
@@ -178,13 +183,13 @@ void main() {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: previewTheme(),
-          home: const MediaQuery(
-            data: MediaQueryData(
+          home: MediaQuery(
+            data: const MediaQueryData(
               size: phoneSize,
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
-            child: ResultsScreen(),
+            child: resultsShell(),
           ),
         ),
       ),
@@ -209,13 +214,13 @@ void main() {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: previewTheme(),
-          home: const MediaQuery(
-            data: MediaQueryData(
+          home: MediaQuery(
+            data: const MediaQueryData(
               size: phoneSize,
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
-            child: ResultsScreen(),
+            child: resultsShell(),
           ),
         ),
       ),
