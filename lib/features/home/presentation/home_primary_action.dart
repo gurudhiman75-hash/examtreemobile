@@ -44,7 +44,7 @@ HomePrimaryAction resolveHomePrimaryAction({
   if (active.isNotEmpty) {
     return HomePrimaryAction(
       kind: HomePrimaryActionKind.resumeTest,
-      eyebrow: 'Continue now',
+      eyebrow: 'Continue',
       title: active.first.title,
       description:
           'Your active attempt is saved. Resume from the point where you stopped.',
@@ -65,7 +65,7 @@ HomePrimaryAction resolveHomePrimaryAction({
     if (isRecent) {
       return HomePrimaryAction(
         kind: HomePrimaryActionKind.reviewResult,
-        eyebrow: 'Review while it is fresh',
+        eyebrow: 'Review',
         title: latest.testName.trim().isEmpty
             ? 'Your latest result'
             : latest.testName,
@@ -124,7 +124,7 @@ HomePrimaryAction resolveHomePrimaryAction({
 
   return const HomePrimaryAction(
     kind: HomePrimaryActionKind.browseTests,
-    eyebrow: 'Build your next session',
+    eyebrow: 'Get started',
     title: 'Choose your next test',
     description:
         'Explore the catalogue for live mocks, sectional tests and practice papers.',

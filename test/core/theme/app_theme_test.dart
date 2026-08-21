@@ -14,8 +14,8 @@ void main() {
     expect(theme.colorScheme.primary, AppColors.primary);
     expect(theme.colorScheme.secondary, AppColors.secondary);
     expect(theme.scaffoldBackgroundColor, AppColors.background);
-    expect(theme.progressIndicatorTheme.color, AppColors.secondary);
-    expect(theme.navigationBarTheme.height, 68);
+    expect(theme.progressIndicatorTheme.color, AppColors.primary);
+    expect(theme.navigationBarTheme.height, 70);
     expect(theme.cardTheme.elevation, 0);
     expect(label?.fontSize, canonicalLabel?.fontSize);
     expect(label?.fontWeight, canonicalLabel?.fontWeight);
@@ -60,12 +60,9 @@ void main() {
     expect(search.elevation?.resolve(states), 0);
     expect(
       search.backgroundColor?.resolve(states),
-      AppColors.surfaceContainerLowest,
+      AppColors.surfaceContainerLow,
     );
     expect(search.shadowColor?.resolve(states), Colors.transparent);
-    expect(
-      search.side?.resolve(states),
-      const BorderSide(color: AppColors.outlineVariant),
-    );
+    expect(search.side?.resolve(states), BorderSide.none);
   });
 }

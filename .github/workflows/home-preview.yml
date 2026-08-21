@@ -47,10 +47,6 @@ jobs:
           flutter test --update-goldens \
             test/features/home/presentation/home_screen_golden_test.dart
 
-      - name: Verify approved Home screenshots
-        working-directory: test/features/home/presentation/goldens
-        run: sha256sum --check home_manifest.sha256
-
       - name: Publish home screenshots
         uses: actions/upload-artifact@v4
         with:
@@ -58,3 +54,7 @@ jobs:
           path: test/features/home/presentation/goldens/home_*.png
           if-no-files-found: error
           retention-days: 14
+
+      - name: Verify approved Home screenshots
+        working-directory: test/features/home/presentation/goldens
+        run: sha256sum --check home_manifest.sha256

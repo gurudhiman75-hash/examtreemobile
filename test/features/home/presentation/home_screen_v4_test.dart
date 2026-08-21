@@ -135,13 +135,15 @@ void main() {
         container: container,
         child: MaterialApp(
           theme: AppTheme.lightTheme,
-          home: MediaQuery(
-            data: MediaQueryData(
-              size: const Size(390, 844),
-              textScaler: TextScaler.linear(textScale),
-              disableAnimations: true,
+          home: Scaffold(
+            body: MediaQuery(
+              data: MediaQueryData(
+                size: const Size(390, 844),
+                textScaler: TextScaler.linear(textScale),
+                disableAnimations: true,
+              ),
+              child: HomeScreen(now: () => now),
             ),
-            child: HomeScreen(now: () => now),
           ),
         ),
       ),
@@ -171,12 +173,11 @@ void main() {
 
     expect(find.text('Resume test'), findsOneWidget);
     expect(find.text('SSC CGL full mock'), findsOneWidget);
-    expect(find.text('Performance pulse'), findsOneWidget);
-    expect(find.text('Continue learning'), findsOneWidget);
+    expect(find.text('Your progress'), findsOneWidget);
 
-    await scrollHome(tester, 620);
-    expect(find.byKey(const Key('home-context-tests')), findsOneWidget);
-    expect(find.byKey(const Key('home-context-results')), findsOneWidget);
+    await scrollHome(tester, 520);
+    expect(find.text('Recommended for you'), findsOneWidget);
+    expect(find.text('Reasoning mixed practice'), findsOneWidget);
   });
 
   testWidgets('due revision becomes primary before generic test discovery', (tester) async {
@@ -191,7 +192,7 @@ void main() {
     expect(find.text('DUE FOR REVISION'), findsOneWidget);
     expect(find.text('3 questions to revisit'), findsOneWidget);
     expect(find.text('Start revision'), findsOneWidget);
-    expect(find.text('Next test'), findsNothing);
+    expect(find.text('NEXT TEST'), findsNothing);
   });
 
   testWidgets('new learner stays truthful when catalogue is empty', (tester) async {
@@ -207,8 +208,8 @@ void main() {
     expect(find.textContaining('streak', findRichText: true), findsNothing);
     expect(find.textContaining('readiness', findRichText: true), findsNothing);
 
-    await scrollHome(tester, 900);
-    expect(find.text('No tests are available right now.'), findsOneWidget);
+    await scrollHome(tester, 720);
+    expect(find.text('No tests are published right now.'), findsOneWidget);
   });
 
   testWidgets('home remains usable at 200 percent text scaling', (tester) async {

@@ -221,45 +221,46 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
         : widget.navigationShell;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: expandedNavigation
-            ? null
-            : Builder(
-                builder: (context) => IconButton(
-                  key: const Key('shell-open-navigation'),
-                  tooltip: 'Open navigation',
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                  icon: const Icon(Icons.menu_rounded),
-                ),
-              ),
-        title: Text(onHome ? 'ExamTree' : shellDestinationLabel(currentIndex)),
-        actions: [
-          if (!onHome)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Semantics(
-                button: true,
-                label: 'Open profile',
-                child: InkWell(
-                  onTap: () => context.push('/profile'),
-                  customBorder: const CircleBorder(),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundColor: scheme.primaryContainer,
-                    foregroundColor: scheme.onPrimaryContainer,
-                    child: Text(
-                      initial,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+      appBar: onHome
+          ? null
+          : AppBar(
+              automaticallyImplyLeading: false,
+              leading: expandedNavigation
+                  ? null
+                  : Builder(
+                      builder: (context) => IconButton(
+                        key: const Key('shell-open-navigation'),
+                        tooltip: 'Open navigation',
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        icon: const Icon(Icons.menu_rounded),
+                      ),
+                    ),
+              title: Text(shellDestinationLabel(currentIndex)),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Semantics(
+                    button: true,
+                    label: 'Open profile',
+                    child: InkWell(
+                      onTap: () => context.push('/profile'),
+                      customBorder: const CircleBorder(),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: scheme.primaryContainer,
+                        foregroundColor: scheme.onPrimaryContainer,
+                        child: Text(
+                          initial,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-        ],
-      ),
       drawer: expandedNavigation
           ? null
           : NavigationDrawer(
@@ -416,9 +417,13 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
           : DecoratedBox(
               decoration: BoxDecoration(
                 color: scheme.surfaceContainerLowest,
-                border: Border(
-                  top: BorderSide(color: scheme.outlineVariant),
-                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.shadow.withValues(alpha: 0.06),
+                    blurRadius: 18,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
               child: SafeArea(
                 top: false,
