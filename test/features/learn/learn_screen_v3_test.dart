@@ -164,6 +164,11 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Learn for your exams'), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -520));
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
   });
 }
