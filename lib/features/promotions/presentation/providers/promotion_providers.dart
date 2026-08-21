@@ -75,7 +75,10 @@ final promotionsForPlacementProvider = FutureProvider.family<
       : ref.watch(promotionAudienceExamIdsProvider);
   final campaigns = await ref.watch(promotionCampaignsProvider.future);
   final now = ref.watch(promotionClockProvider)();
-  final selectedExamIds = audience?.value?.toSet() ?? const <String>{};
+  final selectedExamIds = switch (audience) {
+    AsyncData(value: final ids) => ids.toSet(),
+    _ => const <String>{},
+  };
 
   return selectPromotionCampaigns(
     campaigns: campaigns,
