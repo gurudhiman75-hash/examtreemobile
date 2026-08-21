@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/models/exam_model.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
