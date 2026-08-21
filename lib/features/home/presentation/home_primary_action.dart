@@ -1,5 +1,6 @@
 import '../../../core/models/exam_model.dart';
 import '../../../core/models/result_model.dart';
+import 'home_exam_priority.dart';
 
 enum HomePrimaryActionKind {
   resumeTest,
@@ -94,20 +95,30 @@ HomePrimaryAction resolveHomePrimaryAction({
       final leftPaid = left.status.trim().toLowerCase() == 'paid' ? 1 : 0;
       final rightPaid = right.status.trim().toLowerCase() == 'paid' ? 1 : 0;
       if (leftPaid != rightPaid) return leftPaid.compareTo(rightPaid);
+
+      final leftSelected = isHomeSelectedExam(left) ? 0 : 1;
+      final rightSelected = isHomeSelectedExam(right) ? 0 : 1;
+      if (leftSelected != rightSelected) {
+        return leftSelected.compareTo(rightSelected);
+      }
+
       final updated = right.updatedAt.compareTo(left.updatedAt);
       if (updated != 0) return updated;
       return left.title.toLowerCase().compareTo(right.title.toLowerCase());
     });
 
   if (available.isNotEmpty) {
+    final next = available.first;
+    final selected = isHomeSelectedExam(next);
     return HomePrimaryAction(
       kind: HomePrimaryActionKind.startTest,
-      eyebrow: 'Next test',
-      title: available.first.title,
-      description:
-          'Open a focused paper from the tests currently available to you.',
+      eyebrow: selected ? 'From My exams' : 'Next test',
+      title: next.title,
+      description: selected
+          ? 'Open a focused paper for an exam you chose in My exams.'
+          : 'Open a focused paper from the tests currently available to you.',
       actionLabel: 'View test',
-      exam: available.first,
+      exam: next,
     );
   }
 
