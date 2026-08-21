@@ -67,6 +67,11 @@ void main() {
     final pinnedTextTheme = baseTheme.textTheme.apply(fontFamily: 'Roboto');
     return baseTheme.copyWith(
       textTheme: pinnedTextTheme,
+      appBarTheme: baseTheme.appBarTheme.copyWith(
+        titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(
+          fontFamily: 'Roboto',
+        ),
+      ),
       chipTheme: baseTheme.chipTheme.copyWith(
         labelStyle: pinnedTextTheme.labelMedium,
       ),
