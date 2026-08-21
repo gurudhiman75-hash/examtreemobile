@@ -174,6 +174,50 @@ jobs:
 
           printf '%s\n' "$APK_SHA1" > build/app/outputs/flutter-apk/signing-sha1.txt
 
+      - name: Verify Google OAuth signing registration
+        shell: bash
+        run: |
+          APK_SHA1="$(tr -d '\r\n' < build/app/outputs/flutter-apk/signing-sha1.txt)"
+          RAW_APK_SHA1="$(printf '%s' "$APK_SHA1" | tr -d ':' | tr '[:upper:]' '[:lower:]')"
+
+          mapfile -t REGISTERED_SHA1S < <(python3 - <<'PY'
+          import json
+
+          with open('android/app/google-services.json', encoding='utf-8') as handle:
+              data = json.load(handle)
+
+          for client in data.get('client', []):
+              info = client.get('client_info', {}).get('android_client_info', {})
+              if info.get('package_name') != 'com.examtree.examtree':
+                  continue
+              for oauth in client.get('oauth_client', []):
+                  android = oauth.get('android_info') or {}
+                  certificate_hash = str(android.get('certificate_hash') or '').strip().lower()
+                  if oauth.get('client_type') == 1 and certificate_hash:
+                      print(certificate_hash)
+          PY
+          )
+
+          echo "APK signing SHA-1: $APK_SHA1"
+          if [[ ${#REGISTERED_SHA1S[@]} -eq 0 ]]; then
+            echo "::error::google-services.json has no Android OAuth client for com.examtree.examtree."
+            exit 1
+          fi
+
+          MATCHED=false
+          for registered in "${REGISTERED_SHA1S[@]}"; do
+            formatted="$(printf '%s' "$registered" | sed 's/../&:/g; s/:$//' | tr '[:lower:]' '[:upper:]')"
+            echo "Registered OAuth SHA-1: $formatted"
+            if [[ "$registered" == "$RAW_APK_SHA1" ]]; then
+              MATCHED=true
+            fi
+          done
+
+          if [[ "$MATCHED" != true ]]; then
+            echo "::error::The APK signing SHA-1 is not registered for com.examtree.examtree in Google/Firebase OAuth. Add $APK_SHA1 to Firebase project sarbedutech, download the refreshed google-services.json, and commit it before publishing this APK."
+            exit 1
+          fi
+
       - name: Publish authenticated Android APK
         uses: actions/upload-artifact@v4
         with:
