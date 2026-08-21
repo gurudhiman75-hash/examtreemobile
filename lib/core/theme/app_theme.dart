@@ -122,7 +122,6 @@ class AppTheme {
         style: FilledButton.styleFrom(
           minimumSize: const Size(0, 50),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-          textStyle: const TextStyle(fontWeight: FontWeight.w800),
           shape: const RoundedRectangleBorder(borderRadius: controlRadius),
         ),
       ),
@@ -131,7 +130,6 @@ class AppTheme {
           minimumSize: const Size(0, 50),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
           foregroundColor: AppColors.onSurface,
-          textStyle: const TextStyle(fontWeight: FontWeight.w700),
           side: const BorderSide(color: AppColors.outlineVariant),
           shape: const RoundedRectangleBorder(borderRadius: controlRadius),
         ),
@@ -140,7 +138,6 @@ class AppTheme {
         style: TextButton.styleFrom(
           minimumSize: const Size(48, 44),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          textStyle: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
