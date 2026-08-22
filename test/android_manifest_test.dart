@@ -15,6 +15,15 @@ void main() {
     expect(manifest, contains('android:label="ExamTree"'));
   });
 
+  test('production Android manifest disables backup and cleartext traffic', () {
+    final manifest = File(
+      'android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+
+    expect(manifest, contains('android:allowBackup="false"'));
+    expect(manifest, contains('android:usesCleartextTraffic="false"'));
+  });
+
   test('Android manifest registers Companion widget and deep links', () {
     final manifest = File(
       'android/app/src/main/AndroidManifest.xml',
