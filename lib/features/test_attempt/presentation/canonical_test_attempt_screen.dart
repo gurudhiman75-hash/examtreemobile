@@ -20,6 +20,7 @@ import '../../results/presentation/providers/result_providers.dart';
 import '../domain/test_attempt_experience.dart';
 import 'widgets/question_palette_sheet.dart';
 import 'widgets/test_attempt_dialogs.dart';
+import 'widgets/test_attempt_stage.dart';
 
 class CanonicalTestAttemptScreen extends ConsumerWidget {
   const CanonicalTestAttemptScreen({
@@ -888,10 +889,15 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                _timeExpired ? 'Time expired — submitting your test' : 'Submitting your test',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  _timeExpired
+                      ? 'Time expired — submitting your test'
+                      : 'Submitting your test',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -909,7 +915,10 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         ),
         child: Row(
           children: [
-            Icon(Icons.lock_clock_outlined, color: theme.colorScheme.onErrorContainer),
+            Icon(
+              Icons.lock_clock_outlined,
+              color: theme.colorScheme.onErrorContainer,
+            ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
@@ -943,226 +952,55 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     final question = _questions[_currentIndex];
     final questionState = _states[_currentIndex];
     final summary = AttemptSubmissionSummary.fromStates(_states);
+    final locked = _timeExpired || _submitting;
 
     return WillPopScope(
       onWillPop: () async {
         await _confirmExit();
         return false;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          titleSpacing: AppSpacing.md,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.exam.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'Question ${_currentIndex + 1} of ${_questions.length}',
-                style: theme.textTheme.labelMedium,
-              ),
-            ],
+      child: TestAttemptStage(
+        examTitle: widget.exam.title,
+        questionNumber: _currentIndex + 1,
+        totalQuestions: _questions.length,
+        timeLabel: _formattedTime,
+        timerBackground: _timerBackground(theme.colorScheme),
+        timerForeground: _timerForeground(theme.colorScheme),
+        syncing: _syncing,
+        syncFailed: _syncFailed,
+        onRetrySync:
+            _syncFailed ? () => unawaited(_saveSession(quiet: false)) : null,
+        onExit: locked ? null : _confirmExit,
+        topBanners: [
+          SyncStatusBanner(
+            syncing: _syncing,
+            syncFailed: _syncFailed,
+            lastSavedAt: _lastSavedAt,
+            onRetry: () => unawaited(_saveSession(quiet: false)),
           ),
-          actions: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: AppSpacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: _timerBackground(theme.colorScheme),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.timer_outlined,
-                    size: 16,
-                    color: _timerForeground(theme.colorScheme),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    _formattedTime,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: _timerForeground(theme.colorScheme),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              tooltip: _syncFailed
-                  ? 'Progress not saved. Retry.'
-                  : _syncing
-                      ? 'Saving progress'
-                      : 'Progress saved',
-              onPressed: _syncFailed
-                  ? () => unawaited(_saveSession(quiet: false))
-                  : null,
-              icon: _syncing
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Icon(_syncFailed ? Icons.cloud_off : Icons.cloud_done),
-            ),
-            IconButton(
-              tooltip: 'Save and exit',
-              onPressed: _submitting || _timeExpired ? null : _confirmExit,
-              icon: const Icon(Icons.close),
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            SyncStatusBanner(
-              syncing: _syncing,
-              syncFailed: _syncFailed,
-              lastSavedAt: _lastSavedAt,
-              onRetry: () => unawaited(_saveSession(quiet: false)),
-            ),
-            if (_timeExpired || _submitting) _buildSubmissionStatus(theme),
-            const Divider(height: 1),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 820),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Q${_currentIndex + 1}. ${question.text}',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          height: 1.4,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      ...List.generate(question.options.length, (index) {
-                        final selected =
-                            questionState.selectedOptionIndex == index;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: Card(
-                            elevation: 0,
-                            color: selected
-                                ? theme.colorScheme.primaryContainer
-                                : theme.colorScheme.surface,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(AppSpacing.radiusMd),
-                              side: BorderSide(
-                                color: selected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.outlineVariant,
-                              ),
-                            ),
-                            child: RadioListTile<int>(
-                              value: index,
-                              groupValue: questionState.selectedOptionIndex,
-                              title: Text(
-                                question.options[index],
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: AppSpacing.sm,
-                              ),
-                              onChanged: _timeExpired || _submitting
-                                  ? null
-                                  : _selectAnswer,
-                            ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const Divider(height: 1),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                child: Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    OutlinedButton.icon(
-                      onPressed: _currentIndex == 0 ||
-                              _timeExpired ||
-                              _submitting
-                          ? null
-                          : () => _goToQuestion(_currentIndex - 1),
-                      icon: const Icon(Icons.arrow_back),
-                      label: const Text('Previous'),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: questionState.selectedOptionIndex == null ||
-                              _timeExpired ||
-                              _submitting
-                          ? null
-                          : _clearResponse,
-                      icon: const Icon(Icons.clear),
-                      label: const Text('Clear'),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed:
-                          _timeExpired || _submitting ? null : _markForReview,
-                      icon: const Icon(Icons.bookmark_border),
-                      label: const Text('Review'),
-                    ),
-                    FilledButton.icon(
-                      onPressed:
-                          _timeExpired || _submitting ? null : _saveAndNext,
-                      icon: const Icon(Icons.arrow_forward),
-                      label: Text(
-                        _currentIndex == _questions.length - 1
-                            ? 'Save answer'
-                            : 'Save & next',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            children: [
-              Expanded(
-                child: TextButton.icon(
-                  onPressed:
-                      _timeExpired || _submitting ? null : _showPalette,
-                  icon: const Icon(Icons.grid_view),
-                  label: Text('Palette · ${summary.totalUnanswered} left'),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed:
-                      _submitting || _timeExpired ? null : _requestSubmit,
-                  icon: const Icon(Icons.check_circle_outline),
-                  label: Text(_submitting ? 'Submitting…' : 'Submit test'),
-                ),
-              ),
-            ],
-          ),
-        ),
+          if (_timeExpired || _submitting) _buildSubmissionStatus(theme),
+        ],
+        questionText: question.text,
+        options: question.options,
+        selectedIndex: questionState.selectedOptionIndex,
+        locked: locked,
+        markedForReview: _isMarked(questionState.status),
+        onSelect: locked ? null : (index) => _selectAnswer(index),
+        onPrevious: _currentIndex == 0 || locked
+            ? null
+            : () => _goToQuestion(_currentIndex - 1),
+        onClear: questionState.selectedOptionIndex == null || locked
+            ? null
+            : _clearResponse,
+        onMarkReview: locked ? null : _markForReview,
+        onSaveNext: locked ? null : _saveAndNext,
+        saveNextLabel: _currentIndex == _questions.length - 1
+            ? 'Save answer'
+            : 'Save & next',
+        paletteLabel: 'Palette · ${summary.totalUnanswered} left',
+        onPalette: locked ? null : _showPalette,
+        submitLabel: _submitting ? 'Submitting…' : 'Submit test',
+        onSubmit: locked ? null : _requestSubmit,
       ),
     );
   }
