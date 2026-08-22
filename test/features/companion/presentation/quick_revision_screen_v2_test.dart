@@ -129,8 +129,8 @@ void main() {
     expect(tester.takeException(), isNull);
     final scrollable = revisionScrollable();
 
-    for (var index = 0; index < 3; index++) {
-      await tester.drag(scrollable, const Offset(0, -420));
+    for (var index = 0; index < 8; index++) {
+      await tester.drag(scrollable, const Offset(0, -500));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
@@ -140,8 +140,8 @@ void main() {
     await tester.pump();
     expect(tester.takeException(), isNull);
 
-    for (var index = 0; index < 5; index++) {
-      await tester.drag(scrollable, const Offset(0, -440));
+    for (var index = 0; index < 8; index++) {
+      await tester.drag(scrollable, const Offset(0, -500));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
