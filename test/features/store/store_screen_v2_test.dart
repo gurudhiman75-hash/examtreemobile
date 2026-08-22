@@ -121,24 +121,20 @@ void main() {
 
     expect(tester.takeException(), isNull);
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('store-test-series')),
-      350,
-      scrollable: find.byType(Scrollable).first,
-    );
+    final scrollable = find.byType(Scrollable).first;
+    await tester.drag(scrollable, const Offset(0, -520));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('store-test-series')), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.textContaining('Mobile checkout is not connected yet'),
-      450,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.drag(scrollable, const Offset(0, -760));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(find.textContaining('Mobile checkout is not connected yet'), findsOneWidget);
+    expect(
+      find.textContaining('Mobile checkout is not connected yet'),
+      findsOneWidget,
+    );
   });
 }
