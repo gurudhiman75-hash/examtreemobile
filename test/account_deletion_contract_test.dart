@@ -22,14 +22,18 @@ void main() {
     });
 
     test('profile exposes privacy and account controls', () {
-      final profile = File(
+      final profileEntry = File(
         'lib/features/profile/presentation/profile_screen.dart',
+      ).readAsStringSync();
+      final profile = File(
+        'lib/features/profile/presentation/profile_screen_v5.dart',
       ).readAsStringSync();
       final account = File(
         'lib/features/profile/presentation/account_settings_screen.dart',
       ).readAsStringSync();
       final router = File('lib/routes/app_router.dart').readAsStringSync();
 
+      expect(profileEntry, contains("export 'profile_screen_v5.dart';"));
       expect(profile, contains("context.push('/account')"));
       expect(profile, contains('Privacy & account'));
       expect(router, contains("path: '/account'"));
