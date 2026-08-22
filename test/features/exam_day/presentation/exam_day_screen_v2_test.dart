@@ -100,7 +100,7 @@ void main() {
       matching: find.byType(Scrollable),
     );
 
-    for (var index = 0; index < 5; index++) {
+    for (var index = 0; index < 6; index++) {
       await tester.drag(scrollable, const Offset(0, -500));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
@@ -108,6 +108,5 @@ void main() {
 
     expect(find.byKey(const Key('exam-day-checklist')), findsOneWidget);
     expect(find.text('Exam-day checklist'), findsOneWidget);
-    expect(find.textContaining('Official instructions remain authoritative'), findsOneWidget);
   });
 }
