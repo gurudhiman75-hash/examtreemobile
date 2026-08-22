@@ -90,11 +90,17 @@ void main() {
     await tester.pumpWidget(app(maxSelected: 1));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('SSC CGL'));
+    final first = find.byKey(const Key('my-exams-choice-exam-1'));
+    await tester.ensureVisible(first);
     await tester.pump();
-    expect(find.text('1 of 1 selected'), findsOneWidget);
+    await tester.tap(first);
+    await tester.pump();
+    expect(find.text('Save 1 exam'), findsOneWidget);
 
-    await tester.tap(find.text('SSC CHSL'));
+    final second = find.byKey(const Key('my-exams-choice-exam-2'));
+    await tester.ensureVisible(second);
+    await tester.pump();
+    await tester.tap(second);
     await tester.pump();
     expect(find.text('Choose up to 1 exams.'), findsOneWidget);
   });
