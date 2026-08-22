@@ -158,24 +158,21 @@ void main() {
 
     expect(tester.takeException(), isNull);
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('quick-revision-5')),
-      220,
-      scrollable: dailyScrollable(),
-    );
-    await tester.pump();
+    final scrollable = dailyScrollable();
+    await tester.drag(scrollable, const Offset(0, -420));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('quick-revision-5')), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('study-plan')),
-      300,
-      scrollable: dailyScrollable(),
-    );
-    await tester.pump();
+    for (var index = 0; index < 4; index++) {
+      await tester.drag(scrollable, const Offset(0, -520));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
 
     expect(find.byKey(const Key('study-plan')), findsOneWidget);
     expect(find.text('Daily question goal'), findsOneWidget);
     expect(find.text('Change reminder time'), findsOneWidget);
-    expect(tester.takeException(), isNull);
   });
 }
