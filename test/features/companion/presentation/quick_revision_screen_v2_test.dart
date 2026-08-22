@@ -87,23 +87,28 @@ void main() {
     expect(find.text('Question 1 of 1'), findsOneWidget);
     expect(find.text('Incorrect'), findsOneWidget);
     expect(find.text('Slow'), findsOneWidget);
-    expect(find.byKey(const Key('quick-revision-show-answer')), findsOneWidget);
     expect(find.text('Correct answer'), findsNothing);
+    expect(tester.takeException(), isNull);
 
+    final scrollable = revisionScrollable();
+    await tester.drag(scrollable, const Offset(0, -420));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('quick-revision-show-answer')), findsOneWidget);
     await tester.tap(find.byKey(const Key('quick-revision-show-answer')));
     await tester.pump();
 
     expect(find.text('Correct answer'), findsOneWidget);
     expect(find.text('Your answer'), findsOneWidget);
+
+    for (var index = 0; index < 3; index++) {
+      await tester.drag(scrollable, const Offset(0, -360));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+
     expect(find.byKey(const Key('quick-revision-explanation')), findsOneWidget);
-
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('quick-revision-got-it')),
-      220,
-      scrollable: revisionScrollable(),
-    );
-    await tester.pump();
-
     expect(find.byKey(const Key('quick-revision-got-it')), findsOneWidget);
     expect(find.byKey(const Key('quick-revision-review-again')), findsOneWidget);
   });
@@ -122,24 +127,26 @@ void main() {
     await pumpRevision(tester, items: [item()], textScale: 2);
 
     expect(tester.takeException(), isNull);
-    final reveal = find.byKey(const Key('quick-revision-show-answer'));
-    await tester.scrollUntilVisible(
-      reveal,
-      250,
-      scrollable: revisionScrollable(),
-    );
-    await tester.tap(reveal);
-    await tester.pump();
+    final scrollable = revisionScrollable();
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('quick-revision-got-it')),
-      300,
-      scrollable: revisionScrollable(),
-    );
+    for (var index = 0; index < 8; index++) {
+      await tester.drag(scrollable, const Offset(0, -500));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+
+    expect(find.byKey(const Key('quick-revision-show-answer')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('quick-revision-show-answer')));
     await tester.pump();
+    expect(tester.takeException(), isNull);
+
+    for (var index = 0; index < 8; index++) {
+      await tester.drag(scrollable, const Offset(0, -500));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
 
     expect(find.byKey(const Key('quick-revision-got-it')), findsOneWidget);
     expect(find.byKey(const Key('quick-revision-review-again')), findsOneWidget);
-    expect(tester.takeException(), isNull);
   });
 }
