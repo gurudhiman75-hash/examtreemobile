@@ -544,6 +544,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
           }
         });
         await _persistLocalDraft();
+        if (!mounted) return false;
         _saveQueued = false;
         success = false;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -656,6 +657,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     } catch (_) {
       if (!mounted) return;
       await _persistLocalDraft();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
