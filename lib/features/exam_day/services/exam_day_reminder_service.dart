@@ -53,11 +53,31 @@ class LocalExamDayReminderService implements ExamDayReminderService {
   }
 
   Future<bool> _requestPermission() async {
-    if (!Platform.isAndroid) return true;
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    final granted = await android?.requestNotificationsPermission();
-    return granted != false;
+    if (Platform.isAndroid) {
+      final android = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      final granted = await android?.requestNotificationsPermission();
+      return granted != false;
+    }
+    if (Platform.isIOS) {
+      final ios = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      final granted = await ios?.requestPermissions(
+        alert: true,
+        sound: true,
+      );
+      return granted != false;
+    }
+    if (Platform.isMacOS) {
+      final macos = _plugin.resolvePlatformSpecificImplementation<
+          MacOSFlutterLocalNotificationsPlugin>();
+      final granted = await macos?.requestPermissions(
+        alert: true,
+        sound: true,
+      );
+      return granted != false;
+    }
+    return true;
   }
 
   @override
