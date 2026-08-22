@@ -45,7 +45,8 @@ jobs:
       - name: Render Results and Review phone previews
         run: |
           flutter test --update-goldens \
-            test/features/results/presentation/results_review_preview.dart
+            test/features/results/presentation/results_review_preview.dart \
+            test/features/results/presentation/answer_review_preview.dart
 
       - name: Publish Results and Review screenshots
         uses: actions/upload-artifact@v4
