@@ -77,11 +77,7 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           _AccountActions(
             language: language,
-            onLanguage: () => _chooseQuestionLanguage(
-              context,
-              ref,
-              language,
-            ),
+            onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
             onResults: () => context.go('/results'),
             onLogout: () => ref.read(authControllerProvider).signOut(),
@@ -512,7 +508,7 @@ class _FocusSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         if (strongest == null && weakest == null)
-          _SoftMessage(
+          const _SoftMessage(
             icon: Icons.insights_outlined,
             text:
                 'Section detail will appear after reviewed questions are available.',
@@ -589,7 +585,9 @@ class _FocusSection extends StatelessWidget {
                 ],
               );
             }
-            if (review == null) return Align(alignment: Alignment.centerLeft, child: results);
+            if (review == null) {
+              return Align(alignment: Alignment.centerLeft, child: results);
+            }
             return Row(
               children: [
                 Expanded(child: review),
@@ -675,7 +673,8 @@ class _ChangeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final positive = change >= 0;
     final color = positive ? AppColors.onMintContainer : AppColors.error;
-    final background = positive ? AppColors.mintContainer : AppColors.errorContainer;
+    final background =
+        positive ? AppColors.mintContainer : AppColors.errorContainer;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -706,18 +705,22 @@ class _RecentTrend extends StatelessWidget {
     final points = analytics.scoreTrend.length <= 4
         ? analytics.scoreTrend
         : analytics.scoreTrend.sublist(analytics.scoreTrend.length - 4);
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: _softShadow(),
-      ),
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLowest,
+      elevation: 1,
+      shadowColor: AppColors.shadow.withValues(alpha: 0.12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           for (var index = 0; index < points.length; index++) ...[
             _TrendRow(point: points[index]),
             if (index != points.length - 1)
-              const Divider(height: 1, indent: AppSpacing.md, endIndent: AppSpacing.md),
+              const Divider(
+                height: 1,
+                indent: AppSpacing.md,
+                endIndent: AppSpacing.md,
+              ),
           ],
         ],
       ),
@@ -918,12 +921,11 @@ class _AccountActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: _softShadow(),
-      ),
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLowest,
+      elevation: 1,
+      shadowColor: AppColors.shadow.withValues(alpha: 0.12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
