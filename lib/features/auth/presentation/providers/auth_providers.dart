@@ -349,10 +349,16 @@ class AuthController {
     String password, {
     ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
-    await _ensureServerReady(onSetupStage);
+    final serverWarmup = _startServerWarmup(onSetupStage);
     onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.signInWithEmailAndPassword(email, password);
     onSetupStage?.call(AuthSetupStage.syncingProfile);
+    try {
+      await _requireServerWarmupAfterAuthentication(serverWarmup);
+    } on AuthServerStartException {
+      await _signOutAfterWarmupFailure();
+      rethrow;
+    }
     await _provisionProfile();
   }
 
@@ -362,11 +368,12 @@ class AuthController {
     _navigationGate?.beginGoogleSignIn();
     var authenticated = false;
     try {
-      await _ensureServerReady(onSetupStage);
+      final serverWarmup = _startServerWarmup(onSetupStage);
       onSetupStage?.call(AuthSetupStage.authenticating);
       await _sessionGateway.signInWithGoogle();
       authenticated = true;
       onSetupStage?.call(AuthSetupStage.syncingProfile);
+      await _requireServerWarmupAfterAuthentication(serverWarmup);
       await _provisionProfile(
         failureMessage:
             'Google sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
@@ -376,7 +383,7 @@ class AuthController {
         try {
           await _sessionGateway.signOut();
         } catch (_) {
-          // Preserve the original profile failure.
+          // Preserve the original setup failure.
         }
       }
       rethrow;
@@ -391,7 +398,7 @@ class AuthController {
     required String password,
     ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
-    await _ensureServerReady(onSetupStage);
+    final serverWarmup = _startServerWarmup(onSetupStage);
     onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.createUserWithEmailAndPassword(
       displayName: displayName.trim(),
@@ -400,23 +407,44 @@ class AuthController {
     );
 
     onSetupStage?.call(AuthSetupStage.syncingProfile);
+    try {
+      await _requireServerWarmupAfterAuthentication(serverWarmup);
+    } on AuthServerStartException {
+      await _signOutAfterWarmupFailure();
+      rethrow;
+    }
     await _provisionProfile(
       failureMessage:
           'Your account was created, but ExamTree could not finish setup. Please try again.',
     );
   }
 
-  Future<void> _ensureServerReady(
+  Future<bool>? _startServerWarmup(
     ValueChanged<AuthSetupStage>? onSetupStage,
-  ) async {
+  ) {
     final serverReadiness = _serverReadiness;
-    if (serverReadiness == null) return;
+    if (serverReadiness == null) return null;
 
     onSetupStage?.call(AuthSetupStage.startingServer);
+    return serverReadiness.ensureReady().then(
+          (_) => true,
+          onError: (_) => false,
+        );
+  }
+
+  Future<void> _requireServerWarmupAfterAuthentication(
+    Future<bool>? serverWarmup,
+  ) async {
+    if (serverWarmup == null) return;
+    if (await serverWarmup) return;
+    throw const AuthServerStartException();
+  }
+
+  Future<void> _signOutAfterWarmupFailure() async {
     try {
-      await serverReadiness.ensureReady();
+      await _sessionGateway.signOut();
     } catch (_) {
-      throw const AuthServerStartException();
+      // Preserve the server-start failure as the learner-facing error.
     }
   }
 
