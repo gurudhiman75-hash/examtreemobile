@@ -98,7 +98,7 @@ class TestAttemptStage extends StatelessWidget {
           Container(
             key: const Key('test-attempt-timer'),
             margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 9),
             decoration: BoxDecoration(
               color: timerBackground,
               borderRadius: BorderRadius.circular(999),
@@ -107,7 +107,7 @@ class TestAttemptStage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.timer_outlined, size: 16, color: timerForeground),
-                const SizedBox(width: 5),
+                const SizedBox(width: 4),
                 Text(
                   timeLabel,
                   style: theme.textTheme.labelLarge?.copyWith(
@@ -119,24 +119,19 @@ class TestAttemptStage extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            tooltip: syncFailed
-                ? 'Progress not saved. Retry.'
-                : syncing
-                    ? 'Saving progress'
-                    : 'Progress saved',
-            onPressed: syncFailed ? onRetrySync : null,
-            icon: syncing
-                ? const SizedBox.square(
-                    dimension: 19,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(
-                    syncFailed
-                        ? Icons.cloud_off_outlined
-                        : Icons.cloud_done_outlined,
-                  ),
-          ),
+          if (syncing || syncFailed)
+            IconButton(
+              tooltip: syncFailed
+                  ? 'Progress not saved. Retry.'
+                  : 'Saving progress',
+              onPressed: syncFailed ? onRetrySync : null,
+              icon: syncing
+                  ? const SizedBox.square(
+                      dimension: 19,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.cloud_off_outlined),
+            ),
           IconButton(
             tooltip: 'Save and exit',
             onPressed: onExit,
