@@ -208,11 +208,12 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(title: const Text('Privacy & account')),
       body: SafeArea(
+        top: false,
         child: ListView(
+          key: const Key('account-settings-scroll'),
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,
             AppSpacing.sm,
@@ -220,78 +221,136 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             AppSpacing.xxl,
           ),
           children: [
+            const _PrivacyHero(),
+            const SizedBox(height: AppSpacing.xl),
             Text(
-              'Privacy',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
+              'Your learner data',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.2,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxs),
+            Text(
+              'Clear information about what ExamTree uses and where to read the full policy.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.4,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              'ExamTree uses your account information to authenticate you, '
-              'save test attempts, show results and provide learning analytics. '
-              'We do not need your question answers for advertising.',
-              style: theme.textTheme.bodyLarge,
+            const _InfoCard(
+              icon: Icons.auto_graph_outlined,
+              title: 'Learning activity',
+              body:
+                  'ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.',
             ),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.sm),
             const _InfoCard(
               icon: Icons.shield_outlined,
               title: 'Privacy policy',
               body:
-                  'The production privacy policy is available at '
-                  'https://sarbedutech.web.app/privacy. It describes data use, '
-                  'retention, deletion and contact details.',
+                  'The production privacy policy is available at https://sarbedutech.web.app/privacy. It describes data use, retention, deletion and contact details.',
             ),
             const SizedBox(height: AppSpacing.sm),
             const _InfoCard(
-              icon: Icons.delete_sweep_outlined,
+              icon: Icons.language_outlined,
               title: 'Account deletion on the web',
               body:
-                  'You can also start an account-deletion request at '
-                  'https://sarbedutech.web.app/account-deletion.',
+                  'You can also start an account-deletion request at https://sarbedutech.web.app/account-deletion.',
             ),
             const SizedBox(height: AppSpacing.xl),
-            Text(
-              'Delete account',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: scheme.error,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Deleting your account permanently removes learner-owned '
-              'attempts, results, profile data and active entitlements. '
-              'An anonymized account record may remain solely where financial '
-              'or security records must be retained.',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            FilledButton.icon(
-              key: const Key('account-delete-start'),
-              onPressed: _deleting ? null : _requestDeletion,
-              style: FilledButton.styleFrom(
-                backgroundColor: scheme.error,
-                foregroundColor: scheme.onError,
-                minimumSize: const Size.fromHeight(52),
-              ),
-              icon: _deleting
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: scheme.onError,
-                      ),
-                    )
-                  : const Icon(Icons.delete_forever_outlined),
-              label: Text(_deleting ? 'Deleting account…' : 'Delete account'),
+            _DangerZone(
+              deleting: _deleting,
+              onDelete: _deleting ? null : _requestDeletion,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PrivacyHero extends StatelessWidget {
+  const _PrivacyHero();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final icon = Container(
+      width: 58,
+      height: 58,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(19),
+      ),
+      child: const Icon(
+        Icons.lock_person_outlined,
+        color: Colors.white,
+        size: 28,
+      ),
+    );
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'PRIVACY & ACCOUNT',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: Colors.white.withValues(alpha: 0.76),
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0.7,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        Text(
+          'Your privacy, your account',
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.4,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Review how learner data is used and manage permanent account deletion.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: Colors.white.withValues(alpha: 0.84),
+            height: 1.4,
+          ),
+        ),
+      ],
+    );
+
+    return Container(
+      key: const Key('account-privacy-hero'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: largeText
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(height: AppSpacing.md),
+                copy,
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(child: copy),
+              ],
+            ),
     );
   }
 }
@@ -310,41 +369,131 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        side: BorderSide(color: theme.colorScheme.outlineVariant),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: theme.colorScheme.primary),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxs),
-                  Text(
-                    body,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(14),
             ),
-          ],
-        ),
+            child: Icon(icon, color: theme.colorScheme.primary, size: 22),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  body,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DangerZone extends StatelessWidget {
+  const _DangerZone({required this.deleting, required this.onDelete});
+
+  final bool deleting;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Container(
+      key: const Key('account-danger-zone'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: scheme.errorContainer.withValues(alpha: 0.46),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(Icons.delete_forever_outlined, color: scheme.error),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Delete account',
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: scheme.error,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Deleting your account permanently removes learner-owned attempts, results, profile data and active entitlements. An anonymized account record may remain solely where financial or security records must be retained.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'You will be asked to type DELETE MY ACCOUNT before anything is removed.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          FilledButton.icon(
+            key: const Key('account-delete-start'),
+            onPressed: onDelete,
+            style: FilledButton.styleFrom(
+              backgroundColor: scheme.error,
+              foregroundColor: scheme.onError,
+              minimumSize: const Size.fromHeight(52),
+            ),
+            icon: deleting
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: scheme.onError,
+                    ),
+                  )
+                : const Icon(Icons.delete_forever_outlined),
+            label: Text(deleting ? 'Deleting account…' : 'Delete account'),
+          ),
+        ],
       ),
     );
   }
