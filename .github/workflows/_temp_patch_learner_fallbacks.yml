@@ -1,0 +1,163 @@
+name: Apply learner fallback hardening
+
+on:
+  push:
+    branches:
+      - hardening/learner-fallbacks-v1
+    paths:
+      - .github/workflows/_temp_patch_learner_fallbacks.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hardening/learner-fallbacks-v1
+      - name: Patch learner-facing fallback states
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('lib/features/test_attempt/presentation/canonical_test_attempt_screen.dart')
+          text = path.read_text()
+
+          text = text.replace(
+              "import '../../../core/theme/app_spacing.dart';\n",
+              "import '../../../core/theme/app_spacing.dart';\nimport '../../../shared/widgets/network_failure_view.dart';\n",
+              1,
+          )
+
+          old = """    final questionsAsync = ref.watch(examQuestionsProvider(examId));
+    final examAsync = ref.watch(examDetailsProvider(examId));
+
+    return Scaffold(
+"""
+          new = """    final questionsAsync = ref.watch(examQuestionsProvider(examId));
+    final examAsync = ref.watch(examDetailsProvider(examId));
+
+    void retryLoad() {
+      ref.invalidate(examQuestionsProvider(examId));
+      ref.invalidate(examDetailsProvider(examId));
+    }
+
+    return Scaffold(
+"""
+          if old not in text:
+              raise SystemExit('build anchor not found')
+          text = text.replace(old, new, 1)
+          text = text.replace(
+              'error: (error, _) => _ExamLoadError(error: error),',
+              'error: (error, _) => _ExamLoadError(error: error, onRetry: retryLoad),',
+          )
+
+          old = """class _ExamLoadError extends StatelessWidget {
+  const _ExamLoadError({required this.error});
+
+  final Object error;
+"""
+          new = """class _ExamLoadError extends StatelessWidget {
+  const _ExamLoadError({required this.error, required this.onRetry});
+
+  final Object error;
+  final VoidCallback onRetry;
+"""
+          if old not in text:
+              raise SystemExit('load error anchor not found')
+          text = text.replace(old, new, 1)
+
+          old = "    return Center(child: Text('Unable to load test: $error'));"
+          new = """    return NetworkFailureView(
+      error: error,
+      fallbackTitle: 'Unable to load test',
+      onRetry: onRetry,
+    );"""
+          if old not in text:
+              raise SystemExit('raw load error anchor not found')
+          text = text.replace(old, new, 1)
+
+          old = """      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'The attempt session could not be created.\\n\\n$_startupError',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              FilledButton(
+                onPressed: _initialiseAttempt,
+                child: const Text('Try Again'),
+              ),
+            ],
+          ),
+        ),
+      ),
+"""
+          new = """      body: NetworkFailureView(
+        error: _startupError!,
+        fallbackTitle: 'Unable to start test',
+        onRetry: _initialiseAttempt,
+      ),
+"""
+          if old not in text:
+              raise SystemExit('startup error anchor not found')
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          test_path = Path('test/features/test_attempt/presentation/test_attempt_failure_privacy_test.dart')
+          test_path.write_text(r'''import 'dart:io';
+
+import 'package:examtree/shared/widgets/network_failure_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  testWidgets('learner failure view never exposes raw exception text', (tester) async {
+    const internalMarker = 'INTERNAL_API_TOKEN_SHOULD_NEVER_RENDER';
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: NetworkFailureView(
+            error: Exception(internalMarker),
+            fallbackTitle: 'Unable to load test',
+            onRetry: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.textContaining(internalMarker), findsNothing);
+    expect(find.text('Unable to load test'), findsOneWidget);
+    expect(find.text('Please try again.'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  test('canonical attempt source does not interpolate raw learner errors', () {
+    final source = File(
+      'lib/features/test_attempt/presentation/canonical_test_attempt_screen.dart',
+    ).readAsStringSync();
+
+    expect(source.contains(r'Unable to load test: $error'), isFalse);
+    expect(source.contains(r'$_startupError'), isFalse);
+    expect(source.contains('NetworkFailureView('), isTrue);
+  });
+}
+''')
+
+          workflow = Path('.github/workflows/_temp_patch_learner_fallbacks.yml')
+          workflow.unlink()
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Harden learner-facing attempt failures"
+          git push origin HEAD:hardening/learner-fallbacks-v1
