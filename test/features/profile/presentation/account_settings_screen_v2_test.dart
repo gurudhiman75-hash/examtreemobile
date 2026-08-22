@@ -51,8 +51,10 @@ void main() {
     expect(tester.takeException(), isNull);
     final scrollable = find.byKey(const Key('account-settings-scroll'));
 
-    for (var index = 0; index < 6; index++) {
-      await tester.drag(scrollable, const Offset(0, -500));
+    // Drive the lazy ListView through its full lower content instead of
+    // assuming a fixed number of drags is enough at large text sizes.
+    for (var index = 0; index < 12; index++) {
+      await tester.drag(scrollable, const Offset(0, -600));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
