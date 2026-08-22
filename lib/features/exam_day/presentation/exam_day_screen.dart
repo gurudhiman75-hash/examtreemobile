@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/exam_day_mode.dart';
 import 'providers/exam_day_providers.dart';
@@ -51,7 +53,9 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
       if (mounted && target.remindersEnabled && !reminderReady) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Exam target saved, but notification permission is disabled.'),
+            content: Text(
+              'Exam target saved, but notification permission is disabled.',
+            ),
           ),
         );
       }
@@ -202,8 +206,14 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
                           if (value == 'remove') _deleteTarget();
                         },
                         itemBuilder: (context) => const [
-                          PopupMenuItem(value: 'edit', child: Text('Edit target')),
-                          PopupMenuItem(value: 'remove', child: Text('Remove target')),
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Edit target'),
+                          ),
+                          PopupMenuItem(
+                            value: 'remove',
+                            child: Text('Remove target'),
+                          ),
                         ],
                       ),
               ) ??
@@ -211,13 +221,9 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
         ],
       ),
       body: targetAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(
-          child: FilledButton.icon(
-            onPressed: () => ref.invalidate(examDayTargetProvider),
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Retry Exam-Day Mode'),
-          ),
+        loading: () => const _ExamDayLoadingState(),
+        error: (_, __) => _ExamDayErrorState(
+          onRetry: () => ref.invalidate(examDayTargetProvider),
         ),
         data: (target) {
           if (target == null) {
@@ -237,6 +243,105 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
   }
 }
 
+class _ExamDayLoadingState extends StatelessWidget {
+  const _ExamDayLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.surfaceContainerHigh;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm,
+        AppSpacing.md,
+        AppSpacing.xxl,
+      ),
+      children: [
+        Container(
+          height: 270,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(28),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Container(
+          height: 130,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(22),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Container(
+          height: 220,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ExamDayErrorState extends StatelessWidget {
+  const _ExamDayErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(
+                Icons.cloud_off_outlined,
+                size: 30,
+                color: theme.colorScheme.error,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Exam-Day Mode is unavailable',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Try loading your saved target again.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Retry Exam-Day Mode'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyExamDay extends StatelessWidget {
   const _EmptyExamDay({required this.onCreate});
 
@@ -246,36 +351,79 @@ class _EmptyExamDay extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListView(
-      padding: const EdgeInsets.all(24),
+      key: const Key('exam-day-empty'),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.xxl,
+      ),
       children: [
-        const SizedBox(height: 60),
-        Icon(
-          Icons.event_available_outlined,
-          size: 72,
-          color: theme.colorScheme.primary,
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'Set one active exam target',
-          textAlign: TextAlign.center,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.primary, AppColors.tertiary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: _softShadow(),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.event_available_outlined,
+                  size: 32,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                'Set one active exam target',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Keep a private countdown, logistics checklist and optional local reminders on this phone.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.86),
+                  height: 1.45,
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 12),
-        Text(
-          'Keep a private countdown, logistics checklist and optional local reminders on this phone. ExamTree does not invent exam dates or readiness scores.',
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.45,
-          ),
-        ),
-        const SizedBox(height: 28),
+        const SizedBox(height: AppSpacing.lg),
         FilledButton.icon(
           onPressed: onCreate,
           icon: const Icon(Icons.add_rounded),
           label: const Text('Set exam target'),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(54),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        const _InfoPanel(
+          icon: Icons.verified_user_outlined,
+          title: 'You provide the exam details',
+          body:
+              'ExamTree does not invent exam dates, reporting times, venues or readiness scores. Always verify saved details against the official notice or admit card.',
+          background: AppColors.mintContainer,
+          foreground: AppColors.onMintContainer,
         ),
       ],
     );
@@ -306,29 +454,54 @@ class _ExamDayBody extends StatelessWidget {
     final reportingPending = reporting != null && reporting.isAfter(now);
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      key: const Key('exam-day-scroll'),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm,
+        AppSpacing.md,
+        AppSpacing.xxl,
+      ),
       children: [
-        _CountdownCard(target: target, now: now, stage: stage),
-        const SizedBox(height: 16),
-        if (reportingPending)
-          _InfoBanner(
+        _CountdownHero(target: target, now: now, stage: stage),
+        if (reportingPending) ...[
+          const SizedBox(height: AppSpacing.md),
+          _InfoPanel(
             icon: Icons.directions_walk_outlined,
             title: 'Reporting countdown',
-            body: '${examCountdownLabel(reporting, now)} until your saved reporting time.',
+            body:
+                '${examCountdownLabel(reporting, now)} until your saved reporting time.',
+            background: AppColors.skyContainer,
+            foreground: AppColors.onSkyContainer,
           ),
-        if (reportingPending) const SizedBox(height: 16),
-        const _ActionCard(),
-        const SizedBox(height: 16),
-        _LogisticsCard(target: target, onEdit: onEdit),
-        const SizedBox(height: 16),
+        ],
+        const SizedBox(height: AppSpacing.lg),
+        const _SectionHeader(
+          title: 'Useful now',
+          subtitle: 'Keep the last-mile actions focused and familiar.',
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        const _QuickActions(),
+        const SizedBox(height: AppSpacing.xl),
+        _SectionHeader(
+          title: 'Saved logistics',
+          subtitle: 'Only the details you entered for this target.',
+          trailing: TextButton.icon(
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            label: const Text('Edit'),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _LogisticsCard(target: target),
+        const SizedBox(height: AppSpacing.xl),
         _ChecklistCard(
           target: target,
           onToggle: onToggleChecklist,
           onAdd: onAddChecklistItem,
           onRemove: onRemoveChecklistItem,
         ),
-        const SizedBox(height: 16),
-        _InfoBanner(
+        const SizedBox(height: AppSpacing.xl),
+        _InfoPanel(
           icon: target.remindersEnabled
               ? Icons.notifications_active_outlined
               : Icons.notifications_off_outlined,
@@ -338,20 +511,25 @@ class _ExamDayBody extends StatelessWidget {
           body: target.remindersEnabled
               ? 'ExamTree schedules inexact reminders about 24 hours and 2 hours before your saved reporting time, or exam time when reporting time is not set.'
               : 'You can enable optional local reminders when editing this target.',
+          background: AppColors.primaryContainer,
+          foreground: AppColors.onPrimaryContainer,
         ),
-        const SizedBox(height: 16),
-        const _InfoBanner(
+        const SizedBox(height: AppSpacing.sm),
+        const _InfoPanel(
           icon: Icons.verified_user_outlined,
           title: 'Official instructions remain authoritative',
-          body: 'This checklist is a personal aid. Always use the official notice/admit card for reporting time, documents, permitted items and venue rules.',
+          body:
+              'This checklist is a personal aid. Always use the official notice or admit card for reporting time, documents, permitted items and venue rules.',
+          background: AppColors.mintContainer,
+          foreground: AppColors.onMintContainer,
         ),
       ],
     );
   }
 }
 
-class _CountdownCard extends StatelessWidget {
-  const _CountdownCard({
+class _CountdownHero extends StatelessWidget {
+  const _CountdownHero({
     required this.target,
     required this.now,
     required this.stage,
@@ -364,52 +542,91 @@ class _CountdownCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(20),
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final badge = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
-        color: scheme.primary,
-        borderRadius: BorderRadius.circular(24),
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        examDayStageTitle(stage),
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+    );
+
+    return Container(
+      key: const Key('exam-day-countdown'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.primary, AppColors.tertiary],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: _softShadow(),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            target.examName,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: scheme.onPrimary,
-              fontWeight: FontWeight.w900,
+          if (largeText) ...[
+            badge,
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              target.examName,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+                height: 1.2,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    target.examName,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                badge,
+              ],
+            ),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             _formatDateTime(target.examAt),
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: scheme.onPrimary.withValues(alpha: 0.86),
+              color: Colors.white.withValues(alpha: 0.82),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Text(
             examCountdownLabel(target.examAt, now),
             style: theme.textTheme.displaySmall?.copyWith(
-              color: scheme.onPrimary,
+              color: Colors.white,
               fontWeight: FontWeight.w900,
+              letterSpacing: -1,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            examDayStageTitle(stage),
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: scheme.onPrimary,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             examDayGuidance(stage),
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: scheme.onPrimary.withValues(alpha: 0.9),
-              height: 1.4,
+              color: Colors.white.withValues(alpha: 0.9),
+              height: 1.45,
             ),
           ),
         ],
@@ -418,99 +635,144 @@ class _CountdownCard extends StatelessWidget {
   }
 }
 
-class _ActionCard extends StatelessWidget {
-  const _ActionCard();
+class _QuickActions extends StatelessWidget {
+  const _QuickActions();
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Useful now',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                FilledButton.tonalIcon(
-                  onPressed: () => context.push('/quick-revision?minutes=5'),
-                  icon: const Icon(Icons.bolt_rounded),
-                  label: const Text('5 min revision'),
-                ),
-                FilledButton.tonalIcon(
-                  onPressed: () => context.push('/daily'),
-                  icon: const Icon(Icons.auto_awesome_rounded),
-                  label: const Text('Daily Companion'),
-                ),
-                FilledButton.tonalIcon(
-                  onPressed: () => context.go('/exams'),
-                  icon: const Icon(Icons.assignment_outlined),
-                  label: const Text('Tests'),
-                ),
-              ],
-            ),
-          ],
-        ),
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final actions = [
+      FilledButton.tonalIcon(
+        key: const Key('exam-day-quick-revision'),
+        onPressed: () => context.push('/quick-revision?minutes=5'),
+        icon: const Icon(Icons.bolt_rounded),
+        label: const Text('5 min revision'),
       ),
+      FilledButton.tonalIcon(
+        onPressed: () => context.push('/daily'),
+        icon: const Icon(Icons.auto_awesome_rounded),
+        label: const Text('Daily Companion'),
+      ),
+      FilledButton.tonalIcon(
+        onPressed: () => context.go('/exams'),
+        icon: const Icon(Icons.assignment_outlined),
+        label: const Text('Tests'),
+      ),
+    ];
+
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < actions.length; index++) ...[
+            actions[index],
+            if (index != actions.length - 1)
+              const SizedBox(height: AppSpacing.sm),
+          ],
+        ],
+      );
+    }
+
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: actions,
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+    this.trailing,
+  });
+
+  final String title;
+  final String subtitle;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.2,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xxs),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+
+    if (trailing == null) return copy;
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          copy,
+          const SizedBox(height: AppSpacing.xs),
+          trailing!,
+        ],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(child: copy),
+        const SizedBox(width: AppSpacing.sm),
+        trailing!,
+      ],
     );
   }
 }
 
 class _LogisticsCard extends StatelessWidget {
-  const _LogisticsCard({required this.target, required this.onEdit});
+  const _LogisticsCard({required this.target});
 
   final ExamDayTarget target;
-  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(24),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Saved logistics',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                  ),
-                ),
-                TextButton(onPressed: onEdit, child: const Text('Edit')),
-              ],
-            ),
-            const SizedBox(height: 4),
             _LogisticsRow(
               icon: Icons.schedule_outlined,
               label: 'Exam',
               value: _formatDateTime(target.examAt),
             ),
-            if (target.reportingAt != null)
+            if (target.reportingAt != null) ...[
+              const Divider(height: AppSpacing.lg),
               _LogisticsRow(
                 icon: Icons.login_rounded,
                 label: 'Reporting',
                 value: _formatDateTime(target.reportingAt!),
               ),
-            if (target.venue.trim().isNotEmpty)
+            ],
+            if (target.venue.trim().isNotEmpty) ...[
+              const Divider(height: AppSpacing.lg),
               _LogisticsRow(
                 icon: Icons.location_on_outlined,
                 label: 'Venue note',
                 value: target.venue.trim(),
               ),
+            ],
           ],
         ),
       ),
@@ -532,25 +794,46 @@ class _LogisticsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(width: 10),
-          SizedBox(
-            width: 76,
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.primaryContainer,
+            borderRadius: BorderRadius.circular(14),
           ),
-          Expanded(child: Text(value)),
-        ],
-      ),
+          child: Icon(icon, size: 20, color: AppColors.onPrimaryContainer),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                value,
+                maxLines: largeText ? 4 : 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -570,70 +853,99 @@ class _ChecklistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final completed = target.completedChecklistCount;
     final total = target.checklist.length;
     final progress = total == 0 ? 0.0 : completed / total;
-    return Card(
-      elevation: 0,
+
+    return Material(
+      key: const Key('exam-day-checklist'),
+      color: theme.colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(24),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 16, 12, 12),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.lg,
+          AppSpacing.md,
+          AppSpacing.md,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Exam-day checklist',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Exam-day checklist',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        'A personal logistics aid, not an academic readiness score.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.mintContainer,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    '$completed/$total',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: AppColors.onMintContainer,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                  Text('$completed/$total'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            LinearProgressIndicator(value: progress),
-            const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                'Checklist completion is not an academic readiness score.',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            ...target.checklist.map(
-              (item) => CheckboxListTile(
-                dense: true,
-                value: item.completed,
-                onChanged: (value) => onToggle(
-                  item.copyWith(completed: value ?? false),
                 ),
-                title: Text(item.label),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              borderRadius: BorderRadius.circular(99),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            for (var index = 0; index < target.checklist.length; index++) ...[
+              if (index != 0) const Divider(height: 1),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: target.checklist[index].completed,
+                onChanged: (value) => onToggle(
+                  target.checklist[index].copyWith(completed: value ?? false),
+                ),
+                title: Text(target.checklist[index].label),
                 controlAffinity: ListTileControlAffinity.leading,
-                secondary: item.isCustom
+                secondary: target.checklist[index].isCustom
                     ? IconButton(
                         tooltip: 'Remove custom item',
-                        onPressed: () => onRemove(item),
+                        onPressed: () => onRemove(target.checklist[index]),
                         icon: const Icon(Icons.delete_outline_rounded),
                       )
                     : null,
               ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: onAdd,
-                icon: const Icon(Icons.add_rounded),
-                label: const Text('Add my own item'),
-              ),
+            ],
+            const SizedBox(height: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Add my own item'),
             ),
           ],
         ),
@@ -642,32 +954,35 @@ class _ChecklistCard extends StatelessWidget {
   }
 }
 
-class _InfoBanner extends StatelessWidget {
-  const _InfoBanner({
+class _InfoPanel extends StatelessWidget {
+  const _InfoPanel({
     required this.icon,
     required this.title,
     required this.body,
+    required this.background,
+    required this.foreground,
   });
 
   final IconData icon;
   final String title;
   final String body;
+  final Color background;
+  final Color foreground;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: background,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: theme.colorScheme.primary),
-          const SizedBox(width: 12),
+          Icon(icon, color: foreground),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -675,11 +990,18 @@ class _InfoBanner extends StatelessWidget {
                 Text(
                   title,
                   style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    color: foreground,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(body, style: theme.textTheme.bodyMedium?.copyWith(height: 1.4)),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  body,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: foreground,
+                    height: 1.4,
+                  ),
+                ),
               ],
             ),
           ),
@@ -804,7 +1126,9 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
     }
     if (_reportingAt != null && !_reportingAt!.isBefore(_examAt)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Reporting time must be before the exam time.')),
+        const SnackBar(
+          content: Text('Reporting time must be before the exam time.'),
+        ),
       );
       return;
     }
@@ -824,13 +1148,28 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.initial == null ? 'Set exam target' : 'Edit exam target')),
+      appBar: AppBar(
+        title: Text(widget.initial == null ? 'Set exam target' : 'Edit exam target'),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.xxl,
+          ),
           children: [
+            Text(
+              'Save only the details you want available on this device.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
             TextFormField(
               controller: _nameController,
               maxLength: 80,
@@ -838,15 +1177,16 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
               decoration: const InputDecoration(
                 labelText: 'Exam name',
                 hintText: 'e.g. SSC CGL Tier I',
-                border: OutlineInputBorder(),
               ),
               validator: (value) => value == null || value.trim().isEmpty
                   ? 'Enter the exam name.'
                   : null,
             ),
-            const SizedBox(height: 12),
-            Card(
-              elevation: 0,
+            const SizedBox(height: AppSpacing.md),
+            Material(
+              color: theme.colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(22),
+              clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
                   ListTile(
@@ -885,32 +1225,39 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _venueController,
               maxLength: 160,
               maxLines: 2,
               decoration: const InputDecoration(
                 labelText: 'Venue note (optional)',
-                hintText: 'Save the venue/address exactly as you want to remember it',
-                border: OutlineInputBorder(),
+                hintText:
+                    'Save the venue or address exactly as you want to remember it',
               ),
             ),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: _remindersEnabled,
-              onChanged: (value) => setState(() => _remindersEnabled = value),
-              title: const Text('Exam-day reminders'),
-              subtitle: const Text(
-                'Request local notifications about 24 hours and 2 hours before the saved reporting/exam time.',
+            const SizedBox(height: AppSpacing.sm),
+            Material(
+              color: AppColors.primaryContainer,
+              borderRadius: BorderRadius.circular(20),
+              child: SwitchListTile(
+                value: _remindersEnabled,
+                onChanged: (value) =>
+                    setState(() => _remindersEnabled = value),
+                title: const Text('Exam-day reminders'),
+                subtitle: const Text(
+                  'Request local notifications about 24 hours and 2 hours before the saved reporting or exam time.',
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save_outlined),
               label: const Text('Save exam target'),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(54),
+              ),
             ),
           ],
         ),
@@ -919,16 +1266,35 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
   }
 }
 
+List<BoxShadow> _softShadow() => [
+      BoxShadow(
+        color: AppColors.shadow.withValues(alpha: 0.055),
+        blurRadius: 22,
+        offset: const Offset(0, 8),
+      ),
+    ];
+
 String _formatDate(DateTime value) {
   const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   final local = value.toLocal();
   return '${local.day} ${months[local.month - 1]} ${local.year}';
 }
 
-String _formatDateTime(DateTime value) => '${_formatDate(value)} • ${_formatTime(value)}';
+String _formatDateTime(DateTime value) =>
+    '${_formatDate(value)} • ${_formatTime(value)}';
 
 String _formatTime(DateTime value) {
   final local = value.toLocal();
