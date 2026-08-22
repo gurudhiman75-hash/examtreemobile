@@ -120,6 +120,15 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('store-test-series')),
+      350,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('store-test-series')), findsOneWidget);
 
     await tester.scrollUntilVisible(
