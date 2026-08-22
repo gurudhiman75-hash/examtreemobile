@@ -136,15 +136,15 @@ void main() {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: previewTheme(),
-          home: const MediaQuery(
-            data: MediaQueryData(
+          home: MediaQuery(
+            data: const MediaQueryData(
               size: phoneSize,
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
             child: Scaffold(
-              appBar: AppBar(title: Text('Profile')),
-              body: ProfileScreen(),
+              appBar: AppBar(title: const Text('Profile')),
+              body: const ProfileScreen(),
             ),
           ),
         ),
