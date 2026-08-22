@@ -49,7 +49,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
             try {
               await ref.read(storeProductsProvider.future);
             } catch (_) {
-              // The catalogue renders its own retry state.
+              // The catalogue renders its own recoverable state.
             }
           },
           child: ListView(
@@ -349,26 +349,20 @@ class _CatalogHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Test series',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.2,
-                ),
-              ),
-              Text(
-                '$count published ${count == 1 ? 'product' : 'products'}',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
+        Text(
+          'Test series',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.2,
+          ),
+        ),
+        Text(
+          '$count published ${count == 1 ? 'product' : 'products'}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -389,6 +383,19 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+    final facts = <Widget>[
+      _ProductFact(
+        icon: Icons.quiz_outlined,
+        label: _testCountLabel(product.testCount),
+        expanded: largeText,
+      ),
+      if (product.validityDays != null)
+        _ProductFact(
+          icon: Icons.event_available_outlined,
+          label: '${product.validityDays} days access',
+          expanded: largeText,
+        ),
+    ];
 
     return Material(
       color: theme.colorScheme.surfaceContainerLowest,
@@ -445,21 +452,23 @@ class _ProductCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: [
-                _ProductFact(
-                  icon: Icons.quiz_outlined,
-                  label: _testCountLabel(product.testCount),
-                ),
-                if (product.validityDays != null)
-                  _ProductFact(
-                    icon: Icons.event_available_outlined,
-                    label: '${product.validityDays} days access',
-                  ),
-              ],
-            ),
+            if (largeText)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var index = 0; index < facts.length; index++) ...[
+                    facts[index],
+                    if (index != facts.length - 1)
+                      const SizedBox(height: AppSpacing.xs),
+                  ],
+                ],
+              )
+            else
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: facts,
+              ),
             const SizedBox(height: AppSpacing.lg),
             if (largeText)
               Column(
@@ -528,36 +537,60 @@ class _ProductPrice extends StatelessWidget {
 }
 
 class _ProductFact extends StatelessWidget {
-  const _ProductFact({required this.icon, required this.label});
+  const _ProductFact({
+    required this.icon,
+    required this.label,
+    this.expanded = false,
+  });
 
   final IconData icon;
   final String label;
+  final bool expanded;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final row = Row(
+      mainAxisSize: expanded ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: AppSpacing.xs),
+        if (expanded)
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          )
+        else
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+      ],
+    );
+
     return Container(
+      width: expanded ? double.infinity : null,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(expanded ? 16 : 999),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
+      child: row,
     );
   }
 }
