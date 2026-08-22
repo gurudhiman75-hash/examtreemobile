@@ -87,7 +87,10 @@ void main() {
               textScaler: TextScaler.linear(textScale),
               disableAnimations: true,
             ),
-            child: const ResultsScreen(),
+            child: Scaffold(
+              appBar: AppBar(title: const Text('Results')),
+              body: const ResultsScreen(),
+            ),
           ),
         ),
       ),
@@ -108,7 +111,7 @@ void main() {
 
     expect(find.text('Results'), findsOneWidget);
     expect(find.byKey(const Key('results-performance-snapshot')), findsOneWidget);
-    expect(find.text('2'), findsWidgets);
+    expect(find.text('2 attempts completed'), findsOneWidget);
     expect(find.text('Attempt history'), findsOneWidget);
     expect(find.text('SSC CGL Mock'), findsOneWidget);
   });
@@ -209,6 +212,11 @@ void main() {
       ],
       textScale: 2,
     );
+
+    expect(tester.takeException(), isNull);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -480));
+    await tester.pump();
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('results-search')), findsOneWidget);
