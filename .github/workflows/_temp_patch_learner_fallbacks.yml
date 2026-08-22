@@ -1,9 +1,9 @@
 name: Apply learner fallback hardening
 
 on:
-  push:
+  pull_request:
     branches:
-      - hardening/learner-fallbacks-v1
+      - main
     paths:
       - .github/workflows/_temp_patch_learner_fallbacks.yml
 
