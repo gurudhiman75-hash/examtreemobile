@@ -1,8 +1,9 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 
 import '../models/exam_api_dto.dart';
 import '../models/exam_model.dart';
 import '../models/question_model.dart';
+import '../network/network_failure_guidance.dart';
 import 'exam_repository.dart';
 
 class ExamRepositoryException implements Exception {
@@ -18,12 +19,20 @@ class ExamRepositoryException implements Exception {
 
 class ExamLoginRequiredException extends ExamRepositoryException {
   const ExamLoginRequiredException()
-      : super('Sign in required to open this test', statusCode: 401, code: 'LOGIN_REQUIRED');
+      : super(
+          'Sign in required to open this test',
+          statusCode: 401,
+          code: 'LOGIN_REQUIRED',
+        );
 }
 
 class ExamPaymentRequiredException extends ExamRepositoryException {
   const ExamPaymentRequiredException({required this.testId, this.priceCents})
-      : super('Purchase required to access this test', statusCode: 403, code: 'PAYMENT_REQUIRED');
+      : super(
+          'Purchase required to access this test',
+          statusCode: 403,
+          code: 'PAYMENT_REQUIRED',
+        );
 
   final String testId;
   final int? priceCents;
@@ -99,15 +108,19 @@ class ApiExamRepository implements ExamRepository {
       return await action();
     } on DioException catch (error) {
       throw _mapDioError(error);
-    } catch (error) {
-      throw ExamRepositoryException('Failed to load exam data: $error');
+    } catch (_) {
+      throw const ExamRepositoryException(
+        'Unable to load exam data. Please try again.',
+      );
     }
   }
 
   Exception _mapDioError(DioException error) {
     final status = error.response?.statusCode;
     final data = error.response?.data;
-    final body = data is Map ? Map<String, dynamic>.from(data) : const <String, dynamic>{};
+    final body = data is Map
+        ? Map<String, dynamic>.from(data)
+        : const <String, dynamic>{};
     final code = body['code']?.toString();
 
     if (status == 401 && code == 'LOGIN_REQUIRED') {
@@ -117,24 +130,37 @@ class ApiExamRepository implements ExamRepository {
     if (status == 403 && code == 'PAYMENT_REQUIRED') {
       return ExamPaymentRequiredException(
         testId: body['testId']?.toString() ?? '',
-        priceCents: body['priceCents'] is num ? (body['priceCents'] as num).toInt() : null,
+        priceCents: body['priceCents'] is num
+            ? (body['priceCents'] as num).toInt()
+            : null,
       );
     }
 
-    final message = body['error']?.toString() ?? error.message ?? 'Failed to load exam data';
-    return ExamRepositoryException(message, statusCode: status, code: code);
+    final guidance = networkFailureGuidance(
+      error,
+      fallbackTitle: 'Unable to load exam data',
+    );
+    return ExamRepositoryException(
+      guidance.combinedMessage,
+      statusCode: status,
+      code: code,
+    );
   }
 
   List<TestDto> _testList(Object? data) {
     if (data is! List) return const [];
-    return data.whereType<Map>().map((item) => TestDto.fromJson(Map<String, dynamic>.from(item))).toList();
+    return data
+        .whereType<Map>()
+        .map((item) => TestDto.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
   }
 
   Map<String, CategoryDto> _categoryMap(Object? data) {
     if (data is! List) return const {};
     return {
       for (final item in data.whereType<Map>())
-        CategoryDto.fromJson(Map<String, dynamic>.from(item)).id: CategoryDto.fromJson(Map<String, dynamic>.from(item)),
+        CategoryDto.fromJson(Map<String, dynamic>.from(item)).id:
+            CategoryDto.fromJson(Map<String, dynamic>.from(item)),
     };
   }
 
@@ -142,7 +168,8 @@ class ApiExamRepository implements ExamRepository {
     if (data is! List) return const {};
     return {
       for (final item in data.whereType<Map>())
-        SubcategoryDto.fromJson(Map<String, dynamic>.from(item)).id: SubcategoryDto.fromJson(Map<String, dynamic>.from(item)),
+        SubcategoryDto.fromJson(Map<String, dynamic>.from(item)).id:
+            SubcategoryDto.fromJson(Map<String, dynamic>.from(item)),
     };
   }
 }

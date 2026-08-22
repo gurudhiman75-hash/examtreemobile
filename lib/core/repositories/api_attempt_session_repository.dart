@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../models/attempt_session_model.dart';
 import '../network/api_client.dart';
+import '../network/network_failure_guidance.dart';
 import 'attempt_session_repository.dart';
 
 class AttemptSessionRepositoryException implements Exception {
@@ -121,8 +122,8 @@ class ApiAttemptSessionRepository implements AttemptSessionRepository {
       throw _mapDioError(error);
     } catch (error) {
       if (error is AttemptSessionRepositoryException) rethrow;
-      throw AttemptSessionRepositoryException(
-        'Unable to synchronise this attempt: $error',
+      throw const AttemptSessionRepositoryException(
+        'Unable to synchronise this attempt. Please try again.',
       );
     }
   }
@@ -133,10 +134,12 @@ class ApiAttemptSessionRepository implements AttemptSessionRepository {
     final body = data is Map
         ? Map<String, dynamic>.from(data)
         : const <String, dynamic>{};
+    final guidance = networkFailureGuidance(
+      error,
+      fallbackTitle: 'Unable to synchronise this attempt',
+    );
     return AttemptSessionRepositoryException(
-      body['error']?.toString() ??
-          error.message ??
-          'Unable to synchronise this attempt',
+      guidance.combinedMessage,
       code: body['code']?.toString(),
       statusCode: statusCode,
     );
