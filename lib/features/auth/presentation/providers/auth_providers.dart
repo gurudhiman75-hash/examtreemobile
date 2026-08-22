@@ -353,7 +353,12 @@ class AuthController {
     onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.signInWithEmailAndPassword(email, password);
     onSetupStage?.call(AuthSetupStage.syncingProfile);
-    await _requireServerWarmupAfterAuthentication(serverWarmup);
+    try {
+      await _requireServerWarmupAfterAuthentication(serverWarmup);
+    } on AuthServerStartException {
+      await _signOutAfterWarmupFailure();
+      rethrow;
+    }
     await _provisionProfile();
   }
 
@@ -402,7 +407,12 @@ class AuthController {
     );
 
     onSetupStage?.call(AuthSetupStage.syncingProfile);
-    await _requireServerWarmupAfterAuthentication(serverWarmup);
+    try {
+      await _requireServerWarmupAfterAuthentication(serverWarmup);
+    } on AuthServerStartException {
+      await _signOutAfterWarmupFailure();
+      rethrow;
+    }
     await _provisionProfile(
       failureMessage:
           'Your account was created, but ExamTree could not finish setup. Please try again.',
@@ -426,15 +436,16 @@ class AuthController {
     Future<bool>? serverWarmup,
   ) async {
     if (serverWarmup == null) return;
-    final ready = await serverWarmup;
-    if (ready) return;
+    if (await serverWarmup) return;
+    throw const AuthServerStartException();
+  }
 
+  Future<void> _signOutAfterWarmupFailure() async {
     try {
       await _sessionGateway.signOut();
     } catch (_) {
       // Preserve the server-start failure as the learner-facing error.
     }
-    throw const AuthServerStartException();
   }
 
   Future<void> _provisionProfile({
