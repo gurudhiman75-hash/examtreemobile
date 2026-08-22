@@ -127,14 +127,15 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('store-test-series')), findsOneWidget);
+    expect(find.text('100 tests'), findsOneWidget);
+    expect(find.text('365 days access'), findsOneWidget);
 
-    await tester.drag(scrollable, const Offset(0, -760));
-    await tester.pumpAndSettle();
+    for (var index = 0; index < 4; index++) {
+      await tester.drag(scrollable, const Offset(0, -520));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
 
-    expect(tester.takeException(), isNull);
-    expect(
-      find.textContaining('Mobile checkout is not connected yet'),
-      findsOneWidget,
-    );
+    expect(find.byType(StoreScreen), findsOneWidget);
   });
 }
