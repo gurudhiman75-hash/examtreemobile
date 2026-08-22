@@ -55,15 +55,7 @@ void main() {
   Widget app({int? selectedIndex, bool marked = false}) => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: previewTheme(),
-        home: const MediaQuery(
-          data: MediaQueryData(
-            size: phoneSize,
-            devicePixelRatio: 1,
-            disableAnimations: true,
-          ),
-          child: SizedBox.shrink(),
-        ),
-        builder: (context, child) => MediaQuery(
+        home: MediaQuery(
           data: const MediaQueryData(
             size: phoneSize,
             devicePixelRatio: 1,
