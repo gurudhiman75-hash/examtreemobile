@@ -34,4 +34,16 @@ void main() {
       expect(source, contains('if (!permissionGranted) return false;'));
     }
   });
+
+  test('iOS app delegate wires foreground notification delivery', () {
+    final source = File('ios/Runner/AppDelegate.swift').readAsStringSync();
+
+    expect(source, contains('import UserNotifications'));
+    expect(
+      source,
+      contains(
+        'UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate',
+      ),
+    );
+  });
 }
