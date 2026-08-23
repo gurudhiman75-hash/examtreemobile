@@ -6,10 +6,10 @@ void main() {
   group('apiHealthUriForBase', () {
     test('targets the root health route from the production API base', () {
       final health = apiHealthUriForBase(
-        'https://examtree-new.onrender.com/api',
+        'https://api.examtree.in',
       );
 
-      expect(health.toString(), 'https://examtree-new.onrender.com/health');
+      expect(health.toString(), 'https://api.examtree.in/health');
     });
 
     test('preserves a development host and explicit port', () {
@@ -28,7 +28,7 @@ void main() {
 
   group('isRetryableApiReadinessError', () {
     final request = RequestOptions(
-      path: 'https://examtree-new.onrender.com/health',
+      path: 'https://api.examtree.in/health',
     );
 
     test('retries connection and timeout failures', () {
@@ -44,7 +44,7 @@ void main() {
             DioException(requestOptions: request, type: type),
           ),
           isTrue,
-          reason: '$type should be retryable during a Render cold start',
+          reason: '$type should be retryable during transient API startup',
         );
       }
     });
@@ -63,7 +63,7 @@ void main() {
         expect(
           isRetryableApiReadinessError(error),
           isTrue,
-          reason: '$status should be retryable during a Render cold start',
+          reason: '$status should be retryable during transient API startup',
         );
       }
     });
