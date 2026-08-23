@@ -1,7 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 const _authRetryKey = 'examtreeAuthRetried';
+
+String examtreeDeviceLabel(TargetPlatform platform) {
+  return switch (platform) {
+    TargetPlatform.android => 'android',
+    TargetPlatform.iOS => 'ios',
+    TargetPlatform.macOS => 'macos',
+    TargetPlatform.windows => 'windows',
+    TargetPlatform.linux => 'linux',
+    TargetPlatform.fuchsia => 'fuchsia',
+  };
+}
 
 bool shouldRetryAuthentication({
   required int? statusCode,
@@ -53,9 +65,9 @@ class ApiClient {
         ),
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 30),
-        headers: const {
+        headers: {
           'Content-Type': 'application/json',
-          'x-examtree-device': 'android',
+          'x-examtree-device': examtreeDeviceLabel(defaultTargetPlatform),
         },
       ),
     );
