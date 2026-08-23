@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
+      EXAMTREE_API_BASE_URL: https://api.examtree.in
       FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID || '1:1083299267005:android:3986910db48dd12e3ad2d4' }}
 
     steps:
@@ -133,7 +134,7 @@ jobs:
           flutter build apk --debug \
             --build-name=1.0.1 \
             --build-number="$BUILD_NUMBER" \
-            --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
+            --dart-define=EXAMTREE_API_BASE_URL="$EXAMTREE_API_BASE_URL" \
             --dart-define=FIREBASE_ANDROID_APP_ID="$FIREBASE_ANDROID_APP_ID"
           cp build/app/outputs/flutter-apk/app-debug.apk \
             build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
