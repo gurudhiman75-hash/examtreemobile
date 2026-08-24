@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/repositories/account_repository.dart';
@@ -9,6 +10,10 @@ import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exam_day/presentation/providers/exam_day_providers.dart';
+
+const _privacyPolicyUrl = 'https://sarbedutech.web.app/privacy';
+const _accountDeletionWebUrl =
+    'https://sarbedutech.web.app/account-deletion';
 
 class AccountSettingsScreen extends ConsumerStatefulWidget {
   const AccountSettingsScreen({super.key});
@@ -199,6 +204,22 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
     ).whenComplete(controller.dispose);
   }
 
+  Future<void> _openExternalPage(String url) async {
+    try {
+      final opened = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened && mounted) {
+        _showMessage('This page could not be opened. Please try again later.');
+      }
+    } catch (_) {
+      if (mounted) {
+        _showMessage('This page could not be opened. Please try again later.');
+      }
+    }
+  }
+
   void _showMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -246,18 +267,24 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                   'ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.',
             ),
             const SizedBox(height: AppSpacing.sm),
-            const _InfoCard(
+            _InfoCard(
               icon: Icons.shield_outlined,
               title: 'Privacy policy',
               body:
-                  'The production privacy policy is available at https://sarbedutech.web.app/privacy. It describes data use, retention, deletion and contact details.',
+                  'Read the production policy covering data use, retention, deletion and privacy contact details.',
+              actionKey: const Key('account-open-privacy-policy'),
+              actionLabel: 'Open privacy policy',
+              onAction: () => _openExternalPage(_privacyPolicyUrl),
             ),
             const SizedBox(height: AppSpacing.sm),
-            const _InfoCard(
+            _InfoCard(
               icon: Icons.language_outlined,
               title: 'Account deletion on the web',
               body:
-                  'You can also start an account-deletion request at https://sarbedutech.web.app/account-deletion.',
+                  'You can also start an account-deletion request from ExamTree’s public web resource.',
+              actionKey: const Key('account-open-deletion-web'),
+              actionLabel: 'Open deletion page',
+              onAction: () => _openExternalPage(_accountDeletionWebUrl),
             ),
             const SizedBox(height: AppSpacing.xl),
             _DangerZone(
@@ -360,15 +387,22 @@ class _InfoCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.body,
+    this.actionKey,
+    this.actionLabel,
+    this.onAction,
   });
 
   final IconData icon;
   final String title;
   final String body;
+  final Key? actionKey;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasAction = actionLabel != null && onAction != null;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -408,6 +442,18 @@ class _InfoCard extends StatelessWidget {
                     height: 1.45,
                   ),
                 ),
+                if (hasAction) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: actionKey,
+                      onPressed: onAction,
+                      icon: const Icon(Icons.open_in_new, size: 18),
+                      label: Text(actionLabel!),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
