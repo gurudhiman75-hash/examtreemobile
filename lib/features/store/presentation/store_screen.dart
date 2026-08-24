@@ -1,9 +1,14 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../data/store_payment_launcher.dart';
+import '../data/store_repository.dart';
 import '../domain/store_product.dart';
 import 'providers/store_providers.dart';
 
@@ -33,6 +38,16 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
   void initState() {
     super.initState();
     _section = widget.initialSection;
+  }
+
+  Future<void> _openCheckout(StoreProduct product) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => _CheckoutSheet(product: product),
+    );
   }
 
   @override
@@ -74,6 +89,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                   products: products,
                   onRetry: () => ref.invalidate(storeProductsProvider),
                   onBrowseTests: () => context.go('/exams'),
+                  onCheckout: _openCheckout,
                 )
               else
                 const _FoundationState(
@@ -290,11 +306,13 @@ class _TestSeriesCatalog extends StatelessWidget {
     required this.products,
     required this.onRetry,
     required this.onBrowseTests,
+    required this.onCheckout,
   });
 
   final AsyncValue<List<StoreProduct>> products;
   final VoidCallback onRetry;
   final VoidCallback onBrowseTests;
+  final ValueChanged<StoreProduct> onCheckout;
 
   @override
   Widget build(BuildContext context) {
@@ -330,6 +348,7 @@ class _TestSeriesCatalog extends StatelessWidget {
               _ProductCard(
                 product: items[index],
                 onBrowseTests: onBrowseTests,
+                onCheckout: () => onCheckout(items[index]),
               ),
               if (index != items.length - 1)
                 const SizedBox(height: AppSpacing.md),
@@ -374,10 +393,12 @@ class _ProductCard extends StatelessWidget {
   const _ProductCard({
     required this.product,
     required this.onBrowseTests,
+    required this.onCheckout,
   });
 
   final StoreProduct product;
   final VoidCallback onBrowseTests;
+  final VoidCallback onCheckout;
 
   @override
   Widget build(BuildContext context) {
@@ -395,6 +416,20 @@ class _ProductCard extends StatelessWidget {
           label: '${product.validityDays} days access',
           expanded: largeText,
         ),
+    ];
+
+    final actions = <Widget>[
+      FilledButton.icon(
+        key: Key('store-pay-${product.id}'),
+        onPressed: product.salePriceMinor > 0 ? onCheckout : null,
+        icon: const Icon(Icons.lock_outline_rounded),
+        label: Text(product.salePriceMinor > 0 ? 'Pay securely' : 'Included free'),
+      ),
+      OutlinedButton.icon(
+        onPressed: onBrowseTests,
+        icon: const Icon(Icons.arrow_forward_rounded),
+        label: const Text('View tests'),
+      ),
     ];
 
     return Material(
@@ -470,35 +505,325 @@ class _ProductCard extends StatelessWidget {
                 children: facts,
               ),
             const SizedBox(height: AppSpacing.lg),
+            _ProductPrice(product: product),
+            const SizedBox(height: AppSpacing.md),
             if (largeText)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _ProductPrice(product: product),
-                  const SizedBox(height: AppSpacing.md),
-                  OutlinedButton.icon(
-                    onPressed: onBrowseTests,
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('View tests'),
-                  ),
+                  actions[0],
+                  const SizedBox(height: AppSpacing.sm),
+                  actions[1],
                 ],
               )
             else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(child: _ProductPrice(product: product)),
-                  const SizedBox(width: AppSpacing.sm),
-                  OutlinedButton.icon(
-                    onPressed: onBrowseTests,
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('View tests'),
-                  ),
-                ],
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: actions,
               ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _CheckoutSheet extends ConsumerStatefulWidget {
+  const _CheckoutSheet({required this.product});
+
+  final StoreProduct product;
+
+  @override
+  ConsumerState<_CheckoutSheet> createState() => _CheckoutSheetState();
+}
+
+class _CheckoutSheetState extends ConsumerState<_CheckoutSheet> {
+  late final String _idempotencyKey;
+  bool _busy = false;
+  bool _success = false;
+  String? _message;
+
+  @override
+  void initState() {
+    super.initState();
+    final nonce = Random.secure().nextInt(1 << 32).toRadixString(16);
+    _idempotencyKey =
+        'mobile-${widget.product.id}-${DateTime.now().microsecondsSinceEpoch}-$nonce';
+  }
+
+  Future<void> _pay() async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _message = null;
+    });
+
+    try {
+      final order = await ref.read(storeRepositoryProvider).createCheckoutOrder(
+            productId: widget.product.id,
+            idempotencyKey: _idempotencyKey,
+          );
+      if (!mounted) return;
+
+      final result = await ref.read(storePaymentLauncherProvider).open(
+            order: order,
+            product: widget.product,
+            email: FirebaseAuth.instance.currentUser?.email,
+          );
+      if (!mounted) return;
+
+      switch (result.outcome) {
+        case StorePaymentOutcome.success:
+          setState(() {
+            _success = true;
+            _message = null;
+          });
+        case StorePaymentOutcome.cancelled:
+          setState(() {
+            _message = 'Payment was cancelled. No access was changed.';
+          });
+        case StorePaymentOutcome.failed:
+          setState(() {
+            _message =
+                'Payment could not be completed. No access was changed. Please try again.';
+          });
+      }
+    } on StoreCheckoutException catch (error) {
+      if (mounted) setState(() => _message = error.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _message = 'Payment could not be started. Please try again.';
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final product = widget.product;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xs,
+        AppSpacing.lg,
+        AppSpacing.lg + bottomInset,
+      ),
+      child: _success
+          ? _CheckoutSuccess(
+              onViewTests: () {
+                Navigator.of(context).pop();
+                context.go('/exams');
+              },
+              onClose: () => Navigator.of(context).pop(),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Secure checkout',
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  product.title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                _CheckoutSummary(product: product),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'Razorpay handles the payment screen. ExamTree unlocks paid tests only after secure server confirmation.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+                if (_message != null) ...[
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      _message!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: AppSpacing.lg),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    key: const Key('store-checkout-confirm'),
+                    onPressed: _busy ? null : _pay,
+                    icon: _busy
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.lock_outline_rounded),
+                    label: Text(_busy ? 'Starting payment…' : 'Continue to payment'),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: _busy ? null : () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+class _CheckoutSummary extends StatelessWidget {
+  const _CheckoutSummary({required this.product});
+
+  final StoreProduct product;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SummaryRow(label: 'Tests', value: _testCountLabel(product.testCount)),
+          if (product.validityDays != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            _SummaryRow(
+              label: 'Access',
+              value: '${product.validityDays} days',
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          Divider(color: theme.colorScheme.outlineVariant),
+          const SizedBox(height: AppSpacing.sm),
+          _SummaryRow(
+            label: 'Total',
+            value: formatStoreMoney(product.salePriceMinor, product.currency),
+            strong: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryRow extends StatelessWidget {
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.strong = false,
+  });
+
+  final String label;
+  final String value;
+  final bool strong;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Text(
+          value,
+          style: (strong ? theme.textTheme.titleMedium : theme.textTheme.bodyMedium)
+              ?.copyWith(fontWeight: strong ? FontWeight.w900 : FontWeight.w700),
+        ),
+      ],
+    );
+  }
+}
+
+class _CheckoutSuccess extends StatelessWidget {
+  const _CheckoutSuccess({required this.onViewTests, required this.onClose});
+
+  final VoidCallback onViewTests;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 58,
+          height: 58,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: AppColors.mintContainer,
+            borderRadius: BorderRadius.circular(19),
+          ),
+          child: const Icon(
+            Icons.check_rounded,
+            color: AppColors.onMintContainer,
+            size: 30,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'Payment submitted',
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Razorpay reported a successful payment. Access is granted only after ExamTree receives secure server confirmation, so newly paid tests may take a moment to appear.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            height: 1.45,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: onViewTests,
+            child: const Text('View tests'),
+          ),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: TextButton(onPressed: onClose, child: const Text('Close')),
+        ),
+      ],
     );
   }
 }
@@ -617,7 +942,7 @@ class _TrustNotice extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.',
+              'Prices and availability come from the published ExamTree catalogue. Paid checkout opens in Razorpay, and access is granted only after secure server confirmation.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: AppColors.onMintContainer,
                 height: 1.4,
