@@ -28,7 +28,10 @@ val releaseSigningReady = listOf(
 
 android {
     namespace = "com.examtree.examtree"
-    compileSdk = flutter.compileSdkVersion
+    // Google Play requires new apps and updates to target Android 16 / API 36
+    // from August 31, 2026. Keep compile/target explicit so release compliance
+    // does not silently depend on whichever Flutter SDK happens to be installed.
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -40,7 +43,7 @@ android {
     defaultConfig {
         applicationId = "com.examtree.examtree"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
