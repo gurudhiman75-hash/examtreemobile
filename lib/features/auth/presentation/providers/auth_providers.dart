@@ -82,8 +82,13 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
   final GoogleSignIn _googleSignIn;
   Future<void>? _googleInitialization;
 
+  bool get _requiresIosGoogleClientId =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
   Future<void> _ensureGoogleInitialized() {
-    if (!isGoogleSignInConfigured) {
+    final requiresIosClientId = _requiresIosGoogleClientId;
+    if (!isGoogleSignInConfigured ||
+        (requiresIosClientId && !isGoogleIosSignInConfigured)) {
       throw FirebaseAuthException(
         code: 'google-sign-in-not-configured',
         message: 'Google Sign-In is not configured for this ExamTree build.',
@@ -91,6 +96,7 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     }
 
     return _googleInitialization ??= _googleSignIn.initialize(
+      clientId: requiresIosClientId ? googleIosClientId : null,
       serverClientId: googleServerClientId,
     );
   }
