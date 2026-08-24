@@ -23,6 +23,10 @@ class AccountDeletionException implements Exception {
   String toString() => message;
 }
 
+abstract interface class AccountDeletionIdentityAuthorizer {
+  Future<void> authorizeDeletion();
+}
+
 abstract interface class AccountRepository {
   Future<AccountDeletionResult> deleteAccount();
 }

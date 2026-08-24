@@ -4,14 +4,20 @@ import '../network/api_client.dart';
 import 'account_repository.dart';
 
 class ApiAccountRepository implements AccountRepository {
-  const ApiAccountRepository(this._apiClient);
+  const ApiAccountRepository(
+    this._apiClient, {
+    required AccountDeletionIdentityAuthorizer identityAuthorizer,
+  }) : _identityAuthorizer = identityAuthorizer;
 
   static const confirmation = 'DELETE MY ACCOUNT';
 
   final ApiClient _apiClient;
+  final AccountDeletionIdentityAuthorizer _identityAuthorizer;
 
   @override
   Future<AccountDeletionResult> deleteAccount() async {
+    await _identityAuthorizer.authorizeDeletion();
+
     try {
       final response = await _apiClient.dio.delete<Map<String, dynamic>>(
         '/users/me',

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/test_attempt/data/local_attempt_draft_store.dart';
@@ -12,6 +13,7 @@ import '../repositories/api_result_repository.dart';
 import '../repositories/attempt_session_repository.dart';
 import '../repositories/canonical_analytics_repository.dart';
 import '../repositories/exam_repository.dart';
+import '../repositories/firebase_account_deletion_identity_authorizer.dart';
 import '../repositories/result_repository.dart';
 
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -36,7 +38,12 @@ final apiServerWarmupProvider = FutureProvider<void>((ref) async {
 });
 
 final accountRepositoryProvider = Provider<AccountRepository>((ref) {
-  return ApiAccountRepository(ref.watch(apiClientProvider));
+  return ApiAccountRepository(
+    ref.watch(apiClientProvider),
+    identityAuthorizer: FirebaseAccountDeletionIdentityAuthorizer(
+      FirebaseAuth.instance,
+    ),
+  );
 });
 
 final examRepositoryProvider = Provider<ExamRepository>((ref) {

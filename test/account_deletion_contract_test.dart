@@ -21,6 +21,50 @@ void main() {
       expect(contract, contains("code == 'REAUTH_REQUIRED'"));
     });
 
+    test('Apple-linked deletion revokes fresh Apple authorization first', () {
+      final apiRepository = File(
+        'lib/core/repositories/api_account_repository.dart',
+      ).readAsStringSync();
+      final authorizer = File(
+        'lib/core/repositories/firebase_account_deletion_identity_authorizer.dart',
+      ).readAsStringSync();
+      final providers = File(
+        'lib/core/providers/repository_providers.dart',
+      ).readAsStringSync();
+
+      expect(
+        apiRepository.indexOf('await _identityAuthorizer.authorizeDeletion();'),
+        lessThan(apiRepository.indexOf("'/users/me'")),
+      );
+      expect(authorizer, contains("provider.providerId == 'apple.com'"));
+      expect(authorizer, contains('user.reauthenticateWithProvider'));
+      expect(authorizer, contains('AppleAuthProvider()'));
+      expect(
+        authorizer,
+        contains('defaultTargetPlatform == TargetPlatform.iOS'),
+      );
+      expect(authorizer, contains('additionalUserInfo?.authorizationCode'));
+      expect(
+        authorizer,
+        contains('_auth.revokeTokenWithAuthorizationCode(authorizationCode)'),
+      );
+      expect(
+        authorizer,
+        contains('defaultTargetPlatform == TargetPlatform.android'),
+      );
+      expect(authorizer, contains('credential.credential?.accessToken'));
+      expect(authorizer, contains('_auth.revokeAccessToken(accessToken)'));
+      expect(authorizer, contains('await user.getIdToken(true);'));
+      expect(
+        providers,
+        contains('FirebaseAccountDeletionIdentityAuthorizer('),
+      );
+      expect(
+        providers,
+        contains('identityAuthorizer: FirebaseAccountDeletionIdentityAuthorizer'),
+      );
+    });
+
     test('profile exposes privacy and account controls', () {
       final profileEntry = File(
         'lib/features/profile/presentation/profile_screen.dart',
