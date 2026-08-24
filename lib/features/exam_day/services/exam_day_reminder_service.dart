@@ -36,7 +36,7 @@ class LocalExamDayReminderService implements ExamDayReminderService {
       // UTC remains a safe fallback until the device timezone is available.
     }
 
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('ic_notification');
     const darwin = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
