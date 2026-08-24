@@ -77,9 +77,8 @@ class ExamTreeApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
 
-    // Free Render instances may be asleep when the app opens. Start the wakeup
-    // request in the background immediately; authentication will await the same
-    // shared readiness probe if the user reaches Login before it completes.
+    // Prime the canonical API in the background without gating Firebase auth.
+    // Profile synchronization remains the authoritative authenticated API check.
     ref.watch(apiServerWarmupProvider);
 
     ref.listen(authStateChangesProvider, (previous, next) {

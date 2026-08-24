@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:examtree/core/network/api_server_readiness.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
@@ -33,10 +35,13 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
-    test('waits for server readiness before Google authentication', () async {
+    test('does not wait for server warmup before Google authentication', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner();
-      final readiness = _FakeApiServerReadiness();
+      final readinessCompleter = Completer<void>();
+      final readiness = _FakeApiServerReadiness(
+        pending: readinessCompleter.future,
+      );
       final controller = AuthController(session, profile, null, readiness);
       final stages = <AuthSetupStage>[];
 
@@ -45,35 +50,42 @@ void main() {
       expect(readiness.ensureReadyCalls, 1);
       expect(session.googleSignInCalls, 1);
       expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
       expect(
         stages,
         <AuthSetupStage>[
-          AuthSetupStage.startingServer,
           AuthSetupStage.authenticating,
           AuthSetupStage.syncingProfile,
         ],
       );
+
+      readinessCompleter.complete();
+      await Future<void>.delayed(Duration.zero);
     });
 
-    test('does not authenticate when the server cannot wake', () async {
+    test('server warmup failure does not block Google authentication', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner();
       final readiness = _FakeApiServerReadiness(
-        error: StateError('server still asleep'),
+        error: StateError('health check unavailable'),
       );
       final controller = AuthController(session, profile, null, readiness);
       final stages = <AuthSetupStage>[];
 
-      await expectLater(
-        controller.signInWithGoogle(onSetupStage: stages.add),
-        throwsA(isA<AuthServerStartException>()),
-      );
+      await controller.signInWithGoogle(onSetupStage: stages.add);
+      await Future<void>.delayed(Duration.zero);
 
       expect(readiness.ensureReadyCalls, 1);
-      expect(session.googleSignInCalls, 0);
-      expect(profile.provisionCalls, 0);
+      expect(session.googleSignInCalls, 1);
+      expect(profile.provisionCalls, 1);
       expect(session.signOutCalls, 0);
-      expect(stages, <AuthSetupStage>[AuthSetupStage.startingServer]);
+      expect(
+        stages,
+        <AuthSetupStage>[
+          AuthSetupStage.authenticating,
+          AuthSetupStage.syncingProfile,
+        ],
+      );
     });
 
     test('does not provision when Google authentication fails', () async {
@@ -426,14 +438,17 @@ class _FakeStudentProfileProvisioner implements StudentProfileProvisioner {
 }
 
 class _FakeApiServerReadiness implements ApiServerReadiness {
-  _FakeApiServerReadiness({this.error});
+  _FakeApiServerReadiness({this.error, this.pending});
 
   final Object? error;
+  final Future<void>? pending;
   int ensureReadyCalls = 0;
 
   @override
   Future<void> ensureReady() async {
     ensureReadyCalls++;
+    final pendingReadiness = pending;
+    if (pendingReadiness != null) await pendingReadiness;
     final readinessError = error;
     if (readinessError != null) throw readinessError;
   }

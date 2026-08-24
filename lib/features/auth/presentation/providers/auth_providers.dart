@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -349,7 +351,7 @@ class AuthController {
     String password, {
     ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
-    await _ensureServerReady(onSetupStage);
+    _startServerWarmup();
     onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.signInWithEmailAndPassword(email, password);
     onSetupStage?.call(AuthSetupStage.syncingProfile);
@@ -362,7 +364,7 @@ class AuthController {
     _navigationGate?.beginGoogleSignIn();
     var authenticated = false;
     try {
-      await _ensureServerReady(onSetupStage);
+      _startServerWarmup();
       onSetupStage?.call(AuthSetupStage.authenticating);
       await _sessionGateway.signInWithGoogle();
       authenticated = true;
@@ -391,7 +393,7 @@ class AuthController {
     required String password,
     ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
-    await _ensureServerReady(onSetupStage);
+    _startServerWarmup();
     onSetupStage?.call(AuthSetupStage.authenticating);
     await _sessionGateway.createUserWithEmailAndPassword(
       displayName: displayName.trim(),
@@ -406,18 +408,20 @@ class AuthController {
     );
   }
 
-  Future<void> _ensureServerReady(
-    ValueChanged<AuthSetupStage>? onSetupStage,
-  ) async {
+  void _startServerWarmup() {
     final serverReadiness = _serverReadiness;
     if (serverReadiness == null) return;
 
-    onSetupStage?.call(AuthSetupStage.startingServer);
-    try {
-      await serverReadiness.ensureReady();
-    } catch (_) {
-      throw const AuthServerStartException();
-    }
+    unawaited(
+      () async {
+        try {
+          await serverReadiness.ensureReady();
+        } catch (_) {
+          // Best-effort only. Canonical profile synchronization remains the
+          // actual API availability check for the authenticated session.
+        }
+      }(),
+    );
   }
 
   Future<void> _provisionProfile({

@@ -30,8 +30,8 @@ final apiServerWarmupProvider = FutureProvider<void>((ref) async {
   try {
     await ref.watch(apiServerReadinessProvider).ensureReady();
   } catch (_) {
-    // Startup warmup is best-effort. Authentication retries the same readiness
-    // probe with a visible status before creating or synchronizing a session.
+    // Startup warmup is best-effort only. Authentication proceeds independently,
+    // and canonical profile synchronization remains the real API availability check.
   }
 });
 

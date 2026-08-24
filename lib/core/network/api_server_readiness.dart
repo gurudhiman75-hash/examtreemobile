@@ -42,15 +42,15 @@ class DioApiServerReadiness implements ApiServerReadiness {
     required String apiBaseUrl,
     Dio? probeClient,
     this.readyTtl = const Duration(minutes: 3),
-    this.startupTimeout = const Duration(minutes: 3),
+    this.startupTimeout = const Duration(seconds: 30),
     this.retryDelay = const Duration(seconds: 2),
   })  : healthUri = apiHealthUriForBase(apiBaseUrl),
         _probeClient = probeClient ??
             Dio(
               BaseOptions(
-                connectTimeout: const Duration(seconds: 20),
-                sendTimeout: const Duration(seconds: 20),
-                receiveTimeout: const Duration(seconds: 35),
+                connectTimeout: const Duration(seconds: 10),
+                sendTimeout: const Duration(seconds: 10),
+                receiveTimeout: const Duration(seconds: 10),
                 headers: const {
                   'Accept': 'application/json',
                   'x-examtree-device': 'android-warmup',

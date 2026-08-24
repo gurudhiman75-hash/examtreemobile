@@ -26,6 +26,18 @@ void main() {
     });
   });
 
+  group('DioApiServerReadiness', () {
+    test('uses a bounded production warmup window', () {
+      final readiness = DioApiServerReadiness(
+        apiBaseUrl: 'https://api.examtree.in',
+      );
+      addTearDown(readiness.close);
+
+      expect(readiness.startupTimeout, const Duration(seconds: 30));
+      expect(readiness.retryDelay, const Duration(seconds: 2));
+    });
+  });
+
   group('isRetryableApiReadinessError', () {
     final request = RequestOptions(
       path: 'https://api.examtree.in/health',
