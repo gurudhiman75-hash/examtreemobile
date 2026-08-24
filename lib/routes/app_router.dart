@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/observability/crash_reporting.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/password_recovery_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
@@ -165,13 +166,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/home',
     refreshListenable: authRefresh,
-    redirect: (context, state) => resolveAuthRedirect(
-      authReady: authRefresh.isReady,
-      isAuthenticated: authRefresh.isAuthenticated,
-      matchedLocation: state.matchedLocation,
-      uri: state.uri,
-      routeExtra: state.extra,
-    ),
+    redirect: (context, state) {
+      unawaited(recordCrashRoute(state.uri));
+      return resolveAuthRedirect(
+        authReady: authRefresh.isReady,
+        isAuthenticated: authRefresh.isAuthenticated,
+        matchedLocation: state.matchedLocation,
+        uri: state.uri,
+        routeExtra: state.extra,
+      );
+    },
     routes: [
       GoRoute(
         path: '/login',
