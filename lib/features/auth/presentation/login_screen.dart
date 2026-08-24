@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -131,6 +132,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _signInWithApple() async {
+    if (_isLoading) return;
+    _beginLoading('Preparing Apple sign-in…');
+    try {
+      await ref.read(authControllerProvider).signInWithApple(
+            onSetupStage: _onSetupStage,
+          );
+    } on AuthServerStartException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.code) {
+        'web-context-cancelled' || 'canceled' =>
+          'Apple sign-in was canceled. Please try again.',
+        'operation-not-allowed' =>
+          'Apple sign-in is temporarily unavailable. Please try again later.',
+        'account-exists-with-different-credential' =>
+          'This email already has an ExamTree sign-in method. Sign in with that method first, then try Apple again.',
+        'apple-email-unavailable' =>
+          'Apple did not provide a usable verified email for this account.',
+        'network-request-failed' =>
+          'Apple sign-in could not reach the service. Check your connection and try again.',
+        _ => 'Apple sign-in could not be completed. Please try again.',
+      };
+      _showMessage(message);
+    } on AuthProfileSyncException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to sign in with Apple. Please try again.');
+    } finally {
+      _endLoading();
+    }
+  }
+
   Future<void> _register() async {
     if (_isLoading) return;
 
@@ -242,6 +280,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final showApple = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
     return AuthEntryView(
       registering: _registerMode,
       isLoading: _isLoading,
@@ -256,6 +295,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         compact: true,
         markLoginCampaignsPresented: true,
       ),
+      showApple: showApple,
+      onApple: _signInWithApple,
       onGoogle: _signInWithGoogle,
       onSubmit: _submit,
       onTogglePassword: () {

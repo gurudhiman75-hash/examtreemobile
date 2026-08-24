@@ -35,6 +35,18 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
+    test('provisions the canonical profile after Apple sign-in', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await controller.signInWithApple();
+
+      expect(session.appleSignInCalls, 1);
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
     test('does not wait for server warmup before Google authentication', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner();
@@ -104,6 +116,22 @@ void main() {
       expect(profile.provisionCalls, 0);
     });
 
+    test('does not provision when Apple authentication fails', () async {
+      final session = _FakeAuthSessionGateway(
+        appleSignInError: StateError('apple sign-in failed'),
+      );
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithApple(),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(session.appleSignInCalls, 1);
+      expect(profile.provisionCalls, 0);
+    });
+
     test('Google profile setup reports a Google-specific message', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner(
@@ -118,6 +146,28 @@ void main() {
             (error) => error.message,
             'message',
             contains('Google sign-in succeeded'),
+          ),
+        ),
+      );
+
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 1);
+    });
+
+    test('Apple profile setup reports an Apple-specific message', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner(
+        error: StateError('backend unavailable'),
+      );
+      final controller = AuthController(session, profile);
+
+      await expectLater(
+        controller.signInWithApple(),
+        throwsA(
+          isA<AuthProfileSyncException>().having(
+            (error) => error.message,
+            'message',
+            contains('Apple sign-in succeeded'),
           ),
         ),
       );
@@ -352,6 +402,7 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   _FakeAuthSessionGateway({
     this.signInError,
     this.googleSignInError,
+    this.appleSignInError,
     this.registrationError,
     // ignore: unused_element_parameter
     this.passwordResetError,
@@ -360,12 +411,14 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
 
   final Object? signInError;
   final Object? googleSignInError;
+  final Object? appleSignInError;
   final Object? registrationError;
   final Object? passwordResetError;
   final Object? signOutError;
 
   int signInCalls = 0;
   int googleSignInCalls = 0;
+  int appleSignInCalls = 0;
   int registrationCalls = 0;
   int passwordResetCalls = 0;
   int signOutCalls = 0;
@@ -390,6 +443,13 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   Future<void> signInWithGoogle() async {
     googleSignInCalls++;
     final error = googleSignInError;
+    if (error != null) throw error;
+  }
+
+  @override
+  Future<void> signInWithApple() async {
+    appleSignInCalls++;
+    final error = appleSignInError;
     if (error != null) throw error;
   }
 

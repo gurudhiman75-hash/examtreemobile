@@ -12,6 +12,8 @@ class AuthEntryView extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
+    required this.showApple,
+    required this.onApple,
     required this.onGoogle,
     required this.onSubmit,
     required this.onTogglePassword,
@@ -29,6 +31,8 @@ class AuthEntryView extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
+  final bool showApple;
+  final VoidCallback onApple;
   final VoidCallback onGoogle;
   final VoidCallback onSubmit;
   final VoidCallback onTogglePassword;
@@ -98,6 +102,8 @@ class AuthEntryView extends StatelessWidget {
                           emailController: emailController,
                           passwordController: passwordController,
                           confirmPasswordController: confirmPasswordController,
+                          showApple: showApple,
+                          onApple: onApple,
                           onGoogle: onGoogle,
                           onSubmit: onSubmit,
                           onTogglePassword: onTogglePassword,
@@ -231,6 +237,8 @@ class _AuthPanel extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
+    required this.showApple,
+    required this.onApple,
     required this.onGoogle,
     required this.onSubmit,
     required this.onTogglePassword,
@@ -244,6 +252,8 @@ class _AuthPanel extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
+  final bool showApple;
+  final VoidCallback onApple;
   final VoidCallback onGoogle;
   final VoidCallback onSubmit;
   final VoidCallback onTogglePassword;
@@ -264,6 +274,22 @@ class _AuthPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (showApple) ...[
+              FilledButton.icon(
+                key: const Key('auth-apple'),
+                onPressed: isLoading ? null : onApple,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.black.withValues(alpha: 0.38),
+                  disabledForegroundColor: Colors.white.withValues(alpha: 0.7),
+                ),
+                icon: const Icon(Icons.apple),
+                label: const Text('Continue with Apple'),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+            ],
             OutlinedButton.icon(
               key: const Key('auth-google'),
               onPressed: isLoading ? null : onGoogle,

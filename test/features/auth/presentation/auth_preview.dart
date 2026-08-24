@@ -92,6 +92,8 @@ void main() {
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
+          showApple: false,
+          onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
           onTogglePassword: () {},

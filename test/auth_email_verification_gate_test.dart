@@ -22,6 +22,9 @@ class _FakeGateway implements AuthSessionGateway {
   Future<void> signInWithGoogle() async {}
 
   @override
+  Future<void> signInWithApple() async {}
+
+  @override
   Future<void> createUserWithEmailAndPassword({
     required String displayName,
     required String email,

@@ -26,6 +26,7 @@ void main() {
   Widget view({
     bool registering = false,
     bool loading = false,
+    bool showApple = false,
     String? loadingMessage,
     double textScale = 1,
   }) {
@@ -45,6 +46,8 @@ void main() {
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
+          showApple: showApple,
+          onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
           onTogglePassword: () {},
@@ -64,11 +67,23 @@ void main() {
     expect(find.text('ExamTree'), findsOneWidget);
     expect(find.text('Sign in to ExamTree'), findsOneWidget);
     expect(find.text('Continue with Google'), findsOneWidget);
+    expect(find.text('Continue with Apple'), findsNothing);
     expect(find.text('Email'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Forgot password?'), findsOneWidget);
     expect(find.byKey(const Key('auth-submit')), findsOneWidget);
     expect(find.text('Name'), findsNothing);
+  });
+
+  testWidgets('Apple sign-in is an equivalent iOS auth action when enabled', (
+    tester,
+  ) async {
+    await tester.pumpWidget(view(showApple: true));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('auth-apple')), findsOneWidget);
+    expect(find.text('Continue with Apple'), findsOneWidget);
+    expect(find.byKey(const Key('auth-google')), findsOneWidget);
   });
 
   testWidgets('registration remains usable at 200 percent text scaling', (
@@ -94,6 +109,7 @@ void main() {
     await tester.pumpWidget(
       view(
         loading: true,
+        showApple: true,
         loadingMessage: 'Starting ExamTree server…',
       ),
     );
@@ -102,12 +118,16 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Starting ExamTree server…'), findsOneWidget);
+    final apple = tester.widget<FilledButton>(
+      find.byKey(const Key('auth-apple')),
+    );
     final google = tester.widget<OutlinedButton>(
       find.byKey(const Key('auth-google')),
     );
     final submit = tester.widget<FilledButton>(
       find.byKey(const Key('auth-submit')),
     );
+    expect(apple.onPressed, isNull);
     expect(google.onPressed, isNull);
     expect(submit.onPressed, isNull);
   });

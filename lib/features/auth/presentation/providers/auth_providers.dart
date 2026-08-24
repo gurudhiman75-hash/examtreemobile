@@ -20,21 +20,27 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 });
 
 class AuthNavigationGate extends ChangeNotifier {
-  bool _googleSignInInProgress = false;
+  bool _federatedSignInInProgress = false;
 
-  bool get blocksAuthenticatedRedirect => _googleSignInInProgress;
+  bool get blocksAuthenticatedRedirect => _federatedSignInInProgress;
 
-  void beginGoogleSignIn() {
-    if (_googleSignInInProgress) return;
-    _googleSignInInProgress = true;
+  void beginFederatedSignIn() {
+    if (_federatedSignInInProgress) return;
+    _federatedSignInInProgress = true;
     notifyListeners();
   }
 
-  void endGoogleSignIn() {
-    if (!_googleSignInInProgress) return;
-    _googleSignInInProgress = false;
+  void endFederatedSignIn() {
+    if (!_federatedSignInInProgress) return;
+    _federatedSignInInProgress = false;
     notifyListeners();
   }
+
+  // Keep the older names as compatibility aliases for any callers outside the
+  // auth screen while the gate now protects both Google and Apple flows.
+  void beginGoogleSignIn() => beginFederatedSignIn();
+
+  void endGoogleSignIn() => endFederatedSignIn();
 }
 
 final authNavigationGateProvider = Provider<AuthNavigationGate>((ref) {
@@ -61,6 +67,8 @@ abstract interface class AuthSessionGateway {
 
   Future<void> signInWithGoogle();
 
+  Future<void> signInWithApple();
+
   Future<void> createUserWithEmailAndPassword({
     required String displayName,
     required String email,
@@ -83,6 +91,9 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
   Future<void>? _googleInitialization;
 
   bool get _requiresIosGoogleClientId =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+
+  bool get _supportsNativeAppleSignIn =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   Future<void> _ensureGoogleInitialized() {
@@ -141,6 +152,19 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
       throw FirebaseAuthException(
         code: 'google-email-unverified',
         message: 'Google did not provide a verified email address.',
+      );
+    }
+    await refreshed.getIdToken(true);
+  }
+
+  Future<void> _requireUsableAppleIdentity(User user) async {
+    final refreshed = await _reloadCurrentUser(user);
+    final email = refreshed.email?.trim() ?? '';
+    if (email.isEmpty || !refreshed.emailVerified) {
+      await _auth.signOut();
+      throw FirebaseAuthException(
+        code: 'apple-email-unavailable',
+        message: 'Apple did not provide a usable verified email address.',
       );
     }
     await refreshed.getIdToken(true);
@@ -220,6 +244,31 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
     } catch (_) {
       await _auth.signOut();
       await _signOutGoogleIfInitialized();
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> signInWithApple() async {
+    if (!_supportsNativeAppleSignIn) {
+      throw FirebaseAuthException(
+        code: 'apple-sign-in-unsupported',
+        message: 'Apple Sign-In is not supported on this platform.',
+      );
+    }
+
+    try {
+      final credential = await _auth.signInWithProvider(AppleAuthProvider());
+      final user = credential.user;
+      if (user == null) {
+        throw FirebaseAuthException(
+          code: 'missing-user',
+          message: 'Firebase Apple sign-in did not return a user.',
+        );
+      }
+      await _requireUsableAppleIdentity(user);
+    } catch (_) {
+      await _auth.signOut();
       rethrow;
     }
   }
@@ -367,7 +416,7 @@ class AuthController {
   Future<void> signInWithGoogle({
     ValueChanged<AuthSetupStage>? onSetupStage,
   }) async {
-    _navigationGate?.beginGoogleSignIn();
+    _navigationGate?.beginFederatedSignIn();
     var authenticated = false;
     try {
       _startServerWarmup();
@@ -389,7 +438,36 @@ class AuthController {
       }
       rethrow;
     } finally {
-      _navigationGate?.endGoogleSignIn();
+      _navigationGate?.endFederatedSignIn();
+    }
+  }
+
+  Future<void> signInWithApple({
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  }) async {
+    _navigationGate?.beginFederatedSignIn();
+    var authenticated = false;
+    try {
+      _startServerWarmup();
+      onSetupStage?.call(AuthSetupStage.authenticating);
+      await _sessionGateway.signInWithApple();
+      authenticated = true;
+      onSetupStage?.call(AuthSetupStage.syncingProfile);
+      await _provisionProfile(
+        failureMessage:
+            'Apple sign-in succeeded, but ExamTree could not finish account setup. Please try again.',
+      );
+    } catch (_) {
+      if (authenticated) {
+        try {
+          await _sessionGateway.signOut();
+        } catch (_) {
+          // Preserve the original profile failure.
+        }
+      }
+      rethrow;
+    } finally {
+      _navigationGate?.endFederatedSignIn();
     }
   }
 
