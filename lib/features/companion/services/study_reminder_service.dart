@@ -37,7 +37,7 @@ class LocalStudyReminderService implements StudyReminderService {
       // still be replaced when the device timezone becomes available.
     }
 
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('ic_notification');
     const darwin = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
