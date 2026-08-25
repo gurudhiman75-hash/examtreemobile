@@ -61,7 +61,7 @@ class ApiClient {
       BaseOptions(
         baseUrl: const String.fromEnvironment(
           'EXAMTREE_API_BASE_URL',
-          defaultValue: 'https://api.examtree.in',
+          defaultValue: 'https://examtree-new.onrender.com/api',
         ),
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 30),
