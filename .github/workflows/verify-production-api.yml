@@ -1,0 +1,30 @@
+name: Verify Production API
+
+on:
+  pull_request:
+    paths:
+      - 'lib/core/network/api_client.dart'
+      - 'lib/core/repositories/**'
+      - 'tool/verify_production_api.mjs'
+      - '.github/workflows/verify-production-api.yml'
+      - '.github/workflows/authenticated-android-apk.yml'
+      - '.github/workflows/release-android-aab.yml'
+      - 'test/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      EXAMTREE_API_BASE_URL: https://examtree-new.onrender.com/api/
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Probe live production API
+        run: node tool/verify_production_api.mjs
