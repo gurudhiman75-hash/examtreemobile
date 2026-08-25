@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../diagnostics/presentation/network_diagnostics_screen.dart';
 import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../domain/auth_error_messages.dart';
@@ -266,6 +267,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     context.push('/forgot-password$query');
   }
 
+  void _openDiagnostics() {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const NetworkDiagnosticsScreen(),
+      ),
+    );
+  }
+
   void _showMessage(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
@@ -281,7 +290,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final showApple = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
-    return AuthEntryView(
+    final entry = AuthEntryView(
       registering: _registerMode,
       isLoading: _isLoading,
       obscurePassword: _obscurePassword,
@@ -305,6 +314,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       },
       onForgotPassword: _openPasswordRecovery,
       onToggleMode: _toggleMode,
+    );
+
+    if (!kDebugMode) return entry;
+    return Stack(
+      children: [
+        entry,
+        Positioned(
+          right: 12,
+          bottom: 12,
+          child: SafeArea(
+            child: FloatingActionButton.small(
+              heroTag: 'login-network-diagnostics',
+              tooltip: 'Network diagnostics',
+              onPressed: _openDiagnostics,
+              child: const Icon(Icons.monitor_heart_outlined),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
