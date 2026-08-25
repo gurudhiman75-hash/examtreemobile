@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
-      EXAMTREE_API_BASE_URL: https://api.examtree.in
+      EXAMTREE_API_BASE_URL: https://examtree-new.onrender.com/api
       FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID || vars.FIREBASE_ANDROID_APP_ID || '1:1083299267005:android:3986910db48dd12e3ad2d4' }}
       ANDROID_RELEASE_KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
       ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
