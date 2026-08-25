@@ -10,17 +10,19 @@ Flutter client for the ExamTree student platform. The app uses the shared ExamTr
 
 ## API configuration
 
-The canonical production API origin is:
+The live production API base URL is:
 
 ```text
-https://api.examtree.in
+https://examtree-new.onrender.com/api
 ```
+
+The custom `api.examtree.in` hostname must not be used by shipping builds until its DNS/TLS routing is verified against this production service.
 
 The API base URL can still be supplied at build time when a non-production environment is intentionally required:
 
 ```bash
 flutter run \
-  --dart-define=EXAMTREE_API_BASE_URL=https://api.examtree.in
+  --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api
 ```
 
 ## Firebase Android setup
@@ -41,7 +43,7 @@ Then run or build the app with:
 
 ```bash
 flutter run \
-  --dart-define=EXAMTREE_API_BASE_URL=https://api.examtree.in \
+  --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api \
   --dart-define=FIREBASE_ANDROID_APP_ID=1:1083299267005:android:<app-specific-id>
 ```
 
@@ -82,7 +84,7 @@ flutter pub get
 flutter analyze --no-fatal-infos
 flutter test
 flutter build apk --debug \
-  --dart-define=EXAMTREE_API_BASE_URL=https://api.examtree.in
+  --dart-define=EXAMTREE_API_BASE_URL=https://examtree-new.onrender.com/api
 ```
 
 That debug build can compile without a Firebase Android app ID, but authentication is intentionally disabled at runtime until the real app registration is supplied. Use the `Authenticated Android APK` workflow for any APK intended for installation/testing with Firebase Auth.
