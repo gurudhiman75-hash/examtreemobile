@@ -15,6 +15,43 @@ String examtreeDeviceLabel(TargetPlatform platform) {
   };
 }
 
+String normalizeApiBaseUrl(String rawBaseUrl) {
+  final value = rawBaseUrl.trim();
+  final uri = Uri.tryParse(value);
+  if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
+    throw ArgumentError.value(
+      rawBaseUrl,
+      'rawBaseUrl',
+      'ExamTree API base URL must be absolute',
+    );
+  }
+
+  final path = uri.path.isEmpty
+      ? '/'
+      : uri.path.endsWith('/')
+          ? uri.path
+          : '${uri.path}/';
+  return uri.replace(path: path, query: null, fragment: null).toString();
+}
+
+String normalizeApiRequestPath(String rawPath) {
+  final value = rawPath.trim();
+  final uri = Uri.tryParse(value);
+  if (uri != null && uri.hasScheme) return value;
+  return value.replaceFirst(RegExp(r'^/+'), '');
+}
+
+Uri resolveApiRequestUri({
+  required String baseUrl,
+  required String requestPath,
+}) {
+  final pathUri = Uri.tryParse(requestPath.trim());
+  if (pathUri != null && pathUri.hasScheme) return pathUri;
+  return Uri.parse(normalizeApiBaseUrl(baseUrl)).resolve(
+    normalizeApiRequestPath(requestPath),
+  );
+}
+
 bool shouldRetryAuthentication({
   required int? statusCode,
   required bool alreadyRetried,
@@ -48,6 +85,10 @@ class FirebaseAuthTokenProvider implements AuthTokenProvider {
 class ApiClient {
   ApiClient({Dio? dio, AuthTokenProvider? authTokenProvider})
       : dio = dio ?? _createBaseDio() {
+    final configuredBaseUrl = this.dio.options.baseUrl.trim();
+    if (configuredBaseUrl.isNotEmpty) {
+      this.dio.options.baseUrl = normalizeApiBaseUrl(configuredBaseUrl);
+    }
     _attachInterceptors(
       this.dio,
       authTokenProvider ?? FirebaseAuthTokenProvider(FirebaseAuth.instance),
@@ -57,12 +98,13 @@ class ApiClient {
   final Dio dio;
 
   static Dio _createBaseDio() {
+    const configuredBaseUrl = String.fromEnvironment(
+      'EXAMTREE_API_BASE_URL',
+      defaultValue: 'https://examtree-new.onrender.com/api/',
+    );
     return Dio(
       BaseOptions(
-        baseUrl: const String.fromEnvironment(
-          'EXAMTREE_API_BASE_URL',
-          defaultValue: 'https://examtree-new.onrender.com/api',
-        ),
+        baseUrl: normalizeApiBaseUrl(configuredBaseUrl),
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
@@ -80,6 +122,8 @@ class ApiClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          options.path = normalizeApiRequestPath(options.path);
+
           if (!authTokenProvider.hasAuthenticatedUser) {
             return handler.next(options);
           }
