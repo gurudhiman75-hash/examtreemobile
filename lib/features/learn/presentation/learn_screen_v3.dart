@@ -148,53 +148,115 @@ class _LearnIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Learn for your exams',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4338CA), Color(0xFF6D28D9)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: .18),
+            blurRadius: 26,
+            offset: const Offset(0, 12),
           ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Current affairs, notes and free practice selected from what is actually published for you.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.42,
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -28,
+            top: -34,
+            child: Container(
+              width: 118,
+              height: 118,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: .08),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Wrap(
-          spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.sm,
-          children: [
-            _LearnStat(
-              value: '$currentAffairsCount',
-              label: 'updates',
-              icon: Icons.newspaper_rounded,
-              background: AppColors.skyContainer,
-              foreground: AppColors.onSkyContainer,
+          Positioned(
+            right: 28,
+            bottom: -52,
+            child: Container(
+              width: 92,
+              height: 92,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: .055),
+                shape: BoxShape.circle,
+              ),
             ),
-            _LearnStat(
-              value: '$notesCount',
-              label: 'notes',
-              icon: Icons.menu_book_rounded,
-              background: AppColors.tertiaryContainer,
-              foreground: AppColors.onTertiaryContainer,
-            ),
-            _LearnStat(
-              value: '$freeTestsCount',
-              label: 'free tests',
-              icon: Icons.task_alt_rounded,
-              background: AppColors.mintContainer,
-              foreground: AppColors.onMintContainer,
-            ),
-          ],
-        ),
-      ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .14),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  'YOUR LEARNING SPACE',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .85,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Learn smarter.\nPractice better.',
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  height: 1.06,
+                  letterSpacing: -.7,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Pick a topic, answer at your pace, and learn from every explanation.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: .84),
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  _LearnStat(
+                    value: '$currentAffairsCount',
+                    label: 'updates',
+                    icon: Icons.newspaper_rounded,
+                  ),
+                  _LearnStat(
+                    value: '$notesCount',
+                    label: 'notes',
+                    icon: Icons.menu_book_rounded,
+                  ),
+                  _LearnStat(
+                    value: '$freeTestsCount',
+                    label: 'free tests',
+                    icon: Icons.task_alt_rounded,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -204,47 +266,49 @@ class _LearnStat extends StatelessWidget {
     required this.value,
     required this.label,
     required this.icon,
-    required this.background,
-    required this.foreground,
   });
 
   final String value;
   final String label;
   final IconData icon;
-  final Color background;
-  final Color foreground;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, size: 18, color: foreground),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .13),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: .12),
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Text(
-          value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w900,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.white),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            value,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-        ),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
+          const SizedBox(width: AppSpacing.xxs),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white.withValues(alpha: .8),
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
