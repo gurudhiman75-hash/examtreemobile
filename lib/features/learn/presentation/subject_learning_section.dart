@@ -1,24 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
-import '../data/polity_learn_catalog.dart';
+import '../../preferences/domain/question_language.dart';
+import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/polity_learn_localizations.dart';
+import '../domain/learn_ui_copy.dart';
 
-class SubjectLearningSection extends StatelessWidget {
+class SubjectLearningSection extends ConsumerWidget {
   const SubjectLearningSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final language =
+        ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final copy = learnUiCopy(language);
     final theme = Theme.of(context);
-    final subject = polityLearnSubject;
+    final subject = polityLearnSubjectFor(language);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Study by subject', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900)),
+        Text(
+          copy.studyBySubject,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Short exam-focused lessons with quick revision and practice mapping.',
-          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          copy.studyBySubjectSubtitle,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Card(
@@ -32,23 +47,35 @@ class SubjectLearningSection extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 50, height: 50,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Icon(Icons.account_balance_rounded, color: theme.colorScheme.onPrimaryContainer),
+                    child: Icon(
+                      Icons.account_balance_rounded,
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(subject.title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900)),
+                        Text(
+                          subject.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          '${subject.readyLessonCount} lessons ready · ${subject.lessons.length} mapped',
-                          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w700),
+                          '${subject.readyLessonCount} ${copy.lessonsReady} · ${subject.lessons.length} ${copy.lessonsMapped}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ],
                     ),
