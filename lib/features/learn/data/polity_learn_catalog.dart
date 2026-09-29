@@ -2244,7 +2244,7 @@ const polityLearnSubject = LearnSubject(
             rows: [
               ['Inter-State Council', 'Article 263 of the Constitution'],
               ['Zonal Councils', 'States Reorganisation Act, 1956'],
-              ['North Eastern Council', 'North Eastern Council Act, 1971/1972 framework'],
+              ['North Eastern Council', 'North-Eastern Council Act, 1971'],
             ],
           ),
         ),
