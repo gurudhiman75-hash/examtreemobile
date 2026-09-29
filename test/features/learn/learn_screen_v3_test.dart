@@ -118,17 +118,28 @@ void main() {
     expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Daily current affairs'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Daily current affairs'), findsOneWidget);
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -360));
-    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.text('Free practice'),
+      260,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Free practice'), findsOneWidget);
     expect(find.byKey(const Key('learn-free-practice')), findsOneWidget);
     expect(find.text('SSC CGL free mock'), findsOneWidget);
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -620));
-    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.text('Notes & formula sheets'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Notes & formula sheets'), findsOneWidget);
     expect(find.text('Quant revision notes'), findsOneWidget);
   });
@@ -173,8 +184,11 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Learn for your exams'), findsOneWidget);
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -520));
-    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('learn-current-affairs')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
