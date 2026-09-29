@@ -1,0 +1,3479 @@
+import '../domain/learn_lesson.dart';
+
+const polityLearnSubject = LearnSubject(
+  code: 'POL',
+  title: 'Indian Polity',
+  subtitle: 'Learn the Constitution, rights, institutions and governance for competitive exams.',
+  iconName: 'account_balance',
+  lessons: [
+    LearnLesson(
+      id: 'POL-LRN-001',
+      subjectCode: 'POL',
+      title: 'Making of the Indian Constitution',
+      summary: 'How the Constituent Assembly was formed and how the Constitution was adopted.',
+      estimatedMinutes: 6,
+      sections: [
+        LearnLessonSection(
+          heading: 'Concept',
+          paragraphs: [
+            'India’s Constitution was prepared by the Constituent Assembly. The demand for such an assembly developed gradually during the freedom struggle.',
+            'The Constituent Assembly was formed under the Cabinet Mission Plan of 1946. Representatives of the provinces were elected indirectly by members of the provincial legislative assemblies.',
+            'The Assembly first met on 9 December 1946. Dr. Sachchidananda Sinha served as the temporary chairman. On 11 December 1946, Dr. Rajendra Prasad was elected its permanent President.',
+            'The Drafting Committee was formed on 29 August 1947 with Dr. B. R. Ambedkar as its Chairman. The Constitution was adopted on 26 November 1949 and came into force on 26 January 1950.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Key points',
+          paragraphs: const [],
+          points: [
+            'Constituent Assembly formed under the Cabinet Mission Plan, 1946.',
+            'First meeting: 9 December 1946.',
+            'Temporary Chairman: Dr. Sachchidananda Sinha.',
+            'Permanent President: Dr. Rajendra Prasad.',
+            'Drafting Committee formed: 29 August 1947.',
+            'Drafting Committee Chairman: Dr. B. R. Ambedkar.',
+            'Constitution adopted: 26 November 1949.',
+            'Constitution came into force: 26 January 1950.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Dates to remember',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Event', 'Date'],
+            rows: [
+              ['First meeting of Constituent Assembly', '9 Dec 1946'],
+              ['Rajendra Prasad elected President', '11 Dec 1946'],
+              ['Drafting Committee formed', '29 Aug 1947'],
+              ['Constitution adopted', '26 Nov 1949'],
+              ['Constitution came into force', '26 Jan 1950'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Remember',
+          paragraphs: [
+            '26 November 1949 means the Constitution was adopted. 26 January 1950 means it came into force. These two dates are frequently confused in exams.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Cabinet Mission Plan → Constituent Assembly.',
+        'First meeting → 9 December 1946.',
+        'Drafting Committee → 29 August 1947, chaired by B. R. Ambedkar.',
+        'Adopted → 26 November 1949.',
+        'In force → 26 January 1950.',
+      ],
+      examFocus: [
+        'Dates connected with the Constituent Assembly.',
+        'Chairpersons and the Drafting Committee.',
+        'Difference between adoption and commencement.',
+      ],
+      practiceTags: ['constituent-assembly', 'making-of-constitution'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-002',
+      subjectCode: 'POL',
+      title: 'Constituent Assembly',
+      summary: 'Composition, important officers, committees and major milestones of the Constituent Assembly.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'How it was constituted',
+          paragraphs: [
+            'The Constituent Assembly was created under the Cabinet Mission Plan. Its members from British Indian provinces were chosen indirectly by the provincial legislative assemblies, while princely states were allotted seats separately.',
+            'The original strength of the Assembly was 389. After Partition, the strength of the Constituent Assembly of India was reduced to 299.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important office-bearers',
+          paragraphs: const [],
+          points: [
+            'Temporary Chairman: Dr. Sachchidananda Sinha.',
+            'President: Dr. Rajendra Prasad.',
+            'Vice-President: H. C. Mookherjee.',
+            'Constitutional Adviser: B. N. Rau.',
+            'Chairman of the Drafting Committee: Dr. B. R. Ambedkar.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important committees',
+          paragraphs: [
+            'The Assembly worked through several committees. Competitive exams often ask who chaired a particular committee.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Committee', 'Chairman'],
+            rows: [
+              ['Drafting Committee', 'B. R. Ambedkar'],
+              ['Union Powers Committee', 'Jawaharlal Nehru'],
+              ['Union Constitution Committee', 'Jawaharlal Nehru'],
+              ['Provincial Constitution Committee', 'Vallabhbhai Patel'],
+              ['Advisory Committee on Fundamental Rights, Minorities and Tribal Areas', 'Vallabhbhai Patel'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Time taken',
+          paragraphs: [
+            'The Constituent Assembly took 2 years, 11 months and 18 days to complete the Constitution. It held 11 sessions during this period.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Original strength: 389; after Partition: 299.',
+        'President: Rajendra Prasad.',
+        'Constitutional Adviser: B. N. Rau.',
+        'Drafting Committee Chairman: B. R. Ambedkar.',
+        'Time taken: 2 years, 11 months, 18 days.',
+      ],
+      examFocus: [
+        'Original and post-Partition strength.',
+        'Office-bearers of the Assembly.',
+        'Committee-chairman matching questions.',
+      ],
+      practiceTags: ['constituent-assembly', 'constitution-committees'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-003',
+      subjectCode: 'POL',
+      title: 'Preamble',
+      summary: 'Meaning, keywords, constitutional status and amendment of the Preamble.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'What is the Preamble?',
+          paragraphs: [
+            'The Preamble is the introductory statement of the Constitution. It expresses the source of authority of the Constitution, the nature of the Indian State and the broad objectives that the Constitution seeks to secure.',
+            'It begins with the words “We, the People of India”, showing that the Constitution derives its authority from the people.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Keywords',
+          paragraphs: const [],
+          points: [
+            'Sovereign: India is free to conduct its internal and external affairs.',
+            'Socialist: the State seeks social and economic justice.',
+            'Secular: the State does not establish an official religion and treats religions equally.',
+            'Democratic: political authority ultimately rests with the people.',
+            'Republic: the head of the State is elected, directly or indirectly, and is not a hereditary monarch.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Objectives',
+          paragraphs: const [],
+          points: [
+            'Justice — social, economic and political.',
+            'Liberty — of thought, expression, belief, faith and worship.',
+            'Equality — of status and opportunity.',
+            'Fraternity — assuring the dignity of the individual and the unity and integrity of the nation.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: '42nd Constitutional Amendment',
+          paragraphs: [
+            'The words “Socialist”, “Secular” and “Integrity” were added to the Preamble by the 42nd Constitutional Amendment Act, 1976.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Starts with: We, the People of India.',
+        'Nature of State: Sovereign, Socialist, Secular, Democratic, Republic.',
+        'Objectives: Justice, Liberty, Equality and Fraternity.',
+        '42nd Amendment added Socialist, Secular and Integrity.',
+      ],
+      examFocus: [
+        'Words added by the 42nd Amendment.',
+        'Meaning of Sovereign, Secular, Democratic and Republic.',
+        'Justice-Liberty-Equality-Fraternity sequence and wording.',
+      ],
+      practiceTags: ['preamble'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-004',
+      subjectCode: 'POL',
+      title: 'Union and its Territory',
+      summary: 'Articles 1–4 and how the Constitution deals with states, territories and boundary changes.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 1–4',
+          paragraphs: [
+            'Part I of the Constitution deals with the Union and its territory. Article 1 describes India, that is Bharat, as a Union of States and explains what forms the territory of India.',
+            'Articles 2 and 3 deal with the admission or establishment of new States and with changes to the area, boundaries or names of existing States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'What Article 3 allows Parliament to do',
+          paragraphs: const [],
+          points: [
+            'Form a new State by separating territory from an existing State.',
+            'Unite two or more States, or parts of States, to form a new State.',
+            'Increase or reduce the area of a State.',
+            'Alter the boundaries of a State.',
+            'Alter the name of a State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Role of the President and State Legislature',
+          paragraphs: [
+            'A Bill for a matter covered by Article 3 can be introduced in Parliament only on the recommendation of the President. When the proposal affects the area, boundaries or name of a State, the President refers it to that State Legislature for its views within the specified period.',
+            'The State Legislature gives its views, but its consent is not made a constitutional requirement for Parliament to pass the law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 4',
+          paragraphs: [
+            'A law made under Articles 2 or 3 may make necessary changes to the First and Fourth Schedules and may contain supplemental, incidental and consequential provisions. Article 4 states that such a law is not treated as a constitutional amendment for the purpose of Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Article 1: India, that is Bharat, is a Union of States.',
+        'Articles 2–3: new States and changes to existing States.',
+        'Article 3 Bill needs the President’s recommendation.',
+        'Affected State Legislature is asked for its views; consent is not constitutionally required.',
+        'Article 4 laws are not treated as Article 368 constitutional amendments.',
+      ],
+      examFocus: [
+        'Article-number matching: 1, 2, 3 and 4.',
+        'Difference between the President’s recommendation and the State Legislature’s views.',
+        'Whether a law under Articles 2–3 is an Article 368 amendment.',
+      ],
+      practiceTags: ['union-territory', 'articles-1-4', 'state-reorganisation'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-005',
+      subjectCode: 'POL',
+      title: 'Citizenship',
+      summary: 'Articles 5–11, citizenship at the commencement of the Constitution and the Citizenship Act, 1955.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Citizenship in the Constitution',
+          paragraphs: [
+            'Part II of the Constitution contains Articles 5–11. These provisions mainly dealt with citizenship at the commencement of the Constitution and certain migration situations connected with Partition.',
+            'Article 11 gives Parliament the power to make laws on acquisition and termination of citizenship and on other citizenship matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 5–11 at a glance',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['5', 'Citizenship at commencement'],
+              ['6', 'Certain migrants to India from Pakistan'],
+              ['7', 'Certain migrants to Pakistan'],
+              ['8', 'Certain persons of Indian origin residing outside India'],
+              ['9', 'Voluntary acquisition of foreign citizenship'],
+              ['10', 'Continuance of citizenship rights'],
+              ['11', 'Parliament’s power to regulate citizenship by law'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Citizenship Act, 1955',
+          paragraphs: [
+            'Parliament enacted the Citizenship Act, 1955. The Act provides statutory routes for acquisition of citizenship and also provides for loss of citizenship.',
+          ],
+          points: [
+            'Acquisition: by birth.',
+            'Acquisition: by descent.',
+            'Acquisition: by registration.',
+            'Acquisition: by naturalisation.',
+            'Acquisition: by incorporation of territory.',
+            'Loss: renunciation, termination and deprivation.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'OCI is not full Indian citizenship',
+          paragraphs: [
+            'The Citizenship Act separately provides for registration as an Overseas Citizen of India Cardholder. For exam purposes, do not treat OCI status as the same thing as ordinary Indian citizenship.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part II = Articles 5–11.',
+        'Article 11 empowers Parliament to regulate citizenship by law.',
+        'Citizenship Act, 1955 lists five main modes of acquisition.',
+        'Renunciation, termination and deprivation are modes of loss under the Act.',
+        'OCI Cardholder status is distinct from ordinary Indian citizenship.',
+      ],
+      examFocus: [
+        'Article-number questions from 5–11.',
+        'Five modes of acquisition under the Citizenship Act, 1955.',
+        'Three modes of loss: renunciation, termination and deprivation.',
+      ],
+      practiceTags: ['citizenship', 'articles-5-11', 'citizenship-act-1955'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-006',
+      subjectCode: 'POL',
+      title: 'Fundamental Rights — Overview',
+      summary: 'Part III, Articles 12–35 and the structure of the Fundamental Rights chapter.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Where Fundamental Rights appear',
+          paragraphs: [
+            'Fundamental Rights are contained in Part III of the Constitution. Part III begins with Article 12, which defines “the State” for this Part, and Article 13, which deals with laws inconsistent with Fundamental Rights.',
+            'The enforceable rights are then organised into groups such as equality, freedom, protection against exploitation, freedom of religion, cultural and educational rights, and constitutional remedies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'The six broad groups',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Right', 'Articles'],
+            rows: [
+              ['Right to Equality', '14–18'],
+              ['Right to Freedom', '19–22'],
+              ['Right against Exploitation', '23–24'],
+              ['Right to Freedom of Religion', '25–28'],
+              ['Cultural and Educational Rights', '29–30'],
+              ['Right to Constitutional Remedies', '32'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Articles 12 and 13',
+          paragraphs: [
+            'Article 12 gives an extended meaning to “the State” for Part III. Article 13 provides that laws inconsistent with or in derogation of Fundamental Rights are void to the extent of the inconsistency.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 32',
+          paragraphs: [
+            'Article 32 guarantees the right to move the Supreme Court for enforcement of the rights conferred by Part III. The Constitution authorises the Supreme Court to issue directions, orders or writs for this purpose.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Fundamental Rights are in Part III.',
+        'Part III spans Articles 12–35.',
+        'Article 12 defines “the State” for Part III.',
+        'Article 13 deals with laws inconsistent with Fundamental Rights.',
+        'Article 32 provides the right to approach the Supreme Court for enforcement of Part III rights.',
+      ],
+      examFocus: [
+        'Part III and its article range.',
+        'Matching each Fundamental Right group with its article range.',
+        'Purpose of Articles 12, 13 and 32.',
+      ],
+      practiceTags: ['fundamental-rights', 'part-iii', 'articles-12-35'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-007',
+      subjectCode: 'POL',
+      title: 'Right to Equality',
+      summary: 'Articles 14–18: equality before law, non-discrimination, public employment, untouchability and titles.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 14–18',
+          paragraphs: [
+            'The Right to Equality is mainly contained in Articles 14 to 18. These provisions deal with equality before law, discrimination, equality of opportunity in public employment, abolition of untouchability and abolition of titles.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Core idea'],
+            rows: [
+              ['14', 'Equality before law and equal protection of laws'],
+              ['15', 'Prohibition of discrimination on specified grounds'],
+              ['16', 'Equality of opportunity in public employment'],
+              ['17', 'Abolition of untouchability'],
+              ['18', 'Abolition of titles'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 14',
+          paragraphs: [
+            'Article 14 says that the State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.',
+            'A common exam trap is that Article 14 uses the word “person”, not only “citizen”.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 15 and 16',
+          paragraphs: [
+            'Article 15 prohibits the State from discriminating against citizens only on specified grounds such as religion, race, caste, sex or place of birth, while also permitting constitutionally specified special provisions.',
+            'Article 16 deals specifically with equality of opportunity in matters of public employment and also contains constitutional provisions allowing reservation in specified circumstances.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 17 and 18',
+          paragraphs: [
+            'Article 17 abolishes untouchability and forbids its practice in any form. Article 18 abolishes titles, subject to the constitutional exceptions stated in that Article, including military or academic distinctions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '14 = equality before law and equal protection.',
+        '15 = non-discrimination.',
+        '16 = public employment.',
+        '17 = abolition of untouchability.',
+        '18 = abolition of titles.',
+      ],
+      examFocus: [
+        'Correct article-number matching from 14–18.',
+        'Article 14 applies to “any person”.',
+        'Difference between Articles 15 and 16.',
+        'Military and academic distinctions under Article 18.',
+      ],
+      practiceTags: ['right-to-equality', 'articles-14-18'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-008',
+      subjectCode: 'POL',
+      title: 'Right to Freedom',
+      summary: 'Articles 19–22: six freedoms and constitutional protections relating to criminal law, life, education and arrest.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 19 — six freedoms',
+          paragraphs: [
+            'Article 19 guarantees specified freedoms to citizens. These freedoms are not absolute; the Constitution permits reasonable restrictions on constitutionally stated grounds.',
+          ],
+          points: [
+            'Freedom of speech and expression.',
+            'Freedom to assemble peaceably and without arms.',
+            'Freedom to form associations or unions or co-operative societies.',
+            'Freedom to move freely throughout the territory of India.',
+            'Freedom to reside and settle in any part of the territory of India.',
+            'Freedom to practise any profession, or to carry on any occupation, trade or business.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 20 — protection in criminal cases',
+          paragraphs: const [],
+          points: [
+            'Protection against conviction under an ex post facto criminal law.',
+            'Protection against being prosecuted and punished more than once for the same offence.',
+            'Protection against being compelled to be a witness against oneself.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 21 and Article 21A',
+          paragraphs: [
+            'Article 21 protects life and personal liberty except according to procedure established by law.',
+            'Article 21A provides for free and compulsory education for children of the age of six to fourteen years in the manner determined by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 22 — arrest and detention',
+          paragraphs: [
+            'Article 22 contains safeguards relating to arrest and detention. A person arrested in ordinary circumstances must be informed of the grounds of arrest, allowed to consult and be defended by a legal practitioner of choice, and produced before the nearest magistrate within twenty-four hours, excluding necessary journey time.',
+            'The Article also contains separate provisions concerning preventive detention, so exam questions may distinguish ordinary arrest safeguards from preventive-detention rules.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '19 = six freedoms of citizens.',
+        '20 = criminal-law protections.',
+        '21 = life and personal liberty.',
+        '21A = free and compulsory education for ages 6–14.',
+        '22 = safeguards against arrest and detention, plus preventive-detention provisions.',
+      ],
+      examFocus: [
+        'The six current freedoms under Article 19.',
+        'Three protections under Article 20.',
+        'Difference between Articles 21 and 21A.',
+        'Twenty-four-hour rule under Article 22 and its exception structure.',
+      ],
+      practiceTags: ['right-to-freedom', 'articles-19-22'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-009',
+      subjectCode: 'POL',
+      title: 'Right against Exploitation',
+      summary: 'Articles 23–24 on trafficking, forced labour and hazardous employment of children.',
+      estimatedMinutes: 6,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 23',
+          paragraphs: [
+            'Article 23 prohibits traffic in human beings, begar and other similar forms of forced labour. A violation is an offence punishable according to law.',
+            'The Article allows the State to impose compulsory service for public purposes, but in doing so the State cannot discriminate only on grounds of religion, race, caste or class.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 24',
+          paragraphs: [
+            'Article 24 prohibits employment of a child below fourteen years in any factory or mine or in any other hazardous employment.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse the two',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['23', 'Trafficking, begar and forced labour'],
+              ['24', 'Children below 14 in factory, mine or hazardous employment'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '23 = trafficking and forced labour.',
+        '24 = hazardous employment of children below 14.',
+        'Compulsory public service is not barred by Article 23, subject to its non-discrimination rule.',
+      ],
+      examFocus: [
+        'Difference between Articles 23 and 24.',
+        'Meaning of begar/forced labour in Article 23.',
+        'Age and workplace wording used in Article 24.',
+      ],
+      practiceTags: ['right-against-exploitation', 'articles-23-24'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-010',
+      subjectCode: 'POL',
+      title: 'Freedom of Religion',
+      summary: 'Articles 25–28: conscience, religious practice, religious affairs, taxation and instruction.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 25–28',
+          paragraphs: [
+            'The Constitution protects freedom of religion through Articles 25 to 28. These rights operate subject to constitutional limits such as public order, morality and health where stated.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Core idea'],
+            rows: [
+              ['25', 'Freedom of conscience; profess, practise and propagate religion'],
+              ['26', 'Freedom to manage religious affairs'],
+              ['27', 'Freedom from taxation specifically appropriated for promotion or maintenance of a particular religion'],
+              ['28', 'Rules on religious instruction or worship in certain educational institutions'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 25',
+          paragraphs: [
+            'Article 25 applies to all persons, not only citizens. It protects freedom of conscience and the right freely to profess, practise and propagate religion, subject to the conditions written in the Article.',
+            'For exam purposes, remember the constitutional explanation that wearing and carrying kirpans is included in the profession of the Sikh religion.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 26–28',
+          paragraphs: [
+            'Article 26 protects specified rights of religious denominations or sections of them. Article 27 deals with taxes whose proceeds are specifically appropriated for promotion or maintenance of a particular religion.',
+            'Article 28 distinguishes between educational institutions wholly maintained from State funds and certain institutions administered by the State but established under an endowment or trust requiring religious instruction.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '25 = conscience; profess, practise and propagate.',
+        '26 = manage religious affairs.',
+        '27 = specified tax protection.',
+        '28 = religious instruction/worship in educational institutions.',
+        'Article 25 expressly recognises carrying kirpans in relation to Sikh religion.',
+      ],
+      examFocus: [
+        'Article-number matching from 25–28.',
+        'Article 25 applies to all persons.',
+        'Kirpan explanation under Article 25.',
+        'Difference between Articles 27 and 28.',
+      ],
+      practiceTags: ['freedom-of-religion', 'articles-25-28'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-011',
+      subjectCode: 'POL',
+      title: 'Cultural & Educational Rights',
+      summary: 'Articles 29–30 and protection of language, script, culture and minority educational institutions.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 29',
+          paragraphs: [
+            'Article 29 protects the right of any section of citizens having a distinct language, script or culture of its own to conserve it.',
+            'Its second clause says that no citizen shall be denied admission into an educational institution maintained by the State or receiving State aid only on grounds of religion, race, caste, language or any of them.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 30',
+          paragraphs: [
+            'Article 30 gives minorities, whether based on religion or language, the right to establish and administer educational institutions of their choice.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Common exam confusion',
+          paragraphs: [
+            'Article 29(1) is worded for “any section of the citizens” with a distinct language, script or culture. Article 30 specifically uses the expression minorities based on religion or language.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Remember'],
+            rows: [
+              ['29', 'Conservation of distinct language, script or culture; admission protection'],
+              ['30', 'Minority educational institutions'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '29(1) = conserve distinct language, script or culture.',
+        '29(2) = admission protection in State-maintained/aided institutions.',
+        '30 = religious or linguistic minorities can establish and administer educational institutions.',
+      ],
+      examFocus: [
+        'Article 29 is not worded only for minorities.',
+        'Religion/language minorities under Article 30.',
+        'Difference between cultural conservation and minority institution rights.',
+      ],
+      practiceTags: ['cultural-educational-rights', 'articles-29-30'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-012',
+      subjectCode: 'POL',
+      title: 'Constitutional Remedies',
+      summary: 'Article 32 and the major constitutional writs used for enforcement of Fundamental Rights.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 32',
+          paragraphs: [
+            'Article 32 guarantees the right to move the Supreme Court by appropriate proceedings for enforcement of the rights conferred by Part III.',
+            'The Supreme Court may issue directions, orders or writs, including writs in the nature of habeas corpus, mandamus, prohibition, quo warranto and certiorari, for enforcement of Fundamental Rights.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Five writs at a glance',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Writ', 'Simple exam meaning'],
+            rows: [
+              ['Habeas Corpus', 'Produce a detained person before the court; tests legality of detention'],
+              ['Mandamus', 'Command to a public authority to perform a public/legal duty'],
+              ['Prohibition', 'Higher court stops a lower court/tribunal from exceeding jurisdiction before completion'],
+              ['Certiorari', 'Higher court can quash an order/proceeding of a lower court/tribunal on recognised grounds'],
+              ['Quo Warranto', 'Questions the authority by which a person holds a public office'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 32 and High Courts',
+          paragraphs: [
+            'Article 32 concerns the Supreme Court and enforcement of Part III rights. High Courts separately have writ jurisdiction under Article 226, which is broader in text because it extends to enforcement of Fundamental Rights and “for any other purpose”.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '32 = Supreme Court remedy for enforcement of Fundamental Rights.',
+        'Habeas Corpus = illegal detention.',
+        'Mandamus = perform public duty.',
+        'Prohibition = stop excess jurisdiction.',
+        'Certiorari = quash on recognised grounds.',
+        'Quo Warranto = authority to hold public office.',
+      ],
+      examFocus: [
+        'Match each writ with its function.',
+        'Article 32 versus Article 226.',
+        'Which writ relates to detention or public office.',
+      ],
+      practiceTags: ['constitutional-remedies', 'article-32', 'writs'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-013',
+      subjectCode: 'POL',
+      title: 'Directive Principles of State Policy',
+      summary: 'Part IV, Articles 36–51: non-justiciable principles fundamental in governance.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Nature of DPSPs',
+          paragraphs: [
+            'Directive Principles of State Policy are contained in Part IV of the Constitution, Articles 36 to 51.',
+            'Article 37 says that these provisions are not enforceable by any court, but the principles are nevertheless fundamental in the governance of the country and it is the duty of the State to apply them in making laws.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam focus'],
+            rows: [
+              ['38', 'Social order promoting welfare and reducing inequalities'],
+              ['39', 'Important socio-economic policy principles'],
+              ['39A', 'Equal justice and free legal aid'],
+              ['40', 'Organisation of village panchayats'],
+              ['44', 'Uniform civil code for citizens'],
+              ['45', 'Early childhood care and education for children below six years'],
+              ['46', 'Educational/economic interests of weaker sections, especially SCs and STs'],
+              ['47', 'Nutrition, standard of living and public health'],
+              ['48A', 'Environment, forests and wildlife'],
+              ['50', 'Separation of judiciary from executive in State public services'],
+              ['51', 'International peace and security'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'How exams classify them',
+          paragraphs: [
+            'Textbooks often group Directive Principles into broad socialistic, Gandhian and liberal-intellectual categories for study. These labels are study classifications; the Constitution itself does not divide Part IV under those three headings.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'DPSPs = Part IV, Articles 36–51.',
+        'Article 37 = not enforceable by courts, but fundamental in governance.',
+        '39A = legal aid; 40 = village panchayats; 44 = uniform civil code.',
+        '48A = environment; 50 = judiciary-executive separation; 51 = international peace.',
+      ],
+      examFocus: [
+        'Part and article range of DPSPs.',
+        'Article 37 and non-justiciability.',
+        'Matching high-frequency DPSP Articles with their subjects.',
+        'Conventional classifications are not headings used by the Constitution itself.',
+      ],
+      practiceTags: ['directive-principles', 'dpsp', 'articles-36-51'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-014',
+      subjectCode: 'POL',
+      title: 'Fundamental Duties',
+      summary: 'Part IVA and Article 51A: the eleven Fundamental Duties of citizens.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Where they appear',
+          paragraphs: [
+            'Fundamental Duties are contained in Part IVA of the Constitution under Article 51A. The duties apply to citizens.',
+            'Part IVA and the original ten duties were inserted by the 42nd Constitutional Amendment Act, 1976. An additional duty concerning educational opportunities for children aged six to fourteen was later added by the 86th Constitutional Amendment Act, 2002.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'The eleven duties — study version',
+          paragraphs: const [],
+          points: [
+            'Respect the Constitution, its ideals and institutions, the National Flag and National Anthem.',
+            'Cherish the ideals of the freedom struggle.',
+            'Uphold and protect the sovereignty, unity and integrity of India.',
+            'Defend the country and render national service when called upon.',
+            'Promote harmony and renounce practices derogatory to the dignity of women.',
+            'Value and preserve the heritage of composite culture.',
+            'Protect and improve the natural environment and show compassion for living creatures.',
+            'Develop scientific temper, humanism and the spirit of inquiry and reform.',
+            'Safeguard public property and abjure violence.',
+            'Strive towards excellence in individual and collective activity.',
+            'As parent or guardian, provide opportunities for education to a child or ward aged six to fourteen years.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Amendment link',
+          paragraphs: [
+            'For exams, connect the 42nd Amendment with insertion of Part IVA and ten Fundamental Duties, and the 86th Amendment with the additional education-related duty in Article 51A(k).',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Fundamental Duties = Part IVA, Article 51A.',
+        '42nd Amendment, 1976 inserted Part IVA and ten duties.',
+        '86th Amendment, 2002 added the education-related duty.',
+        'There are eleven duties in Article 51A today.',
+      ],
+      examFocus: [
+        'Part IVA and Article 51A.',
+        '42nd versus 86th Amendment.',
+        'Total number of Fundamental Duties.',
+        'Environment, scientific temper and education duty wording.',
+      ],
+      practiceTags: ['fundamental-duties', 'article-51a'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-015',
+      subjectCode: 'POL',
+      title: 'President of India',
+      summary: 'Articles 52–62: office, election, qualifications, term, oath and impeachment.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and executive power',
+          paragraphs: [
+            'Article 52 provides that there shall be a President of India. Article 53 vests the executive power of the Union in the President, to be exercised in accordance with the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Election of the President',
+          paragraphs: [
+            'The President is elected indirectly. The electoral college includes the elected members of both Houses of Parliament and the elected members of the Legislative Assemblies of the States. For this purpose, the Constitution also includes the National Capital Territory of Delhi and the Union territory of Puducherry.',
+            'The election uses proportional representation by means of the single transferable vote, and voting is by secret ballot.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications and term',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Point', 'Rule'],
+            rows: [
+              ['Minimum age', '35 years'],
+              ['Citizenship', 'Citizen of India'],
+              ['Qualification', 'Qualified for election as a member of the House of the People'],
+              ['Office of profit', 'Must not hold an office of profit as constitutionally specified'],
+              ['Term', '5 years from entering office'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Impeachment',
+          paragraphs: [
+            'Article 61 provides the procedure for impeachment of the President for violation of the Constitution. The charge may be preferred by either House of Parliament, subject to the special notice and majority requirements stated in the Constitution.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '52 = President of India.',
+        '53 = Union executive power vested in the President.',
+        '54–55 = election and manner of election.',
+        '58 = qualifications; minimum age 35.',
+        '56 = five-year term.',
+        '61 = impeachment for violation of the Constitution.',
+      ],
+      examFocus: [
+        'Who belongs to the Presidential electoral college.',
+        'Elected versus nominated members.',
+        'Minimum age and Lok Sabha qualification requirement.',
+        'Article-number matching from 52–61.',
+      ],
+      practiceTags: ['president-of-india', 'articles-52-62', 'presidential-election'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-016',
+      subjectCode: 'POL',
+      title: 'Vice-President of India',
+      summary: 'Articles 63–71: office, Rajya Sabha role, election, qualifications and removal.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and Rajya Sabha role',
+          paragraphs: [
+            'Article 63 provides that there shall be a Vice-President of India. Under Article 64, the Vice-President is the ex officio Chairman of the Council of States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Election',
+          paragraphs: [
+            'The Vice-President is elected by the members of both Houses of Parliament. Unlike the Presidential electoral college, the Constitution does not include State Legislative Assemblies in this election.',
+            'The election uses proportional representation by means of the single transferable vote and voting is by secret ballot.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications',
+          paragraphs: const [],
+          points: [
+            'Citizen of India.',
+            'At least 35 years of age.',
+            'Qualified for election as a member of the Council of States.',
+            'Must not hold an office of profit as constitutionally specified.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Term and removal',
+          paragraphs: [
+            'The Vice-President holds office for five years from entering office, subject to resignation or removal.',
+            'Removal requires a resolution of the Council of States passed by a majority of all the then members of that House and agreed to by the House of the People. At least fourteen days’ notice is required before moving such a resolution.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '63 = Vice-President.',
+        '64 = ex officio Chairman of Rajya Sabha.',
+        'Election: members of both Houses of Parliament.',
+        'Minimum age: 35; qualification: eligible for Rajya Sabha.',
+        'Removal resolution originates in Rajya Sabha.',
+      ],
+      examFocus: [
+        'President versus Vice-President electoral colleges.',
+        'Ex officio Chairman of Rajya Sabha.',
+        'Rajya Sabha qualification requirement.',
+        'Removal process and fourteen-day notice.',
+      ],
+      practiceTags: ['vice-president', 'articles-63-71'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-017',
+      subjectCode: 'POL',
+      title: 'Prime Minister',
+      summary: 'Appointment, constitutional position and duties of the Prime Minister.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Appointment',
+          paragraphs: [
+            'Article 75 provides that the Prime Minister is appointed by the President. The other Ministers are appointed by the President on the advice of the Prime Minister.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Head of the Council of Ministers',
+          paragraphs: [
+            'Article 74 provides for a Council of Ministers with the Prime Minister at the head to aid and advise the President. The President may require the Council of Ministers to reconsider advice, but must act in accordance with the advice tendered after reconsideration.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties towards the President — Article 78',
+          paragraphs: const [],
+          points: [
+            'Communicate decisions of the Council of Ministers on Union administration and proposals for legislation.',
+            'Furnish information relating to Union administration and proposals for legislation when the President calls for it.',
+            'If the President requires, place before the Council of Ministers a matter decided by an individual Minister but not considered by the Council.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '75 = Prime Minister appointed by the President.',
+        'Other Ministers are appointed on the Prime Minister’s advice.',
+        '74 = Council of Ministers headed by the Prime Minister aids and advises the President.',
+        '78 = Prime Minister’s information duties towards the President.',
+      ],
+      examFocus: [
+        'Articles 74, 75 and 78.',
+        'Who appoints the Prime Minister and other Ministers.',
+        'President’s power to require reconsideration of ministerial advice.',
+      ],
+      practiceTags: ['prime-minister', 'articles-74-75-78'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-018',
+      subjectCode: 'POL',
+      title: 'Council of Ministers',
+      summary: 'Articles 74–75: aid and advice, appointment, collective responsibility and size limit.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Aid and advice',
+          paragraphs: [
+            'Article 74 provides for a Council of Ministers with the Prime Minister at the head to aid and advise the President. The constitutional text also provides for reconsideration of advice once at the President’s request.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and responsibility',
+          paragraphs: [
+            'The Prime Minister is appointed by the President and the other Ministers are appointed by the President on the advice of the Prime Minister.',
+            'Article 75 states that the Council of Ministers is collectively responsible to the House of the People.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important Article 75 facts',
+          paragraphs: const [],
+          points: [
+            'Ministers hold office during the pleasure of the President.',
+            'Oaths of office and secrecy are administered by the President.',
+            'A Minister who is not a member of either House of Parliament for six consecutive months ceases to be a Minister at the end of that period.',
+            'The total number of Ministers, including the Prime Minister, cannot exceed 15% of the total membership of the Lok Sabha.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Collective responsibility',
+          paragraphs: [
+            'For exam purposes, connect collective responsibility with the Lok Sabha, not the Rajya Sabha. This is one of the most frequently tested distinctions in the Union executive chapter.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '74 = aid and advice.',
+        '75 = appointment and other provisions concerning Ministers.',
+        'Collective responsibility is to Lok Sabha.',
+        'Six-month rule for a Minister who is not an MP.',
+        'Council size ceiling: 15% of total Lok Sabha membership.',
+      ],
+      examFocus: [
+        'Collective responsibility: Lok Sabha.',
+        'Six-month membership rule.',
+        '15% size ceiling introduced through the constitutional amendment framework reflected in Article 75.',
+        'Difference between Article 74 advice and Article 75 ministerial provisions.',
+      ],
+      practiceTags: ['council-of-ministers', 'articles-74-75'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-019',
+      subjectCode: 'POL',
+      title: 'Parliament — Structure and Membership',
+      summary: 'Articles 79–88: structure of Parliament, Rajya Sabha, Lok Sabha and key membership rules.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'What Parliament consists of',
+          paragraphs: [
+            'Article 79 states that Parliament for the Union consists of the President and two Houses: the Council of States and the House of the People.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Rajya Sabha — Article 80',
+          paragraphs: [
+            'The Council of States includes twelve members nominated by the President for special knowledge or practical experience in literature, science, art and social service, along with representatives of the States and Union territories as provided by the Constitution.',
+            'Representatives of each State in the Rajya Sabha are elected by the elected members of the State Legislative Assembly using proportional representation by means of the single transferable vote.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Lok Sabha — Article 81',
+          paragraphs: [
+            'The House of the People is composed of members chosen by direct election from territorial constituencies in the States and representatives of Union territories as provided by Parliament by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duration and qualifications',
+          paragraphs: [
+            'The Rajya Sabha is not subject to dissolution. As nearly as possible, one-third of its members retire every second year.',
+            'The normal term of the Lok Sabha is five years from the date appointed for its first meeting, unless sooner dissolved, subject to the special constitutional provision during a Proclamation of Emergency.',
+          ],
+          table: LearnLessonTable(
+            headers: ['House', 'Minimum age under Article 84'],
+            rows: [
+              ['Rajya Sabha', '30 years'],
+              ['Lok Sabha', '25 years'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '79 = President + Rajya Sabha + Lok Sabha.',
+        'Rajya Sabha: 12 nominated members under Article 80.',
+        'Rajya Sabha is a continuing House; about one-third retire every second year.',
+        'Lok Sabha normal term = 5 years unless sooner dissolved.',
+        'Minimum age: Rajya Sabha 30; Lok Sabha 25.',
+      ],
+      examFocus: [
+        'Parliament includes the President.',
+        'Subjects for Rajya Sabha Presidential nominations.',
+        'Continuing nature of Rajya Sabha versus dissolvable Lok Sabha.',
+        'Minimum ages of the two Houses.',
+      ],
+      practiceTags: ['parliament', 'rajya-sabha', 'lok-sabha', 'articles-79-88'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-020',
+      subjectCode: 'POL',
+      title: 'Parliament — Sessions and Procedure',
+      summary: 'Sessions, prorogation, dissolution, voting, quorum and joint sittings.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Sessions of Parliament',
+          paragraphs: [
+            'Article 85 empowers the President to summon each House of Parliament. The Constitution requires that not more than six months shall intervene between the last sitting in one session and the date appointed for the first sitting in the next session.',
+            'The President may prorogue either House or both Houses. The Lok Sabha may also be dissolved.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Voting and quorum',
+          paragraphs: [
+            'Article 100 provides that questions in either House are generally decided by a majority of members present and voting, excluding the presiding officer in the first instance.',
+            'The Speaker, Chairman or person acting as such has a casting vote in the event of equality of votes.',
+            'Unless Parliament provides otherwise by law, the quorum to constitute a meeting of either House is one-tenth of the total number of members of that House.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting — Article 108',
+          paragraphs: [
+            'A joint sitting may be used in specified deadlock situations involving an ordinary Bill. It is summoned by the President.',
+            'There is no joint sitting for a Money Bill or for a Constitution Amendment Bill.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Article 85 = summoning, prorogation and dissolution.',
+        'Maximum gap between sessions: six months.',
+        'Article 100 = voting and quorum.',
+        'Quorum: one-tenth of total membership, unless otherwise provided by law.',
+        'Article 108 = joint sitting.',
+      ],
+      examFocus: [
+        'Six-month constitutional rule between sessions.',
+        'Casting vote of the presiding officer.',
+        'One-tenth quorum.',
+        'Bills for which joint sitting is not available.',
+      ],
+      practiceTags: ['parliament-procedure', 'article-85', 'article-100', 'joint-sitting'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-021',
+      subjectCode: 'POL',
+      title: 'Presiding Officers of Parliament',
+      summary: 'Chairman and Deputy Chairman of Rajya Sabha; Speaker and Deputy Speaker of Lok Sabha.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Rajya Sabha',
+          paragraphs: [
+            'Under Article 89, the Vice-President of India is the ex officio Chairman of the Council of States. The Rajya Sabha chooses one of its members to be the Deputy Chairman.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Lok Sabha',
+          paragraphs: [
+            'Article 93 requires the House of the People to choose two of its members to be respectively Speaker and Deputy Speaker.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Voting role',
+          paragraphs: [
+            'When presiding, the Chairman or Speaker does not vote in the first instance but has a casting vote in the case of equality of votes under Article 100.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting',
+          paragraphs: [
+            'At a joint sitting, the Speaker of the Lok Sabha ordinarily presides. In the Speaker’s absence, the constitutional and procedural order provides for other presiding officers.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Vice-President = ex officio Chairman of Rajya Sabha.',
+        'Rajya Sabha elects its Deputy Chairman.',
+        'Lok Sabha elects Speaker and Deputy Speaker.',
+        'Speaker ordinarily presides over a joint sitting.',
+        'Presiding officer has a casting vote in case of a tie.',
+      ],
+      examFocus: [
+        'Articles 89 and 93.',
+        'Vice-President’s Rajya Sabha role.',
+        'Who elects the Deputy Chairman, Speaker and Deputy Speaker.',
+        'Casting vote and joint-sitting presiding officer.',
+      ],
+      practiceTags: ['speaker', 'deputy-speaker', 'rajya-sabha-chairman', 'presiding-officers'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-022',
+      subjectCode: 'POL',
+      title: 'Bills in Parliament',
+      summary: 'Ordinary Bills, Money Bills and the constitutional rules governing their passage.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Ordinary Bills',
+          paragraphs: [
+            'Subject to the special rules for Money Bills and certain Financial Bills, a Bill may originate in either House of Parliament under Article 107.',
+            'An ordinary Bill generally needs agreement of both Houses before it is presented to the President for assent.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Money Bills — Articles 109 and 110',
+          paragraphs: [
+            'A Money Bill cannot be introduced in the Rajya Sabha. After the Lok Sabha passes a Money Bill, it is transmitted to the Rajya Sabha for recommendations.',
+            'The Rajya Sabha has fourteen days to return the Money Bill with its recommendations. The Lok Sabha may accept or reject any or all of those recommendations.',
+            'Article 110 defines a Money Bill. If a question arises whether a Bill is a Money Bill, the decision of the Speaker of the Lok Sabha is final under the constitutional text.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting',
+          paragraphs: [
+            'Article 108 provides a mechanism for a joint sitting in specified deadlock situations involving ordinary legislation. This mechanism does not apply to Money Bills or Constitution Amendment Bills.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Quick comparison',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Feature', 'Ordinary Bill', 'Money Bill'],
+            rows: [
+              ['Introduction', 'Either House', 'Lok Sabha only'],
+              ['Rajya Sabha role', 'Generally equal legislative role', 'Recommendations within 14 days'],
+              ['Joint sitting', 'Possible in specified deadlocks', 'Not available'],
+              ['Speaker certification', 'Not a Money Bill certificate', 'Speaker decides Money Bill question'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '107 = introduction and passing of Bills.',
+        '108 = joint sitting.',
+        '109 = special procedure for Money Bills.',
+        '110 = definition of Money Bill.',
+        'Rajya Sabha gets 14 days for Money Bill recommendations.',
+      ],
+      examFocus: [
+        'Which House can introduce a Money Bill.',
+        'Fourteen-day rule.',
+        'Speaker’s constitutional role in Money Bill classification.',
+        'Ordinary Bill versus Money Bill and joint sitting.',
+      ],
+      practiceTags: ['bills-in-parliament', 'money-bill', 'articles-107-110'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-023',
+      subjectCode: 'POL',
+      title: 'Union Budget and Financial Procedure',
+      summary: 'Annual Financial Statement, grants, appropriation and high-yield constitutional budget terms.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Annual Financial Statement — Article 112',
+          paragraphs: [
+            'Article 112 requires the President to cause to be laid before both Houses of Parliament a statement of the estimated receipts and expenditure of the Government of India for each financial year. This is the constitutional Annual Financial Statement.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Charged and voted expenditure',
+          paragraphs: [
+            'The Annual Financial Statement distinguishes expenditure charged on the Consolidated Fund of India from other expenditure proposed to be made from that Fund.',
+            'Charged expenditure is not submitted to the vote of Parliament, although it may be discussed. Other expenditure is submitted in the form of demands for grants to the Lok Sabha.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Demands for grants and appropriation',
+          paragraphs: [
+            'Article 113 deals with procedure in Parliament concerning estimates, including demands for grants. Such demands are submitted to the House of the People.',
+            'Article 114 provides for an Appropriation Bill after grants have been made, covering withdrawal from the Consolidated Fund of India for voted grants and charged expenditure.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield sequence',
+          paragraphs: const [],
+          points: [
+            'Annual Financial Statement — Article 112.',
+            'Procedure concerning estimates and demands for grants — Article 113.',
+            'Appropriation Bills — Article 114.',
+            'Supplementary, additional or excess grants — Article 115.',
+            'Votes on account, votes of credit and exceptional grants — Article 116.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '112 = Annual Financial Statement.',
+        'Demands for grants are voted by Lok Sabha.',
+        'Charged expenditure is not submitted to vote.',
+        '114 = Appropriation Bill.',
+        '115–116 cover additional financial procedures.',
+      ],
+      examFocus: [
+        'Annual Financial Statement versus ordinary use of the word Budget.',
+        'Charged expenditure versus voted expenditure.',
+        'Lok Sabha’s role in demands for grants.',
+        'Article-number sequence 112–116.',
+      ],
+      practiceTags: ['union-budget', 'annual-financial-statement', 'articles-112-116'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-024',
+      subjectCode: 'POL',
+      title: 'Parliamentary Committees',
+      summary: 'Why committees matter and the structure of the three major financial committees.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Why Parliament uses committees',
+          paragraphs: [
+            'Parliamentary committees allow detailed examination of legislative, financial and administrative matters that cannot always receive the same level of scrutiny on the floor of the House.',
+            'Committees may be standing or ad hoc. For competitive exams, the three financial committees are especially important.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three financial committees',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Committee', 'Membership', 'Tenure'],
+            rows: [
+              ['Public Accounts Committee', '22: 15 Lok Sabha + 7 Rajya Sabha', '1 year'],
+              ['Estimates Committee', '30: all from Lok Sabha', '1 year'],
+              ['Committee on Public Undertakings', '22: 15 Lok Sabha + 7 Rajya Sabha', '1 year'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'What they broadly examine',
+          paragraphs: const [],
+          points: [
+            'Public Accounts Committee: public accounts, appropriation-related scrutiny and CAG-based financial examination within its remit.',
+            'Estimates Committee: economies, efficiency, administrative reform and how estimates are presented and used.',
+            'Committee on Public Undertakings: reports, accounts and CAG reports relating to specified public undertakings, along with efficiency and sound business-practice questions within its remit.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Common exam distinction',
+          paragraphs: [
+            'The Estimates Committee has only Lok Sabha members. The Public Accounts Committee and Committee on Public Undertakings include members from both Houses.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'PAC: 22 = 15 LS + 7 RS.',
+        'Estimates Committee: 30, all from Lok Sabha.',
+        'COPU: 22 = 15 LS + 7 RS.',
+        'The tenure of these financial committees is one year.',
+      ],
+      examFocus: [
+        'Membership composition of PAC, Estimates Committee and COPU.',
+        'Which financial committee has only Lok Sabha members.',
+        'Basic functional distinction among the three.',
+      ],
+      practiceTags: ['parliamentary-committees', 'pac', 'estimates-committee', 'copu'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-025',
+      subjectCode: 'POL',
+      title: 'Supreme Court of India',
+      summary: 'Articles 124–147: composition, judges, jurisdiction and major constitutional powers.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional position',
+          paragraphs: [
+            'Article 124 establishes the Supreme Court of India. It is the apex court in the Indian judicial system.',
+            'Judges of the Supreme Court are appointed by the President. A Supreme Court Judge holds office until the age of sixty-five years, subject to resignation or removal under the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications — Article 124',
+          paragraphs: const [],
+          points: [
+            'Citizen of India.',
+            'Has been a Judge of one or more High Courts for at least five years; or',
+            'Has been an advocate of one or more High Courts for at least ten years; or',
+            'Is, in the opinion of the President, a distinguished jurist.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Major jurisdictions',
+          paragraphs: [
+            'The Supreme Court has original, appellate and advisory jurisdiction. Article 131 deals with its exclusive original jurisdiction in specified disputes involving the Union and States.',
+            'Article 32 gives the Supreme Court jurisdiction to enforce Fundamental Rights. Article 136 provides for special leave to appeal, while Article 143 provides for advisory jurisdiction when the President refers a question to the Court.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['129', 'Supreme Court is a court of record'],
+              ['131', 'Original jurisdiction in specified Union-State disputes'],
+              ['136', 'Special leave to appeal'],
+              ['137', 'Review of judgments or orders'],
+              ['141', 'Law declared by Supreme Court binding on all courts'],
+              ['142', 'Power to do complete justice in matters before it'],
+              ['143', 'Advisory jurisdiction'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Removal of a Judge',
+          paragraphs: [
+            'A Supreme Court Judge may be removed by the President after an address by each House of Parliament supported by the special majority specified in Article 124, on the ground of proved misbehaviour or incapacity.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '124 = establishment, appointment and conditions of Supreme Court Judges.',
+        'Retirement age: 65 years.',
+        '131 = original jurisdiction.',
+        '136 = special leave to appeal.',
+        '141 = Supreme Court law binding on all courts.',
+        '143 = Presidential reference/advisory jurisdiction.',
+      ],
+      examFocus: [
+        'Supreme Court judge qualifications and retirement age.',
+        'Article-number matching for major jurisdictions.',
+        'Difference between original, appellate and advisory jurisdiction.',
+        'Special-majority removal process.',
+      ],
+      practiceTags: ['supreme-court', 'articles-124-147', 'judicial-jurisdiction'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-026',
+      subjectCode: 'POL',
+      title: 'High Courts',
+      summary: 'Articles 214–231: High Court structure, judges, writ jurisdiction and superintendence.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'High Court for States',
+          paragraphs: [
+            'Article 214 provides that there shall be a High Court for each State, while the Constitution also permits a common High Court for two or more States or for States and a Union territory.',
+            'Each High Court consists of a Chief Justice and such other Judges as the President considers necessary from time to time.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and qualifications',
+          paragraphs: [
+            'High Court Judges are appointed by the President. The constitutional consultation requirements differ for the Chief Justice and for other Judges.',
+            'A person must be a citizen of India and must satisfy the judicial-office or advocacy experience requirement stated in Article 217.',
+          ],
+          points: [
+            'Judicial office in India for at least ten years; or',
+            'Advocate of a High Court, or of two or more such courts in succession, for at least ten years.',
+            'Retirement age: 62 years.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Writ jurisdiction — Article 226',
+          paragraphs: [
+            'High Courts may issue directions, orders or writs for enforcement of Fundamental Rights and for any other purpose.',
+            'This makes the textual scope of Article 226 wider than Article 32, which is specifically tied to enforcement of Fundamental Rights.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Superintendence — Article 227',
+          paragraphs: [
+            'Every High Court has superintendence over courts and tribunals throughout the territories in relation to which it exercises jurisdiction, subject to the constitutional scheme.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '214 = High Court for each State.',
+        '217 = appointment and conditions of High Court Judges.',
+        'Retirement age: 62 years.',
+        '226 = writs for Fundamental Rights and any other purpose.',
+        '227 = superintendence over subordinate courts and tribunals.',
+      ],
+      examFocus: [
+        'Supreme Court age 65 versus High Court age 62.',
+        'Article 32 versus Article 226.',
+        'Ten-year qualification routes for High Court Judges.',
+        'Common High Courts under the constitutional framework.',
+      ],
+      practiceTags: ['high-courts', 'articles-214-231', 'article-226'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-027',
+      subjectCode: 'POL',
+      title: 'Comptroller and Auditor General of India',
+      summary: 'Articles 148–151: appointment, independence, duties, accounts and audit reports.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 148 — constitutional office',
+          paragraphs: [
+            'The Constitution provides for a Comptroller and Auditor General of India. The CAG is appointed by the President by warrant under his hand and seal.',
+            'The CAG can be removed only in the same manner and on the same grounds as a Judge of the Supreme Court.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 149–151',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['149', 'Duties and powers of the CAG'],
+              ['150', 'Form of accounts of the Union and States'],
+              ['151', 'Audit reports'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Audit reports',
+          paragraphs: [
+            'CAG reports relating to Union accounts are submitted to the President, who causes them to be laid before each House of Parliament.',
+            'Reports relating to a State are submitted to the Governor, who causes them to be laid before the State Legislature.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Independence safeguards',
+          paragraphs: [
+            'The Constitution protects the conditions of service of the CAG from disadvantageous variation after appointment and charges the administrative expenses of the CAG’s office on the Consolidated Fund of India.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '148 = CAG.',
+        'Appointed by the President.',
+        'Removal protection parallels a Supreme Court Judge.',
+        '149 = duties and powers; 150 = form of accounts; 151 = audit reports.',
+        'Union reports → President → Parliament; State reports → Governor → State Legislature.',
+      ],
+      examFocus: [
+        'Articles 148–151.',
+        'Appointment and removal protection.',
+        'Where Union and State audit reports are submitted.',
+        'CAG link with PAC in parliamentary financial scrutiny.',
+      ],
+      practiceTags: ['cag', 'articles-148-151', 'constitutional-bodies'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-028',
+      subjectCode: 'POL',
+      title: 'Election Commission of India',
+      summary: 'Article 324 and the constitutional framework for superintendence, direction and control of elections.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 324',
+          paragraphs: [
+            'Article 324 vests the superintendence, direction and control of the preparation of electoral rolls and the conduct of specified elections in an Election Commission.',
+            'Its constitutional responsibilities cover elections to Parliament, State Legislatures, and the offices of President and Vice-President.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Composition',
+          paragraphs: [
+            'The Election Commission consists of the Chief Election Commissioner and such number of other Election Commissioners, if any, as the President may from time to time fix, subject to the constitutional and statutory framework.',
+            'The President appoints the Chief Election Commissioner and other Election Commissioners subject to any law made by Parliament.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Removal protection',
+          paragraphs: [
+            'Article 324 gives the Chief Election Commissioner protection against removal except in like manner and on like grounds as a Judge of the Supreme Court.',
+            'Other Election Commissioners or a Regional Commissioner cannot be removed except on the recommendation of the Chief Election Commissioner.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '324 = Election Commission.',
+        'Controls electoral rolls and conduct of specified constitutional elections.',
+        'Covers Parliament, State Legislatures, President and Vice-President.',
+        'CEC has Supreme-Court-Judge-like removal protection under Article 324.',
+      ],
+      examFocus: [
+        'Article 324 functions.',
+        'Which elections fall within the constitutional mandate.',
+        'Constitutional wording on CEC and other Election Commissioners.',
+        'Removal protection distinction.',
+      ],
+      practiceTags: ['election-commission', 'article-324', 'constitutional-bodies'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-029',
+      subjectCode: 'POL',
+      title: 'Union Public Service Commission',
+      summary: 'Articles 315–323: composition, appointment, tenure, removal, functions and reports.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 315–323',
+          paragraphs: [
+            'Article 315 provides for Public Service Commissions for the Union and for the States. The Union Public Service Commission is the constitutional Public Service Commission for the Union.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['315', 'Public Service Commissions for Union and States'],
+              ['316', 'Appointment and term'],
+              ['317', 'Removal and suspension'],
+              ['319', 'Restrictions on offices after ceasing to be a member'],
+              ['320', 'Functions'],
+              ['322', 'Expenses'],
+              ['323', 'Reports'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and tenure',
+          paragraphs: [
+            'The Chairman and other members of the UPSC are appointed by the President.',
+            'A member of the UPSC holds office for six years from entering office or until attaining the age of sixty-five years, whichever is earlier.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Functions — Article 320',
+          paragraphs: [
+            'The UPSC conducts examinations for appointments to Union services and is consulted on constitutionally specified recruitment, appointment, promotion, transfer and disciplinary matters, subject to the constitutional and regulatory framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Expenses and reports',
+          paragraphs: [
+            'UPSC expenses are charged on the Consolidated Fund of India under Article 322. Under Article 323, the Commission presents an annual report to the President, who causes it to be laid before Parliament along with the required memorandum in relevant cases.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '315–323 = Public Service Commissions.',
+        'UPSC members appointed by President.',
+        'Term: 6 years or age 65, whichever is earlier.',
+        '320 = functions.',
+        '322 = expenses charged on Consolidated Fund of India.',
+        '323 = reports.',
+      ],
+      examFocus: [
+        'Article-number sequence 315–323.',
+        'Six years or 65 years rule for UPSC.',
+        'Appointment by President.',
+        'Article 320 functions and Article 323 reports.',
+      ],
+      practiceTags: ['upsc', 'articles-315-323', 'public-service-commission'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-030',
+      subjectCode: 'POL',
+      title: 'Finance Commission',
+      summary: 'Articles 280–281: constitution, composition and recommendations on Union-State finances.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 280',
+          paragraphs: [
+            'The President constitutes a Finance Commission every fifth year or earlier if considered necessary.',
+            'The Commission consists of a Chairman and four other members appointed by the President. Parliament may by law determine the qualifications for appointment and the manner of selection.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core recommendations',
+          paragraphs: const [],
+          points: [
+            'Distribution between the Union and the States of the net proceeds of shareable taxes.',
+            'Allocation among the States of their respective shares.',
+            'Principles governing grants-in-aid of State revenues from the Consolidated Fund of India.',
+            'Measures needed to augment State Consolidated Funds to supplement Panchayat resources on the basis of State Finance Commission recommendations.',
+            'Measures needed to augment State Consolidated Funds to supplement Municipality resources on the basis of State Finance Commission recommendations.',
+            'Any other matter referred by the President in the interests of sound finance.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 281',
+          paragraphs: [
+            'The President causes every Finance Commission recommendation, together with an explanatory memorandum as to the action taken, to be laid before each House of Parliament.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '280 = Finance Commission.',
+        'Normally constituted every fifth year or earlier.',
+        'Composition: Chairman + 4 other members.',
+        'Recommends tax distribution and grants-in-aid principles.',
+        '281 = recommendations laid before Parliament with explanatory memorandum.',
+      ],
+      examFocus: [
+        'Article 280 and five-year cycle.',
+        'Chairman plus four members.',
+        'Tax devolution versus grants-in-aid.',
+        'Panchayat and Municipality resource augmentation role.',
+      ],
+      practiceTags: ['finance-commission', 'articles-280-281', 'fiscal-federalism'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-031',
+      subjectCode: 'POL',
+      title: 'Attorney General of India',
+      summary: 'Article 76: appointment, qualifications, duties and parliamentary privileges of the Attorney General.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 76',
+          paragraphs: [
+            'The Attorney General for India is the highest law officer of the Union. The Attorney General is appointed by the President.',
+            'The person appointed must be qualified to be appointed a Judge of the Supreme Court.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties',
+          paragraphs: [
+            'The Attorney General gives advice to the Government of India on legal matters referred or assigned by the President and performs other legal duties conferred by the Constitution or by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Right of audience and Parliament',
+          paragraphs: [
+            'The Attorney General has the right of audience in all courts in the territory of India.',
+            'Under Article 88, the Attorney General may speak and otherwise take part in proceedings of either House of Parliament, any joint sitting and parliamentary committees of which the Attorney General may be named a member, but does not have a vote by virtue of that right.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '76 = Attorney General for India.',
+        'Appointed by President.',
+        'Must be qualified for appointment as a Supreme Court Judge.',
+        'Right of audience in all courts in India.',
+        'May participate in Parliament under Article 88, but has no vote by virtue of that right.',
+      ],
+      examFocus: [
+        'Article 76.',
+        'Qualification standard.',
+        'Right of audience.',
+        'Parliament participation versus voting right.',
+      ],
+      practiceTags: ['attorney-general', 'article-76', 'law-officers'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-032',
+      subjectCode: 'POL',
+      title: 'Governor',
+      summary: 'Articles 153–162: office, appointment, qualifications, term and State executive power.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and appointment',
+          paragraphs: [
+            'Article 153 provides for a Governor for each State, while the Constitution permits the same person to be appointed Governor for two or more States.',
+            'The Governor is appointed by the President by warrant under his hand and seal.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications and term',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Point', 'Rule'],
+            rows: [
+              ['Citizenship', 'Citizen of India'],
+              ['Minimum age', '35 years'],
+              ['Term', '5 years from entering office'],
+              ['Tenure condition', 'Holds office during the pleasure of the President'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Executive power',
+          paragraphs: [
+            'Article 154 vests the executive power of the State in the Governor, to be exercised in accordance with the Constitution.',
+            'The Governor appoints the Chief Minister and, on the advice of the Chief Minister, the other Ministers.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Oath',
+          paragraphs: [
+            'The Governor takes the oath or affirmation prescribed by Article 159 before the Chief Justice of the High Court exercising jurisdiction in relation to the State, or in the Chief Justice’s absence, the senior-most available Judge of that Court.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '153 = Governor.',
+        '155 = appointment by President.',
+        'Minimum age = 35 years.',
+        'Normal term = 5 years, but office is held during President’s pleasure.',
+        '154 = State executive power.',
+      ],
+      examFocus: [
+        'President versus Governor appointment method.',
+        'Five-year term and pleasure doctrine.',
+        'Minimum age 35.',
+        'Articles 153–159.',
+      ],
+      practiceTags: ['governor', 'articles-153-162', 'state-executive'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-033',
+      subjectCode: 'POL',
+      title: 'Chief Minister and State Council of Ministers',
+      summary: 'Articles 163–167: aid and advice, appointment, collective responsibility and Chief Minister’s duties.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Aid and advice',
+          paragraphs: [
+            'Article 163 provides for a Council of Ministers with the Chief Minister at the head to aid and advise the Governor, except in matters where the Constitution requires the Governor to act in discretion.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and collective responsibility',
+          paragraphs: [
+            'The Chief Minister is appointed by the Governor. Other Ministers are appointed by the Governor on the advice of the Chief Minister.',
+            'Article 164 states that the Council of Ministers is collectively responsible to the Legislative Assembly of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important Article 164 rules',
+          paragraphs: const [],
+          points: [
+            'A Minister who is not a member of the State Legislature for six consecutive months ceases to be a Minister at the end of that period.',
+            'The total number of Ministers in a State, including the Chief Minister, cannot exceed 15% of the total number of members of the Legislative Assembly.',
+            'The number of Ministers, including the Chief Minister, cannot be less than 12.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Chief Minister’s duties — Article 167',
+          paragraphs: [
+            'The Chief Minister must communicate to the Governor decisions of the Council of Ministers relating to State administration and legislative proposals, furnish information when called for, and place before the Council a matter decided by an individual Minister if the Governor so requires.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '163 = Council of Ministers to aid and advise Governor.',
+        '164 = appointment and collective responsibility.',
+        'Collective responsibility is to the Legislative Assembly.',
+        'Six-month rule applies to a Minister who is not a legislator.',
+        'State Council size: maximum 15% of Assembly strength, minimum 12.',
+        '167 = Chief Minister’s duties towards Governor.',
+      ],
+      examFocus: [
+        'State equivalent of Union Articles 74, 75 and 78.',
+        'Collective responsibility to Legislative Assembly.',
+        '15% ceiling and minimum 12.',
+        'Article 167 information duties.',
+      ],
+      practiceTags: ['chief-minister', 'state-council-of-ministers', 'articles-163-167'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-034',
+      subjectCode: 'POL',
+      title: 'State Legislature',
+      summary: 'Articles 168–212: Legislative Assembly, Legislative Council, duration, membership and key procedures.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Structure — Article 168',
+          paragraphs: [
+            'A State Legislature consists of the Governor and, depending on the State, either one House or two Houses.',
+            'Where there are two Houses, they are the Legislative Assembly and the Legislative Council.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Legislative Assembly',
+          paragraphs: [
+            'Members of the Legislative Assembly are chosen by direct election from territorial constituencies.',
+            'The normal duration of a Legislative Assembly is five years from the date appointed for its first meeting, unless sooner dissolved, subject to the constitutional emergency provision.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Legislative Council',
+          paragraphs: [
+            'A Legislative Council is a continuing House and is not subject to dissolution. As nearly as possible, one-third of its members retire every second year.',
+            'Article 169 allows Parliament to create or abolish a Legislative Council in a State if the State Legislative Assembly first passes the required resolution by the special majority specified in that Article.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Minimum ages',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['House', 'Minimum age'],
+            rows: [
+              ['Legislative Assembly', '25 years'],
+              ['Legislative Council', '30 years'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Money Bills in States',
+          paragraphs: [
+            'A Money Bill cannot be introduced in a Legislative Council. In a bicameral State, the Council may make recommendations and must return the Bill within fourteen days, following the constitutional procedure.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '168 = State Legislature.',
+        'Assembly = directly elected and normally 5 years.',
+        'Council = continuing House; about one-third retire every second year.',
+        '169 = creation or abolition of Legislative Council.',
+        'Minimum age: Assembly 25; Council 30.',
+        'State Money Bill originates in Assembly only.',
+      ],
+      examFocus: [
+        'Unicameral versus bicameral State Legislature.',
+        'Creation/abolition of Legislative Council.',
+        'Assembly versus Council age and duration.',
+        'State Money Bill procedure.',
+      ],
+      practiceTags: ['state-legislature', 'legislative-assembly', 'legislative-council', 'articles-168-212'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-035',
+      subjectCode: 'POL',
+      title: 'Advocate General for the State',
+      summary: 'Article 165 and the constitutional role of the State’s highest law officer.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 165',
+          paragraphs: [
+            'The Governor appoints a person who is qualified to be appointed a Judge of a High Court to be the Advocate General for the State.',
+            'The Advocate General is the highest law officer of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties and rights',
+          paragraphs: [
+            'The Advocate General advises the State Government on legal matters referred or assigned by the Governor and performs other legal duties conferred by the Constitution or by law.',
+            'The Advocate General has a right of audience in courts within the territory of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'State Legislature participation',
+          paragraphs: [
+            'Under Article 177, the Advocate General may speak and otherwise take part in proceedings of the State Legislature and its committees as constitutionally provided, but is not entitled to vote by virtue of this right.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '165 = Advocate General.',
+        'Appointed by Governor.',
+        'Must be qualified to be a High Court Judge.',
+        'Highest law officer of the State.',
+        'Article 177 permits participation in State Legislature without a voting right by virtue of that participation.',
+      ],
+      examFocus: [
+        'Attorney General versus Advocate General.',
+        'President versus Governor as appointing authority.',
+        'Supreme Court qualification versus High Court qualification.',
+        'Article 165.',
+      ],
+      practiceTags: ['advocate-general', 'article-165', 'state-law-officer'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-036',
+      subjectCode: 'POL',
+      title: 'State Public Service Commission',
+      summary: 'Articles 315–323: appointment, tenure, functions and reporting of State Public Service Commissions.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional basis',
+          paragraphs: [
+            'Article 315 provides for a Public Service Commission for each State, while also permitting a Joint State Public Service Commission for two or more States in the constitutional manner.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and tenure',
+          paragraphs: [
+            'The Chairman and other members of a State Public Service Commission are appointed by the Governor.',
+            'A member of a State Commission holds office for six years from entering office or until attaining the age of sixty-two years, whichever is earlier.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Functions',
+          paragraphs: [
+            'Under Article 320, a State Public Service Commission conducts examinations for appointments to State services and is consulted on constitutionally specified recruitment, promotion, transfer and disciplinary matters, subject to the applicable framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Reports',
+          paragraphs: [
+            'A State Public Service Commission presents an annual report to the Governor. The Governor causes it to be laid before the State Legislature together with the required memorandum in relevant cases.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '315–323 cover Union and State Public Service Commissions.',
+        'State PSC members appointed by Governor.',
+        'State PSC term: 6 years or age 62, whichever is earlier.',
+        'UPSC age ceiling = 65; State PSC age ceiling = 62.',
+        '320 = functions; 323 = reports.',
+      ],
+      examFocus: [
+        'UPSC versus State PSC appointing authority.',
+        'Age 65 versus 62.',
+        'Six-year tenure rule.',
+        'Joint State Public Service Commission concept.',
+      ],
+      practiceTags: ['state-psc', 'articles-315-323', 'public-service-commission'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-037',
+      subjectCode: 'POL',
+      title: 'Panchayati Raj',
+      summary: 'Part IX, Articles 243–243O: constitutional framework for rural local government.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional status',
+          paragraphs: [
+            'Part IX of the Constitution deals with Panchayats. It was inserted by the 73rd Constitutional Amendment Act, 1992.',
+            'The Part runs from Articles 243 to 243O and gives constitutional recognition to rural local self-government.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three-tier structure',
+          paragraphs: [
+            'Article 243B provides for Panchayats at the village, intermediate and district levels, subject to the constitutional exception for States with a population not exceeding twenty lakhs.',
+          ],
+          points: [
+            'Village level.',
+            'Intermediate level.',
+            'District level.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield provisions',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['243A', 'Gram Sabha'],
+              ['243D', 'Reservation of seats'],
+              ['243E', 'Duration of Panchayats'],
+              ['243G', 'Powers and responsibilities'],
+              ['243I', 'State Finance Commission'],
+              ['243K', 'Elections to Panchayats'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Duration and elections',
+          paragraphs: [
+            'A Panchayat normally continues for five years from the date appointed for its first meeting unless sooner dissolved.',
+            'The superintendence, direction and control of Panchayat elections is vested in the State Election Commission under Article 243K.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '73rd Amendment = Panchayats.',
+        'Part IX = Articles 243–243O.',
+        'Three levels: village, intermediate, district.',
+        'Five-year normal duration.',
+        '243I = State Finance Commission; 243K = State Election Commission.',
+      ],
+      examFocus: [
+        '73rd Amendment and Part IX.',
+        'Article-number matching within 243A–243K.',
+        'Three-tier system and the population exception.',
+        'State Finance Commission versus State Election Commission.',
+      ],
+      practiceTags: ['panchayati-raj', '73rd-amendment', 'part-ix'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-038',
+      subjectCode: 'POL',
+      title: 'Municipalities',
+      summary: 'Part IXA, Articles 243P–243ZG: constitutional framework for urban local government.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional status',
+          paragraphs: [
+            'Part IXA deals with Municipalities and was inserted by the 74th Constitutional Amendment Act, 1992.',
+            'It begins with Article 243P and extends through Article 243ZG.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Types of Municipalities',
+          paragraphs: [
+            'Article 243Q provides for different municipal forms according to the nature of the urban area.',
+          ],
+          points: [
+            'Nagar Panchayat for a transitional area.',
+            'Municipal Council for a smaller urban area.',
+            'Municipal Corporation for a larger urban area.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield provisions',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['243Q', 'Constitution of Municipalities'],
+              ['243T', 'Reservation of seats'],
+              ['243U', 'Duration'],
+              ['243W', 'Powers and responsibilities'],
+              ['243Y', 'Finance Commission'],
+              ['243ZA', 'Municipal elections'],
+              ['243ZD', 'District Planning Committee'],
+              ['243ZE', 'Metropolitan Planning Committee'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Duration and elections',
+          paragraphs: [
+            'A Municipality normally continues for five years from the date appointed for its first meeting unless sooner dissolved.',
+            'Municipal elections are conducted under the superintendence, direction and control of the State Election Commission referred to in Article 243K.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '74th Amendment = Municipalities.',
+        'Part IXA = Articles 243P–243ZG.',
+        '243Q = three municipal forms.',
+        'Five-year normal duration.',
+        '243ZD = District Planning Committee; 243ZE = Metropolitan Planning Committee.',
+      ],
+      examFocus: [
+        '73rd versus 74th Amendment.',
+        'Nagar Panchayat, Municipal Council and Municipal Corporation.',
+        'Planning committees.',
+        'Municipal election supervision.',
+      ],
+      practiceTags: ['municipalities', '74th-amendment', 'part-ixa'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-039',
+      subjectCode: 'POL',
+      title: 'Centre-State Legislative Relations',
+      summary: 'Articles 245–255 and the distribution of legislative power between Parliament and State Legislatures.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 245–246',
+          paragraphs: [
+            'Articles 245 and 246 form the core constitutional framework for the territorial extent and subject-matter of laws made by Parliament and State Legislatures.',
+            'The Seventh Schedule contains the Union List, State List and Concurrent List.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three legislative lists',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['List', 'General legislative competence'],
+            rows: [
+              ['Union List', 'Parliament'],
+              ['State List', 'State Legislature'],
+              ['Concurrent List', 'Parliament and State Legislature'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Important exceptions and special powers',
+          paragraphs: [
+            'The Constitution allows Parliament to legislate on matters normally within the State sphere in specified situations.',
+          ],
+          points: [
+            'Article 249: Rajya Sabha resolution in the national interest.',
+            'Article 250: during a Proclamation of Emergency.',
+            'Article 252: legislation for two or more States by consent.',
+            'Article 253: implementing international agreements.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Repugnancy — Article 254',
+          paragraphs: [
+            'Article 254 deals with inconsistency between Parliamentary and State laws on matters in the Concurrent List. The constitutional rule generally gives Parliamentary law priority, subject to the special provision for certain State laws reserved for and receiving Presidential assent.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '245–255 = legislative relations.',
+        'Seventh Schedule = Union, State and Concurrent Lists.',
+        '249 = Rajya Sabha national-interest route.',
+        '250 = Emergency.',
+        '252 = States consent route.',
+        '253 = international obligations.',
+        '254 = repugnancy in Concurrent List matters.',
+      ],
+      examFocus: [
+        'Three-list structure.',
+        'Article 249 versus 252.',
+        'Concurrent List conflicts under Article 254.',
+        'Special circumstances for Parliament to legislate on State subjects.',
+      ],
+      practiceTags: ['centre-state-relations', 'legislative-relations', 'articles-245-255'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-040',
+      subjectCode: 'POL',
+      title: 'Centre-State Administrative Relations',
+      summary: 'Articles 256–263: Union directions, delegation, inter-State cooperation and coordination.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 256 and 257',
+          paragraphs: [
+            'Article 256 requires State executive power to be exercised so as to ensure compliance with laws made by Parliament and existing laws applicable in that State, and it enables Union directions for that purpose.',
+            'Article 257 deals with control of the Union over States in certain cases so that State executive power does not impede or prejudice Union executive power.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delegation of functions',
+          paragraphs: [
+            'Articles 258 and 258A provide constitutional mechanisms for entrusting functions between the Union and the States in specified ways.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Inter-State coordination',
+          paragraphs: [
+            'Article 262 permits Parliament to provide for adjudication of disputes relating to waters of inter-State rivers or river valleys and to exclude court jurisdiction to the extent provided by such law.',
+            'Article 263 provides for an Inter-State Council if the President considers that public interests would be served by establishing one.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '256 = State compliance with Parliamentary laws and Union directions.',
+        '257 = Union control in specified administrative cases.',
+        '258/258A = entrustment of functions.',
+        '262 = inter-State river water disputes.',
+        '263 = Inter-State Council.',
+      ],
+      examFocus: [
+        'Article 256 versus 257.',
+        'Administrative delegation provisions.',
+        'Article 262 river disputes.',
+        'Article 263 Inter-State Council.',
+      ],
+      practiceTags: ['administrative-relations', 'articles-256-263', 'inter-state-council'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-041',
+      subjectCode: 'POL',
+      title: 'Centre-State Financial Relations',
+      summary: 'Articles 268–293: distribution of revenues, grants, borrowing and fiscal relations.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional framework',
+          paragraphs: [
+            'The Constitution contains a detailed set of provisions governing the distribution of revenues between the Union and the States, grants-in-aid and borrowing.',
+            'These provisions work together with the Finance Commission mechanism under Article 280.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam focus'],
+            rows: [
+              ['268', 'Certain duties levied by Union but collected and appropriated by States'],
+              ['269', 'Certain taxes levied and collected by Union but assigned to States'],
+              ['270', 'Taxes levied and distributed between Union and States'],
+              ['275', 'Grants from Union to certain States'],
+              ['280', 'Finance Commission'],
+              ['292', 'Borrowing by Government of India'],
+              ['293', 'Borrowing by States'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Finance Commission link',
+          paragraphs: [
+            'The Finance Commission recommends, among other matters, the distribution between the Union and States of the net proceeds of shareable taxes and the principles governing grants-in-aid of State revenues.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '268–293 contain major financial-relations provisions.',
+        '270 = shareable Union taxes distributed between Union and States.',
+        '275 = grants-in-aid.',
+        '280 = Finance Commission.',
+        '292 = Union borrowing; 293 = State borrowing.',
+      ],
+      examFocus: [
+        'Revenue-distribution article matching.',
+        'Grants under Article 275.',
+        'Finance Commission connection.',
+        'Union borrowing versus State borrowing.',
+      ],
+      practiceTags: ['financial-relations', 'fiscal-federalism', 'articles-268-293'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-042',
+      subjectCode: 'POL',
+      title: 'Inter-State Council and Zonal Councils',
+      summary: 'Constitutional Inter-State Council and statutory Zonal Councils for Centre-State cooperation.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Inter-State Council — Article 263',
+          paragraphs: [
+            'Article 263 permits the President to establish an Inter-State Council when it appears that public interests would be served by doing so.',
+            'The constitutional functions may include inquiry into and advice on disputes, discussion of subjects in which States or the Union and States have a common interest, and recommendations for better coordination of policy and action.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Zonal Councils',
+          paragraphs: [
+            'Zonal Councils are not constitutional bodies. Five Zonal Councils were created under the States Reorganisation Act, 1956.',
+            'They provide a forum for cooperative discussion of inter-State and Centre-State issues.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Basis'],
+            rows: [
+              ['Inter-State Council', 'Article 263 of the Constitution'],
+              ['Zonal Councils', 'States Reorganisation Act, 1956'],
+              ['North Eastern Council', 'North-Eastern Council Act, 1971'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '263 = Inter-State Council.',
+        'Inter-State Council is constitutional in basis.',
+        'Five Zonal Councils arise from the States Reorganisation Act, 1956.',
+        'Zonal Councils are statutory, not constitutional.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body distinction.',
+        'Article 263.',
+        'States Reorganisation Act, 1956.',
+        'Inter-State Council versus Zonal Councils.',
+      ],
+      practiceTags: ['inter-state-council', 'zonal-councils', 'centre-state-coordination'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-043',
+      subjectCode: 'POL',
+      title: 'Emergency Provisions',
+      summary: 'Part XVIII: National Emergency, President’s Rule and Financial Emergency.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Three constitutional emergencies',
+          paragraphs: [
+            'Part XVIII of the Constitution contains the emergency provisions. Competitive exams usually distinguish three different constitutional mechanisms.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Emergency'],
+            rows: [
+              ['352', 'National Emergency'],
+              ['356', 'Failure of constitutional machinery in a State'],
+              ['360', 'Financial Emergency'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'National Emergency — Article 352',
+          paragraphs: [
+            'A Proclamation under Article 352 may be issued when the security of India or any part of its territory is threatened by war, external aggression or armed rebellion.',
+            'The Forty-fourth Amendment replaced the earlier expression “internal disturbance” with “armed rebellion”.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'President’s Rule — Article 356',
+          paragraphs: [
+            'Article 356 deals with a situation in which the government of a State cannot be carried on in accordance with the Constitution. A Proclamation may follow receipt of a Governor’s report or otherwise, subject to the constitutional conditions and parliamentary approval.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Financial Emergency — Article 360',
+          paragraphs: [
+            'Article 360 provides for a Financial Emergency if the President is satisfied that the financial stability or credit of India or any part of its territory is threatened.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '352 = National Emergency.',
+        '356 = President’s Rule / failure of constitutional machinery in a State.',
+        '360 = Financial Emergency.',
+        'National Emergency grounds: war, external aggression, armed rebellion.',
+        '44th Amendment changed “internal disturbance” to “armed rebellion”.',
+      ],
+      examFocus: [
+        'Article-number matching.',
+        'Grounds under Article 352.',
+        'National Emergency versus President’s Rule versus Financial Emergency.',
+        'Forty-fourth Amendment changes.',
+      ],
+      practiceTags: ['emergency-provisions', 'articles-352-360', 'national-emergency', 'presidents-rule'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-044',
+      subjectCode: 'POL',
+      title: 'Constitutional Amendment Procedure',
+      summary: 'Article 368 and the three broad ways constitutional provisions are changed.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 368',
+          paragraphs: [
+            'Article 368 deals with Parliament’s constituent power and the procedure for amendment of the Constitution.',
+            'A Constitution Amendment Bill may be introduced in either House of Parliament. There is no constitutional provision for a joint sitting to resolve disagreement on such a Bill.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three broad amendment routes',
+          paragraphs: const [],
+          points: [
+            'Some constitutional changes are made by a simple majority of Parliament and are not treated as amendments under Article 368.',
+            'Many provisions require a special majority in each House of Parliament.',
+            'Certain federal provisions require the special majority in Parliament plus ratification by at least one-half of the State Legislatures.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Special majority under Article 368',
+          paragraphs: [
+            'The constitutional amendment majority is a majority of the total membership of each House and a majority of not less than two-thirds of the members of that House present and voting.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'State ratification',
+          paragraphs: [
+            'Ratification by at least one-half of the States is required for amendments affecting specified federal provisions listed in the proviso to Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '368 = amendment procedure.',
+        'Constitution Amendment Bill can start in either House.',
+        'No joint sitting for a Constitution Amendment Bill.',
+        'Special majority = total-membership majority + two-thirds present and voting.',
+        'Some federal provisions additionally need ratification by at least half the States.',
+      ],
+      examFocus: [
+        'Simple majority versus Article 368 amendment.',
+        'Special-majority formula.',
+        'State-ratification requirement.',
+        'No joint sitting.',
+      ],
+      practiceTags: ['constitutional-amendment', 'article-368'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-045',
+      subjectCode: 'POL',
+      title: 'Schedules of the Constitution',
+      summary: 'The twelve Schedules and the subjects most frequently tested in competitive exams.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'The twelve Schedules',
+          paragraphs: [
+            'The Constitution currently contains twelve Schedules. Exams usually test the subject associated with a Schedule rather than asking for long textual details.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Schedule', 'High-yield subject'],
+            rows: [
+              ['First', 'States and Union territories'],
+              ['Second', 'Emoluments and allowances of specified constitutional authorities'],
+              ['Third', 'Forms of oaths or affirmations'],
+              ['Fourth', 'Allocation of seats in Rajya Sabha'],
+              ['Fifth', 'Administration and control of Scheduled Areas and Scheduled Tribes'],
+              ['Sixth', 'Tribal areas in Assam, Meghalaya, Tripura and Mizoram'],
+              ['Seventh', 'Union, State and Concurrent Lists'],
+              ['Eighth', 'Languages recognised in the Schedule'],
+              ['Ninth', 'Specified laws placed in the Schedule'],
+              ['Tenth', 'Anti-defection provisions'],
+              ['Eleventh', 'Panchayat subjects'],
+              ['Twelfth', 'Municipal subjects'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Common amendment links',
+          paragraphs: [
+            'The Tenth Schedule was added by the 52nd Constitutional Amendment Act, 1985. The Eleventh and Twelfth Schedules are associated with the 73rd and 74th Amendments respectively.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '7th = three legislative lists.',
+        '8th = languages.',
+        '10th = anti-defection.',
+        '11th = Panchayats.',
+        '12th = Municipalities.',
+        '5th and 6th = Scheduled/tribal area administration.',
+      ],
+      examFocus: [
+        'Schedule-subject matching.',
+        'Tenth, Eleventh and Twelfth Schedule amendment links.',
+        'Fifth versus Sixth Schedule.',
+        'Fourth versus Seventh Schedule.',
+      ],
+      practiceTags: ['constitutional-schedules', 'tenth-schedule', 'seventh-schedule'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-046',
+      subjectCode: 'POL',
+      title: 'Official Language',
+      summary: 'Part XVII: Union language, State languages, courts and language-related constitutional provisions.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 343 — language of the Union',
+          paragraphs: [
+            'Article 343 states that the official language of the Union is Hindi in Devanagari script. It also specifies the international form of Indian numerals for official purposes of the Union.',
+            'The Constitution also permitted continued use of English for Union official purposes for the initial constitutional period and allowed Parliament to provide by law for its continued use.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important language Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['343', 'Official language of the Union'],
+              ['344', 'Official Language Commission and parliamentary committee'],
+              ['345', 'Official language or languages of a State'],
+              ['346', 'Communication between States and between a State and Union'],
+              ['347', 'Recognition of a language spoken by a section of a State’s population'],
+              ['348', 'Language of Supreme Court, High Courts, Acts and Bills'],
+              ['350A', 'Instruction in mother tongue at primary stage for linguistic minority children'],
+              ['350B', 'Special Officer for linguistic minorities'],
+              ['351', 'Directive for development of Hindi'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Eighth Schedule',
+          paragraphs: [
+            'The Eighth Schedule lists the languages recognised for the constitutional purposes connected with that Schedule. It is separate from Article 343’s rule on the official language of the Union.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XVII = Official Language.',
+        '343 = Hindi in Devanagari script as official language of Union.',
+        '345 = State official languages.',
+        '348 = language of Supreme Court and High Courts, Acts and Bills.',
+        '350B = Special Officer for linguistic minorities.',
+        '351 = development of Hindi.',
+      ],
+      examFocus: [
+        'Article 343 versus Eighth Schedule.',
+        'State language provision under Article 345.',
+        'Court language under Article 348.',
+        '350A, 350B and 351.',
+      ],
+      practiceTags: ['official-language', 'part-xvii', 'article-343'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-047',
+      subjectCode: 'POL',
+      title: 'Special Provisions for States',
+      summary: 'Articles 371–371J and selected State-specific constitutional arrangements.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 371–371J',
+          paragraphs: [
+            'The Constitution contains a group of special provisions for particular States in Articles 371 to 371J.',
+            'These provisions are not identical. Each Article applies to the State or States specifically named in it and may deal with different administrative, cultural, developmental or institutional matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield mapping',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'State / States'],
+            rows: [
+              ['371', 'Maharashtra and Gujarat'],
+              ['371A', 'Nagaland'],
+              ['371B', 'Assam'],
+              ['371C', 'Manipur'],
+              ['371D / 371E', 'Andhra Pradesh-related provisions'],
+              ['371F', 'Sikkim'],
+              ['371G', 'Mizoram'],
+              ['371H', 'Arunachal Pradesh'],
+              ['371I', 'Goa'],
+              ['371J', 'Karnataka'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Exam approach',
+          paragraphs: [
+            'Questions usually test Article-to-State matching or a distinctive protection. These Articles should therefore be learned as a map rather than treated as one uniform constitutional rule.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '371A = Nagaland.',
+        '371F = Sikkim.',
+        '371G = Mizoram.',
+        '371H = Arunachal Pradesh.',
+        '371I = Goa.',
+        '371J = Karnataka.',
+      ],
+      examFocus: [
+        'Article-to-State matching.',
+        'Do not treat Articles 371–371J as one identical scheme.',
+        'North-Eastern State provisions.',
+      ],
+      practiceTags: ['special-provisions-states', 'articles-371-371j'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-048',
+      subjectCode: 'POL',
+      title: 'Tribunals and Key Miscellaneous Provisions',
+      summary: 'Part XIVA tribunals and a compact set of frequently tested miscellaneous constitutional provisions.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Part XIVA — Tribunals',
+          paragraphs: [
+            'Part XIVA contains Articles 323A and 323B and was inserted by the 42nd Constitutional Amendment.',
+            'Article 323A concerns administrative tribunals. Article 323B allows the appropriate Legislature to provide tribunals for specified classes of matters within its legislative competence.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: '323A versus 323B',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['323A', 'Administrative tribunals; Parliament may provide by law'],
+              ['323B', 'Tribunals for specified matters; appropriate Legislature may legislate'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Other high-yield miscellaneous Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['300A', 'No person shall be deprived of property save by authority of law'],
+              ['312', 'All-India Services'],
+              ['324', 'Election Commission'],
+              ['326', 'Elections to Lok Sabha and State Assemblies on basis of adult suffrage'],
+              ['329', 'Bar to court interference in electoral matters as constitutionally specified'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Right to property',
+          paragraphs: [
+            'The right to property is no longer a Fundamental Right. Article 300A protects property as a constitutional legal right against deprivation except by authority of law.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XIVA = Articles 323A–323B.',
+        '323A = administrative tribunals.',
+        '323B = tribunals for specified matters.',
+        '300A = property protected by authority-of-law requirement.',
+        '312 = All-India Services.',
+        '326 = adult suffrage.',
+      ],
+      examFocus: [
+        '323A versus 323B.',
+        'Right to property under Article 300A.',
+        'All-India Services under Article 312.',
+        'Adult suffrage under Article 326.',
+      ],
+      practiceTags: ['tribunals', 'articles-323a-323b', 'article-300a', 'article-326'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-049',
+      subjectCode: 'POL',
+      title: 'Anti-Defection Law',
+      summary: 'Tenth Schedule: disqualification for defection, merger exception and decision-making authority.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Tenth Schedule',
+          paragraphs: [
+            'The anti-defection provisions are contained in the Tenth Schedule of the Constitution. The Schedule was inserted by the 52nd Constitutional Amendment Act, 1985.',
+            'It provides for disqualification of members of Parliament and State Legislatures on specified grounds connected with defection.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Main grounds of disqualification',
+          paragraphs: const [],
+          points: [
+            'A member of a political party voluntarily gives up membership of that party.',
+            'A member votes or abstains from voting contrary to the party direction without prior permission and the action is not condoned within the period allowed by the Schedule.',
+            'An independent elected member joins a political party after the election.',
+            'A nominated member joins a political party after the six-month period allowed by the Schedule.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Merger exception',
+          paragraphs: [
+            'The Schedule contains an exception for a merger where not less than two-thirds of the members of the legislature party agree to the merger.',
+            'The earlier separate protection for a “split” by one-third of members was removed by the 91st Constitutional Amendment Act, 2003.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Who decides?',
+          paragraphs: [
+            'Questions of disqualification under the Tenth Schedule are decided by the Chairman or Speaker of the House concerned, subject to the constitutional and judicial framework.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Tenth Schedule = anti-defection.',
+        'Added by 52nd Amendment, 1985.',
+        'Merger exception requires at least two-thirds of legislature-party members.',
+        '91st Amendment removed the old split exception.',
+        'Speaker/Chairman decides disqualification questions under the Schedule.',
+      ],
+      examFocus: [
+        '52nd versus 91st Amendment.',
+        'Independent and nominated-member rules.',
+        'Two-thirds merger threshold.',
+        'Tenth Schedule identification.',
+      ],
+      practiceTags: ['anti-defection', 'tenth-schedule', '52nd-amendment', '91st-amendment'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-050',
+      subjectCode: 'POL',
+      title: 'Elections and Representation',
+      summary: 'Articles 324–329 and the two Representation of the People Acts most often tested in exams.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional framework',
+          paragraphs: [
+            'Part XV of the Constitution deals with elections. Articles 324 to 329 contain the core constitutional provisions relating to electoral administration and representation.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['324', 'Election Commission'],
+              ['325', 'One general electoral roll; no exclusion on specified grounds'],
+              ['326', 'Adult suffrage for Lok Sabha and State Assembly elections'],
+              ['327', 'Parliament’s power to make election law'],
+              ['328', 'State Legislature’s power subject to the Constitution and parliamentary law'],
+              ['329', 'Bar to court interference in electoral matters as constitutionally specified'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Representation of the People Act, 1950',
+          paragraphs: [
+            'The Representation of the People Act, 1950 primarily deals with matters such as allocation of seats, delimitation-related framework and preparation of electoral rolls within its statutory scheme.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Representation of the People Act, 1951',
+          paragraphs: [
+            'The Representation of the People Act, 1951 primarily governs the conduct of elections, qualifications and disqualifications, election offences and corrupt practices, and election disputes within its statutory framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Adult suffrage',
+          paragraphs: [
+            'Article 326 provides for elections to the Lok Sabha and State Legislative Assemblies on the basis of adult suffrage, subject to the Constitution and election law. The voting age is eighteen years.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XV = Elections.',
+        '324 = Election Commission.',
+        '326 = adult suffrage; voting age 18.',
+        'RPA 1950 = rolls/seat-allocation framework.',
+        'RPA 1951 = conduct of elections and election disputes.',
+      ],
+      examFocus: [
+        'RPA 1950 versus RPA 1951.',
+        'Articles 324–329.',
+        'Adult suffrage under Article 326.',
+        'Election Commission versus election-law powers of Parliament.',
+      ],
+      practiceTags: ['elections', 'representation-of-people-act', 'articles-324-329'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-051',
+      subjectCode: 'POL',
+      title: 'National Commission for Scheduled Castes',
+      summary: 'Article 338: constitutional status, composition, duties, reports and powers.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338',
+          paragraphs: [
+            'Article 338 provides for the National Commission for Scheduled Castes as a constitutional body.',
+            'The Commission consists of a Chairperson, Vice-Chairperson and three other Members, appointed under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards provided for Scheduled Castes.',
+            'Inquire into specific complaints regarding deprivation of rights and safeguards.',
+            'Participate and advise on the planning process of socio-economic development within the constitutional framework.',
+            'Present reports to the President annually and at other times as considered necessary.',
+            'Make recommendations for effective implementation of safeguards and welfare measures.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Powers',
+          paragraphs: [
+            'While investigating matters or inquiring into complaints, the Commission has the powers of a civil court for the purposes specified in Article 338.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338 = National Commission for Scheduled Castes.',
+        'Constitutional body.',
+        'Chairperson + Vice-Chairperson + 3 Members.',
+        'Reports to President.',
+        'Civil-court-type powers for specified inquiry purposes.',
+      ],
+      examFocus: [
+        'Article 338.',
+        'NCSC versus NCST versus NCBC.',
+        'Composition and reporting authority.',
+      ],
+      practiceTags: ['ncsc', 'article-338', 'constitutional-commissions'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-052',
+      subjectCode: 'POL',
+      title: 'National Commission for Scheduled Tribes',
+      summary: 'Article 338A: constitutional safeguards and monitoring for Scheduled Tribes.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338A',
+          paragraphs: [
+            'Article 338A provides for the National Commission for Scheduled Tribes as a separate constitutional body.',
+            'It consists of a Chairperson, Vice-Chairperson and three other Members under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards for Scheduled Tribes.',
+            'Inquire into specific complaints concerning rights and safeguards.',
+            'Participate and advise on the planning process of socio-economic development.',
+            'Present reports to the President.',
+            'Recommend measures for protection, welfare and development of Scheduled Tribes.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam distinction',
+          paragraphs: [
+            'The NCSC is linked with Article 338, while the separate NCST is linked with Article 338A. This article-number distinction is frequently tested.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338A = National Commission for Scheduled Tribes.',
+        'Constitutional body.',
+        'Chairperson + Vice-Chairperson + 3 Members.',
+        'Reports to President.',
+        'Separate from NCSC.',
+      ],
+      examFocus: [
+        '338 versus 338A.',
+        'NCSC versus NCST.',
+        'Constitutional status and reporting.',
+      ],
+      practiceTags: ['ncst', 'article-338a', 'constitutional-commissions'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-053',
+      subjectCode: 'POL',
+      title: 'National Commission for Backward Classes',
+      summary: 'Article 338B and the constitutional status of the National Commission for Backward Classes.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338B',
+          paragraphs: [
+            'The National Commission for Backward Classes is a constitutional body under Article 338B.',
+            'Constitutional status was conferred through the 102nd Constitutional Amendment Act, 2018.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards for socially and educationally backward classes.',
+            'Inquire into complaints regarding deprivation of rights and safeguards.',
+            'Participate and advise on socio-economic development.',
+            'Present reports to the President.',
+            'Recommend measures for protection, welfare, development and advancement.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Related Article',
+          paragraphs: [
+            'Article 342A deals with socially and educationally backward classes within the constitutional framework and should not be confused with Article 338B, which establishes the Commission.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338B = NCBC.',
+        '102nd Amendment gave constitutional status.',
+        'NCBC deals with socially and educationally backward classes.',
+        '342A is a related but distinct constitutional provision.',
+      ],
+      examFocus: [
+        '338, 338A and 338B matching.',
+        '102nd Amendment.',
+        'Constitutional status of NCBC.',
+      ],
+      practiceTags: ['ncbc', 'article-338b', '102nd-amendment'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-054',
+      subjectCode: 'POL',
+      title: 'Major Statutory Commissions',
+      summary: 'NHRC, National Commission for Minorities and National Commission for Women: constitutional vs statutory distinction.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Why this distinction matters',
+          paragraphs: [
+            'Not every important national commission is created directly by the Constitution. Several important bodies are statutory, meaning they are created by an Act of Parliament.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield statutory bodies',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Statutory basis'],
+            rows: [
+              ['National Human Rights Commission', 'Protection of Human Rights Act, 1993'],
+              ['National Commission for Minorities', 'National Commission for Minorities Act, 1992'],
+              ['National Commission for Women', 'National Commission for Women Act, 1990'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Contrast with constitutional commissions',
+          paragraphs: [
+            'NCSC, NCST and NCBC are constitutional bodies under Articles 338, 338A and 338B respectively. NHRC, NCM and NCW derive their existence from parliamentary statutes.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'NHRC = Protection of Human Rights Act, 1993.',
+        'NCM = National Commission for Minorities Act, 1992.',
+        'NCW = National Commission for Women Act, 1990.',
+        'NCSC/NCST/NCBC are constitutional; NHRC/NCM/NCW are statutory.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body.',
+        'Match each body with its parent Act.',
+        'Do not confuse NCM with a constitutional commission.',
+      ],
+      practiceTags: ['statutory-bodies', 'nhrc', 'ncm', 'ncw'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-055',
+      subjectCode: 'POL',
+      title: 'Co-operative Societies',
+      summary: 'Article 43B, Article 19(1)(c), Part IXB and the constitutional position after judicial review.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: '97th Constitutional Amendment',
+          paragraphs: [
+            'The 97th Constitutional Amendment introduced important constitutional provisions concerning co-operative societies, including Article 43B and Part IXB.',
+            'The amendment also expanded Article 19(1)(c) to include the right to form co-operative societies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Part IXB',
+          paragraphs: [
+            'Part IXB contains Articles 243ZH to 243ZT and addresses matters concerning co-operative societies.',
+            'Its current operation must be understood with the Supreme Court’s 2021 decision in Union of India v. Rajendra N. Shah, which held the amendment invalid insofar as it sought to regulate co-operative societies operating only within a State without the required State ratification, while preserving its application in relation to multi-State co-operative societies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 43B',
+          paragraphs: [
+            'Article 43B is a Directive Principle directing the State to endeavour to promote voluntary formation, autonomous functioning, democratic control and professional management of co-operative societies.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '97th Amendment = co-operative-society constitutional changes.',
+        '43B = Directive Principle on co-operatives.',
+        'Part IXB = Articles 243ZH–243ZT.',
+        'Article 19(1)(c) includes forming co-operative societies.',
+        'Supreme Court limited Part IXB’s operation regarding State co-operative societies in Rajendra N. Shah.',
+      ],
+      examFocus: [
+        '97th Amendment.',
+        'Article 43B.',
+        'Part IXB article range.',
+        'Current judicial qualification after Rajendra N. Shah.',
+      ],
+      practiceTags: ['cooperative-societies', '97th-amendment', 'part-ixb'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-056',
+      subjectCode: 'POL',
+      title: 'Remaining High-Yield Constitutional Articles',
+      summary: 'A compact revision lesson for frequently tested provisions that cut across several Polity chapters.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'High-yield article map',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['262', 'Inter-State river water disputes'],
+              ['263', 'Inter-State Council'],
+              ['280', 'Finance Commission'],
+              ['300A', 'Right to property as constitutional legal right'],
+              ['312', 'All-India Services'],
+              ['324', 'Election Commission'],
+              ['326', 'Adult suffrage'],
+              ['338', 'NCSC'],
+              ['338A', 'NCST'],
+              ['338B', 'NCBC'],
+              ['343', 'Official language of Union'],
+              ['351', 'Development of Hindi'],
+              ['368', 'Constitutional amendment procedure'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Use this as a final revision sheet',
+          paragraphs: [
+            'This lesson is intentionally compact. It collects article numbers that are often asked independently in one-line matching, statement-based and direct factual questions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '262/263 = inter-State disputes and coordination.',
+        '280 = Finance Commission.',
+        '300A = property.',
+        '312 = All-India Services.',
+        '324/326 = Election Commission and adult suffrage.',
+        '338/338A/338B = NCSC/NCST/NCBC.',
+        '343/351 = official-language provisions.',
+        '368 = amendment.',
+      ],
+      examFocus: [
+        'Rapid article-number matching.',
+        'Frequently confused constitutional bodies.',
+        'Fast revision before tests.',
+      ],
+      practiceTags: ['polity-revision', 'important-articles'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-057',
+      subjectCode: 'POL',
+      title: 'President’s Legislative Powers and Ordinances',
+      summary: 'Assent, veto choices and ordinance-making power under Articles 111 and 123.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Assent to Bills — Article 111',
+          paragraphs: [
+            'When a Bill has been passed by Parliament, it is presented to the President for assent.',
+            'For a Bill other than a Money Bill, the President may return it once for reconsideration. If Parliament passes it again and presents it to the President, assent cannot then be withheld under the constitutional text.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Ordinance power — Article 123',
+          paragraphs: [
+            'When both Houses of Parliament are not in session and immediate action is considered necessary, the President may promulgate an Ordinance under Article 123.',
+            'An Ordinance has the same force and effect as an Act of Parliament, but it is temporary and is subject to parliamentary approval within the constitutional time limit.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam distinction',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Power', 'Article'],
+            rows: [
+              ['Assent / return of Bills', '111'],
+              ['Ordinance-making power', '123'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '111 = assent to Bills.',
+        'Ordinary Bill may be returned once for reconsideration.',
+        'Money Bill cannot be returned under Article 111.',
+        '123 = President’s Ordinance power.',
+        'Ordinance is temporary legislation with force of an Act while valid.',
+      ],
+      examFocus: [
+        'Article 111 versus Article 123.',
+        'Return of ordinary Bill versus Money Bill.',
+        'When an Ordinance can be promulgated.',
+      ],
+      practiceTags: ['presidential-veto', 'ordinance', 'article-111', 'article-123'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-058',
+      subjectCode: 'POL',
+      title: 'Parliamentary Devices and Privileges',
+      summary: 'Question Hour, Zero Hour, motions and constitutional privileges under Article 105.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Parliamentary devices',
+          paragraphs: [
+            'Parliament uses several procedural devices to question the government, raise urgent matters and test the confidence of the House.',
+          ],
+          points: [
+            'Question Hour: members ask questions subject to parliamentary rules.',
+            'Zero Hour: a parliamentary practice used to raise urgent matters; it is not mentioned in the Constitution.',
+            'No-confidence motion: tests whether the Council of Ministers retains the confidence of the Lok Sabha.',
+            'Adjournment motion: seeks discussion of a definite matter of urgent public importance under the rules of the House.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Parliamentary privileges — Article 105',
+          paragraphs: [
+            'Article 105 deals with powers, privileges and immunities of Parliament, its members and committees.',
+            'Freedom of speech in Parliament is constitutionally protected subject to the Constitution and the rules and standing orders regulating parliamentary procedure.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '105 = parliamentary privileges.',
+        'Zero Hour is a parliamentary convention/practice, not a constitutional provision.',
+        'No-confidence motion concerns Lok Sabha confidence in the Council of Ministers.',
+        'Question Hour operates under parliamentary rules.',
+      ],
+      examFocus: [
+        'Article 105.',
+        'Constitutional provision versus parliamentary convention.',
+        'No-confidence motion and Lok Sabha.',
+      ],
+      practiceTags: ['parliamentary-devices', 'article-105', 'parliamentary-privileges'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-059',
+      subjectCode: 'POL',
+      title: 'Union Territories and Delhi',
+      summary: 'Articles 239–241 and the special constitutional framework for the National Capital Territory of Delhi.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Union Territories',
+          paragraphs: [
+            'Part VIII of the Constitution deals with Union territories. Article 239 provides the general constitutional framework for their administration by the President through an administrator appointed by him.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delhi — Article 239AA',
+          paragraphs: [
+            'Article 239AA contains special provisions for the National Capital Territory of Delhi, including a Legislative Assembly and Council of Ministers within the constitutional limits laid down in that Article.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High Court provision',
+          paragraphs: [
+            'Article 241 deals with High Courts for Union territories and empowers Parliament to constitute a High Court for a Union territory or declare a court there to be a High Court for constitutional purposes.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part VIII = Union territories.',
+        '239 = general UT administration.',
+        '239AA = special provisions for Delhi.',
+        '241 = High Courts for Union territories.',
+      ],
+      examFocus: [
+        'Part VIII article range.',
+        'Article 239 versus 239AA.',
+        'Delhi’s special constitutional position.',
+      ],
+      practiceTags: ['union-territories', 'article-239', 'article-239aa', 'delhi'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-060',
+      subjectCode: 'POL',
+      title: 'Subordinate Judiciary',
+      summary: 'Articles 233–237: district judges, judicial service and High Court control over subordinate courts.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'District Judges — Article 233',
+          paragraphs: [
+            'Appointments, posting and promotion of district judges in a State are made by the Governor in consultation with the High Court exercising jurisdiction in relation to that State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Other judicial service appointments',
+          paragraphs: [
+            'Article 234 deals with recruitment of persons other than district judges to the judicial service of a State, involving the Governor, State Public Service Commission and High Court under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Control of High Court — Article 235',
+          paragraphs: [
+            'Control over district courts and courts subordinate to them is vested in the High Court under Article 235, subject to the constitutional scheme.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '233 = district judges.',
+        '234 = recruitment to judicial service other than district judges.',
+        '235 = High Court control over subordinate courts.',
+        'High Court consultation is central to district-judge appointments.',
+      ],
+      examFocus: [
+        'Articles 233–235.',
+        'Governor versus High Court roles.',
+        'Subordinate judiciary and State judicial service.',
+      ],
+      practiceTags: ['subordinate-judiciary', 'articles-233-237'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-061',
+      subjectCode: 'POL',
+      title: 'Constitutional Funds and Public Money',
+      summary: 'Consolidated Fund, Public Account and Contingency Fund under Articles 266–267.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Consolidated Fund — Article 266',
+          paragraphs: [
+            'All revenues received by the Government of India, loans raised by it and money received in repayment of loans form the Consolidated Fund of India, subject to the constitutional text.',
+            'Similar Consolidated Funds exist for the States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Public Account',
+          paragraphs: [
+            'Other public moneys received by or on behalf of the Government of India are credited to the Public Account of India under Article 266.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Contingency Fund — Article 267',
+          paragraphs: [
+            'Article 267 permits Parliament and State Legislatures to establish Contingency Funds for unforeseen expenditure in the constitutional manner.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Quick comparison',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Fund', 'Article'],
+            rows: [
+              ['Consolidated Fund / Public Account', '266'],
+              ['Contingency Fund', '267'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '266 = Consolidated Fund + Public Account.',
+        '267 = Contingency Fund.',
+        'Appropriation from Consolidated Fund requires constitutional authorization.',
+      ],
+      examFocus: [
+        '266 versus 267.',
+        'Consolidated Fund versus Public Account.',
+        'Budget and appropriation link.',
+      ],
+      practiceTags: ['constitutional-funds', 'article-266', 'article-267'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-062',
+      subjectCode: 'POL',
+      title: 'Fifth and Sixth Schedules',
+      summary: 'Scheduled Areas, Scheduled Tribes and autonomous administration in specified tribal areas.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Fifth Schedule',
+          paragraphs: [
+            'The Fifth Schedule deals with administration and control of Scheduled Areas and Scheduled Tribes in States other than those covered by the Sixth Schedule framework.',
+            'It includes provisions relating to Tribes Advisory Councils and the Governor’s role in Scheduled Areas.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Sixth Schedule',
+          paragraphs: [
+            'The Sixth Schedule contains special arrangements for administration of tribal areas in Assam, Meghalaya, Tripura and Mizoram.',
+            'It provides for Autonomous District Councils and Regional Councils within its constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Schedule', 'Exam cue'],
+            rows: [
+              ['Fifth', 'Scheduled Areas and Scheduled Tribes in specified States'],
+              ['Sixth', 'Autonomous tribal-area arrangements in Assam, Meghalaya, Tripura and Mizoram'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '5th Schedule = Scheduled Areas / Scheduled Tribes framework.',
+        '6th Schedule = tribal-area autonomous councils in four north-eastern States.',
+        'Sixth Schedule States: Assam, Meghalaya, Tripura, Mizoram.',
+      ],
+      examFocus: [
+        'Fifth versus Sixth Schedule.',
+        'Four Sixth Schedule States.',
+        'Autonomous District Councils.',
+      ],
+      practiceTags: ['fifth-schedule', 'sixth-schedule', 'tribal-areas'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-063',
+      subjectCode: 'POL',
+      title: 'GST Council',
+      summary: 'Article 279A: composition, voting and recommendation role of the GST Council.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 279A',
+          paragraphs: [
+            'Article 279A provides for the Goods and Services Tax Council.',
+            'The Council is a constitutional body for cooperative decision-making between the Union and States on GST matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Composition',
+          paragraphs: const [],
+          points: [
+            'Union Finance Minister — Chairperson.',
+            'Union Minister of State in charge of Revenue or Finance.',
+            'Minister in charge of Finance or Taxation, or another Minister nominated by each State Government.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Role',
+          paragraphs: [
+            'The Council makes recommendations to the Union and States on GST matters such as taxable or exempt goods and services, model GST laws, place-of-supply principles, thresholds and rates within the constitutional framework.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '279A = GST Council.',
+        'Union Finance Minister chairs it.',
+        'Union + State representation.',
+        'Makes recommendations on GST structure and rates.',
+      ],
+      examFocus: [
+        'Article 279A.',
+        'Chairperson and composition.',
+        'Constitutional body status.',
+      ],
+      practiceTags: ['gst-council', 'article-279a'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-064',
+      subjectCode: 'POL',
+      title: 'Landmark Constitutional Amendments',
+      summary: 'A compact map of amendments most frequently tested in competitive exams.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'High-yield amendments',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Amendment', 'Exam cue'],
+            rows: [
+              ['42nd (1976)', 'Socialist, Secular, Integrity; Fundamental Duties; major constitutional changes'],
+              ['44th (1978)', 'Emergency safeguards; property no longer Fundamental Right'],
+              ['52nd (1985)', 'Anti-defection / Tenth Schedule'],
+              ['61st (1988)', 'Voting age reduced from 21 to 18'],
+              ['73rd (1992)', 'Panchayats'],
+              ['74th (1992)', 'Municipalities'],
+              ['86th (2002)', 'Article 21A and education-related duty'],
+              ['91st (2003)', 'Council of Ministers size limit; anti-defection changes'],
+              ['97th (2011)', 'Co-operative societies provisions'],
+              ['101st (2016)', 'GST constitutional framework'],
+              ['102nd (2018)', 'Constitutional status to NCBC'],
+              ['103rd (2019)', 'EWS reservation provisions'],
+              ['104th (2020)', 'Extended SC/ST legislative-seat reservation period; ended Anglo-Indian nomination provisions'],
+              ['106th (2023)', 'Reservation of seats for women in Lok Sabha and State Legislative Assemblies subject to constitutional commencement conditions'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '42 = major changes + Duties.',
+        '44 = Emergency/property changes.',
+        '52 = anti-defection.',
+        '61 = voting age 18.',
+        '73/74 = local government.',
+        '101 = GST.',
+        '102 = NCBC.',
+        '103 = EWS.',
+      ],
+      examFocus: [
+        'Amendment-number matching.',
+        '42nd versus 44th.',
+        'Local-government amendments.',
+        'Recent high-yield amendments.',
+      ],
+      practiceTags: ['constitutional-amendments', 'important-amendments'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-065',
+      subjectCode: 'POL',
+      title: 'Basic Structure Doctrine',
+      summary: 'Kesavananda Bharati and the constitutional limit on Parliament’s amending power.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Kesavananda Bharati',
+          paragraphs: [
+            'In Kesavananda Bharati v. State of Kerala (1973), the Supreme Court held that Parliament’s power to amend the Constitution does not extend to destroying its basic structure.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'What counts as basic structure?',
+          paragraphs: [
+            'The Court has not reduced the doctrine to one exhaustive closed list. Different judgments have recognised features such as supremacy of the Constitution, republican and democratic government, secularism, separation of powers, federalism, judicial review and other fundamental constitutional principles.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam caution',
+          paragraphs: [
+            'The doctrine limits constitutional amendment power; it is not itself written as a single enumerated list in Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Kesavananda Bharati = 1973.',
+        'Parliament cannot destroy the basic structure.',
+        'No single exhaustive constitutional list of basic-structure features.',
+        'Doctrine limits Article 368 amendment power.',
+      ],
+      examFocus: [
+        'Case name and year.',
+        'Meaning of Basic Structure Doctrine.',
+        'Examples versus exhaustive list.',
+      ],
+      practiceTags: ['basic-structure', 'kesavananda-bharati', 'article-368'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-066',
+      subjectCode: 'POL',
+      title: 'Effects of Emergency Proclamations',
+      summary: 'Articles 353, 358 and 359: how National Emergency can affect federal power and Fundamental Rights.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 353',
+          paragraphs: [
+            'While a National Emergency Proclamation is in operation, Article 353 expands Union executive and legislative authority in the manner stated in the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 358',
+          paragraphs: [
+            'Article 358 concerns Article 19 during an Emergency based on war or external aggression. Its operation is narrower after the 44th Amendment than under the earlier constitutional position.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 359',
+          paragraphs: [
+            'Article 359 permits the President, during a National Emergency, to suspend the right to move courts for enforcement of specified Part III rights, subject to the Constitution.',
+            'After the 44th Amendment, Articles 20 and 21 cannot be included in such a suspension order.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '353 = effects on Union executive/legislative power.',
+        '358 = Article 19 effect for war/external aggression Emergency.',
+        '359 = suspension of court-enforcement rights by Presidential order.',
+        'Articles 20 and 21 are protected from Article 359 suspension orders.',
+      ],
+      examFocus: [
+        '352 versus 358 versus 359.',
+        'War/external aggression condition under Article 358.',
+        'Articles 20 and 21 protection after 44th Amendment.',
+      ],
+      practiceTags: ['emergency-effects', 'articles-353-359'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-067',
+      subjectCode: 'POL',
+      title: 'CIC, CVC, Lokpal and Delimitation Commission',
+      summary: 'Important statutory governance bodies frequently confused with constitutional bodies.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Statutory-body map',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Legal basis'],
+            rows: [
+              ['Central Information Commission', 'Right to Information Act, 2005'],
+              ['Central Vigilance Commission', 'Central Vigilance Commission Act, 2003'],
+              ['Lokpal', 'Lokpal and Lokayuktas Act, 2013'],
+              ['Delimitation Commission', 'Constituted under Delimitation Acts passed by Parliament'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Central Information Commission',
+          paragraphs: [
+            'The CIC was constituted under the Right to Information Act, 2005 and exercises statutory powers relating to complaints, second appeals, penalties and monitoring/reporting under that Act.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delimitation Commission',
+          paragraphs: [
+            'The Delimitation Commission fixes constituency boundaries under the statutory framework. Its orders have the force of law under the delimitation scheme and are not modified by Parliament or the concerned State Legislature after being laid before them.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam caution',
+          paragraphs: [
+            'These bodies are important, but they are not constitutional bodies merely because they perform major public functions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'CIC = RTI Act, 2005.',
+        'CVC = CVC Act, 2003.',
+        'Lokpal = Lokpal and Lokayuktas Act, 2013.',
+        'Delimitation Commission = statutory commission under Delimitation Acts.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body.',
+        'Parent Act matching.',
+        'Delimitation Commission powers.',
+      ],
+      practiceTags: ['cic', 'cvc', 'lokpal', 'delimitation-commission', 'statutory-bodies'],
+    ),
+  ],
+);
+
+LearnLesson? polityLessonById(String id) {
+  final normalized = id.trim().toUpperCase();
+  for (final lesson in polityLearnSubject.lessons) {
+    if (lesson.id == normalized) return lesson;
+  }
+  return null;
+}
