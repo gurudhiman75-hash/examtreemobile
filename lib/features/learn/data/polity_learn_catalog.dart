@@ -2595,6 +2595,395 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['tribunals', 'articles-323a-323b', 'article-300a', 'article-326'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-049',
+      subjectCode: 'POL',
+      title: 'Anti-Defection Law',
+      summary: 'Tenth Schedule: disqualification for defection, merger exception and decision-making authority.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Tenth Schedule',
+          paragraphs: [
+            'The anti-defection provisions are contained in the Tenth Schedule of the Constitution. The Schedule was inserted by the 52nd Constitutional Amendment Act, 1985.',
+            'It provides for disqualification of members of Parliament and State Legislatures on specified grounds connected with defection.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Main grounds of disqualification',
+          paragraphs: const [],
+          points: [
+            'A member of a political party voluntarily gives up membership of that party.',
+            'A member votes or abstains from voting contrary to the party direction without prior permission and the action is not condoned within the period allowed by the Schedule.',
+            'An independent elected member joins a political party after the election.',
+            'A nominated member joins a political party after the six-month period allowed by the Schedule.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Merger exception',
+          paragraphs: [
+            'The Schedule contains an exception for a merger where not less than two-thirds of the members of the legislature party agree to the merger.',
+            'The earlier separate protection for a “split” by one-third of members was removed by the 91st Constitutional Amendment Act, 2003.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Who decides?',
+          paragraphs: [
+            'Questions of disqualification under the Tenth Schedule are decided by the Chairman or Speaker of the House concerned, subject to the constitutional and judicial framework.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Tenth Schedule = anti-defection.',
+        'Added by 52nd Amendment, 1985.',
+        'Merger exception requires at least two-thirds of legislature-party members.',
+        '91st Amendment removed the old split exception.',
+        'Speaker/Chairman decides disqualification questions under the Schedule.',
+      ],
+      examFocus: [
+        '52nd versus 91st Amendment.',
+        'Independent and nominated-member rules.',
+        'Two-thirds merger threshold.',
+        'Tenth Schedule identification.',
+      ],
+      practiceTags: ['anti-defection', 'tenth-schedule', '52nd-amendment', '91st-amendment'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-050',
+      subjectCode: 'POL',
+      title: 'Elections and Representation',
+      summary: 'Articles 324–329 and the two Representation of the People Acts most often tested in exams.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional framework',
+          paragraphs: [
+            'Part XV of the Constitution deals with elections. Articles 324 to 329 contain the core constitutional provisions relating to electoral administration and representation.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['324', 'Election Commission'],
+              ['325', 'One general electoral roll; no exclusion on specified grounds'],
+              ['326', 'Adult suffrage for Lok Sabha and State Assembly elections'],
+              ['327', 'Parliament’s power to make election law'],
+              ['328', 'State Legislature’s power subject to the Constitution and parliamentary law'],
+              ['329', 'Bar to court interference in electoral matters as constitutionally specified'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Representation of the People Act, 1950',
+          paragraphs: [
+            'The Representation of the People Act, 1950 primarily deals with matters such as allocation of seats, delimitation-related framework and preparation of electoral rolls within its statutory scheme.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Representation of the People Act, 1951',
+          paragraphs: [
+            'The Representation of the People Act, 1951 primarily governs the conduct of elections, qualifications and disqualifications, election offences and corrupt practices, and election disputes within its statutory framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Adult suffrage',
+          paragraphs: [
+            'Article 326 provides for elections to the Lok Sabha and State Legislative Assemblies on the basis of adult suffrage, subject to the Constitution and election law. The voting age is eighteen years.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XV = Elections.',
+        '324 = Election Commission.',
+        '326 = adult suffrage; voting age 18.',
+        'RPA 1950 = rolls/seat-allocation framework.',
+        'RPA 1951 = conduct of elections and election disputes.',
+      ],
+      examFocus: [
+        'RPA 1950 versus RPA 1951.',
+        'Articles 324–329.',
+        'Adult suffrage under Article 326.',
+        'Election Commission versus election-law powers of Parliament.',
+      ],
+      practiceTags: ['elections', 'representation-of-people-act', 'articles-324-329'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-051',
+      subjectCode: 'POL',
+      title: 'National Commission for Scheduled Castes',
+      summary: 'Article 338: constitutional status, composition, duties, reports and powers.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338',
+          paragraphs: [
+            'Article 338 provides for the National Commission for Scheduled Castes as a constitutional body.',
+            'The Commission consists of a Chairperson, Vice-Chairperson and three other Members, appointed under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards provided for Scheduled Castes.',
+            'Inquire into specific complaints regarding deprivation of rights and safeguards.',
+            'Participate and advise on the planning process of socio-economic development within the constitutional framework.',
+            'Present reports to the President annually and at other times as considered necessary.',
+            'Make recommendations for effective implementation of safeguards and welfare measures.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Powers',
+          paragraphs: [
+            'While investigating matters or inquiring into complaints, the Commission has the powers of a civil court for the purposes specified in Article 338.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338 = National Commission for Scheduled Castes.',
+        'Constitutional body.',
+        'Chairperson + Vice-Chairperson + 3 Members.',
+        'Reports to President.',
+        'Civil-court-type powers for specified inquiry purposes.',
+      ],
+      examFocus: [
+        'Article 338.',
+        'NCSC versus NCST versus NCBC.',
+        'Composition and reporting authority.',
+      ],
+      practiceTags: ['ncsc', 'article-338', 'constitutional-commissions'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-052',
+      subjectCode: 'POL',
+      title: 'National Commission for Scheduled Tribes',
+      summary: 'Article 338A: constitutional safeguards and monitoring for Scheduled Tribes.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338A',
+          paragraphs: [
+            'Article 338A provides for the National Commission for Scheduled Tribes as a separate constitutional body.',
+            'It consists of a Chairperson, Vice-Chairperson and three other Members under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards for Scheduled Tribes.',
+            'Inquire into specific complaints concerning rights and safeguards.',
+            'Participate and advise on the planning process of socio-economic development.',
+            'Present reports to the President.',
+            'Recommend measures for protection, welfare and development of Scheduled Tribes.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam distinction',
+          paragraphs: [
+            'The NCSC is linked with Article 338, while the separate NCST is linked with Article 338A. This article-number distinction is frequently tested.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338A = National Commission for Scheduled Tribes.',
+        'Constitutional body.',
+        'Chairperson + Vice-Chairperson + 3 Members.',
+        'Reports to President.',
+        'Separate from NCSC.',
+      ],
+      examFocus: [
+        '338 versus 338A.',
+        'NCSC versus NCST.',
+        'Constitutional status and reporting.',
+      ],
+      practiceTags: ['ncst', 'article-338a', 'constitutional-commissions'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-053',
+      subjectCode: 'POL',
+      title: 'National Commission for Backward Classes',
+      summary: 'Article 338B and the constitutional status of the National Commission for Backward Classes.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 338B',
+          paragraphs: [
+            'The National Commission for Backward Classes is a constitutional body under Article 338B.',
+            'Constitutional status was conferred through the 102nd Constitutional Amendment Act, 2018.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core duties',
+          paragraphs: const [],
+          points: [
+            'Investigate and monitor safeguards for socially and educationally backward classes.',
+            'Inquire into complaints regarding deprivation of rights and safeguards.',
+            'Participate and advise on socio-economic development.',
+            'Present reports to the President.',
+            'Recommend measures for protection, welfare, development and advancement.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Related Article',
+          paragraphs: [
+            'Article 342A deals with socially and educationally backward classes within the constitutional framework and should not be confused with Article 338B, which establishes the Commission.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '338B = NCBC.',
+        '102nd Amendment gave constitutional status.',
+        'NCBC deals with socially and educationally backward classes.',
+        '342A is a related but distinct constitutional provision.',
+      ],
+      examFocus: [
+        '338, 338A and 338B matching.',
+        '102nd Amendment.',
+        'Constitutional status of NCBC.',
+      ],
+      practiceTags: ['ncbc', 'article-338b', '102nd-amendment'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-054',
+      subjectCode: 'POL',
+      title: 'Major Statutory Commissions',
+      summary: 'NHRC, National Commission for Minorities and National Commission for Women: constitutional vs statutory distinction.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Why this distinction matters',
+          paragraphs: [
+            'Not every important national commission is created directly by the Constitution. Several important bodies are statutory, meaning they are created by an Act of Parliament.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield statutory bodies',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Statutory basis'],
+            rows: [
+              ['National Human Rights Commission', 'Protection of Human Rights Act, 1993'],
+              ['National Commission for Minorities', 'National Commission for Minorities Act, 1992'],
+              ['National Commission for Women', 'National Commission for Women Act, 1990'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Contrast with constitutional commissions',
+          paragraphs: [
+            'NCSC, NCST and NCBC are constitutional bodies under Articles 338, 338A and 338B respectively. NHRC, NCM and NCW derive their existence from parliamentary statutes.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'NHRC = Protection of Human Rights Act, 1993.',
+        'NCM = National Commission for Minorities Act, 1992.',
+        'NCW = National Commission for Women Act, 1990.',
+        'NCSC/NCST/NCBC are constitutional; NHRC/NCM/NCW are statutory.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body.',
+        'Match each body with its parent Act.',
+        'Do not confuse NCM with a constitutional commission.',
+      ],
+      practiceTags: ['statutory-bodies', 'nhrc', 'ncm', 'ncw'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-055',
+      subjectCode: 'POL',
+      title: 'Co-operative Societies',
+      summary: 'Article 43B, Article 19(1)(c), Part IXB and the constitutional position after judicial review.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: '97th Constitutional Amendment',
+          paragraphs: [
+            'The 97th Constitutional Amendment introduced important constitutional provisions concerning co-operative societies, including Article 43B and Part IXB.',
+            'The amendment also expanded Article 19(1)(c) to include the right to form co-operative societies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Part IXB',
+          paragraphs: [
+            'Part IXB contains Articles 243ZH to 243ZT and addresses matters concerning co-operative societies.',
+            'Its current operation must be understood with the Supreme Court’s 2021 decision in Union of India v. Rajendra N. Shah, which held the amendment invalid insofar as it sought to regulate co-operative societies operating only within a State without the required State ratification, while preserving its application in relation to multi-State co-operative societies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 43B',
+          paragraphs: [
+            'Article 43B is a Directive Principle directing the State to endeavour to promote voluntary formation, autonomous functioning, democratic control and professional management of co-operative societies.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '97th Amendment = co-operative-society constitutional changes.',
+        '43B = Directive Principle on co-operatives.',
+        'Part IXB = Articles 243ZH–243ZT.',
+        'Article 19(1)(c) includes forming co-operative societies.',
+        'Supreme Court limited Part IXB’s operation regarding State co-operative societies in Rajendra N. Shah.',
+      ],
+      examFocus: [
+        '97th Amendment.',
+        'Article 43B.',
+        'Part IXB article range.',
+        'Current judicial qualification after Rajendra N. Shah.',
+      ],
+      practiceTags: ['cooperative-societies', '97th-amendment', 'part-ixb'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-056',
+      subjectCode: 'POL',
+      title: 'Remaining High-Yield Constitutional Articles',
+      summary: 'A compact revision lesson for frequently tested provisions that cut across several Polity chapters.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'High-yield article map',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['262', 'Inter-State river water disputes'],
+              ['263', 'Inter-State Council'],
+              ['280', 'Finance Commission'],
+              ['300A', 'Right to property as constitutional legal right'],
+              ['312', 'All-India Services'],
+              ['324', 'Election Commission'],
+              ['326', 'Adult suffrage'],
+              ['338', 'NCSC'],
+              ['338A', 'NCST'],
+              ['338B', 'NCBC'],
+              ['343', 'Official language of Union'],
+              ['351', 'Development of Hindi'],
+              ['368', 'Constitutional amendment procedure'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Use this as a final revision sheet',
+          paragraphs: [
+            'This lesson is intentionally compact. It collects article numbers that are often asked independently in one-line matching, statement-based and direct factual questions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '262/263 = inter-State disputes and coordination.',
+        '280 = Finance Commission.',
+        '300A = property.',
+        '312 = All-India Services.',
+        '324/326 = Election Commission and adult suffrage.',
+        '338/338A/338B = NCSC/NCST/NCBC.',
+        '343/351 = official-language provisions.',
+        '368 = amendment.',
+      ],
+      examFocus: [
+        'Rapid article-number matching.',
+        'Frequently confused constitutional bodies.',
+        'Fast revision before tests.',
+      ],
+      practiceTags: ['polity-revision', 'important-articles'],
+    ),
   ],
 );
 
