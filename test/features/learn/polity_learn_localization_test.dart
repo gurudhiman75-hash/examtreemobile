@@ -12,6 +12,8 @@ void main() {
     expect(subject.lessons[4].title, 'नागरिकता');
     expect(subject.lessons[5].title, 'मौलिक अधिकार — परिचय');
     expect(subject.lessons[13].title, 'मौलिक कर्तव्य');
+    expect(subject.lessons[14].title, 'भारत के राष्ट्रपति');
+    expect(subject.lessons[18].title, 'संसद — संरचना और सदस्यता');
     expect(subject.lessons.length, 67);
   });
 
@@ -24,6 +26,8 @@ void main() {
     expect(subject.lessons[4].title, 'ਨਾਗਰਿਕਤਾ');
     expect(subject.lessons[5].title, 'ਮੌਲਿਕ ਅਧਿਕਾਰ — ਜਾਣ-ਪਛਾਣ');
     expect(subject.lessons[13].title, 'ਮੌਲਿਕ ਫ਼ਰਜ਼');
+    expect(subject.lessons[14].title, 'ਭਾਰਤ ਦੇ ਰਾਸ਼ਟਰਪਤੀ');
+    expect(subject.lessons[18].title, 'ਸੰਸਦ — ਬਣਤਰ ਅਤੇ ਮੈਂਬਰਤਾ');
   });
 
   test('Learn UI copy follows the global question language', () {
