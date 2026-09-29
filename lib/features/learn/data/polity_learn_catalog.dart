@@ -780,6 +780,266 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['fundamental-duties', 'article-51a'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-015',
+      subjectCode: 'POL',
+      title: 'President of India',
+      summary: 'Articles 52–62: office, election, qualifications, term, oath and impeachment.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and executive power',
+          paragraphs: [
+            'Article 52 provides that there shall be a President of India. Article 53 vests the executive power of the Union in the President, to be exercised in accordance with the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Election of the President',
+          paragraphs: [
+            'The President is elected indirectly. The electoral college includes the elected members of both Houses of Parliament and the elected members of the Legislative Assemblies of the States. For this purpose, the Constitution also includes the National Capital Territory of Delhi and the Union territory of Puducherry.',
+            'The election uses proportional representation by means of the single transferable vote, and voting is by secret ballot.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications and term',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Point', 'Rule'],
+            rows: [
+              ['Minimum age', '35 years'],
+              ['Citizenship', 'Citizen of India'],
+              ['Qualification', 'Qualified for election as a member of the House of the People'],
+              ['Office of profit', 'Must not hold an office of profit as constitutionally specified'],
+              ['Term', '5 years from entering office'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Impeachment',
+          paragraphs: [
+            'Article 61 provides the procedure for impeachment of the President for violation of the Constitution. The charge may be preferred by either House of Parliament, subject to the special notice and majority requirements stated in the Constitution.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '52 = President of India.',
+        '53 = Union executive power vested in the President.',
+        '54–55 = election and manner of election.',
+        '58 = qualifications; minimum age 35.',
+        '56 = five-year term.',
+        '61 = impeachment for violation of the Constitution.',
+      ],
+      examFocus: [
+        'Who belongs to the Presidential electoral college.',
+        'Elected versus nominated members.',
+        'Minimum age and Lok Sabha qualification requirement.',
+        'Article-number matching from 52–61.',
+      ],
+      practiceTags: ['president-of-india', 'articles-52-62', 'presidential-election'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-016',
+      subjectCode: 'POL',
+      title: 'Vice-President of India',
+      summary: 'Articles 63–71: office, Rajya Sabha role, election, qualifications and removal.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and Rajya Sabha role',
+          paragraphs: [
+            'Article 63 provides that there shall be a Vice-President of India. Under Article 64, the Vice-President is the ex officio Chairman of the Council of States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Election',
+          paragraphs: [
+            'The Vice-President is elected by the members of both Houses of Parliament. Unlike the Presidential electoral college, the Constitution does not include State Legislative Assemblies in this election.',
+            'The election uses proportional representation by means of the single transferable vote and voting is by secret ballot.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications',
+          paragraphs: const [],
+          points: [
+            'Citizen of India.',
+            'At least 35 years of age.',
+            'Qualified for election as a member of the Council of States.',
+            'Must not hold an office of profit as constitutionally specified.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Term and removal',
+          paragraphs: [
+            'The Vice-President holds office for five years from entering office, subject to resignation or removal.',
+            'Removal requires a resolution of the Council of States passed by a majority of all the then members of that House and agreed to by the House of the People. At least fourteen days’ notice is required before moving such a resolution.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '63 = Vice-President.',
+        '64 = ex officio Chairman of Rajya Sabha.',
+        'Election: members of both Houses of Parliament.',
+        'Minimum age: 35; qualification: eligible for Rajya Sabha.',
+        'Removal resolution originates in Rajya Sabha.',
+      ],
+      examFocus: [
+        'President versus Vice-President electoral colleges.',
+        'Ex officio Chairman of Rajya Sabha.',
+        'Rajya Sabha qualification requirement.',
+        'Removal process and fourteen-day notice.',
+      ],
+      practiceTags: ['vice-president', 'articles-63-71'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-017',
+      subjectCode: 'POL',
+      title: 'Prime Minister',
+      summary: 'Appointment, constitutional position and duties of the Prime Minister.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Appointment',
+          paragraphs: [
+            'Article 75 provides that the Prime Minister is appointed by the President. The other Ministers are appointed by the President on the advice of the Prime Minister.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Head of the Council of Ministers',
+          paragraphs: [
+            'Article 74 provides for a Council of Ministers with the Prime Minister at the head to aid and advise the President. The President may require the Council of Ministers to reconsider advice, but must act in accordance with the advice tendered after reconsideration.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties towards the President — Article 78',
+          paragraphs: const [],
+          points: [
+            'Communicate decisions of the Council of Ministers on Union administration and proposals for legislation.',
+            'Furnish information relating to Union administration and proposals for legislation when the President calls for it.',
+            'If the President requires, place before the Council of Ministers a matter decided by an individual Minister but not considered by the Council.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '75 = Prime Minister appointed by the President.',
+        'Other Ministers are appointed on the Prime Minister’s advice.',
+        '74 = Council of Ministers headed by the Prime Minister aids and advises the President.',
+        '78 = Prime Minister’s information duties towards the President.',
+      ],
+      examFocus: [
+        'Articles 74, 75 and 78.',
+        'Who appoints the Prime Minister and other Ministers.',
+        'President’s power to require reconsideration of ministerial advice.',
+      ],
+      practiceTags: ['prime-minister', 'articles-74-75-78'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-018',
+      subjectCode: 'POL',
+      title: 'Council of Ministers',
+      summary: 'Articles 74–75: aid and advice, appointment, collective responsibility and size limit.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Aid and advice',
+          paragraphs: [
+            'Article 74 provides for a Council of Ministers with the Prime Minister at the head to aid and advise the President. The constitutional text also provides for reconsideration of advice once at the President’s request.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and responsibility',
+          paragraphs: [
+            'The Prime Minister is appointed by the President and the other Ministers are appointed by the President on the advice of the Prime Minister.',
+            'Article 75 states that the Council of Ministers is collectively responsible to the House of the People.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important Article 75 facts',
+          paragraphs: const [],
+          points: [
+            'Ministers hold office during the pleasure of the President.',
+            'Oaths of office and secrecy are administered by the President.',
+            'A Minister who is not a member of either House of Parliament for six consecutive months ceases to be a Minister at the end of that period.',
+            'The total number of Ministers, including the Prime Minister, cannot exceed 15% of the total membership of the Lok Sabha.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Collective responsibility',
+          paragraphs: [
+            'For exam purposes, connect collective responsibility with the Lok Sabha, not the Rajya Sabha. This is one of the most frequently tested distinctions in the Union executive chapter.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '74 = aid and advice.',
+        '75 = appointment and other provisions concerning Ministers.',
+        'Collective responsibility is to Lok Sabha.',
+        'Six-month rule for a Minister who is not an MP.',
+        'Council size ceiling: 15% of total Lok Sabha membership.',
+      ],
+      examFocus: [
+        'Collective responsibility: Lok Sabha.',
+        'Six-month membership rule.',
+        '15% size ceiling introduced through the constitutional amendment framework reflected in Article 75.',
+        'Difference between Article 74 advice and Article 75 ministerial provisions.',
+      ],
+      practiceTags: ['council-of-ministers', 'articles-74-75'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-019',
+      subjectCode: 'POL',
+      title: 'Parliament — Structure and Membership',
+      summary: 'Articles 79–88: structure of Parliament, Rajya Sabha, Lok Sabha and key membership rules.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'What Parliament consists of',
+          paragraphs: [
+            'Article 79 states that Parliament for the Union consists of the President and two Houses: the Council of States and the House of the People.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Rajya Sabha — Article 80',
+          paragraphs: [
+            'The Council of States includes twelve members nominated by the President for special knowledge or practical experience in literature, science, art and social service, along with representatives of the States and Union territories as provided by the Constitution.',
+            'Representatives of each State in the Rajya Sabha are elected by the elected members of the State Legislative Assembly using proportional representation by means of the single transferable vote.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Lok Sabha — Article 81',
+          paragraphs: [
+            'The House of the People is composed of members chosen by direct election from territorial constituencies in the States and representatives of Union territories as provided by Parliament by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duration and qualifications',
+          paragraphs: [
+            'The Rajya Sabha is not subject to dissolution. As nearly as possible, one-third of its members retire every second year.',
+            'The normal term of the Lok Sabha is five years from the date appointed for its first meeting, unless sooner dissolved, subject to the special constitutional provision during a Proclamation of Emergency.',
+          ],
+          table: LearnLessonTable(
+            headers: ['House', 'Minimum age under Article 84'],
+            rows: [
+              ['Rajya Sabha', '30 years'],
+              ['Lok Sabha', '25 years'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '79 = President + Rajya Sabha + Lok Sabha.',
+        'Rajya Sabha: 12 nominated members under Article 80.',
+        'Rajya Sabha is a continuing House; about one-third retire every second year.',
+        'Lok Sabha normal term = 5 years unless sooner dissolved.',
+        'Minimum age: Rajya Sabha 30; Lok Sabha 25.',
+      ],
+      examFocus: [
+        'Parliament includes the President.',
+        'Subjects for Rajya Sabha Presidential nominations.',
+        'Continuing nature of Rajya Sabha versus dissolvable Lok Sabha.',
+        'Minimum ages of the two Houses.',
+      ],
+      practiceTags: ['parliament', 'rajya-sabha', 'lok-sabha', 'articles-79-88'],
+    ),
   ],
 );
 
