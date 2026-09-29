@@ -12,9 +12,14 @@ import '../domain/learn_practice_question.dart';
 import 'providers/learn_practice_providers.dart';
 
 class LearnPracticeScreen extends ConsumerWidget {
-  const LearnPracticeScreen({super.key, required this.topicId});
+  const LearnPracticeScreen({
+    super.key,
+    required this.topicId,
+    this.fresh = false,
+  });
 
   final String topicId;
+  final bool fresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +44,12 @@ class LearnPracticeScreen extends ConsumerWidget {
     const target = 20;
     final questionsAsync = ref.watch(
       learnPracticeQuestionsProvider(
-        LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
+        LearnPracticeRequest(
+          topicId: topicId,
+          limit: target,
+          tagQuery: resolvedLesson.practiceTags.join(','),
+          fresh: fresh,
+        ),
       ),
     );
 
@@ -52,7 +62,12 @@ class LearnPracticeScreen extends ConsumerWidget {
         title: resolvedLesson.title,
         onRetry: () => ref.invalidate(
           learnPracticeQuestionsProvider(
-            LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
+            LearnPracticeRequest(
+          topicId: topicId,
+          limit: target,
+          tagQuery: resolvedLesson.practiceTags.join(','),
+          fresh: fresh,
+        ),
           ),
         ),
       ),
@@ -64,7 +79,12 @@ class LearnPracticeScreen extends ConsumerWidget {
                 'Practice questions are not published for this topic yet. The lesson is available, but the learner Question Studio feed still needs this topic mapping.',
             onRetry: () => ref.invalidate(
               learnPracticeQuestionsProvider(
-                LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
+                LearnPracticeRequest(
+          topicId: topicId,
+          limit: target,
+          tagQuery: resolvedLesson.practiceTags.join(','),
+          fresh: fresh,
+        ),
               ),
             ),
           );
