@@ -89,6 +89,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                         .clear(topicId);
                     ref.invalidate(learnPracticeProgressProvider(topicId));
                     ref.invalidate(learnPracticeProgressListProvider);
+                    ref.invalidate(learnPracticeQuestionsProvider);
                     if (context.mounted) {
                       context.go(
                         '/learn-practice?topic=${Uri.encodeQueryComponent(topicId)}&fresh=1',
