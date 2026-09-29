@@ -2263,6 +2263,338 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['inter-state-council', 'zonal-councils', 'centre-state-coordination'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-043',
+      subjectCode: 'POL',
+      title: 'Emergency Provisions',
+      summary: 'Part XVIII: National Emergency, President’s Rule and Financial Emergency.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Three constitutional emergencies',
+          paragraphs: [
+            'Part XVIII of the Constitution contains the emergency provisions. Competitive exams usually distinguish three different constitutional mechanisms.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Emergency'],
+            rows: [
+              ['352', 'National Emergency'],
+              ['356', 'Failure of constitutional machinery in a State'],
+              ['360', 'Financial Emergency'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'National Emergency — Article 352',
+          paragraphs: [
+            'A Proclamation under Article 352 may be issued when the security of India or any part of its territory is threatened by war, external aggression or armed rebellion.',
+            'The Forty-fourth Amendment replaced the earlier expression “internal disturbance” with “armed rebellion”.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'President’s Rule — Article 356',
+          paragraphs: [
+            'Article 356 deals with a situation in which the government of a State cannot be carried on in accordance with the Constitution. A Proclamation may follow receipt of a Governor’s report or otherwise, subject to the constitutional conditions and parliamentary approval.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Financial Emergency — Article 360',
+          paragraphs: [
+            'Article 360 provides for a Financial Emergency if the President is satisfied that the financial stability or credit of India or any part of its territory is threatened.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '352 = National Emergency.',
+        '356 = President’s Rule / failure of constitutional machinery in a State.',
+        '360 = Financial Emergency.',
+        'National Emergency grounds: war, external aggression, armed rebellion.',
+        '44th Amendment changed “internal disturbance” to “armed rebellion”.',
+      ],
+      examFocus: [
+        'Article-number matching.',
+        'Grounds under Article 352.',
+        'National Emergency versus President’s Rule versus Financial Emergency.',
+        'Forty-fourth Amendment changes.',
+      ],
+      practiceTags: ['emergency-provisions', 'articles-352-360', 'national-emergency', 'presidents-rule'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-044',
+      subjectCode: 'POL',
+      title: 'Constitutional Amendment Procedure',
+      summary: 'Article 368 and the three broad ways constitutional provisions are changed.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 368',
+          paragraphs: [
+            'Article 368 deals with Parliament’s constituent power and the procedure for amendment of the Constitution.',
+            'A Constitution Amendment Bill may be introduced in either House of Parliament. There is no constitutional provision for a joint sitting to resolve disagreement on such a Bill.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three broad amendment routes',
+          paragraphs: const [],
+          points: [
+            'Some constitutional changes are made by a simple majority of Parliament and are not treated as amendments under Article 368.',
+            'Many provisions require a special majority in each House of Parliament.',
+            'Certain federal provisions require the special majority in Parliament plus ratification by at least one-half of the State Legislatures.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Special majority under Article 368',
+          paragraphs: [
+            'The constitutional amendment majority is a majority of the total membership of each House and a majority of not less than two-thirds of the members of that House present and voting.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'State ratification',
+          paragraphs: [
+            'Ratification by at least one-half of the States is required for amendments affecting specified federal provisions listed in the proviso to Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '368 = amendment procedure.',
+        'Constitution Amendment Bill can start in either House.',
+        'No joint sitting for a Constitution Amendment Bill.',
+        'Special majority = total-membership majority + two-thirds present and voting.',
+        'Some federal provisions additionally need ratification by at least half the States.',
+      ],
+      examFocus: [
+        'Simple majority versus Article 368 amendment.',
+        'Special-majority formula.',
+        'State-ratification requirement.',
+        'No joint sitting.',
+      ],
+      practiceTags: ['constitutional-amendment', 'article-368'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-045',
+      subjectCode: 'POL',
+      title: 'Schedules of the Constitution',
+      summary: 'The twelve Schedules and the subjects most frequently tested in competitive exams.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'The twelve Schedules',
+          paragraphs: [
+            'The Constitution currently contains twelve Schedules. Exams usually test the subject associated with a Schedule rather than asking for long textual details.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Schedule', 'High-yield subject'],
+            rows: [
+              ['First', 'States and Union territories'],
+              ['Second', 'Emoluments and allowances of specified constitutional authorities'],
+              ['Third', 'Forms of oaths or affirmations'],
+              ['Fourth', 'Allocation of seats in Rajya Sabha'],
+              ['Fifth', 'Administration and control of Scheduled Areas and Scheduled Tribes'],
+              ['Sixth', 'Tribal areas in Assam, Meghalaya, Tripura and Mizoram'],
+              ['Seventh', 'Union, State and Concurrent Lists'],
+              ['Eighth', 'Languages recognised in the Schedule'],
+              ['Ninth', 'Specified laws placed in the Schedule'],
+              ['Tenth', 'Anti-defection provisions'],
+              ['Eleventh', 'Panchayat subjects'],
+              ['Twelfth', 'Municipal subjects'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Common amendment links',
+          paragraphs: [
+            'The Tenth Schedule was added by the 52nd Constitutional Amendment Act, 1985. The Eleventh and Twelfth Schedules are associated with the 73rd and 74th Amendments respectively.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '7th = three legislative lists.',
+        '8th = languages.',
+        '10th = anti-defection.',
+        '11th = Panchayats.',
+        '12th = Municipalities.',
+        '5th and 6th = Scheduled/tribal area administration.',
+      ],
+      examFocus: [
+        'Schedule-subject matching.',
+        'Tenth, Eleventh and Twelfth Schedule amendment links.',
+        'Fifth versus Sixth Schedule.',
+        'Fourth versus Seventh Schedule.',
+      ],
+      practiceTags: ['constitutional-schedules', 'tenth-schedule', 'seventh-schedule'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-046',
+      subjectCode: 'POL',
+      title: 'Official Language',
+      summary: 'Part XVII: Union language, State languages, courts and language-related constitutional provisions.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 343 — language of the Union',
+          paragraphs: [
+            'Article 343 states that the official language of the Union is Hindi in Devanagari script. It also specifies the international form of Indian numerals for official purposes of the Union.',
+            'The Constitution also permitted continued use of English for Union official purposes for the initial constitutional period and allowed Parliament to provide by law for its continued use.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important language Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['343', 'Official language of the Union'],
+              ['344', 'Official Language Commission and parliamentary committee'],
+              ['345', 'Official language or languages of a State'],
+              ['346', 'Communication between States and between a State and Union'],
+              ['347', 'Recognition of a language spoken by a section of a State’s population'],
+              ['348', 'Language of Supreme Court, High Courts, Acts and Bills'],
+              ['350A', 'Instruction in mother tongue at primary stage for linguistic minority children'],
+              ['350B', 'Special Officer for linguistic minorities'],
+              ['351', 'Directive for development of Hindi'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Eighth Schedule',
+          paragraphs: [
+            'The Eighth Schedule lists the languages recognised for the constitutional purposes connected with that Schedule. It is separate from Article 343’s rule on the official language of the Union.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XVII = Official Language.',
+        '343 = Hindi in Devanagari script as official language of Union.',
+        '345 = State official languages.',
+        '348 = language of Supreme Court and High Courts, Acts and Bills.',
+        '350B = Special Officer for linguistic minorities.',
+        '351 = development of Hindi.',
+      ],
+      examFocus: [
+        'Article 343 versus Eighth Schedule.',
+        'State language provision under Article 345.',
+        'Court language under Article 348.',
+        '350A, 350B and 351.',
+      ],
+      practiceTags: ['official-language', 'part-xvii', 'article-343'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-047',
+      subjectCode: 'POL',
+      title: 'Special Provisions for States',
+      summary: 'Articles 371–371J and selected State-specific constitutional arrangements.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 371–371J',
+          paragraphs: [
+            'The Constitution contains a group of special provisions for particular States in Articles 371 to 371J.',
+            'These provisions are not identical. Each Article applies to the State or States specifically named in it and may deal with different administrative, cultural, developmental or institutional matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield mapping',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'State / States'],
+            rows: [
+              ['371', 'Maharashtra and Gujarat'],
+              ['371A', 'Nagaland'],
+              ['371B', 'Assam'],
+              ['371C', 'Manipur'],
+              ['371D / 371E', 'Andhra Pradesh-related provisions'],
+              ['371F', 'Sikkim'],
+              ['371G', 'Mizoram'],
+              ['371H', 'Arunachal Pradesh'],
+              ['371I', 'Goa'],
+              ['371J', 'Karnataka'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Exam approach',
+          paragraphs: [
+            'Questions usually test Article-to-State matching or a distinctive protection. These Articles should therefore be learned as a map rather than treated as one uniform constitutional rule.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '371A = Nagaland.',
+        '371F = Sikkim.',
+        '371G = Mizoram.',
+        '371H = Arunachal Pradesh.',
+        '371I = Goa.',
+        '371J = Karnataka.',
+      ],
+      examFocus: [
+        'Article-to-State matching.',
+        'Do not treat Articles 371–371J as one identical scheme.',
+        'North-Eastern State provisions.',
+      ],
+      practiceTags: ['special-provisions-states', 'articles-371-371j'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-048',
+      subjectCode: 'POL',
+      title: 'Tribunals and Key Miscellaneous Provisions',
+      summary: 'Part XIVA tribunals and a compact set of frequently tested miscellaneous constitutional provisions.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Part XIVA — Tribunals',
+          paragraphs: [
+            'Part XIVA contains Articles 323A and 323B and was inserted by the 42nd Constitutional Amendment.',
+            'Article 323A concerns administrative tribunals. Article 323B allows the appropriate Legislature to provide tribunals for specified classes of matters within its legislative competence.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: '323A versus 323B',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['323A', 'Administrative tribunals; Parliament may provide by law'],
+              ['323B', 'Tribunals for specified matters; appropriate Legislature may legislate'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Other high-yield miscellaneous Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['300A', 'No person shall be deprived of property save by authority of law'],
+              ['312', 'All-India Services'],
+              ['324', 'Election Commission'],
+              ['326', 'Elections to Lok Sabha and State Assemblies on basis of adult suffrage'],
+              ['329', 'Bar to court interference in electoral matters as constitutionally specified'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Right to property',
+          paragraphs: [
+            'The right to property is no longer a Fundamental Right. Article 300A protects property as a constitutional legal right against deprivation except by authority of law.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part XIVA = Articles 323A–323B.',
+        '323A = administrative tribunals.',
+        '323B = tribunals for specified matters.',
+        '300A = property protected by authority-of-law requirement.',
+        '312 = All-India Services.',
+        '326 = adult suffrage.',
+      ],
+      examFocus: [
+        '323A versus 323B.',
+        'Right to property under Article 300A.',
+        'All-India Services under Article 312.',
+        'Adult suffrage under Article 326.',
+      ],
+      practiceTags: ['tribunals', 'articles-323a-323b', 'article-300a', 'article-326'],
+    ),
   ],
 );
 
