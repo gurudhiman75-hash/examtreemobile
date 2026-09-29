@@ -6,6 +6,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../data/polity_learn_localizations.dart';
+import '../domain/learn_lesson.dart';
 import '../domain/learn_practice_models.dart';
 import '../domain/learn_practice_question.dart';
 import 'providers/learn_practice_providers.dart';
@@ -20,10 +21,13 @@ class LearnPracticeScreen extends ConsumerWidget {
     final language =
         ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
     final subject = polityLearnSubjectFor(language);
-    final lesson = subject.lessons
-        .where((item) => item.id == topicId)
-        .cast<dynamic>()
-        .firstOrNull;
+    LearnLesson? lesson;
+    for (final candidate in subject.lessons) {
+      if (candidate.id == topicId) {
+        lesson = candidate;
+        break;
+      }
+    }
 
     if (lesson == null) {
       return const Scaffold(
@@ -40,11 +44,11 @@ class LearnPracticeScreen extends ConsumerWidget {
 
     return questionsAsync.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(lesson.title as String)),
+        appBar: AppBar(title: Text(lesson.title)),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => _PracticeLoadFailure(
-        title: lesson.title as String,
+        title: lesson.title,
         onRetry: () => ref.invalidate(
           learnPracticeQuestionsProvider(
             LearnPracticeRequest(topicId: topicId, limit: target),
@@ -54,7 +58,7 @@ class LearnPracticeScreen extends ConsumerWidget {
       data: (questions) {
         if (questions.isEmpty) {
           return _PracticeLoadFailure(
-            title: lesson.title as String,
+            title: lesson.title,
             message:
                 'Practice questions are not published for this topic yet. The lesson is available, but the learner Question Studio feed still needs this topic mapping.',
             onRetry: () => ref.invalidate(
@@ -66,7 +70,7 @@ class LearnPracticeScreen extends ConsumerWidget {
         }
         return _LearnPracticeRunner(
           topicId: topicId,
-          title: lesson.title as String,
+          title: lesson.title,
           questions: questions.take(target).toList(growable: false),
         );
       },
@@ -168,7 +172,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     });
     await _save(
       status: LearnPracticeStatus.inProgress,
-      currentQuestion: _index,
+      currentQuestion: _index < widget.questions.length - 1 ? _index + 1 : _index,
     );
   }
 
