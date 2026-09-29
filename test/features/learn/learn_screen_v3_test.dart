@@ -114,8 +114,13 @@ void main() {
     );
 
     expect(find.text('Learn for your exams'), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
+    expect(find.text('Indian Polity'), findsOneWidget);
     expect(find.text('Daily current affairs'), findsOneWidget);
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -360));
+    await tester.pump();
     expect(find.text('Free practice'), findsOneWidget);
     expect(find.byKey(const Key('learn-free-practice')), findsOneWidget);
     expect(find.text('SSC CGL free mock'), findsOneWidget);
@@ -129,6 +134,7 @@ void main() {
   testWidgets('empty learn state stays truthful', (tester) async {
     await pumpLearn(tester, resources: const [], freeTests: const []);
 
+    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
     expect(
       find.text('No free learning resources are published yet.'),
       findsOneWidget,
