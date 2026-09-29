@@ -114,8 +114,10 @@ void main() {
     );
 
     expect(find.text('Learn for your exams'), findsOneWidget);
-    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
-    expect(find.text('Indian Polity'), findsOneWidget);
+    expect(find.byKey(const Key('learn-module-quant')), findsOneWidget);
+    expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
+    expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
+    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
     expect(find.text('Daily current affairs'), findsOneWidget);
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
 
@@ -134,7 +136,7 @@ void main() {
   testWidgets('empty learn state stays truthful', (tester) async {
     await pumpLearn(tester, resources: const [], freeTests: const []);
 
-    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
+    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
     expect(
       find.text('No free learning resources are published yet.'),
       findsOneWidget,
