@@ -1930,6 +1930,339 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['state-psc', 'articles-315-323', 'public-service-commission'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-037',
+      subjectCode: 'POL',
+      title: 'Panchayati Raj',
+      summary: 'Part IX, Articles 243–243O: constitutional framework for rural local government.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional status',
+          paragraphs: [
+            'Part IX of the Constitution deals with Panchayats. It was inserted by the 73rd Constitutional Amendment Act, 1992.',
+            'The Part runs from Articles 243 to 243O and gives constitutional recognition to rural local self-government.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three-tier structure',
+          paragraphs: [
+            'Article 243B provides for Panchayats at the village, intermediate and district levels, subject to the constitutional exception for States with a population not exceeding twenty lakhs.',
+          ],
+          points: [
+            'Village level.',
+            'Intermediate level.',
+            'District level.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield provisions',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['243A', 'Gram Sabha'],
+              ['243D', 'Reservation of seats'],
+              ['243E', 'Duration of Panchayats'],
+              ['243G', 'Powers and responsibilities'],
+              ['243I', 'State Finance Commission'],
+              ['243K', 'Elections to Panchayats'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Duration and elections',
+          paragraphs: [
+            'A Panchayat normally continues for five years from the date appointed for its first meeting unless sooner dissolved.',
+            'The superintendence, direction and control of Panchayat elections is vested in the State Election Commission under Article 243K.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '73rd Amendment = Panchayats.',
+        'Part IX = Articles 243–243O.',
+        'Three levels: village, intermediate, district.',
+        'Five-year normal duration.',
+        '243I = State Finance Commission; 243K = State Election Commission.',
+      ],
+      examFocus: [
+        '73rd Amendment and Part IX.',
+        'Article-number matching within 243A–243K.',
+        'Three-tier system and the population exception.',
+        'State Finance Commission versus State Election Commission.',
+      ],
+      practiceTags: ['panchayati-raj', '73rd-amendment', 'part-ix'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-038',
+      subjectCode: 'POL',
+      title: 'Municipalities',
+      summary: 'Part IXA, Articles 243P–243ZG: constitutional framework for urban local government.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional status',
+          paragraphs: [
+            'Part IXA deals with Municipalities and was inserted by the 74th Constitutional Amendment Act, 1992.',
+            'It begins with Article 243P and extends through Article 243ZG.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Types of Municipalities',
+          paragraphs: [
+            'Article 243Q provides for different municipal forms according to the nature of the urban area.',
+          ],
+          points: [
+            'Nagar Panchayat for a transitional area.',
+            'Municipal Council for a smaller urban area.',
+            'Municipal Corporation for a larger urban area.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield provisions',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['243Q', 'Constitution of Municipalities'],
+              ['243T', 'Reservation of seats'],
+              ['243U', 'Duration'],
+              ['243W', 'Powers and responsibilities'],
+              ['243Y', 'Finance Commission'],
+              ['243ZA', 'Municipal elections'],
+              ['243ZD', 'District Planning Committee'],
+              ['243ZE', 'Metropolitan Planning Committee'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Duration and elections',
+          paragraphs: [
+            'A Municipality normally continues for five years from the date appointed for its first meeting unless sooner dissolved.',
+            'Municipal elections are conducted under the superintendence, direction and control of the State Election Commission referred to in Article 243K.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '74th Amendment = Municipalities.',
+        'Part IXA = Articles 243P–243ZG.',
+        '243Q = three municipal forms.',
+        'Five-year normal duration.',
+        '243ZD = District Planning Committee; 243ZE = Metropolitan Planning Committee.',
+      ],
+      examFocus: [
+        '73rd versus 74th Amendment.',
+        'Nagar Panchayat, Municipal Council and Municipal Corporation.',
+        'Planning committees.',
+        'Municipal election supervision.',
+      ],
+      practiceTags: ['municipalities', '74th-amendment', 'part-ixa'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-039',
+      subjectCode: 'POL',
+      title: 'Centre-State Legislative Relations',
+      summary: 'Articles 245–255 and the distribution of legislative power between Parliament and State Legislatures.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 245–246',
+          paragraphs: [
+            'Articles 245 and 246 form the core constitutional framework for the territorial extent and subject-matter of laws made by Parliament and State Legislatures.',
+            'The Seventh Schedule contains the Union List, State List and Concurrent List.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three legislative lists',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['List', 'General legislative competence'],
+            rows: [
+              ['Union List', 'Parliament'],
+              ['State List', 'State Legislature'],
+              ['Concurrent List', 'Parliament and State Legislature'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Important exceptions and special powers',
+          paragraphs: [
+            'The Constitution allows Parliament to legislate on matters normally within the State sphere in specified situations.',
+          ],
+          points: [
+            'Article 249: Rajya Sabha resolution in the national interest.',
+            'Article 250: during a Proclamation of Emergency.',
+            'Article 252: legislation for two or more States by consent.',
+            'Article 253: implementing international agreements.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Repugnancy — Article 254',
+          paragraphs: [
+            'Article 254 deals with inconsistency between Parliamentary and State laws on matters in the Concurrent List. The constitutional rule generally gives Parliamentary law priority, subject to the special provision for certain State laws reserved for and receiving Presidential assent.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '245–255 = legislative relations.',
+        'Seventh Schedule = Union, State and Concurrent Lists.',
+        '249 = Rajya Sabha national-interest route.',
+        '250 = Emergency.',
+        '252 = States consent route.',
+        '253 = international obligations.',
+        '254 = repugnancy in Concurrent List matters.',
+      ],
+      examFocus: [
+        'Three-list structure.',
+        'Article 249 versus 252.',
+        'Concurrent List conflicts under Article 254.',
+        'Special circumstances for Parliament to legislate on State subjects.',
+      ],
+      practiceTags: ['centre-state-relations', 'legislative-relations', 'articles-245-255'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-040',
+      subjectCode: 'POL',
+      title: 'Centre-State Administrative Relations',
+      summary: 'Articles 256–263: Union directions, delegation, inter-State cooperation and coordination.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 256 and 257',
+          paragraphs: [
+            'Article 256 requires State executive power to be exercised so as to ensure compliance with laws made by Parliament and existing laws applicable in that State, and it enables Union directions for that purpose.',
+            'Article 257 deals with control of the Union over States in certain cases so that State executive power does not impede or prejudice Union executive power.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delegation of functions',
+          paragraphs: [
+            'Articles 258 and 258A provide constitutional mechanisms for entrusting functions between the Union and the States in specified ways.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Inter-State coordination',
+          paragraphs: [
+            'Article 262 permits Parliament to provide for adjudication of disputes relating to waters of inter-State rivers or river valleys and to exclude court jurisdiction to the extent provided by such law.',
+            'Article 263 provides for an Inter-State Council if the President considers that public interests would be served by establishing one.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '256 = State compliance with Parliamentary laws and Union directions.',
+        '257 = Union control in specified administrative cases.',
+        '258/258A = entrustment of functions.',
+        '262 = inter-State river water disputes.',
+        '263 = Inter-State Council.',
+      ],
+      examFocus: [
+        'Article 256 versus 257.',
+        'Administrative delegation provisions.',
+        'Article 262 river disputes.',
+        'Article 263 Inter-State Council.',
+      ],
+      practiceTags: ['administrative-relations', 'articles-256-263', 'inter-state-council'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-041',
+      subjectCode: 'POL',
+      title: 'Centre-State Financial Relations',
+      summary: 'Articles 268–293: distribution of revenues, grants, borrowing and fiscal relations.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional framework',
+          paragraphs: [
+            'The Constitution contains a detailed set of provisions governing the distribution of revenues between the Union and the States, grants-in-aid and borrowing.',
+            'These provisions work together with the Finance Commission mechanism under Article 280.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam focus'],
+            rows: [
+              ['268', 'Certain duties levied by Union but collected and appropriated by States'],
+              ['269', 'Certain taxes levied and collected by Union but assigned to States'],
+              ['270', 'Taxes levied and distributed between Union and States'],
+              ['275', 'Grants from Union to certain States'],
+              ['280', 'Finance Commission'],
+              ['292', 'Borrowing by Government of India'],
+              ['293', 'Borrowing by States'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Finance Commission link',
+          paragraphs: [
+            'The Finance Commission recommends, among other matters, the distribution between the Union and States of the net proceeds of shareable taxes and the principles governing grants-in-aid of State revenues.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '268–293 contain major financial-relations provisions.',
+        '270 = shareable Union taxes distributed between Union and States.',
+        '275 = grants-in-aid.',
+        '280 = Finance Commission.',
+        '292 = Union borrowing; 293 = State borrowing.',
+      ],
+      examFocus: [
+        'Revenue-distribution article matching.',
+        'Grants under Article 275.',
+        'Finance Commission connection.',
+        'Union borrowing versus State borrowing.',
+      ],
+      practiceTags: ['financial-relations', 'fiscal-federalism', 'articles-268-293'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-042',
+      subjectCode: 'POL',
+      title: 'Inter-State Council and Zonal Councils',
+      summary: 'Constitutional Inter-State Council and statutory Zonal Councils for Centre-State cooperation.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Inter-State Council — Article 263',
+          paragraphs: [
+            'Article 263 permits the President to establish an Inter-State Council when it appears that public interests would be served by doing so.',
+            'The constitutional functions may include inquiry into and advice on disputes, discussion of subjects in which States or the Union and States have a common interest, and recommendations for better coordination of policy and action.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Zonal Councils',
+          paragraphs: [
+            'Zonal Councils are not constitutional bodies. Five Zonal Councils were created under the States Reorganisation Act, 1956.',
+            'They provide a forum for cooperative discussion of inter-State and Centre-State issues.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Basis'],
+            rows: [
+              ['Inter-State Council', 'Article 263 of the Constitution'],
+              ['Zonal Councils', 'States Reorganisation Act, 1956'],
+              ['North Eastern Council', 'North Eastern Council Act, 1971/1972 framework'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '263 = Inter-State Council.',
+        'Inter-State Council is constitutional in basis.',
+        'Five Zonal Councils arise from the States Reorganisation Act, 1956.',
+        'Zonal Councils are statutory, not constitutional.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body distinction.',
+        'Article 263.',
+        'States Reorganisation Act, 1956.',
+        'Inter-State Council versus Zonal Councils.',
+      ],
+      practiceTags: ['inter-state-council', 'zonal-councils', 'centre-state-coordination'],
+    ),
   ],
 );
 
