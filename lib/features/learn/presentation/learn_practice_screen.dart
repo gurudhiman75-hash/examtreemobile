@@ -29,7 +29,8 @@ class LearnPracticeScreen extends ConsumerWidget {
       }
     }
 
-    if (lesson == null) {
+    final resolvedLesson = lesson;
+    if (resolvedLesson == null) {
       return const Scaffold(
         body: Center(child: Text('Practice topic unavailable')),
       );
@@ -38,39 +39,39 @@ class LearnPracticeScreen extends ConsumerWidget {
     const target = 20;
     final questionsAsync = ref.watch(
       learnPracticeQuestionsProvider(
-        LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
+        LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
       ),
     );
 
     return questionsAsync.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(lesson.title)),
+        appBar: AppBar(title: Text(resolvedLesson.title)),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => _PracticeLoadFailure(
-        title: lesson.title,
+        title: resolvedLesson.title,
         onRetry: () => ref.invalidate(
           learnPracticeQuestionsProvider(
-            LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
+            LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
           ),
         ),
       ),
       data: (questions) {
         if (questions.isEmpty) {
           return _PracticeLoadFailure(
-            title: lesson.title,
+            title: resolvedLesson.title,
             message:
                 'Practice questions are not published for this topic yet. The lesson is available, but the learner Question Studio feed still needs this topic mapping.',
             onRetry: () => ref.invalidate(
               learnPracticeQuestionsProvider(
-                LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
+                LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: resolvedLesson.practiceTags.join(',')),
               ),
             ),
           );
         }
         return _LearnPracticeRunner(
           topicId: topicId,
-          title: lesson.title,
+          title: resolvedLesson.title,
           questions: questions.take(target).toList(growable: false),
         );
       },
