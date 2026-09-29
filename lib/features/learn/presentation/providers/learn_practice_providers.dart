@@ -33,11 +33,13 @@ class LearnPracticeRequest {
   const LearnPracticeRequest({
     required this.topicId,
     required this.limit,
+    this.tagQuery = '',
     this.fresh = false,
   });
 
   final String topicId;
   final int limit;
+  final String tagQuery;
   final bool fresh;
 
   @override
@@ -45,10 +47,11 @@ class LearnPracticeRequest {
       other is LearnPracticeRequest &&
       other.topicId == topicId &&
       other.limit == limit &&
+      other.tagQuery == tagQuery &&
       other.fresh == fresh;
 
   @override
-  int get hashCode => Object.hash(topicId, limit, fresh);
+  int get hashCode => Object.hash(topicId, limit, tagQuery, fresh);
 }
 
 final learnPracticeQuestionsProvider =
@@ -63,6 +66,7 @@ final learnPracticeQuestionsProvider =
             QuestionLanguage.hindi => 'hi',
             QuestionLanguage.punjabi => 'pa',
           },
+          tagQuery: request.tagQuery,
           fresh: request.fresh,
         );
   },
