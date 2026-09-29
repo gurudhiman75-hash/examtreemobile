@@ -17,6 +17,10 @@ import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/learn/presentation/learn_course_screen.dart';
+import '../features/learn/presentation/learn_module_screen.dart';
+import '../features/learn/presentation/learn_practice_result_screen.dart';
+import '../features/learn/presentation/learn_practice_screen.dart';
+import '../features/learn/presentation/learn_submodule_screen.dart';
 import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
@@ -272,6 +276,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => QuickRevisionScreen(
           minutes: _quickRevisionMinutes(state.uri),
+        ),
+      ),
+      GoRoute(
+        path: '/learn-module',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => LearnModuleScreen(
+          moduleId: state.uri.queryParameters['module'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/learn-submodule',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => LearnSubmoduleScreen(
+          submoduleId: state.uri.queryParameters['id'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/learn-practice',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => LearnPracticeScreen(
+          topicId: state.uri.queryParameters['topic'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/learn-practice-result',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => LearnPracticeResultScreen(
+          topicId: state.uri.queryParameters['topic'] ?? '',
+          correct: int.tryParse(state.uri.queryParameters['correct'] ?? '') ?? 0,
+          total: int.tryParse(state.uri.queryParameters['total'] ?? '') ?? 0,
         ),
       ),
       GoRoute(
