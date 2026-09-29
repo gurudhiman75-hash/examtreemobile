@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/learn_practice_catalog.dart';
 import '../data/polity_learn_localizations.dart';
 import 'providers/learn_practice_providers.dart';
 
@@ -24,13 +25,38 @@ class LearnPracticeResultScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final language =
         ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final standalone = learnPracticeTopicById(topicId);
     final subject = polityLearnSubjectFor(language);
-    var index = subject.lessons.indexWhere((lesson) => lesson.id == topicId);
-    if (index < 0) index = 0;
-    final lesson = subject.lessons[index];
-    final next = index + 1 < subject.lessons.length
-        ? subject.lessons[index + 1]
-        : null;
+
+    String title;
+    String allTopicsPath;
+    String? nextTopicId;
+    String? nextTopicTitle;
+
+    if (standalone != null) {
+      final topics = learnPracticeTopicsForSubmodule(standalone.submoduleId);
+      final index = topics.indexWhere((topic) => topic.id == topicId);
+      final next = index >= 0 && index + 1 < topics.length
+          ? topics[index + 1]
+          : null;
+      title = standalone.title;
+      allTopicsPath =
+          '/learn-submodule?id=${Uri.encodeQueryComponent(standalone.submoduleId)}';
+      nextTopicId = next?.id;
+      nextTopicTitle = next?.title;
+    } else {
+      var index = subject.lessons.indexWhere((lesson) => lesson.id == topicId);
+      if (index < 0) index = 0;
+      final lesson = subject.lessons[index];
+      final next = index + 1 < subject.lessons.length
+          ? subject.lessons[index + 1]
+          : null;
+      title = lesson.title;
+      allTopicsPath = '/learn-submodule?id=gk-polity';
+      nextTopicId = next?.id;
+      nextTopicTitle = next?.title;
+    }
+
     final accuracy = total <= 0 ? 0 : ((correct / total) * 100).round();
     final theme = Theme.of(context);
 
@@ -63,7 +89,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            lesson.title,
+            title,
             textAlign: TextAlign.center,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w900,
@@ -104,14 +130,14 @@ class LearnPracticeResultScreen extends ConsumerWidget {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () =>
-                      context.go('/learn-submodule?id=gk-polity'),
+                      context.go(allTopicsPath),
                   icon: const Icon(Icons.grid_view_rounded),
                   label: const Text('All topics'),
                 ),
               ),
             ],
           ),
-          if (next != null) ...[
+          if (nextTopicId != null && nextTopicTitle != null) ...[
             const SizedBox(height: AppSpacing.xl),
             Text(
               'Suggested next topic',
@@ -125,7 +151,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
               child: InkWell(
                 key: const Key('learn-next-suggested-topic'),
                 onTap: () => context.go(
-                  '/learn-practice?topic=${Uri.encodeQueryComponent(next.id)}',
+                  '/learn-practice?topic=${Uri.encodeQueryComponent(nextTopicId!)}',
                 ),
                 borderRadius: BorderRadius.circular(18),
                 child: Padding(
@@ -137,7 +163,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              next.title,
+                              nextTopicTitle!,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w900,
                               ),
