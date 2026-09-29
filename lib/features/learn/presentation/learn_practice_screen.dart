@@ -38,7 +38,7 @@ class LearnPracticeScreen extends ConsumerWidget {
     const target = 20;
     final questionsAsync = ref.watch(
       learnPracticeQuestionsProvider(
-        LearnPracticeRequest(topicId: topicId, limit: target),
+        LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
       ),
     );
 
@@ -51,7 +51,7 @@ class LearnPracticeScreen extends ConsumerWidget {
         title: lesson.title,
         onRetry: () => ref.invalidate(
           learnPracticeQuestionsProvider(
-            LearnPracticeRequest(topicId: topicId, limit: target),
+            LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
           ),
         ),
       ),
@@ -63,7 +63,7 @@ class LearnPracticeScreen extends ConsumerWidget {
                 'Practice questions are not published for this topic yet. The lesson is available, but the learner Question Studio feed still needs this topic mapping.',
             onRetry: () => ref.invalidate(
               learnPracticeQuestionsProvider(
-                LearnPracticeRequest(topicId: topicId, limit: target),
+                LearnPracticeRequest(topicId: topicId, limit: target, tagQuery: lesson.practiceTags.join(',')),
               ),
             ),
           );
