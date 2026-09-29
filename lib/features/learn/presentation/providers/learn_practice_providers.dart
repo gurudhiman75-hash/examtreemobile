@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/providers/repository_providers.dart';
+import '../../../preferences/domain/question_language.dart';
 import '../../../preferences/presentation/providers/question_language_providers.dart';
 import '../../data/api_learn_practice_question_repository.dart';
 import '../../data/local_learn_practice_progress_store.dart';
@@ -57,7 +58,11 @@ final learnPracticeQuestionsProvider =
     return ref.watch(learnPracticeQuestionRepositoryProvider).loadQuestions(
           topicId: request.topicId,
           limit: request.limit,
-          language: language.name,
+          language: switch (language) {
+            QuestionLanguage.english => 'en',
+            QuestionLanguage.hindi => 'hi',
+            QuestionLanguage.punjabi => 'pa',
+          },
           fresh: request.fresh,
         );
   },
