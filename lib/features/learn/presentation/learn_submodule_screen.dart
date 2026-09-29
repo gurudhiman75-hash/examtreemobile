@@ -157,8 +157,10 @@ class _TopicCard extends ConsumerWidget {
                         ref.invalidate(learnPracticeProgressListProvider);
                       }
                       if (context.mounted) {
+                        final freshQuery =
+                            status == LearnPracticeStatus.completed ? '&fresh=1' : '';
                         context.push(
-                          '/learn-practice?topic=${Uri.encodeQueryComponent(lesson.id)}&fresh=1',
+                          '/learn-practice?topic=${Uri.encodeQueryComponent(lesson.id)}$freshQuery',
                         );
                       }
                     },
