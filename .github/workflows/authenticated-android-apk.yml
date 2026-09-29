@@ -40,6 +40,38 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Apply diagnostic OAuth registration
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('android/app/google-services.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          target = next(
+              client for client in data.get('client', [])
+              if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == 'com.examtree.examtree'
+          )
+          oauth_client = target.setdefault('oauth_client', [])
+          certificate_hash = 'f843c24dad1ac8cf2524d4637fa0856a813b08df'
+          client_id = '1083299267005-ccgqq3ibkgk9mkvdffe1h0sdfens4hsj.apps.googleusercontent.com'
+          if not any(
+              entry.get('client_type') == 1
+              and (entry.get('android_info') or {}).get('certificate_hash', '').lower() == certificate_hash
+              for entry in oauth_client
+          ):
+              oauth_client.append({
+                  'client_id': client_id,
+                  'client_type': 1,
+                  'android_info': {
+                      'package_name': 'com.examtree.examtree',
+                      'certificate_hash': certificate_hash,
+                  },
+              })
+          path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+          PY
+
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
