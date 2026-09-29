@@ -155,6 +155,7 @@ class _TopicCard extends ConsumerWidget {
                             .clear(lesson.id);
                         ref.invalidate(learnPracticeProgressProvider(lesson.id));
                         ref.invalidate(learnPracticeProgressListProvider);
+                        ref.invalidate(learnPracticeQuestionsProvider);
                       }
                       if (context.mounted) {
                         final freshQuery =
