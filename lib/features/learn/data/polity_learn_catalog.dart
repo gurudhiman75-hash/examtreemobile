@@ -1626,6 +1626,310 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['finance-commission', 'articles-280-281', 'fiscal-federalism'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-031',
+      subjectCode: 'POL',
+      title: 'Attorney General of India',
+      summary: 'Article 76: appointment, qualifications, duties and parliamentary privileges of the Attorney General.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 76',
+          paragraphs: [
+            'The Attorney General for India is the highest law officer of the Union. The Attorney General is appointed by the President.',
+            'The person appointed must be qualified to be appointed a Judge of the Supreme Court.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties',
+          paragraphs: [
+            'The Attorney General gives advice to the Government of India on legal matters referred or assigned by the President and performs other legal duties conferred by the Constitution or by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Right of audience and Parliament',
+          paragraphs: [
+            'The Attorney General has the right of audience in all courts in the territory of India.',
+            'Under Article 88, the Attorney General may speak and otherwise take part in proceedings of either House of Parliament, any joint sitting and parliamentary committees of which the Attorney General may be named a member, but does not have a vote by virtue of that right.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '76 = Attorney General for India.',
+        'Appointed by President.',
+        'Must be qualified for appointment as a Supreme Court Judge.',
+        'Right of audience in all courts in India.',
+        'May participate in Parliament under Article 88, but has no vote by virtue of that right.',
+      ],
+      examFocus: [
+        'Article 76.',
+        'Qualification standard.',
+        'Right of audience.',
+        'Parliament participation versus voting right.',
+      ],
+      practiceTags: ['attorney-general', 'article-76', 'law-officers'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-032',
+      subjectCode: 'POL',
+      title: 'Governor',
+      summary: 'Articles 153–162: office, appointment, qualifications, term and State executive power.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Office and appointment',
+          paragraphs: [
+            'Article 153 provides for a Governor for each State, while the Constitution permits the same person to be appointed Governor for two or more States.',
+            'The Governor is appointed by the President by warrant under his hand and seal.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications and term',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Point', 'Rule'],
+            rows: [
+              ['Citizenship', 'Citizen of India'],
+              ['Minimum age', '35 years'],
+              ['Term', '5 years from entering office'],
+              ['Tenure condition', 'Holds office during the pleasure of the President'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Executive power',
+          paragraphs: [
+            'Article 154 vests the executive power of the State in the Governor, to be exercised in accordance with the Constitution.',
+            'The Governor appoints the Chief Minister and, on the advice of the Chief Minister, the other Ministers.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Oath',
+          paragraphs: [
+            'The Governor takes the oath or affirmation prescribed by Article 159 before the Chief Justice of the High Court exercising jurisdiction in relation to the State, or in the Chief Justice’s absence, the senior-most available Judge of that Court.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '153 = Governor.',
+        '155 = appointment by President.',
+        'Minimum age = 35 years.',
+        'Normal term = 5 years, but office is held during President’s pleasure.',
+        '154 = State executive power.',
+      ],
+      examFocus: [
+        'President versus Governor appointment method.',
+        'Five-year term and pleasure doctrine.',
+        'Minimum age 35.',
+        'Articles 153–159.',
+      ],
+      practiceTags: ['governor', 'articles-153-162', 'state-executive'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-033',
+      subjectCode: 'POL',
+      title: 'Chief Minister and State Council of Ministers',
+      summary: 'Articles 163–167: aid and advice, appointment, collective responsibility and Chief Minister’s duties.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Aid and advice',
+          paragraphs: [
+            'Article 163 provides for a Council of Ministers with the Chief Minister at the head to aid and advise the Governor, except in matters where the Constitution requires the Governor to act in discretion.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and collective responsibility',
+          paragraphs: [
+            'The Chief Minister is appointed by the Governor. Other Ministers are appointed by the Governor on the advice of the Chief Minister.',
+            'Article 164 states that the Council of Ministers is collectively responsible to the Legislative Assembly of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Important Article 164 rules',
+          paragraphs: const [],
+          points: [
+            'A Minister who is not a member of the State Legislature for six consecutive months ceases to be a Minister at the end of that period.',
+            'The total number of Ministers in a State, including the Chief Minister, cannot exceed 15% of the total number of members of the Legislative Assembly.',
+            'The number of Ministers, including the Chief Minister, cannot be less than 12.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Chief Minister’s duties — Article 167',
+          paragraphs: [
+            'The Chief Minister must communicate to the Governor decisions of the Council of Ministers relating to State administration and legislative proposals, furnish information when called for, and place before the Council a matter decided by an individual Minister if the Governor so requires.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '163 = Council of Ministers to aid and advise Governor.',
+        '164 = appointment and collective responsibility.',
+        'Collective responsibility is to the Legislative Assembly.',
+        'Six-month rule applies to a Minister who is not a legislator.',
+        'State Council size: maximum 15% of Assembly strength, minimum 12.',
+        '167 = Chief Minister’s duties towards Governor.',
+      ],
+      examFocus: [
+        'State equivalent of Union Articles 74, 75 and 78.',
+        'Collective responsibility to Legislative Assembly.',
+        '15% ceiling and minimum 12.',
+        'Article 167 information duties.',
+      ],
+      practiceTags: ['chief-minister', 'state-council-of-ministers', 'articles-163-167'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-034',
+      subjectCode: 'POL',
+      title: 'State Legislature',
+      summary: 'Articles 168–212: Legislative Assembly, Legislative Council, duration, membership and key procedures.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Structure — Article 168',
+          paragraphs: [
+            'A State Legislature consists of the Governor and, depending on the State, either one House or two Houses.',
+            'Where there are two Houses, they are the Legislative Assembly and the Legislative Council.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Legislative Assembly',
+          paragraphs: [
+            'Members of the Legislative Assembly are chosen by direct election from territorial constituencies.',
+            'The normal duration of a Legislative Assembly is five years from the date appointed for its first meeting, unless sooner dissolved, subject to the constitutional emergency provision.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Legislative Council',
+          paragraphs: [
+            'A Legislative Council is a continuing House and is not subject to dissolution. As nearly as possible, one-third of its members retire every second year.',
+            'Article 169 allows Parliament to create or abolish a Legislative Council in a State if the State Legislative Assembly first passes the required resolution by the special majority specified in that Article.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Minimum ages',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['House', 'Minimum age'],
+            rows: [
+              ['Legislative Assembly', '25 years'],
+              ['Legislative Council', '30 years'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Money Bills in States',
+          paragraphs: [
+            'A Money Bill cannot be introduced in a Legislative Council. In a bicameral State, the Council may make recommendations and must return the Bill within fourteen days, following the constitutional procedure.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '168 = State Legislature.',
+        'Assembly = directly elected and normally 5 years.',
+        'Council = continuing House; about one-third retire every second year.',
+        '169 = creation or abolition of Legislative Council.',
+        'Minimum age: Assembly 25; Council 30.',
+        'State Money Bill originates in Assembly only.',
+      ],
+      examFocus: [
+        'Unicameral versus bicameral State Legislature.',
+        'Creation/abolition of Legislative Council.',
+        'Assembly versus Council age and duration.',
+        'State Money Bill procedure.',
+      ],
+      practiceTags: ['state-legislature', 'legislative-assembly', 'legislative-council', 'articles-168-212'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-035',
+      subjectCode: 'POL',
+      title: 'Advocate General for the State',
+      summary: 'Article 165 and the constitutional role of the State’s highest law officer.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 165',
+          paragraphs: [
+            'The Governor appoints a person who is qualified to be appointed a Judge of a High Court to be the Advocate General for the State.',
+            'The Advocate General is the highest law officer of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Duties and rights',
+          paragraphs: [
+            'The Advocate General advises the State Government on legal matters referred or assigned by the Governor and performs other legal duties conferred by the Constitution or by law.',
+            'The Advocate General has a right of audience in courts within the territory of the State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'State Legislature participation',
+          paragraphs: [
+            'Under Article 177, the Advocate General may speak and otherwise take part in proceedings of the State Legislature and its committees as constitutionally provided, but is not entitled to vote by virtue of this right.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '165 = Advocate General.',
+        'Appointed by Governor.',
+        'Must be qualified to be a High Court Judge.',
+        'Highest law officer of the State.',
+        'Article 177 permits participation in State Legislature without a voting right by virtue of that participation.',
+      ],
+      examFocus: [
+        'Attorney General versus Advocate General.',
+        'President versus Governor as appointing authority.',
+        'Supreme Court qualification versus High Court qualification.',
+        'Article 165.',
+      ],
+      practiceTags: ['advocate-general', 'article-165', 'state-law-officer'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-036',
+      subjectCode: 'POL',
+      title: 'State Public Service Commission',
+      summary: 'Articles 315–323: appointment, tenure, functions and reporting of State Public Service Commissions.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional basis',
+          paragraphs: [
+            'Article 315 provides for a Public Service Commission for each State, while also permitting a Joint State Public Service Commission for two or more States in the constitutional manner.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and tenure',
+          paragraphs: [
+            'The Chairman and other members of a State Public Service Commission are appointed by the Governor.',
+            'A member of a State Commission holds office for six years from entering office or until attaining the age of sixty-two years, whichever is earlier.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Functions',
+          paragraphs: [
+            'Under Article 320, a State Public Service Commission conducts examinations for appointments to State services and is consulted on constitutionally specified recruitment, promotion, transfer and disciplinary matters, subject to the applicable framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Reports',
+          paragraphs: [
+            'A State Public Service Commission presents an annual report to the Governor. The Governor causes it to be laid before the State Legislature together with the required memorandum in relevant cases.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '315–323 cover Union and State Public Service Commissions.',
+        'State PSC members appointed by Governor.',
+        'State PSC term: 6 years or age 62, whichever is earlier.',
+        'UPSC age ceiling = 65; State PSC age ceiling = 62.',
+        '320 = functions; 323 = reports.',
+      ],
+      examFocus: [
+        'UPSC versus State PSC appointing authority.',
+        'Age 65 versus 62.',
+        'Six-year tenure rule.',
+        'Joint State Public Service Commission concept.',
+      ],
+      practiceTags: ['state-psc', 'articles-315-323', 'public-service-commission'],
+    ),
   ],
 );
 
