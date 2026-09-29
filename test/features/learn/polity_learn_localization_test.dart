@@ -10,7 +10,8 @@ void main() {
     expect(subject.title, 'भारतीय राजव्यवस्था');
     expect(subject.lessons.first.title, 'भारतीय संविधान का निर्माण');
     expect(subject.lessons[4].title, 'नागरिकता');
-    expect(subject.lessons[5].title, 'Fundamental Rights — Overview');
+    expect(subject.lessons[5].title, 'मौलिक अधिकार — परिचय');
+    expect(subject.lessons[13].title, 'मौलिक कर्तव्य');
     expect(subject.lessons.length, 67);
   });
 
@@ -21,6 +22,8 @@ void main() {
     expect(subject.lessons.first.title, 'ਭਾਰਤੀ ਸੰਵਿਧਾਨ ਦੀ ਬਣਤਰ');
     expect(subject.lessons[2].title, 'ਪ੍ਰਸਤਾਵਨਾ');
     expect(subject.lessons[4].title, 'ਨਾਗਰਿਕਤਾ');
+    expect(subject.lessons[5].title, 'ਮੌਲਿਕ ਅਧਿਕਾਰ — ਜਾਣ-ਪਛਾਣ');
+    expect(subject.lessons[13].title, 'ਮੌਲਿਕ ਫ਼ਰਜ਼');
   });
 
   test('Learn UI copy follows the global question language', () {
