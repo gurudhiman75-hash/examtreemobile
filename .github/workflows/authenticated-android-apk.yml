@@ -54,8 +54,8 @@ jobs:
               if client.get('client_info', {}).get('android_client_info', {}).get('package_name') == 'com.examtree.examtree'
           )
           oauth_client = target.setdefault('oauth_client', [])
-          certificate_hash = 'f843c24dad1ac8cf2524d4637fa0856a813b08df'
-          client_id = '1083299267005-ccgqq3ibkgk9mkvdffe1h0sdfens4hsj.apps.googleusercontent.com'
+          certificate_hash = '673830962d113c1539afa391227c58eb3f5b87d8'
+          client_id = '1083299267005-q3d9j4k6n7lajdh55psm8nl58osipo2f.apps.googleusercontent.com'
           if not any(
               entry.get('client_type') == 1
               and (entry.get('android_info') or {}).get('certificate_hash', '').lower() == certificate_hash
