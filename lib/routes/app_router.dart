@@ -297,6 +297,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => LearnPracticeScreen(
           topicId: state.uri.queryParameters['topic'] ?? '',
+          fresh: state.uri.queryParameters['fresh'] == '1',
         ),
       ),
       GoRoute(
