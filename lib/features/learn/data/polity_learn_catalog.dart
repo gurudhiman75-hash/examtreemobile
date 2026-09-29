@@ -2984,6 +2984,489 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['polity-revision', 'important-articles'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-057',
+      subjectCode: 'POL',
+      title: 'President’s Legislative Powers and Ordinances',
+      summary: 'Assent, veto choices and ordinance-making power under Articles 111 and 123.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Assent to Bills — Article 111',
+          paragraphs: [
+            'When a Bill has been passed by Parliament, it is presented to the President for assent.',
+            'For a Bill other than a Money Bill, the President may return it once for reconsideration. If Parliament passes it again and presents it to the President, assent cannot then be withheld under the constitutional text.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Ordinance power — Article 123',
+          paragraphs: [
+            'When both Houses of Parliament are not in session and immediate action is considered necessary, the President may promulgate an Ordinance under Article 123.',
+            'An Ordinance has the same force and effect as an Act of Parliament, but it is temporary and is subject to parliamentary approval within the constitutional time limit.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam distinction',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Power', 'Article'],
+            rows: [
+              ['Assent / return of Bills', '111'],
+              ['Ordinance-making power', '123'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '111 = assent to Bills.',
+        'Ordinary Bill may be returned once for reconsideration.',
+        'Money Bill cannot be returned under Article 111.',
+        '123 = President’s Ordinance power.',
+        'Ordinance is temporary legislation with force of an Act while valid.',
+      ],
+      examFocus: [
+        'Article 111 versus Article 123.',
+        'Return of ordinary Bill versus Money Bill.',
+        'When an Ordinance can be promulgated.',
+      ],
+      practiceTags: ['presidential-veto', 'ordinance', 'article-111', 'article-123'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-058',
+      subjectCode: 'POL',
+      title: 'Parliamentary Devices and Privileges',
+      summary: 'Question Hour, Zero Hour, motions and constitutional privileges under Article 105.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Parliamentary devices',
+          paragraphs: [
+            'Parliament uses several procedural devices to question the government, raise urgent matters and test the confidence of the House.',
+          ],
+          points: [
+            'Question Hour: members ask questions subject to parliamentary rules.',
+            'Zero Hour: a parliamentary practice used to raise urgent matters; it is not mentioned in the Constitution.',
+            'No-confidence motion: tests whether the Council of Ministers retains the confidence of the Lok Sabha.',
+            'Adjournment motion: seeks discussion of a definite matter of urgent public importance under the rules of the House.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Parliamentary privileges — Article 105',
+          paragraphs: [
+            'Article 105 deals with powers, privileges and immunities of Parliament, its members and committees.',
+            'Freedom of speech in Parliament is constitutionally protected subject to the Constitution and the rules and standing orders regulating parliamentary procedure.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '105 = parliamentary privileges.',
+        'Zero Hour is a parliamentary convention/practice, not a constitutional provision.',
+        'No-confidence motion concerns Lok Sabha confidence in the Council of Ministers.',
+        'Question Hour operates under parliamentary rules.',
+      ],
+      examFocus: [
+        'Article 105.',
+        'Constitutional provision versus parliamentary convention.',
+        'No-confidence motion and Lok Sabha.',
+      ],
+      practiceTags: ['parliamentary-devices', 'article-105', 'parliamentary-privileges'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-059',
+      subjectCode: 'POL',
+      title: 'Union Territories and Delhi',
+      summary: 'Articles 239–241 and the special constitutional framework for the National Capital Territory of Delhi.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Union Territories',
+          paragraphs: [
+            'Part VIII of the Constitution deals with Union territories. Article 239 provides the general constitutional framework for their administration by the President through an administrator appointed by him.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delhi — Article 239AA',
+          paragraphs: [
+            'Article 239AA contains special provisions for the National Capital Territory of Delhi, including a Legislative Assembly and Council of Ministers within the constitutional limits laid down in that Article.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High Court provision',
+          paragraphs: [
+            'Article 241 deals with High Courts for Union territories and empowers Parliament to constitute a High Court for a Union territory or declare a court there to be a High Court for constitutional purposes.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part VIII = Union territories.',
+        '239 = general UT administration.',
+        '239AA = special provisions for Delhi.',
+        '241 = High Courts for Union territories.',
+      ],
+      examFocus: [
+        'Part VIII article range.',
+        'Article 239 versus 239AA.',
+        'Delhi’s special constitutional position.',
+      ],
+      practiceTags: ['union-territories', 'article-239', 'article-239aa', 'delhi'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-060',
+      subjectCode: 'POL',
+      title: 'Subordinate Judiciary',
+      summary: 'Articles 233–237: district judges, judicial service and High Court control over subordinate courts.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'District Judges — Article 233',
+          paragraphs: [
+            'Appointments, posting and promotion of district judges in a State are made by the Governor in consultation with the High Court exercising jurisdiction in relation to that State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Other judicial service appointments',
+          paragraphs: [
+            'Article 234 deals with recruitment of persons other than district judges to the judicial service of a State, involving the Governor, State Public Service Commission and High Court under the constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Control of High Court — Article 235',
+          paragraphs: [
+            'Control over district courts and courts subordinate to them is vested in the High Court under Article 235, subject to the constitutional scheme.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '233 = district judges.',
+        '234 = recruitment to judicial service other than district judges.',
+        '235 = High Court control over subordinate courts.',
+        'High Court consultation is central to district-judge appointments.',
+      ],
+      examFocus: [
+        'Articles 233–235.',
+        'Governor versus High Court roles.',
+        'Subordinate judiciary and State judicial service.',
+      ],
+      practiceTags: ['subordinate-judiciary', 'articles-233-237'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-061',
+      subjectCode: 'POL',
+      title: 'Constitutional Funds and Public Money',
+      summary: 'Consolidated Fund, Public Account and Contingency Fund under Articles 266–267.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Consolidated Fund — Article 266',
+          paragraphs: [
+            'All revenues received by the Government of India, loans raised by it and money received in repayment of loans form the Consolidated Fund of India, subject to the constitutional text.',
+            'Similar Consolidated Funds exist for the States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Public Account',
+          paragraphs: [
+            'Other public moneys received by or on behalf of the Government of India are credited to the Public Account of India under Article 266.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Contingency Fund — Article 267',
+          paragraphs: [
+            'Article 267 permits Parliament and State Legislatures to establish Contingency Funds for unforeseen expenditure in the constitutional manner.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Quick comparison',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Fund', 'Article'],
+            rows: [
+              ['Consolidated Fund / Public Account', '266'],
+              ['Contingency Fund', '267'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '266 = Consolidated Fund + Public Account.',
+        '267 = Contingency Fund.',
+        'Appropriation from Consolidated Fund requires constitutional authorization.',
+      ],
+      examFocus: [
+        '266 versus 267.',
+        'Consolidated Fund versus Public Account.',
+        'Budget and appropriation link.',
+      ],
+      practiceTags: ['constitutional-funds', 'article-266', 'article-267'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-062',
+      subjectCode: 'POL',
+      title: 'Fifth and Sixth Schedules',
+      summary: 'Scheduled Areas, Scheduled Tribes and autonomous administration in specified tribal areas.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Fifth Schedule',
+          paragraphs: [
+            'The Fifth Schedule deals with administration and control of Scheduled Areas and Scheduled Tribes in States other than those covered by the Sixth Schedule framework.',
+            'It includes provisions relating to Tribes Advisory Councils and the Governor’s role in Scheduled Areas.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Sixth Schedule',
+          paragraphs: [
+            'The Sixth Schedule contains special arrangements for administration of tribal areas in Assam, Meghalaya, Tripura and Mizoram.',
+            'It provides for Autonomous District Councils and Regional Councils within its constitutional framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Schedule', 'Exam cue'],
+            rows: [
+              ['Fifth', 'Scheduled Areas and Scheduled Tribes in specified States'],
+              ['Sixth', 'Autonomous tribal-area arrangements in Assam, Meghalaya, Tripura and Mizoram'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '5th Schedule = Scheduled Areas / Scheduled Tribes framework.',
+        '6th Schedule = tribal-area autonomous councils in four north-eastern States.',
+        'Sixth Schedule States: Assam, Meghalaya, Tripura, Mizoram.',
+      ],
+      examFocus: [
+        'Fifth versus Sixth Schedule.',
+        'Four Sixth Schedule States.',
+        'Autonomous District Councils.',
+      ],
+      practiceTags: ['fifth-schedule', 'sixth-schedule', 'tribal-areas'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-063',
+      subjectCode: 'POL',
+      title: 'GST Council',
+      summary: 'Article 279A: composition, voting and recommendation role of the GST Council.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 279A',
+          paragraphs: [
+            'Article 279A provides for the Goods and Services Tax Council.',
+            'The Council is a constitutional body for cooperative decision-making between the Union and States on GST matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Composition',
+          paragraphs: const [],
+          points: [
+            'Union Finance Minister — Chairperson.',
+            'Union Minister of State in charge of Revenue or Finance.',
+            'Minister in charge of Finance or Taxation, or another Minister nominated by each State Government.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Role',
+          paragraphs: [
+            'The Council makes recommendations to the Union and States on GST matters such as taxable or exempt goods and services, model GST laws, place-of-supply principles, thresholds and rates within the constitutional framework.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '279A = GST Council.',
+        'Union Finance Minister chairs it.',
+        'Union + State representation.',
+        'Makes recommendations on GST structure and rates.',
+      ],
+      examFocus: [
+        'Article 279A.',
+        'Chairperson and composition.',
+        'Constitutional body status.',
+      ],
+      practiceTags: ['gst-council', 'article-279a'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-064',
+      subjectCode: 'POL',
+      title: 'Landmark Constitutional Amendments',
+      summary: 'A compact map of amendments most frequently tested in competitive exams.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'High-yield amendments',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Amendment', 'Exam cue'],
+            rows: [
+              ['42nd (1976)', 'Socialist, Secular, Integrity; Fundamental Duties; major constitutional changes'],
+              ['44th (1978)', 'Emergency safeguards; property no longer Fundamental Right'],
+              ['52nd (1985)', 'Anti-defection / Tenth Schedule'],
+              ['61st (1988)', 'Voting age reduced from 21 to 18'],
+              ['73rd (1992)', 'Panchayats'],
+              ['74th (1992)', 'Municipalities'],
+              ['86th (2002)', 'Article 21A and education-related duty'],
+              ['91st (2003)', 'Council of Ministers size limit; anti-defection changes'],
+              ['97th (2011)', 'Co-operative societies provisions'],
+              ['101st (2016)', 'GST constitutional framework'],
+              ['102nd (2018)', 'Constitutional status to NCBC'],
+              ['103rd (2019)', 'EWS reservation provisions'],
+              ['104th (2020)', 'Extended SC/ST legislative-seat reservation period; ended Anglo-Indian nomination provisions'],
+              ['106th (2023)', 'Reservation of seats for women in Lok Sabha and State Legislative Assemblies subject to constitutional commencement conditions'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '42 = major changes + Duties.',
+        '44 = Emergency/property changes.',
+        '52 = anti-defection.',
+        '61 = voting age 18.',
+        '73/74 = local government.',
+        '101 = GST.',
+        '102 = NCBC.',
+        '103 = EWS.',
+      ],
+      examFocus: [
+        'Amendment-number matching.',
+        '42nd versus 44th.',
+        'Local-government amendments.',
+        'Recent high-yield amendments.',
+      ],
+      practiceTags: ['constitutional-amendments', 'important-amendments'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-065',
+      subjectCode: 'POL',
+      title: 'Basic Structure Doctrine',
+      summary: 'Kesavananda Bharati and the constitutional limit on Parliament’s amending power.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Kesavananda Bharati',
+          paragraphs: [
+            'In Kesavananda Bharati v. State of Kerala (1973), the Supreme Court held that Parliament’s power to amend the Constitution does not extend to destroying its basic structure.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'What counts as basic structure?',
+          paragraphs: [
+            'The Court has not reduced the doctrine to one exhaustive closed list. Different judgments have recognised features such as supremacy of the Constitution, republican and democratic government, secularism, separation of powers, federalism, judicial review and other fundamental constitutional principles.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam caution',
+          paragraphs: [
+            'The doctrine limits constitutional amendment power; it is not itself written as a single enumerated list in Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Kesavananda Bharati = 1973.',
+        'Parliament cannot destroy the basic structure.',
+        'No single exhaustive constitutional list of basic-structure features.',
+        'Doctrine limits Article 368 amendment power.',
+      ],
+      examFocus: [
+        'Case name and year.',
+        'Meaning of Basic Structure Doctrine.',
+        'Examples versus exhaustive list.',
+      ],
+      practiceTags: ['basic-structure', 'kesavananda-bharati', 'article-368'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-066',
+      subjectCode: 'POL',
+      title: 'Effects of Emergency Proclamations',
+      summary: 'Articles 353, 358 and 359: how National Emergency can affect federal power and Fundamental Rights.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 353',
+          paragraphs: [
+            'While a National Emergency Proclamation is in operation, Article 353 expands Union executive and legislative authority in the manner stated in the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 358',
+          paragraphs: [
+            'Article 358 concerns Article 19 during an Emergency based on war or external aggression. Its operation is narrower after the 44th Amendment than under the earlier constitutional position.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 359',
+          paragraphs: [
+            'Article 359 permits the President, during a National Emergency, to suspend the right to move courts for enforcement of specified Part III rights, subject to the Constitution.',
+            'After the 44th Amendment, Articles 20 and 21 cannot be included in such a suspension order.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '353 = effects on Union executive/legislative power.',
+        '358 = Article 19 effect for war/external aggression Emergency.',
+        '359 = suspension of court-enforcement rights by Presidential order.',
+        'Articles 20 and 21 are protected from Article 359 suspension orders.',
+      ],
+      examFocus: [
+        '352 versus 358 versus 359.',
+        'War/external aggression condition under Article 358.',
+        'Articles 20 and 21 protection after 44th Amendment.',
+      ],
+      practiceTags: ['emergency-effects', 'articles-353-359'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-067',
+      subjectCode: 'POL',
+      title: 'CIC, CVC, Lokpal and Delimitation Commission',
+      summary: 'Important statutory governance bodies frequently confused with constitutional bodies.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Statutory-body map',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Body', 'Legal basis'],
+            rows: [
+              ['Central Information Commission', 'Right to Information Act, 2005'],
+              ['Central Vigilance Commission', 'Central Vigilance Commission Act, 2003'],
+              ['Lokpal', 'Lokpal and Lokayuktas Act, 2013'],
+              ['Delimitation Commission', 'Constituted under Delimitation Acts passed by Parliament'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Central Information Commission',
+          paragraphs: [
+            'The CIC was constituted under the Right to Information Act, 2005 and exercises statutory powers relating to complaints, second appeals, penalties and monitoring/reporting under that Act.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Delimitation Commission',
+          paragraphs: [
+            'The Delimitation Commission fixes constituency boundaries under the statutory framework. Its orders have the force of law under the delimitation scheme and are not modified by Parliament or the concerned State Legislature after being laid before them.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Exam caution',
+          paragraphs: [
+            'These bodies are important, but they are not constitutional bodies merely because they perform major public functions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'CIC = RTI Act, 2005.',
+        'CVC = CVC Act, 2003.',
+        'Lokpal = Lokpal and Lokayuktas Act, 2013.',
+        'Delimitation Commission = statutory commission under Delimitation Acts.',
+      ],
+      examFocus: [
+        'Constitutional versus statutory body.',
+        'Parent Act matching.',
+        'Delimitation Commission powers.',
+      ],
+      practiceTags: ['cic', 'cvc', 'lokpal', 'delimitation-commission', 'statutory-bodies'],
+    ),
   ],
 );
 
