@@ -88,3 +88,4 @@ flutter build apk --debug \
 ```
 
 That debug build can compile without a Firebase Android app ID, but authentication is intentionally disabled at runtime until the real app registration is supplied. Use the `Authenticated Android APK` workflow for any APK intended for installation/testing with Firebase Auth.
+
