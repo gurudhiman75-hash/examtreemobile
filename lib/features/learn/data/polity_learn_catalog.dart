@@ -485,61 +485,300 @@ const polityLearnSubject = LearnSubject(
       id: 'POL-LRN-009',
       subjectCode: 'POL',
       title: 'Right against Exploitation',
-      summary: 'Articles 23–24 on trafficking, forced labour and child labour.',
-      estimatedMinutes: 5,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 23–24 on trafficking, forced labour and hazardous employment of children.',
+      estimatedMinutes: 6,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 23',
+          paragraphs: [
+            'Article 23 prohibits traffic in human beings, begar and other similar forms of forced labour. A violation is an offence punishable according to law.',
+            'The Article allows the State to impose compulsory service for public purposes, but in doing so the State cannot discriminate only on grounds of religion, race, caste or class.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 24',
+          paragraphs: [
+            'Article 24 prohibits employment of a child below fourteen years in any factory or mine or in any other hazardous employment.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Do not confuse the two',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['23', 'Trafficking, begar and forced labour'],
+              ['24', 'Children below 14 in factory, mine or hazardous employment'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '23 = trafficking and forced labour.',
+        '24 = hazardous employment of children below 14.',
+        'Compulsory public service is not barred by Article 23, subject to its non-discrimination rule.',
+      ],
+      examFocus: [
+        'Difference between Articles 23 and 24.',
+        'Meaning of begar/forced labour in Article 23.',
+        'Age and workplace wording used in Article 24.',
+      ],
+      practiceTags: ['right-against-exploitation', 'articles-23-24'],
     ),
     LearnLesson(
       id: 'POL-LRN-010',
       subjectCode: 'POL',
       title: 'Freedom of Religion',
-      summary: 'Articles 25–28 and constitutional religious freedom.',
-      estimatedMinutes: 6,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 25–28: conscience, religious practice, religious affairs, taxation and instruction.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 25–28',
+          paragraphs: [
+            'The Constitution protects freedom of religion through Articles 25 to 28. These rights operate subject to constitutional limits such as public order, morality and health where stated.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Core idea'],
+            rows: [
+              ['25', 'Freedom of conscience; profess, practise and propagate religion'],
+              ['26', 'Freedom to manage religious affairs'],
+              ['27', 'Freedom from taxation specifically appropriated for promotion or maintenance of a particular religion'],
+              ['28', 'Rules on religious instruction or worship in certain educational institutions'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 25',
+          paragraphs: [
+            'Article 25 applies to all persons, not only citizens. It protects freedom of conscience and the right freely to profess, practise and propagate religion, subject to the conditions written in the Article.',
+            'For exam purposes, remember the constitutional explanation that wearing and carrying kirpans is included in the profession of the Sikh religion.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 26–28',
+          paragraphs: [
+            'Article 26 protects specified rights of religious denominations or sections of them. Article 27 deals with taxes whose proceeds are specifically appropriated for promotion or maintenance of a particular religion.',
+            'Article 28 distinguishes between educational institutions wholly maintained from State funds and certain institutions administered by the State but established under an endowment or trust requiring religious instruction.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '25 = conscience; profess, practise and propagate.',
+        '26 = manage religious affairs.',
+        '27 = specified tax protection.',
+        '28 = religious instruction/worship in educational institutions.',
+        'Article 25 expressly recognises carrying kirpans in relation to Sikh religion.',
+      ],
+      examFocus: [
+        'Article-number matching from 25–28.',
+        'Article 25 applies to all persons.',
+        'Kirpan explanation under Article 25.',
+        'Difference between Articles 27 and 28.',
+      ],
+      practiceTags: ['freedom-of-religion', 'articles-25-28'],
     ),
     LearnLesson(
       id: 'POL-LRN-011',
       subjectCode: 'POL',
       title: 'Cultural & Educational Rights',
-      summary: 'Articles 29–30 and protection of cultural and educational interests.',
-      estimatedMinutes: 5,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 29–30 and protection of language, script, culture and minority educational institutions.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 29',
+          paragraphs: [
+            'Article 29 protects the right of any section of citizens having a distinct language, script or culture of its own to conserve it.',
+            'Its second clause says that no citizen shall be denied admission into an educational institution maintained by the State or receiving State aid only on grounds of religion, race, caste, language or any of them.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 30',
+          paragraphs: [
+            'Article 30 gives minorities, whether based on religion or language, the right to establish and administer educational institutions of their choice.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Common exam confusion',
+          paragraphs: [
+            'Article 29(1) is worded for “any section of the citizens” with a distinct language, script or culture. Article 30 specifically uses the expression minorities based on religion or language.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Remember'],
+            rows: [
+              ['29', 'Conservation of distinct language, script or culture; admission protection'],
+              ['30', 'Minority educational institutions'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '29(1) = conserve distinct language, script or culture.',
+        '29(2) = admission protection in State-maintained/aided institutions.',
+        '30 = religious or linguistic minorities can establish and administer educational institutions.',
+      ],
+      examFocus: [
+        'Article 29 is not worded only for minorities.',
+        'Religion/language minorities under Article 30.',
+        'Difference between cultural conservation and minority institution rights.',
+      ],
+      practiceTags: ['cultural-educational-rights', 'articles-29-30'],
     ),
     LearnLesson(
       id: 'POL-LRN-012',
       subjectCode: 'POL',
       title: 'Constitutional Remedies',
-      summary: 'Article 32 and the five constitutional writs.',
-      estimatedMinutes: 8,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Article 32 and the major constitutional writs used for enforcement of Fundamental Rights.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 32',
+          paragraphs: [
+            'Article 32 guarantees the right to move the Supreme Court by appropriate proceedings for enforcement of the rights conferred by Part III.',
+            'The Supreme Court may issue directions, orders or writs, including writs in the nature of habeas corpus, mandamus, prohibition, quo warranto and certiorari, for enforcement of Fundamental Rights.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Five writs at a glance',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Writ', 'Simple exam meaning'],
+            rows: [
+              ['Habeas Corpus', 'Produce a detained person before the court; tests legality of detention'],
+              ['Mandamus', 'Command to a public authority to perform a public/legal duty'],
+              ['Prohibition', 'Higher court stops a lower court/tribunal from exceeding jurisdiction before completion'],
+              ['Certiorari', 'Higher court can quash an order/proceeding of a lower court/tribunal on recognised grounds'],
+              ['Quo Warranto', 'Questions the authority by which a person holds a public office'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 32 and High Courts',
+          paragraphs: [
+            'Article 32 concerns the Supreme Court and enforcement of Part III rights. High Courts separately have writ jurisdiction under Article 226, which is broader in text because it extends to enforcement of Fundamental Rights and “for any other purpose”.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '32 = Supreme Court remedy for enforcement of Fundamental Rights.',
+        'Habeas Corpus = illegal detention.',
+        'Mandamus = perform public duty.',
+        'Prohibition = stop excess jurisdiction.',
+        'Certiorari = quash on recognised grounds.',
+        'Quo Warranto = authority to hold public office.',
+      ],
+      examFocus: [
+        'Match each writ with its function.',
+        'Article 32 versus Article 226.',
+        'Which writ relates to detention or public office.',
+      ],
+      practiceTags: ['constitutional-remedies', 'article-32', 'writs'],
     ),
     LearnLesson(
       id: 'POL-LRN-013',
       subjectCode: 'POL',
       title: 'Directive Principles of State Policy',
-      summary: 'Articles 36–51 and the major categories of Directive Principles.',
-      estimatedMinutes: 8,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Part IV, Articles 36–51: non-justiciable principles fundamental in governance.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Nature of DPSPs',
+          paragraphs: [
+            'Directive Principles of State Policy are contained in Part IV of the Constitution, Articles 36 to 51.',
+            'Article 37 says that these provisions are not enforceable by any court, but the principles are nevertheless fundamental in the governance of the country and it is the duty of the State to apply them in making laws.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield Articles',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam focus'],
+            rows: [
+              ['38', 'Social order promoting welfare and reducing inequalities'],
+              ['39', 'Important socio-economic policy principles'],
+              ['39A', 'Equal justice and free legal aid'],
+              ['40', 'Organisation of village panchayats'],
+              ['44', 'Uniform civil code for citizens'],
+              ['45', 'Early childhood care and education for children below six years'],
+              ['46', 'Educational/economic interests of weaker sections, especially SCs and STs'],
+              ['47', 'Nutrition, standard of living and public health'],
+              ['48A', 'Environment, forests and wildlife'],
+              ['50', 'Separation of judiciary from executive in State public services'],
+              ['51', 'International peace and security'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'How exams classify them',
+          paragraphs: [
+            'Textbooks often group Directive Principles into broad socialistic, Gandhian and liberal-intellectual categories for study. These labels are study classifications; the Constitution itself does not divide Part IV under those three headings.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'DPSPs = Part IV, Articles 36–51.',
+        'Article 37 = not enforceable by courts, but fundamental in governance.',
+        '39A = legal aid; 40 = village panchayats; 44 = uniform civil code.',
+        '48A = environment; 50 = judiciary-executive separation; 51 = international peace.',
+      ],
+      examFocus: [
+        'Part and article range of DPSPs.',
+        'Article 37 and non-justiciability.',
+        'Matching high-frequency DPSP Articles with their subjects.',
+        'Conventional classifications are not headings used by the Constitution itself.',
+      ],
+      practiceTags: ['directive-principles', 'dpsp', 'articles-36-51'],
     ),
     LearnLesson(
       id: 'POL-LRN-014',
       subjectCode: 'POL',
       title: 'Fundamental Duties',
-      summary: 'Article 51A, origin and important facts about Fundamental Duties.',
-      estimatedMinutes: 6,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Part IVA and Article 51A: the eleven Fundamental Duties of citizens.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Where they appear',
+          paragraphs: [
+            'Fundamental Duties are contained in Part IVA of the Constitution under Article 51A. The duties apply to citizens.',
+            'Part IVA and the original ten duties were inserted by the 42nd Constitutional Amendment Act, 1976. An additional duty concerning educational opportunities for children aged six to fourteen was later added by the 86th Constitutional Amendment Act, 2002.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'The eleven duties — study version',
+          paragraphs: const [],
+          points: [
+            'Respect the Constitution, its ideals and institutions, the National Flag and National Anthem.',
+            'Cherish the ideals of the freedom struggle.',
+            'Uphold and protect the sovereignty, unity and integrity of India.',
+            'Defend the country and render national service when called upon.',
+            'Promote harmony and renounce practices derogatory to the dignity of women.',
+            'Value and preserve the heritage of composite culture.',
+            'Protect and improve the natural environment and show compassion for living creatures.',
+            'Develop scientific temper, humanism and the spirit of inquiry and reform.',
+            'Safeguard public property and abjure violence.',
+            'Strive towards excellence in individual and collective activity.',
+            'As parent or guardian, provide opportunities for education to a child or ward aged six to fourteen years.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Amendment link',
+          paragraphs: [
+            'For exams, connect the 42nd Amendment with insertion of Part IVA and ten Fundamental Duties, and the 86th Amendment with the additional education-related duty in Article 51A(k).',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Fundamental Duties = Part IVA, Article 51A.',
+        '42nd Amendment, 1976 inserted Part IVA and ten duties.',
+        '86th Amendment, 2002 added the education-related duty.',
+        'There are eleven duties in Article 51A today.',
+      ],
+      examFocus: [
+        'Part IVA and Article 51A.',
+        '42nd versus 86th Amendment.',
+        'Total number of Fundamental Duties.',
+        'Environment, scientific temper and education duty wording.',
+      ],
+      practiceTags: ['fundamental-duties', 'article-51a'],
     ),
   ],
 );
