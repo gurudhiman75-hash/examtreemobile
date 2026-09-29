@@ -158,7 +158,7 @@ class _TopicCard extends ConsumerWidget {
                       }
                       if (context.mounted) {
                         context.push(
-                          '/learn-practice?topic=${Uri.encodeQueryComponent(lesson.id)}',
+                          '/learn-practice?topic=${Uri.encodeQueryComponent(lesson.id)}&fresh=1',
                         );
                       }
                     },
