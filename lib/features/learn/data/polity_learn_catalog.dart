@@ -192,51 +192,294 @@ const polityLearnSubject = LearnSubject(
       id: 'POL-LRN-004',
       subjectCode: 'POL',
       title: 'Union and its Territory',
-      summary: 'Articles 1–4 and the constitutional framework for states and territories.',
-      estimatedMinutes: 6,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 1–4 and how the Constitution deals with states, territories and boundary changes.',
+      estimatedMinutes: 7,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 1–4',
+          paragraphs: [
+            'Part I of the Constitution deals with the Union and its territory. Article 1 describes India, that is Bharat, as a Union of States and explains what forms the territory of India.',
+            'Articles 2 and 3 deal with the admission or establishment of new States and with changes to the area, boundaries or names of existing States.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'What Article 3 allows Parliament to do',
+          paragraphs: const [],
+          points: [
+            'Form a new State by separating territory from an existing State.',
+            'Unite two or more States, or parts of States, to form a new State.',
+            'Increase or reduce the area of a State.',
+            'Alter the boundaries of a State.',
+            'Alter the name of a State.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Role of the President and State Legislature',
+          paragraphs: [
+            'A Bill for a matter covered by Article 3 can be introduced in Parliament only on the recommendation of the President. When the proposal affects the area, boundaries or name of a State, the President refers it to that State Legislature for its views within the specified period.',
+            'The State Legislature gives its views, but its consent is not made a constitutional requirement for Parliament to pass the law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 4',
+          paragraphs: [
+            'A law made under Articles 2 or 3 may make necessary changes to the First and Fourth Schedules and may contain supplemental, incidental and consequential provisions. Article 4 states that such a law is not treated as a constitutional amendment for the purpose of Article 368.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Article 1: India, that is Bharat, is a Union of States.',
+        'Articles 2–3: new States and changes to existing States.',
+        'Article 3 Bill needs the President’s recommendation.',
+        'Affected State Legislature is asked for its views; consent is not constitutionally required.',
+        'Article 4 laws are not treated as Article 368 constitutional amendments.',
+      ],
+      examFocus: [
+        'Article-number matching: 1, 2, 3 and 4.',
+        'Difference between the President’s recommendation and the State Legislature’s views.',
+        'Whether a law under Articles 2–3 is an Article 368 amendment.',
+      ],
+      practiceTags: ['union-territory', 'articles-1-4', 'state-reorganisation'],
     ),
     LearnLesson(
       id: 'POL-LRN-005',
       subjectCode: 'POL',
       title: 'Citizenship',
-      summary: 'Citizenship at the commencement of the Constitution and the Citizenship Act.',
-      estimatedMinutes: 7,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 5–11, citizenship at the commencement of the Constitution and the Citizenship Act, 1955.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Citizenship in the Constitution',
+          paragraphs: [
+            'Part II of the Constitution contains Articles 5–11. These provisions mainly dealt with citizenship at the commencement of the Constitution and certain migration situations connected with Partition.',
+            'Article 11 gives Parliament the power to make laws on acquisition and termination of citizenship and on other citizenship matters.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 5–11 at a glance',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['5', 'Citizenship at commencement'],
+              ['6', 'Certain migrants to India from Pakistan'],
+              ['7', 'Certain migrants to Pakistan'],
+              ['8', 'Certain persons of Indian origin residing outside India'],
+              ['9', 'Voluntary acquisition of foreign citizenship'],
+              ['10', 'Continuance of citizenship rights'],
+              ['11', 'Parliament’s power to regulate citizenship by law'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Citizenship Act, 1955',
+          paragraphs: [
+            'Parliament enacted the Citizenship Act, 1955. The Act provides statutory routes for acquisition of citizenship and also provides for loss of citizenship.',
+          ],
+          points: [
+            'Acquisition: by birth.',
+            'Acquisition: by descent.',
+            'Acquisition: by registration.',
+            'Acquisition: by naturalisation.',
+            'Acquisition: by incorporation of territory.',
+            'Loss: renunciation, termination and deprivation.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'OCI is not full Indian citizenship',
+          paragraphs: [
+            'The Citizenship Act separately provides for registration as an Overseas Citizen of India Cardholder. For exam purposes, do not treat OCI status as the same thing as ordinary Indian citizenship.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Part II = Articles 5–11.',
+        'Article 11 empowers Parliament to regulate citizenship by law.',
+        'Citizenship Act, 1955 lists five main modes of acquisition.',
+        'Renunciation, termination and deprivation are modes of loss under the Act.',
+        'OCI Cardholder status is distinct from ordinary Indian citizenship.',
+      ],
+      examFocus: [
+        'Article-number questions from 5–11.',
+        'Five modes of acquisition under the Citizenship Act, 1955.',
+        'Three modes of loss: renunciation, termination and deprivation.',
+      ],
+      practiceTags: ['citizenship', 'articles-5-11', 'citizenship-act-1955'],
     ),
     LearnLesson(
       id: 'POL-LRN-006',
       subjectCode: 'POL',
       title: 'Fundamental Rights — Overview',
-      summary: 'Articles 12–35 and the structure of Fundamental Rights.',
-      estimatedMinutes: 6,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Part III, Articles 12–35 and the structure of the Fundamental Rights chapter.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Where Fundamental Rights appear',
+          paragraphs: [
+            'Fundamental Rights are contained in Part III of the Constitution. Part III begins with Article 12, which defines “the State” for this Part, and Article 13, which deals with laws inconsistent with Fundamental Rights.',
+            'The enforceable rights are then organised into groups such as equality, freedom, protection against exploitation, freedom of religion, cultural and educational rights, and constitutional remedies.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'The six broad groups',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Right', 'Articles'],
+            rows: [
+              ['Right to Equality', '14–18'],
+              ['Right to Freedom', '19–22'],
+              ['Right against Exploitation', '23–24'],
+              ['Right to Freedom of Religion', '25–28'],
+              ['Cultural and Educational Rights', '29–30'],
+              ['Right to Constitutional Remedies', '32'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Articles 12 and 13',
+          paragraphs: [
+            'Article 12 gives an extended meaning to “the State” for Part III. Article 13 provides that laws inconsistent with or in derogation of Fundamental Rights are void to the extent of the inconsistency.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 32',
+          paragraphs: [
+            'Article 32 guarantees the right to move the Supreme Court for enforcement of the rights conferred by Part III. The Constitution authorises the Supreme Court to issue directions, orders or writs for this purpose.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Fundamental Rights are in Part III.',
+        'Part III spans Articles 12–35.',
+        'Article 12 defines “the State” for Part III.',
+        'Article 13 deals with laws inconsistent with Fundamental Rights.',
+        'Article 32 provides the right to approach the Supreme Court for enforcement of Part III rights.',
+      ],
+      examFocus: [
+        'Part III and its article range.',
+        'Matching each Fundamental Right group with its article range.',
+        'Purpose of Articles 12, 13 and 32.',
+      ],
+      practiceTags: ['fundamental-rights', 'part-iii', 'articles-12-35'],
     ),
     LearnLesson(
       id: 'POL-LRN-007',
       subjectCode: 'POL',
       title: 'Right to Equality',
-      summary: 'Articles 14–18 explained for competitive exams.',
-      estimatedMinutes: 7,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 14–18: equality before law, non-discrimination, public employment, untouchability and titles.',
+      estimatedMinutes: 8,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 14–18',
+          paragraphs: [
+            'The Right to Equality is mainly contained in Articles 14 to 18. These provisions deal with equality before law, discrimination, equality of opportunity in public employment, abolition of untouchability and abolition of titles.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Core idea'],
+            rows: [
+              ['14', 'Equality before law and equal protection of laws'],
+              ['15', 'Prohibition of discrimination on specified grounds'],
+              ['16', 'Equality of opportunity in public employment'],
+              ['17', 'Abolition of untouchability'],
+              ['18', 'Abolition of titles'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Article 14',
+          paragraphs: [
+            'Article 14 says that the State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.',
+            'A common exam trap is that Article 14 uses the word “person”, not only “citizen”.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 15 and 16',
+          paragraphs: [
+            'Article 15 prohibits the State from discriminating against citizens only on specified grounds such as religion, race, caste, sex or place of birth, while also permitting constitutionally specified special provisions.',
+            'Article 16 deals specifically with equality of opportunity in matters of public employment and also contains constitutional provisions allowing reservation in specified circumstances.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 17 and 18',
+          paragraphs: [
+            'Article 17 abolishes untouchability and forbids its practice in any form. Article 18 abolishes titles, subject to the constitutional exceptions stated in that Article, including military or academic distinctions.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '14 = equality before law and equal protection.',
+        '15 = non-discrimination.',
+        '16 = public employment.',
+        '17 = abolition of untouchability.',
+        '18 = abolition of titles.',
+      ],
+      examFocus: [
+        'Correct article-number matching from 14–18.',
+        'Article 14 applies to “any person”.',
+        'Difference between Articles 15 and 16.',
+        'Military and academic distinctions under Article 18.',
+      ],
+      practiceTags: ['right-to-equality', 'articles-14-18'],
     ),
     LearnLesson(
       id: 'POL-LRN-008',
       subjectCode: 'POL',
       title: 'Right to Freedom',
-      summary: 'Articles 19–22 and the protections they provide.',
-      estimatedMinutes: 8,
-      sections: [],
-      quickRevision: [],
-      examFocus: [],
+      summary: 'Articles 19–22: six freedoms and constitutional protections relating to criminal law, life, education and arrest.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 19 — six freedoms',
+          paragraphs: [
+            'Article 19 guarantees specified freedoms to citizens. These freedoms are not absolute; the Constitution permits reasonable restrictions on constitutionally stated grounds.',
+          ],
+          points: [
+            'Freedom of speech and expression.',
+            'Freedom to assemble peaceably and without arms.',
+            'Freedom to form associations or unions or co-operative societies.',
+            'Freedom to move freely throughout the territory of India.',
+            'Freedom to reside and settle in any part of the territory of India.',
+            'Freedom to practise any profession, or to carry on any occupation, trade or business.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 20 — protection in criminal cases',
+          paragraphs: const [],
+          points: [
+            'Protection against conviction under an ex post facto criminal law.',
+            'Protection against being prosecuted and punished more than once for the same offence.',
+            'Protection against being compelled to be a witness against oneself.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 21 and Article 21A',
+          paragraphs: [
+            'Article 21 protects life and personal liberty except according to procedure established by law.',
+            'Article 21A provides for free and compulsory education for children of the age of six to fourteen years in the manner determined by law.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 22 — arrest and detention',
+          paragraphs: [
+            'Article 22 contains safeguards relating to arrest and detention. A person arrested in ordinary circumstances must be informed of the grounds of arrest, allowed to consult and be defended by a legal practitioner of choice, and produced before the nearest magistrate within twenty-four hours, excluding necessary journey time.',
+            'The Article also contains separate provisions concerning preventive detention, so exam questions may distinguish ordinary arrest safeguards from preventive-detention rules.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '19 = six freedoms of citizens.',
+        '20 = criminal-law protections.',
+        '21 = life and personal liberty.',
+        '21A = free and compulsory education for ages 6–14.',
+        '22 = safeguards against arrest and detention, plus preventive-detention provisions.',
+      ],
+      examFocus: [
+        'The six current freedoms under Article 19.',
+        'Three protections under Article 20.',
+        'Difference between Articles 21 and 21A.',
+        'Twenty-four-hour rule under Article 22 and its exception structure.',
+      ],
+      practiceTags: ['right-to-freedom', 'articles-19-22'],
     ),
     LearnLesson(
       id: 'POL-LRN-009',
