@@ -318,7 +318,6 @@ const _hindiLessons = <String, LearnLesson>{
     ],
     practiceTags: ['citizenship', 'articles-5-11', 'citizenship-act-1955'],
   ),
-,
   'POL-LRN-006': LearnLesson(
     id: 'POL-LRN-006',
     subjectCode: 'POL',
@@ -2033,7 +2032,7 @@ const _punjabiLessons = <String, LearnLesson>{
       'ਨਾਗਰਿਕਤਾ ਖਤਮ ਹੋਣ ਦੇ ਤਰੀਕੇ।',
     ],
     practiceTags: ['citizenship', 'articles-5-11', 'citizenship-act-1955'],
-  ),,
+  ),
   'POL-LRN-006': LearnLesson(
     id: 'POL-LRN-006',
     subjectCode: 'POL',
