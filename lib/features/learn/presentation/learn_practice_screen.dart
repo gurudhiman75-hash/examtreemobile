@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/learn_practice_catalog.dart';
 import '../data/polity_learn_localizations.dart';
 import '../domain/learn_lesson.dart';
 import '../domain/learn_practice_models.dart';
@@ -25,73 +26,62 @@ class LearnPracticeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final language =
         ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final standaloneTopic = learnPracticeTopicById(topicId);
     final subject = polityLearnSubjectFor(language);
     LearnLesson? lesson;
-    for (final candidate in subject.lessons) {
-      if (candidate.id == topicId) {
-        lesson = candidate;
-        break;
+    if (standaloneTopic == null) {
+      for (final candidate in subject.lessons) {
+        if (candidate.id == topicId) {
+          lesson = candidate;
+          break;
+        }
       }
     }
 
-    final resolvedLesson = lesson;
-    if (resolvedLesson == null) {
+    final title = standaloneTopic?.title ?? lesson?.title;
+    final target = standaloneTopic?.questionTarget ?? 20;
+    final practiceTags =
+        standaloneTopic?.practiceTags ?? lesson?.practiceTags ?? const <String>[];
+
+    if (title == null) {
       return const Scaffold(
         body: Center(child: Text('Practice topic unavailable')),
       );
     }
 
-    const target = 20;
-    final questionsAsync = ref.watch(
-      learnPracticeQuestionsProvider(
-        LearnPracticeRequest(
-          topicId: topicId,
-          limit: target,
-          tagQuery: resolvedLesson.practiceTags.join(','),
-          fresh: fresh,
-        ),
-      ),
+    final request = LearnPracticeRequest(
+      topicId: topicId,
+      limit: target,
+      tagQuery: practiceTags.join(','),
+      fresh: fresh,
     );
+    final questionsAsync = ref.watch(learnPracticeQuestionsProvider(request));
 
     return questionsAsync.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(resolvedLesson.title)),
+        appBar: AppBar(title: Text(title)),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => _PracticeLoadFailure(
-        title: resolvedLesson.title,
+        title: title,
         onRetry: () => ref.invalidate(
-          learnPracticeQuestionsProvider(
-            LearnPracticeRequest(
-          topicId: topicId,
-          limit: target,
-          tagQuery: resolvedLesson.practiceTags.join(','),
-          fresh: fresh,
-        ),
-          ),
+          learnPracticeQuestionsProvider(request),
         ),
       ),
       data: (questions) {
         if (questions.isEmpty) {
           return _PracticeLoadFailure(
-            title: resolvedLesson.title,
+            title: title,
             message:
-                'Practice questions are not published for this topic yet. The lesson is available, but the learner Question Studio feed still needs this topic mapping.',
+                'Practice questions are not available for this topic yet.',
             onRetry: () => ref.invalidate(
-              learnPracticeQuestionsProvider(
-                LearnPracticeRequest(
-          topicId: topicId,
-          limit: target,
-          tagQuery: resolvedLesson.practiceTags.join(','),
-          fresh: fresh,
-        ),
-              ),
+              learnPracticeQuestionsProvider(request),
             ),
           );
         }
         return _LearnPracticeRunner(
           topicId: topicId,
-          title: resolvedLesson.title,
+          title: title,
           questions: questions.take(target).toList(growable: false),
         );
       },

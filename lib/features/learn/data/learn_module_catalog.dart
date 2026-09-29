@@ -32,7 +32,7 @@ const learnModules = <LearnModuleDefinition>[
     subtitle: 'Vocabulary, grammar, comprehension and usage.',
     iconName: 'translate',
     submodules: [
-      LearnSubmoduleDefinition(id: 'english-vocabulary', moduleId: 'english', title: 'Vocabulary', subtitle: 'Synonyms, antonyms, idioms and one-word substitutions.', topicIds: [], available: false),
+      LearnSubmoduleDefinition(id: 'english-vocabulary', moduleId: 'english', title: 'Vocabulary', subtitle: 'Synonyms, antonyms, idioms and one-word substitutions.', topicIds: ['ENG-VOC-SYN', 'ENG-VOC-ANT', 'ENG-VOC-IDIOM', 'ENG-VOC-OWS'], available: true),
       LearnSubmoduleDefinition(id: 'english-grammar', moduleId: 'english', title: 'Grammar & Usage', subtitle: 'Error spotting, sentence correction and fillers.', topicIds: [], available: false),
       LearnSubmoduleDefinition(id: 'english-comprehension', moduleId: 'english', title: 'Reading Comprehension', subtitle: 'SSC and banking-style passages.', topicIds: [], available: false),
       LearnSubmoduleDefinition(id: 'english-rearrangement', moduleId: 'english', title: 'Sentence Rearrangement', subtitle: 'Para jumbles and sentence ordering.', topicIds: [], available: false),

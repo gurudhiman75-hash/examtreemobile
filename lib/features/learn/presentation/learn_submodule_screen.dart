@@ -6,6 +6,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../data/learn_module_catalog.dart';
+import '../data/learn_practice_catalog.dart';
 import '../data/polity_learn_localizations.dart';
 import '../domain/learn_lesson.dart';
 import '../domain/learn_practice_models.dart';
@@ -28,6 +29,35 @@ class LearnSubmoduleScreen extends ConsumerWidget {
     final language =
         ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
     final theme = Theme.of(context);
+
+    if (submodule.id == 'english-vocabulary') {
+      final topics = learnPracticeTopicsForSubmodule(submodule.id);
+      return Scaffold(
+        appBar: AppBar(title: Text(submodule.title)),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            AppSpacing.xxl,
+          ),
+          children: [
+            Text(
+              'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            for (final topic in topics) ...[
+              _StandalonePracticeTopicCard(topic: topic),
+              const SizedBox(height: AppSpacing.sm),
+            ],
+          ],
+        ),
+      );
+    }
 
     if (submodule.id != 'gk-polity') {
       return Scaffold(
@@ -169,6 +199,92 @@ class _TopicCard extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class _StandalonePracticeTopicCard extends ConsumerWidget {
+  const _StandalonePracticeTopicCard({required this.topic});
+
+  final LearnPracticeTopic topic;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final progress = ref.watch(learnPracticeProgressProvider(topic.id)).value;
+    final status = progress?.status ?? LearnPracticeStatus.notStarted;
+    final buttonLabel = switch (status) {
+      LearnPracticeStatus.notStarted => 'Start',
+      LearnPracticeStatus.inProgress => 'Resume',
+      LearnPracticeStatus.completed => 'Retake',
+    };
+    final detail = switch (status) {
+      LearnPracticeStatus.notStarted =>
+        '${topic.questionTarget} questions · Untimed',
+      LearnPracticeStatus.inProgress =>
+        '${progress!.currentQuestion} of ${progress.totalQuestions} answered',
+      LearnPracticeStatus.completed =>
+        'Last score ${progress!.correctAnswers}/${progress.totalQuestions}',
+    };
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              topic.title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              topic.subtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              detail,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                key: Key('learn-practice-${topic.id}'),
+                onPressed: () async {
+                  if (status == LearnPracticeStatus.completed) {
+                    await ref
+                        .read(learnPracticeProgressStoreProvider)
+                        .clear(topic.id);
+                    ref.invalidate(learnPracticeProgressProvider(topic.id));
+                    ref.invalidate(learnPracticeProgressListProvider);
+                    ref.invalidate(learnPracticeQuestionsProvider);
+                  }
+                  if (context.mounted) {
+                    final freshQuery =
+                        status == LearnPracticeStatus.completed ? '&fresh=1' : '';
+                    context.push(
+                      '/learn-practice?topic=${Uri.encodeQueryComponent(topic.id)}$freshQuery',
+                    );
+                  }
+                },
+                child: Text(buttonLabel),
+              ),
             ),
           ],
         ),
