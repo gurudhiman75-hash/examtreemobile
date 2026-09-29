@@ -163,7 +163,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              nextTopicTitle!,
+                              nextTopicTitle,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w900,
                               ),
