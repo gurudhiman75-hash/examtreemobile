@@ -1298,6 +1298,334 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['parliamentary-committees', 'pac', 'estimates-committee', 'copu'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-025',
+      subjectCode: 'POL',
+      title: 'Supreme Court of India',
+      summary: 'Articles 124–147: composition, judges, jurisdiction and major constitutional powers.',
+      estimatedMinutes: 12,
+      sections: [
+        LearnLessonSection(
+          heading: 'Constitutional position',
+          paragraphs: [
+            'Article 124 establishes the Supreme Court of India. It is the apex court in the Indian judicial system.',
+            'Judges of the Supreme Court are appointed by the President. A Supreme Court Judge holds office until the age of sixty-five years, subject to resignation or removal under the Constitution.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Qualifications — Article 124',
+          paragraphs: const [],
+          points: [
+            'Citizen of India.',
+            'Has been a Judge of one or more High Courts for at least five years; or',
+            'Has been an advocate of one or more High Courts for at least ten years; or',
+            'Is, in the opinion of the President, a distinguished jurist.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Major jurisdictions',
+          paragraphs: [
+            'The Supreme Court has original, appellate and advisory jurisdiction. Article 131 deals with its exclusive original jurisdiction in specified disputes involving the Union and States.',
+            'Article 32 gives the Supreme Court jurisdiction to enforce Fundamental Rights. Article 136 provides for special leave to appeal, while Article 143 provides for advisory jurisdiction when the President refers a question to the Court.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Exam cue'],
+            rows: [
+              ['129', 'Supreme Court is a court of record'],
+              ['131', 'Original jurisdiction in specified Union-State disputes'],
+              ['136', 'Special leave to appeal'],
+              ['137', 'Review of judgments or orders'],
+              ['141', 'Law declared by Supreme Court binding on all courts'],
+              ['142', 'Power to do complete justice in matters before it'],
+              ['143', 'Advisory jurisdiction'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Removal of a Judge',
+          paragraphs: [
+            'A Supreme Court Judge may be removed by the President after an address by each House of Parliament supported by the special majority specified in Article 124, on the ground of proved misbehaviour or incapacity.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '124 = establishment, appointment and conditions of Supreme Court Judges.',
+        'Retirement age: 65 years.',
+        '131 = original jurisdiction.',
+        '136 = special leave to appeal.',
+        '141 = Supreme Court law binding on all courts.',
+        '143 = Presidential reference/advisory jurisdiction.',
+      ],
+      examFocus: [
+        'Supreme Court judge qualifications and retirement age.',
+        'Article-number matching for major jurisdictions.',
+        'Difference between original, appellate and advisory jurisdiction.',
+        'Special-majority removal process.',
+      ],
+      practiceTags: ['supreme-court', 'articles-124-147', 'judicial-jurisdiction'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-026',
+      subjectCode: 'POL',
+      title: 'High Courts',
+      summary: 'Articles 214–231: High Court structure, judges, writ jurisdiction and superintendence.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'High Court for States',
+          paragraphs: [
+            'Article 214 provides that there shall be a High Court for each State, while the Constitution also permits a common High Court for two or more States or for States and a Union territory.',
+            'Each High Court consists of a Chief Justice and such other Judges as the President considers necessary from time to time.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and qualifications',
+          paragraphs: [
+            'High Court Judges are appointed by the President. The constitutional consultation requirements differ for the Chief Justice and for other Judges.',
+            'A person must be a citizen of India and must satisfy the judicial-office or advocacy experience requirement stated in Article 217.',
+          ],
+          points: [
+            'Judicial office in India for at least ten years; or',
+            'Advocate of a High Court, or of two or more such courts in succession, for at least ten years.',
+            'Retirement age: 62 years.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Writ jurisdiction — Article 226',
+          paragraphs: [
+            'High Courts may issue directions, orders or writs for enforcement of Fundamental Rights and for any other purpose.',
+            'This makes the textual scope of Article 226 wider than Article 32, which is specifically tied to enforcement of Fundamental Rights.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Superintendence — Article 227',
+          paragraphs: [
+            'Every High Court has superintendence over courts and tribunals throughout the territories in relation to which it exercises jurisdiction, subject to the constitutional scheme.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '214 = High Court for each State.',
+        '217 = appointment and conditions of High Court Judges.',
+        'Retirement age: 62 years.',
+        '226 = writs for Fundamental Rights and any other purpose.',
+        '227 = superintendence over subordinate courts and tribunals.',
+      ],
+      examFocus: [
+        'Supreme Court age 65 versus High Court age 62.',
+        'Article 32 versus Article 226.',
+        'Ten-year qualification routes for High Court Judges.',
+        'Common High Courts under the constitutional framework.',
+      ],
+      practiceTags: ['high-courts', 'articles-214-231', 'article-226'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-027',
+      subjectCode: 'POL',
+      title: 'Comptroller and Auditor General of India',
+      summary: 'Articles 148–151: appointment, independence, duties, accounts and audit reports.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 148 — constitutional office',
+          paragraphs: [
+            'The Constitution provides for a Comptroller and Auditor General of India. The CAG is appointed by the President by warrant under his hand and seal.',
+            'The CAG can be removed only in the same manner and on the same grounds as a Judge of the Supreme Court.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Articles 149–151',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['149', 'Duties and powers of the CAG'],
+              ['150', 'Form of accounts of the Union and States'],
+              ['151', 'Audit reports'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Audit reports',
+          paragraphs: [
+            'CAG reports relating to Union accounts are submitted to the President, who causes them to be laid before each House of Parliament.',
+            'Reports relating to a State are submitted to the Governor, who causes them to be laid before the State Legislature.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Independence safeguards',
+          paragraphs: [
+            'The Constitution protects the conditions of service of the CAG from disadvantageous variation after appointment and charges the administrative expenses of the CAG’s office on the Consolidated Fund of India.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '148 = CAG.',
+        'Appointed by the President.',
+        'Removal protection parallels a Supreme Court Judge.',
+        '149 = duties and powers; 150 = form of accounts; 151 = audit reports.',
+        'Union reports → President → Parliament; State reports → Governor → State Legislature.',
+      ],
+      examFocus: [
+        'Articles 148–151.',
+        'Appointment and removal protection.',
+        'Where Union and State audit reports are submitted.',
+        'CAG link with PAC in parliamentary financial scrutiny.',
+      ],
+      practiceTags: ['cag', 'articles-148-151', 'constitutional-bodies'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-028',
+      subjectCode: 'POL',
+      title: 'Election Commission of India',
+      summary: 'Article 324 and the constitutional framework for superintendence, direction and control of elections.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 324',
+          paragraphs: [
+            'Article 324 vests the superintendence, direction and control of the preparation of electoral rolls and the conduct of specified elections in an Election Commission.',
+            'Its constitutional responsibilities cover elections to Parliament, State Legislatures, and the offices of President and Vice-President.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Composition',
+          paragraphs: [
+            'The Election Commission consists of the Chief Election Commissioner and such number of other Election Commissioners, if any, as the President may from time to time fix, subject to the constitutional and statutory framework.',
+            'The President appoints the Chief Election Commissioner and other Election Commissioners subject to any law made by Parliament.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Removal protection',
+          paragraphs: [
+            'Article 324 gives the Chief Election Commissioner protection against removal except in like manner and on like grounds as a Judge of the Supreme Court.',
+            'Other Election Commissioners or a Regional Commissioner cannot be removed except on the recommendation of the Chief Election Commissioner.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '324 = Election Commission.',
+        'Controls electoral rolls and conduct of specified constitutional elections.',
+        'Covers Parliament, State Legislatures, President and Vice-President.',
+        'CEC has Supreme-Court-Judge-like removal protection under Article 324.',
+      ],
+      examFocus: [
+        'Article 324 functions.',
+        'Which elections fall within the constitutional mandate.',
+        'Constitutional wording on CEC and other Election Commissioners.',
+        'Removal protection distinction.',
+      ],
+      practiceTags: ['election-commission', 'article-324', 'constitutional-bodies'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-029',
+      subjectCode: 'POL',
+      title: 'Union Public Service Commission',
+      summary: 'Articles 315–323: composition, appointment, tenure, removal, functions and reports.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Articles 315–323',
+          paragraphs: [
+            'Article 315 provides for Public Service Commissions for the Union and for the States. The Union Public Service Commission is the constitutional Public Service Commission for the Union.',
+          ],
+          table: LearnLessonTable(
+            headers: ['Article', 'Focus'],
+            rows: [
+              ['315', 'Public Service Commissions for Union and States'],
+              ['316', 'Appointment and term'],
+              ['317', 'Removal and suspension'],
+              ['319', 'Restrictions on offices after ceasing to be a member'],
+              ['320', 'Functions'],
+              ['322', 'Expenses'],
+              ['323', 'Reports'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'Appointment and tenure',
+          paragraphs: [
+            'The Chairman and other members of the UPSC are appointed by the President.',
+            'A member of the UPSC holds office for six years from entering office or until attaining the age of sixty-five years, whichever is earlier.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Functions — Article 320',
+          paragraphs: [
+            'The UPSC conducts examinations for appointments to Union services and is consulted on constitutionally specified recruitment, appointment, promotion, transfer and disciplinary matters, subject to the constitutional and regulatory framework.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Expenses and reports',
+          paragraphs: [
+            'UPSC expenses are charged on the Consolidated Fund of India under Article 322. Under Article 323, the Commission presents an annual report to the President, who causes it to be laid before Parliament along with the required memorandum in relevant cases.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '315–323 = Public Service Commissions.',
+        'UPSC members appointed by President.',
+        'Term: 6 years or age 65, whichever is earlier.',
+        '320 = functions.',
+        '322 = expenses charged on Consolidated Fund of India.',
+        '323 = reports.',
+      ],
+      examFocus: [
+        'Article-number sequence 315–323.',
+        'Six years or 65 years rule for UPSC.',
+        'Appointment by President.',
+        'Article 320 functions and Article 323 reports.',
+      ],
+      practiceTags: ['upsc', 'articles-315-323', 'public-service-commission'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-030',
+      subjectCode: 'POL',
+      title: 'Finance Commission',
+      summary: 'Articles 280–281: constitution, composition and recommendations on Union-State finances.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Article 280',
+          paragraphs: [
+            'The President constitutes a Finance Commission every fifth year or earlier if considered necessary.',
+            'The Commission consists of a Chairman and four other members appointed by the President. Parliament may by law determine the qualifications for appointment and the manner of selection.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Core recommendations',
+          paragraphs: const [],
+          points: [
+            'Distribution between the Union and the States of the net proceeds of shareable taxes.',
+            'Allocation among the States of their respective shares.',
+            'Principles governing grants-in-aid of State revenues from the Consolidated Fund of India.',
+            'Measures needed to augment State Consolidated Funds to supplement Panchayat resources on the basis of State Finance Commission recommendations.',
+            'Measures needed to augment State Consolidated Funds to supplement Municipality resources on the basis of State Finance Commission recommendations.',
+            'Any other matter referred by the President in the interests of sound finance.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Article 281',
+          paragraphs: [
+            'The President causes every Finance Commission recommendation, together with an explanatory memorandum as to the action taken, to be laid before each House of Parliament.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '280 = Finance Commission.',
+        'Normally constituted every fifth year or earlier.',
+        'Composition: Chairman + 4 other members.',
+        'Recommends tax distribution and grants-in-aid principles.',
+        '281 = recommendations laid before Parliament with explanatory memorandum.',
+      ],
+      examFocus: [
+        'Article 280 and five-year cycle.',
+        'Chairman plus four members.',
+        'Tax devolution versus grants-in-aid.',
+        'Panchayat and Municipality resource augmentation role.',
+      ],
+      practiceTags: ['finance-commission', 'articles-280-281', 'fiscal-federalism'],
+    ),
   ],
 );
 
