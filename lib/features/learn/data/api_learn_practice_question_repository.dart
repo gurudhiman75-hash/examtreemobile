@@ -13,6 +13,7 @@ class ApiLearnPracticeQuestionRepository
     required String topicId,
     required int limit,
     required String language,
+    String tagQuery = '',
     bool fresh = false,
   }) async {
     final response = await _dio.get<Object?>(
@@ -21,6 +22,7 @@ class ApiLearnPracticeQuestionRepository
         'topicId': topicId,
         'limit': limit,
         'language': language,
+        if (tagQuery.trim().isNotEmpty) 'tags': tagQuery.trim(),
         if (fresh) 'fresh': '1',
       },
     );
