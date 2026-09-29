@@ -11,7 +11,7 @@ import '../../exams/presentation/providers/exam_providers.dart';
 import '../domain/learning_resource.dart';
 import 'learn_screen_v3.dart' as standard;
 import 'providers/learning_resources_providers.dart';
-import 'subject_learning_section.dart';
+import 'learn_modules_section.dart';
 
 /// Keeps Learn V3's compact visual rails at normal text sizes and switches to
 /// natural-height vertical content when accessibility text becomes large.
@@ -79,7 +79,7 @@ class LearnScreen extends ConsumerWidget {
                     freeTestsCount: freeTests.length,
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  const SubjectLearningSection(),
+                  const LearnModulesSection(),
                   const SizedBox(height: AppSpacing.xl),
                   if (initialLoading)
                     const _AccessibleLoading()
