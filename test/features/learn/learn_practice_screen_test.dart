@@ -16,6 +16,7 @@ class _FakeQuestions implements LearnPracticeQuestionRepository {
     required String topicId,
     required int limit,
     required String language,
+    String tagQuery = '',
     bool fresh = false,
   }) async {
     return [
@@ -77,7 +78,7 @@ void main() {
       ProviderScope(
         overrides: [
           questionLanguageProvider.overrideWith(
-            (ref) => const AsyncValue.data(QuestionLanguage.english),
+            (ref) async => QuestionLanguage.english,
           ),
           learnPracticeQuestionRepositoryProvider.overrideWithValue(
             _FakeQuestions(),
