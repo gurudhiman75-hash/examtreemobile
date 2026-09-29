@@ -30,6 +30,22 @@
           }
         },
         {
+          "client_id": "1083299267005-bji674j64tdqb31nn56maka1c7a4ka1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.examtree.examtree",
+            "certificate_hash": "882d8ce3434df06e29419fb9afc300c54e03a73e"
+          }
+        },
+        {
+          "client_id": "1083299267005-ccgqq3ibkgk9mkvdffe1h0sdfens4hsj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.examtree.examtree",
+            "certificate_hash": "f843c24dad1ac8cf2524d4637fa0856a813b08df"
+          }
+        },
+        {
           "client_id": "1083299267005-ebjqoh4bnsbff3el8p3737epe5par4mq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -43,6 +59,14 @@
           "android_info": {
             "package_name": "com.examtree.examtree",
             "certificate_hash": "a054465c622fec53eeb69b9ffbdc2b8009b3f777"
+          }
+        },
+        {
+          "client_id": "1083299267005-q3d9j4k6n7lajdh55psm8nl58osipo2f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.examtree.examtree",
+            "certificate_hash": "673830962d113c1539afa391227c58eb3f5b87d8"
           }
         },
         {
