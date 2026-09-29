@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/app_spacing.dart';
+import '../../preferences/domain/question_language.dart';
+import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/learn_module_catalog.dart';
+import '../data/polity_learn_localizations.dart';
+import '../domain/learn_lesson.dart';
+import '../domain/learn_practice_models.dart';
+import 'providers/learn_practice_providers.dart';
+
+class LearnSubmoduleScreen extends ConsumerWidget {
+  const LearnSubmoduleScreen({super.key, required this.submoduleId});
+
+  final String submoduleId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final submodule = learnSubmoduleById(submoduleId);
+    if (submodule == null) {
+      return const Scaffold(
+        body: Center(child: Text('Sub-module unavailable')),
+      );
+    }
+
+    final language =
+        ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final theme = Theme.of(context);
+
+    if (submodule.id != 'gk-polity') {
+      return Scaffold(
+        appBar: AppBar(title: Text(submodule.title)),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.lg),
+            child: Text(
+              'Practice mapping for this sub-module is being connected to Question Studio.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
+
+    final subject = polityLearnSubjectFor(language);
+    return Scaffold(
+      appBar: AppBar(title: Text(submodule.title)),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.sm,
+          AppSpacing.md,
+          AppSpacing.xxl,
+        ),
+        children: [
+          Text(
+            'Choose a topic for a short untimed practice session. Answers and explanations appear immediately after each question.',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          for (final lesson in subject.lessons) ...[
+            _TopicCard(lesson: lesson),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _TopicCard extends ConsumerWidget {
+  const _TopicCard({required this.lesson});
+
+  final LearnLesson lesson;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final progressAsync = ref.watch(learnPracticeProgressProvider(lesson.id));
+    final progress = progressAsync.value;
+    final status = progress?.status ?? LearnPracticeStatus.notStarted;
+    final buttonLabel = switch (status) {
+      LearnPracticeStatus.notStarted => 'Start',
+      LearnPracticeStatus.inProgress => 'Resume',
+      LearnPracticeStatus.completed => 'Retake',
+    };
+
+    final detail = switch (status) {
+      LearnPracticeStatus.notStarted => '15–20 questions · Untimed',
+      LearnPracticeStatus.inProgress =>
+        '${progress!.currentQuestion} of ${progress.totalQuestions} answered',
+      LearnPracticeStatus.completed =>
+        'Last score ${progress!.correctAnswers}/${progress.totalQuestions}',
+    };
+
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        lesson.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        detail,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (status == LearnPracticeStatus.completed)
+                  const Icon(Icons.check_circle_rounded),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => context.push(
+                      '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
+                    ),
+                    child: const Text('Review lesson'),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: FilledButton(
+                    key: Key('learn-practice-${lesson.id}'),
+                    onPressed: () async {
+                      if (status == LearnPracticeStatus.completed) {
+                        await ref
+                            .read(learnPracticeProgressStoreProvider)
+                            .clear(lesson.id);
+                        ref.invalidate(learnPracticeProgressProvider(lesson.id));
+                        ref.invalidate(learnPracticeProgressListProvider);
+                      }
+                      if (context.mounted) {
+                        context.push(
+                          '/learn-practice?topic=${Uri.encodeQueryComponent(lesson.id)}',
+                        );
+                      }
+                    },
+                    child: Text(buttonLabel),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
