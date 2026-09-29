@@ -1,4 +1,5 @@
 name: Authenticated Android APK
+# diagnostics-pr-122: reuse proven signing cache for merged Learn APK test
 
 on:
   push:
