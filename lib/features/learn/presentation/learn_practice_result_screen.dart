@@ -91,7 +91,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                     ref.invalidate(learnPracticeProgressListProvider);
                     if (context.mounted) {
                       context.go(
-                        '/learn-practice?topic=${Uri.encodeQueryComponent(topicId)}',
+                        '/learn-practice?topic=${Uri.encodeQueryComponent(topicId)}&fresh=1',
                       );
                     }
                   },
