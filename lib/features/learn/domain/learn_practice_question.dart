@@ -37,6 +37,7 @@ abstract interface class LearnPracticeQuestionRepository {
     required String topicId,
     required int limit,
     required String language,
+    String tagQuery = '',
     bool fresh = false,
   });
 }
