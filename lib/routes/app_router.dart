@@ -16,6 +16,8 @@ import '../features/exam_preferences/presentation/my_exams_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/learn/presentation/learn_course_screen.dart';
+import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
@@ -44,6 +46,7 @@ bool _routeNeedsIdentifier(String path) => const {
       '/test-attempt',
       '/review',
       '/learn-resource',
+      '/learn-lesson',
     }.contains(path);
 
 String _continuationFor(Uri uri, {Object? routeExtra}) {
@@ -270,6 +273,27 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => QuickRevisionScreen(
           minutes: _quickRevisionMinutes(state.uri),
         ),
+      ),
+      GoRoute(
+        path: '/learn-course',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => LearnCourseScreen(
+          subjectCode: state.uri.queryParameters['subject'] ?? '',
+        ),
+      ),
+      GoRoute(
+        path: '/learn-lesson',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final lessonId = readRequiredRouteId(state.extra, uri: state.uri);
+          if (lessonId == null) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Lesson unavailable',
+              message: 'No lesson identifier was supplied. Open the lesson again from Learn.',
+            );
+          }
+          return LearnLessonScreen(lessonId: lessonId);
+        },
       ),
       GoRoute(
         path: '/learn-resource',
