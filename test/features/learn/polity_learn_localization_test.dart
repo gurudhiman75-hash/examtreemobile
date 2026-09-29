@@ -15,6 +15,8 @@ void main() {
     expect(subject.lessons[14].title, 'भारत के राष्ट्रपति');
     expect(subject.lessons[18].title, 'संसद — संरचना और सदस्यता');
     expect(subject.lessons[39].title, 'केंद्र-राज्य प्रशासनिक संबंध');
+    expect(subject.lessons[66].title, 'CIC, CVC, लोकपाल और परिसीमन आयोग');
+    expect(subject.lessons.every((lesson) => !lesson.title.contains('Fundamental Rights')), isTrue);
     expect(subject.lessons[24].title, 'भारत का सर्वोच्च न्यायालय');
     expect(subject.lessons[32].title, 'मुख्यमंत्री और राज्य मंत्रिपरिषद');
     expect(subject.lessons[39].title, 'केंद्र-राज्य प्रशासनिक संबंध');
@@ -33,6 +35,8 @@ void main() {
     expect(subject.lessons[14].title, 'ਭਾਰਤ ਦੇ ਰਾਸ਼ਟਰਪਤੀ');
     expect(subject.lessons[18].title, 'ਸੰਸਦ — ਬਣਤਰ ਅਤੇ ਮੈਂਬਰਤਾ');
     expect(subject.lessons[39].title, 'ਕੇਂਦਰ-ਰਾਜ ਪ੍ਰਸ਼ਾਸਕੀ ਸੰਬੰਧ');
+    expect(subject.lessons[66].title, 'CIC, CVC, ਲੋਕਪਾਲ ਅਤੇ ਹੱਦਬੰਦੀ ਕਮਿਸ਼ਨ');
+    expect(subject.lessons.every((lesson) => !lesson.title.contains('Fundamental Rights')), isTrue);
     expect(subject.lessons[24].title, 'ਭਾਰਤ ਦੀ ਸੁਪਰੀਮ ਕੋਰਟ');
     expect(subject.lessons[32].title, 'ਮੁੱਖ ਮੰਤਰੀ ਅਤੇ ਰਾਜ ਮੰਤਰੀ ਮੰਡਲ');
     expect(subject.lessons[39].title, 'ਕੇਂਦਰ-ਰਾਜ ਪ੍ਰਸ਼ਾਸਕੀ ਸੰਬੰਧ');
