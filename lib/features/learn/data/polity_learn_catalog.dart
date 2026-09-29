@@ -1040,6 +1040,264 @@ const polityLearnSubject = LearnSubject(
       ],
       practiceTags: ['parliament', 'rajya-sabha', 'lok-sabha', 'articles-79-88'],
     ),
+    LearnLesson(
+      id: 'POL-LRN-020',
+      subjectCode: 'POL',
+      title: 'Parliament — Sessions and Procedure',
+      summary: 'Sessions, prorogation, dissolution, voting, quorum and joint sittings.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Sessions of Parliament',
+          paragraphs: [
+            'Article 85 empowers the President to summon each House of Parliament. The Constitution requires that not more than six months shall intervene between the last sitting in one session and the date appointed for the first sitting in the next session.',
+            'The President may prorogue either House or both Houses. The Lok Sabha may also be dissolved.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Voting and quorum',
+          paragraphs: [
+            'Article 100 provides that questions in either House are generally decided by a majority of members present and voting, excluding the presiding officer in the first instance.',
+            'The Speaker, Chairman or person acting as such has a casting vote in the event of equality of votes.',
+            'Unless Parliament provides otherwise by law, the quorum to constitute a meeting of either House is one-tenth of the total number of members of that House.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting — Article 108',
+          paragraphs: [
+            'A joint sitting may be used in specified deadlock situations involving an ordinary Bill. It is summoned by the President.',
+            'There is no joint sitting for a Money Bill or for a Constitution Amendment Bill.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Article 85 = summoning, prorogation and dissolution.',
+        'Maximum gap between sessions: six months.',
+        'Article 100 = voting and quorum.',
+        'Quorum: one-tenth of total membership, unless otherwise provided by law.',
+        'Article 108 = joint sitting.',
+      ],
+      examFocus: [
+        'Six-month constitutional rule between sessions.',
+        'Casting vote of the presiding officer.',
+        'One-tenth quorum.',
+        'Bills for which joint sitting is not available.',
+      ],
+      practiceTags: ['parliament-procedure', 'article-85', 'article-100', 'joint-sitting'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-021',
+      subjectCode: 'POL',
+      title: 'Presiding Officers of Parliament',
+      summary: 'Chairman and Deputy Chairman of Rajya Sabha; Speaker and Deputy Speaker of Lok Sabha.',
+      estimatedMinutes: 9,
+      sections: [
+        LearnLessonSection(
+          heading: 'Rajya Sabha',
+          paragraphs: [
+            'Under Article 89, the Vice-President of India is the ex officio Chairman of the Council of States. The Rajya Sabha chooses one of its members to be the Deputy Chairman.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Lok Sabha',
+          paragraphs: [
+            'Article 93 requires the House of the People to choose two of its members to be respectively Speaker and Deputy Speaker.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Voting role',
+          paragraphs: [
+            'When presiding, the Chairman or Speaker does not vote in the first instance but has a casting vote in the case of equality of votes under Article 100.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting',
+          paragraphs: [
+            'At a joint sitting, the Speaker of the Lok Sabha ordinarily presides. In the Speaker’s absence, the constitutional and procedural order provides for other presiding officers.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'Vice-President = ex officio Chairman of Rajya Sabha.',
+        'Rajya Sabha elects its Deputy Chairman.',
+        'Lok Sabha elects Speaker and Deputy Speaker.',
+        'Speaker ordinarily presides over a joint sitting.',
+        'Presiding officer has a casting vote in case of a tie.',
+      ],
+      examFocus: [
+        'Articles 89 and 93.',
+        'Vice-President’s Rajya Sabha role.',
+        'Who elects the Deputy Chairman, Speaker and Deputy Speaker.',
+        'Casting vote and joint-sitting presiding officer.',
+      ],
+      practiceTags: ['speaker', 'deputy-speaker', 'rajya-sabha-chairman', 'presiding-officers'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-022',
+      subjectCode: 'POL',
+      title: 'Bills in Parliament',
+      summary: 'Ordinary Bills, Money Bills and the constitutional rules governing their passage.',
+      estimatedMinutes: 11,
+      sections: [
+        LearnLessonSection(
+          heading: 'Ordinary Bills',
+          paragraphs: [
+            'Subject to the special rules for Money Bills and certain Financial Bills, a Bill may originate in either House of Parliament under Article 107.',
+            'An ordinary Bill generally needs agreement of both Houses before it is presented to the President for assent.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Money Bills — Articles 109 and 110',
+          paragraphs: [
+            'A Money Bill cannot be introduced in the Rajya Sabha. After the Lok Sabha passes a Money Bill, it is transmitted to the Rajya Sabha for recommendations.',
+            'The Rajya Sabha has fourteen days to return the Money Bill with its recommendations. The Lok Sabha may accept or reject any or all of those recommendations.',
+            'Article 110 defines a Money Bill. If a question arises whether a Bill is a Money Bill, the decision of the Speaker of the Lok Sabha is final under the constitutional text.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Joint sitting',
+          paragraphs: [
+            'Article 108 provides a mechanism for a joint sitting in specified deadlock situations involving ordinary legislation. This mechanism does not apply to Money Bills or Constitution Amendment Bills.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Quick comparison',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Feature', 'Ordinary Bill', 'Money Bill'],
+            rows: [
+              ['Introduction', 'Either House', 'Lok Sabha only'],
+              ['Rajya Sabha role', 'Generally equal legislative role', 'Recommendations within 14 days'],
+              ['Joint sitting', 'Possible in specified deadlocks', 'Not available'],
+              ['Speaker certification', 'Not a Money Bill certificate', 'Speaker decides Money Bill question'],
+            ],
+          ),
+        ),
+      ],
+      quickRevision: [
+        '107 = introduction and passing of Bills.',
+        '108 = joint sitting.',
+        '109 = special procedure for Money Bills.',
+        '110 = definition of Money Bill.',
+        'Rajya Sabha gets 14 days for Money Bill recommendations.',
+      ],
+      examFocus: [
+        'Which House can introduce a Money Bill.',
+        'Fourteen-day rule.',
+        'Speaker’s constitutional role in Money Bill classification.',
+        'Ordinary Bill versus Money Bill and joint sitting.',
+      ],
+      practiceTags: ['bills-in-parliament', 'money-bill', 'articles-107-110'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-023',
+      subjectCode: 'POL',
+      title: 'Union Budget and Financial Procedure',
+      summary: 'Annual Financial Statement, grants, appropriation and high-yield constitutional budget terms.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Annual Financial Statement — Article 112',
+          paragraphs: [
+            'Article 112 requires the President to cause to be laid before both Houses of Parliament a statement of the estimated receipts and expenditure of the Government of India for each financial year. This is the constitutional Annual Financial Statement.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Charged and voted expenditure',
+          paragraphs: [
+            'The Annual Financial Statement distinguishes expenditure charged on the Consolidated Fund of India from other expenditure proposed to be made from that Fund.',
+            'Charged expenditure is not submitted to the vote of Parliament, although it may be discussed. Other expenditure is submitted in the form of demands for grants to the Lok Sabha.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Demands for grants and appropriation',
+          paragraphs: [
+            'Article 113 deals with procedure in Parliament concerning estimates, including demands for grants. Such demands are submitted to the House of the People.',
+            'Article 114 provides for an Appropriation Bill after grants have been made, covering withdrawal from the Consolidated Fund of India for voted grants and charged expenditure.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'High-yield sequence',
+          paragraphs: const [],
+          points: [
+            'Annual Financial Statement — Article 112.',
+            'Procedure concerning estimates and demands for grants — Article 113.',
+            'Appropriation Bills — Article 114.',
+            'Supplementary, additional or excess grants — Article 115.',
+            'Votes on account, votes of credit and exceptional grants — Article 116.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        '112 = Annual Financial Statement.',
+        'Demands for grants are voted by Lok Sabha.',
+        'Charged expenditure is not submitted to vote.',
+        '114 = Appropriation Bill.',
+        '115–116 cover additional financial procedures.',
+      ],
+      examFocus: [
+        'Annual Financial Statement versus ordinary use of the word Budget.',
+        'Charged expenditure versus voted expenditure.',
+        'Lok Sabha’s role in demands for grants.',
+        'Article-number sequence 112–116.',
+      ],
+      practiceTags: ['union-budget', 'annual-financial-statement', 'articles-112-116'],
+    ),
+    LearnLesson(
+      id: 'POL-LRN-024',
+      subjectCode: 'POL',
+      title: 'Parliamentary Committees',
+      summary: 'Why committees matter and the structure of the three major financial committees.',
+      estimatedMinutes: 10,
+      sections: [
+        LearnLessonSection(
+          heading: 'Why Parliament uses committees',
+          paragraphs: [
+            'Parliamentary committees allow detailed examination of legislative, financial and administrative matters that cannot always receive the same level of scrutiny on the floor of the House.',
+            'Committees may be standing or ad hoc. For competitive exams, the three financial committees are especially important.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Three financial committees',
+          paragraphs: const [],
+          table: LearnLessonTable(
+            headers: ['Committee', 'Membership', 'Tenure'],
+            rows: [
+              ['Public Accounts Committee', '22: 15 Lok Sabha + 7 Rajya Sabha', '1 year'],
+              ['Estimates Committee', '30: all from Lok Sabha', '1 year'],
+              ['Committee on Public Undertakings', '22: 15 Lok Sabha + 7 Rajya Sabha', '1 year'],
+            ],
+          ),
+        ),
+        LearnLessonSection(
+          heading: 'What they broadly examine',
+          paragraphs: const [],
+          points: [
+            'Public Accounts Committee: public accounts, appropriation-related scrutiny and CAG-based financial examination within its remit.',
+            'Estimates Committee: economies, efficiency, administrative reform and how estimates are presented and used.',
+            'Committee on Public Undertakings: reports, accounts and CAG reports relating to specified public undertakings, along with efficiency and sound business-practice questions within its remit.',
+          ],
+        ),
+        LearnLessonSection(
+          heading: 'Common exam distinction',
+          paragraphs: [
+            'The Estimates Committee has only Lok Sabha members. The Public Accounts Committee and Committee on Public Undertakings include members from both Houses.',
+          ],
+        ),
+      ],
+      quickRevision: [
+        'PAC: 22 = 15 LS + 7 RS.',
+        'Estimates Committee: 30, all from Lok Sabha.',
+        'COPU: 22 = 15 LS + 7 RS.',
+        'The tenure of these financial committees is one year.',
+      ],
+      examFocus: [
+        'Membership composition of PAC, Estimates Committee and COPU.',
+        'Which financial committee has only Lok Sabha members.',
+        'Basic functional distinction among the three.',
+      ],
+      practiceTags: ['parliamentary-committees', 'pac', 'estimates-committee', 'copu'],
+    ),
   ],
 );
 
