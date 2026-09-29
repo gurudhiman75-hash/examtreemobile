@@ -10,7 +10,7 @@ import '../../../shared/widgets/network_failure_view.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../domain/learning_resource.dart';
 import 'providers/learning_resources_providers.dart';
-import 'subject_learning_section.dart';
+import 'learn_modules_section.dart';
 
 class LearnScreen extends ConsumerWidget {
   const LearnScreen({super.key});
@@ -73,7 +73,7 @@ class LearnScreen extends ConsumerWidget {
                     freeTestsCount: freeTests.length,
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  const SubjectLearningSection(),
+                  const LearnModulesSection(),
                   const SizedBox(height: AppSpacing.xl),
                   if (initialLoading)
                     const _LearnLoading()
