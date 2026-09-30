@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../preferences/domain/question_language.dart';
@@ -142,7 +143,7 @@ class LearnScreen extends ConsumerWidget {
   }
 }
 
-class _LearnIntro extends StatelessWidget {
+class _LearnIntro extends ConsumerWidget {
   const _LearnIntro({
     required this.currentAffairsCount,
     required this.notesCount,
@@ -154,21 +155,35 @@ class _LearnIntro extends StatelessWidget {
   final int freeTestsCount;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final progress = ref.watch(learnPracticeProgressListProvider).value ??
+        const <LearnPracticeProgress>[];
+    var answered = 0;
+    var total = 0;
+    for (final item in progress) {
+      final itemTotal = item.totalQuestions <= 0 ? 20 : item.totalQuestions;
+      total += itemTotal;
+      answered += item.status == LearnPracticeStatus.completed
+          ? itemTotal
+          : item.currentQuestion.clamp(0, itemTotal);
+    }
+    final progressValue = total == 0 ? 0.0 : answered / total;
+    final progressPercent = (progressValue * 100).round();
+
     return Container(
       key: const Key('learn-hero'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF4338CA), Color(0xFF6D28D9)],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: .18),
+            color: const Color(0xFF062D5C).withValues(alpha: .18),
             blurRadius: 26,
             offset: const Offset(0, 12),
           ),
@@ -209,13 +224,13 @@ class _LearnIntro extends StatelessWidget {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: .14),
+                  color: const Color(0xFFFFD36B).withValues(alpha: .14),
                   borderRadius: BorderRadius.circular(99),
                 ),
                 child: Text(
                   'YOUR LEARNING SPACE',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: Colors.white,
+                    color: const Color(0xFFFFD36B),
                     fontWeight: FontWeight.w900,
                     letterSpacing: .85,
                   ),
@@ -224,9 +239,10 @@ class _LearnIntro extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Learn smarter.\nPractice better.',
-                style: theme.textTheme.headlineMedium?.copyWith(
+                style: AppTypography.premiumHeading(
+                  theme.textTheme.headlineMedium,
+                ).copyWith(
                   color: Colors.white,
-                  fontWeight: FontWeight.w900,
                   height: 1.06,
                   letterSpacing: -.7,
                 ),
@@ -238,6 +254,40 @@ class _LearnIntro extends StatelessWidget {
                   color: Colors.white.withValues(alpha: .84),
                   height: 1.4,
                   fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Your practice progress',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: .78),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '$progressPercent%',
+                    key: const Key('learn-overall-progress'),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: const Color(0xFFFFD36B),
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: LinearProgressIndicator(
+                  minHeight: 7,
+                  value: progressValue.clamp(0.0, 1.0).toDouble(),
+                  backgroundColor: Colors.white.withValues(alpha: .14),
+                  valueColor: const AlwaysStoppedAnimation(
+                    Color(0xFFFFD36B),
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -299,7 +349,7 @@ class _LearnStat extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: Colors.white),
+          Icon(icon, size: 16, color: const Color(0xFFFFD36B)),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value,
@@ -374,12 +424,12 @@ class _ContinueLearningCard extends ConsumerWidget {
       child: Ink(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFFFFF7F8), Color(0xFFFFEEF2)],
+            colors: [Color(0xFFFFFBF1), Color(0xFFFFF6DD)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFFFDCE4)),
+          border: Border.all(color: const Color(0xFFF2DFAD)),
         ),
         child: InkWell(
           onTap: () async {
@@ -407,12 +457,12 @@ class _ContinueLearningCard extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFDDE5),
+                    color: const Color(0xFFFFEDBE),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: const Icon(
                     Icons.auto_stories_rounded,
-                    color: Color(0xFFBE123C),
+                    color: Color(0xFF0B3A6F),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -423,7 +473,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                       Text(
                         'Continue where you left off',
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: const Color(0xFFBE123C),
+                              color: const Color(0xFF0B3A6F),
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -438,7 +488,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
-                        '$area · $current/$total',
+                        '$area · $current/$total · \${(value * 100).round()}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
@@ -462,7 +512,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                 FilledButton(
                   onPressed: null,
                   style: FilledButton.styleFrom(
-                    disabledBackgroundColor: const Color(0xFFE11D48),
+                    disabledBackgroundColor: const Color(0xFF0B3A6F),
                     disabledForegroundColor: Colors.white,
                     minimumSize: const Size(0, 42),
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -500,9 +550,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.3,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
