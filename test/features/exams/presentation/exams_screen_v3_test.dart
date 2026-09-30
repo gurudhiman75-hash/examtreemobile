@@ -85,7 +85,7 @@ void main() {
 
     expect(find.text('Find your next test'), findsOneWidget);
     expect(find.byKey(const Key('tests-search')), findsOneWidget);
-    expect(find.text('Continue learning'), findsOneWidget);
+    expect(find.text('Continue Tests'), findsOneWidget);
     expect(find.byKey(const Key('tests-resume-rail')), findsOneWidget);
     expect(find.text('Quant Speed Sectional'), findsOneWidget);
     expect(find.text('Available tests'), findsOneWidget);
@@ -113,8 +113,9 @@ void main() {
     await pumpCatalogue(tester, available: const []);
 
     expect(find.text('No tests available yet'), findsOneWidget);
-    expect(find.text('0 available'), findsOneWidget);
-    expect(find.text('0 free'), findsOneWidget);
+    expect(find.text('Available'), findsOneWidget);
+    expect(find.text('Free'), findsOneWidget);
+    expect(find.text('0'), findsNWidgets(3));
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('recommended for you'), findsNothing);
   });
