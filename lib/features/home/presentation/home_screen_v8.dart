@@ -128,12 +128,58 @@ class HomeScreen extends ConsumerWidget {
                     onSearch: () => context.go('/exams'),
                     onProfile: () => context.push('/profile'),
                   ),
-                  if (campaigns.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    PromotionCarousel(campaigns: campaigns, compact: true),
-                  ],
                   const SizedBox(height: AppSpacing.md),
-                  _NextActionHero(
+                  if (campaigns.isNotEmpty)
+                    PromotionCarousel(campaigns: campaigns, compact: true)
+                  else
+                    const _HomePromoFallback(),
+                  const SizedBox(height: AppSpacing.xl),
+                  _SectionTitle(
+                    title: 'Exam Categories',
+                    action: 'See all',
+                    onAction: () => context.go('/exams'),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  _ExamCategoriesGrid(onOpen: () => context.go('/exams')),
+                  const SizedBox(height: AppSpacing.xl),
+                  _SectionTitle(
+                    title: 'Featured Test Series',
+                    action: 'See all',
+                    onAction: () => context.go('/exams'),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  availableAsync.when(
+                    loading: () => const _LoadingCard(height: 194),
+                    error: (error, stack) => _ErrorCard(
+                      title: 'Test series could not be loaded',
+                      onRetry: () => ref.invalidate(availableExamsProvider),
+                    ),
+                    data: (tests) {
+                      final featured = recommendations.isNotEmpty
+                          ? recommendations.take(4).toList(growable: false)
+                          : prioritizedAvailable.take(4).toList(growable: false);
+                      return featured.isEmpty
+                          ? _EmptyRecommendations(
+                              catalogueEmpty: tests.isEmpty,
+                              onBrowse: () => context.go('/exams'),
+                            )
+                          : _FeaturedSeriesRail(
+                              exams: featured,
+                              onOpen: (exam) => context.push(
+                                '/exam-details',
+                                extra: exam.id,
+                              ),
+                            );
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  _SectionTitle(
+                    title: 'Continue Learning',
+                    action: 'See all',
+                    onAction: () => context.go('/learn'),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  _ContinueLearningCard(
                     key: const Key('home-primary-action'),
                     state: actionState,
                     onOpen: (action) => _openAction(context, action),
@@ -145,58 +191,23 @@ class HomeScreen extends ConsumerWidget {
                         ..invalidate(dailyCompanionSnapshotProvider);
                     },
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  _QuickActions(
-                    onTests: () => context.go('/exams'),
-                    onLearn: () => context.go('/learn'),
-                    onRevision: () => context.push('/daily'),
-                    onStore: () => context.push('/store?section=tests'),
-                  ),
                   const SizedBox(height: AppSpacing.xl),
                   _SectionTitle(
-                    title: 'Your progress',
+                    title: "Today's Goal",
                     action: 'Details',
                     onAction: () => context.push('/profile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   analyticsAsync.when(
-                    loading: () => const _LoadingCard(height: 170),
+                    loading: () => const _LoadingCard(height: 112),
                     error: (error, stack) => _ErrorCard(
                       title: 'Progress is temporarily unavailable',
                       onRetry: () => ref.invalidate(userAnalyticsProvider),
                     ),
-                    data: (analytics) => _ProgressCard(
-                      key: const Key('home-progress-overview'),
+                    data: (analytics) => _TodayGoalCard(
                       analytics: analytics,
                       onTap: () => context.push('/profile'),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  _SectionTitle(
-                    title: 'Recommended for you',
-                    action: 'View all',
-                    onAction: () => context.go('/exams'),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  availableAsync.when(
-                    loading: () => const _LoadingCard(height: 182),
-                    error: (error, stack) => _ErrorCard(
-                      title: 'Tests could not be loaded',
-                      onRetry: () => ref.invalidate(availableExamsProvider),
-                    ),
-                    data: (tests) => recommendations.isEmpty
-                        ? _EmptyRecommendations(
-                            catalogueEmpty: tests.isEmpty,
-                            onBrowse: () => context.go('/exams'),
-                          )
-                        : _ExamRail(
-                            key: const Key('home-recommendations'),
-                            exams: recommendations,
-                            onOpen: (exam) => context.push(
-                              '/exam-details',
-                              extra: exam.id,
-                            ),
-                          ),
                   ),
                 ],
               ),
@@ -204,6 +215,541 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class _HomePromoFallback extends StatelessWidget {
+  const _HomePromoFallback();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      height: 210,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF062C59), Color(0xFF0B4E8A), Color(0xFF0A6AA6)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062C59).withValues(alpha: 0.22),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            right: -36,
+            bottom: -44,
+            child: Container(
+              width: 190,
+              height: 190,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.07),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFF3C768)),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    'PUNJAB GOVT. EXAMS',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: const Color(0xFFFFD97A),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  'Your Dream Government Job Starts Here',
+                  maxLines: 3,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontFamily: 'serif',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1.05,
+                    letterSpacing: -0.35,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    FilledButton(
+                      onPressed: () => context.go('/exams'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFD36B),
+                        foregroundColor: const Color(0xFF082A52),
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                      ),
+                      child: const Text('Start Preparing'),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.auto_graph_rounded,
+                      color: Colors.white.withValues(alpha: 0.72),
+                      size: 34,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExamCategoriesGrid extends StatelessWidget {
+  const _ExamCategoriesGrid({required this.onOpen});
+
+  final VoidCallback onOpen;
+
+  static const _items = [
+    ('Punjab Govt.', Icons.location_on_rounded, Color(0xFFFFEFEF), Color(0xFFF04452)),
+    ('SSC', Icons.workspace_premium_rounded, Color(0xFFEAF8F2), Color(0xFF11966F)),
+    ('Banking', Icons.account_balance_rounded, Color(0xFFECF4FF), Color(0xFF1672E8)),
+    ('Railway', Icons.train_rounded, Color(0xFFF3EEFF), Color(0xFF7248E8)),
+    ('Teaching', Icons.school_rounded, Color(0xFFFFF5E8), Color(0xFFF28A19)),
+    ('Defence', Icons.shield_rounded, Color(0xFFEAF8F2), Color(0xFF159D73)),
+    ('State PCS', Icons.apartment_rounded, Color(0xFFFFEEEE), Color(0xFFF04452)),
+    ('Other Exams', Icons.grid_view_rounded, Color(0xFFF1F4F8), Color(0xFF718096)),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final gap = AppSpacing.sm;
+        final width = (constraints.maxWidth - gap * 3) / 4;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: _items
+              .map(
+                (item) => SizedBox(
+                  width: width,
+                  child: _ExamCategoryTile(
+                    label: item.$1,
+                    icon: item.$2,
+                    background: item.$3,
+                    foreground: item.$4,
+                    onTap: onOpen,
+                  ),
+                ),
+              )
+              .toList(growable: false),
+        );
+      },
+    );
+  }
+}
+
+class _ExamCategoryTile extends StatelessWidget {
+  const _ExamCategoryTile({
+    required this.label,
+    required this.icon,
+    required this.background,
+    required this.foreground,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color background;
+  final Color foreground;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
+          child: Column(
+            children: [
+              Icon(icon, color: foreground, size: 28),
+              const SizedBox(height: 9),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: const Color(0xFF10264A),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FeaturedSeriesRail extends StatelessWidget {
+  const _FeaturedSeriesRail({required this.exams, required this.onOpen});
+
+  final List<Exam> exams;
+  final ValueChanged<Exam> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 196,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: exams.length,
+        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+        itemBuilder: (context, index) => SizedBox(
+          width: 300,
+          child: _FeaturedSeriesCard(
+            exam: exams[index],
+            alternate: index.isOdd,
+            onTap: () => onOpen(exams[index]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FeaturedSeriesCard extends StatelessWidget {
+  const _FeaturedSeriesCard({
+    required this.exam,
+    required this.alternate,
+    required this.onTap,
+  });
+
+  final Exam exam;
+  final bool alternate;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final durationMinutes = (exam.durationInSeconds / 60).round();
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              colors: alternate
+                  ? const [Color(0xFFFFF5D9), Color(0xFFFFFBF0)]
+                  : const [Color(0xFF062D5C), Color(0xFF0A4A83)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F2745).withValues(alpha: 0.12),
+                blurRadius: 20,
+                offset: const Offset(0, 9),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'TEST SERIES',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: alternate
+                        ? const Color(0xFF7C5B18)
+                        : Colors.white.withValues(alpha: 0.72),
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  exam.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: 'serif',
+                    color: alternate ? const Color(0xFF152746) : Colors.white,
+                    fontWeight: FontWeight.w800,
+                    height: 1.08,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    _SeriesMetric(
+                      icon: Icons.quiz_outlined,
+                      value: '${exam.totalQuestions}',
+                      label: 'Questions',
+                      light: alternate,
+                    ),
+                    const SizedBox(width: 16),
+                    _SeriesMetric(
+                      icon: Icons.schedule_rounded,
+                      value: '$durationMinutes min',
+                      label: 'Duration',
+                      light: alternate,
+                    ),
+                    const Spacer(),
+                    CircleAvatar(
+                      radius: 21,
+                      backgroundColor: alternate
+                          ? const Color(0xFF10264A)
+                          : Colors.white.withValues(alpha: 0.13),
+                      child: Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 21,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SeriesMetric extends StatelessWidget {
+  const _SeriesMetric({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.light,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+  final bool light;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = light ? const Color(0xFF233A5C) : Colors.white;
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: color.withValues(alpha: 0.86)),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w900,
+                  ),
+            ),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color.withValues(alpha: 0.68),
+                  ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ContinueLearningCard extends StatelessWidget {
+  const _ContinueLearningCard({
+    super.key,
+    required this.state,
+    required this.onOpen,
+    required this.onRetry,
+  });
+
+  final _ActionState state;
+  final ValueChanged<HomePrimaryAction> onOpen;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.loading) return const _LoadingCard(height: 104);
+    if (state.error || state.action == null) {
+      return _ErrorCard(
+        title: 'Continue learning is temporarily unavailable',
+        onRetry: onRetry,
+      );
+    }
+
+    final action = state.action!;
+    final theme = Theme.of(context);
+    return _SurfaceCard(
+      onTap: () => onOpen(action),
+      child: Row(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE9F2FF),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.menu_book_rounded,
+              color: Color(0xFF1672E8),
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  action.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF10264A),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  action.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          CircleAvatar(
+            radius: 23,
+            backgroundColor: const Color(0xFF062D5C),
+            child: const Icon(Icons.play_arrow_rounded, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TodayGoalCard extends StatelessWidget {
+  const _TodayGoalCard({required this.analytics, required this.onTap});
+
+  final Analytics analytics;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final accuracy = analytics.averageAccuracy.clamp(0, 100).round();
+    return _SurfaceCard(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE8F3FF),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: const Icon(
+              Icons.track_changes_rounded,
+              color: Color(0xFF1672E8),
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Keep Going!',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF10264A),
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  '${analytics.totalTestsAttempted} tests attempted',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _GoalMetric(value: '${analytics.totalTestsAttempted}', label: 'Tests'),
+          const SizedBox(width: AppSpacing.lg),
+          _GoalMetric(value: '$accuracy%', label: 'Accuracy'),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoalMetric extends StatelessWidget {
+  const _GoalMetric({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -296,8 +842,7 @@ class _HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final compact = MediaQuery.sizeOf(context).width < 430;
-    final title = compact ? 'Hi, $name' : '$greeting, $name';
+    final title = 'Examtree';
     return Semantics(
       container: true,
       label: '$greeting, $name. $dateLabel.',
@@ -326,7 +871,9 @@ class _HomeHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
-                  dateLabel,
+                  '$greeting, $name',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: scheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
@@ -716,8 +1263,10 @@ class _SectionTitle extends StatelessWidget {
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.35,
+                  fontFamily: 'serif',
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.25,
+                  color: const Color(0xFF10264A),
                 ),
           ),
         ),
