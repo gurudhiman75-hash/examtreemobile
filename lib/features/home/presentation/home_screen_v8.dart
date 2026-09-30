@@ -7,6 +7,7 @@ import '../../../core/models/exam_model.dart';
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
@@ -282,10 +283,10 @@ class _HomePromoFallback extends StatelessWidget {
                 Text(
                   'Your Dream Government Job Starts Here',
                   maxLines: 3,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontFamily: 'serif',
+                  style: AppTypography.premiumHeading(
+                    theme.textTheme.headlineSmall,
+                  ).copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.w800,
                     height: 1.05,
                     letterSpacing: -0.35,
                   ),
@@ -340,7 +341,10 @@ class _ExamCategoriesGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = AppSpacing.sm;
-        final width = (constraints.maxWidth - gap * 3) / 4;
+        final scaledLabel = MediaQuery.textScalerOf(context).scale(12);
+        final compactColumns = constraints.maxWidth < 340 || scaledLabel > 15;
+        final columns = compactColumns ? 2 : 4;
+        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
         return Wrap(
           spacing: gap,
           runSpacing: gap,
@@ -397,7 +401,7 @@ class _ExamCategoryTile extends StatelessWidget {
               Text(
                 label,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: const Color(0xFF10264A),
@@ -498,11 +502,10 @@ class _FeaturedSeriesCard extends StatelessWidget {
                   exam.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontFamily: 'serif',
+                  style: AppTypography.premiumHeading(
+                    theme.textTheme.titleLarge,
+                  ).copyWith(
                     color: alternate ? const Color(0xFF152746) : Colors.white,
-                    fontWeight: FontWeight.w800,
-                    height: 1.08,
                   ),
                 ),
                 const Spacer(),
@@ -1262,12 +1265,11 @@ class _SectionTitle extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontFamily: 'serif',
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.25,
-                  color: const Color(0xFF10264A),
-                ),
+            style: AppTypography.premiumHeading(
+              Theme.of(context).textTheme.titleLarge,
+            ).copyWith(
+              color: const Color(0xFF10264A),
+            ),
           ),
         ),
         TextButton(onPressed: onAction, child: Text(action)),
