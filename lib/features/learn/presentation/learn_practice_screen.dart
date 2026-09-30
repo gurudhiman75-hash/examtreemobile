@@ -149,6 +149,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
   int? _selected;
   var _revealed = false;
   var _restoring = true;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -181,10 +182,24 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
       _revealed = true;
       if (correct) _correct += 1;
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
+      );
+    });
     await _save(
       status: LearnPracticeStatus.inProgress,
       currentQuestion: _index < widget.questions.length - 1 ? _index + 1 : _index,
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _next() async {
@@ -207,13 +222,14 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
   Future<void> _save({
     required LearnPracticeStatus status,
     required int currentQuestion,
+    int? totalQuestions,
   }) async {
     await ref.read(learnPracticeProgressStoreProvider).write(
           LearnPracticeProgress(
             topicId: widget.topicId,
             status: status,
             currentQuestion: currentQuestion,
-            totalQuestions: widget.questions.length,
+            totalQuestions: totalQuestions ?? widget.questions.length,
             correctAnswers: _correct,
             updatedAt: DateTime.now(),
           ),
@@ -234,6 +250,45 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     );
   }
 
+  Future<void> _submitEarly() async {
+    final answered = _index + (_revealed ? 1 : 0);
+    if (answered <= 0) return;
+
+    final shouldSubmit = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Submit practice?'),
+        content: Text(
+          answered == widget.questions.length
+              ? 'You have answered all questions. Submit and view your result?'
+              : 'You have answered $answered of ${widget.questions.length} questions. Submit now and view your result?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Keep practicing'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldSubmit != true || !mounted) return;
+    await _save(
+      status: LearnPracticeStatus.completed,
+      currentQuestion: answered,
+      totalQuestions: answered,
+    );
+    if (!mounted) return;
+    context.go(
+      '/learn-practice-result?topic=${Uri.encodeQueryComponent(widget.topicId)}'
+      '&correct=$_correct&total=$answered',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_restoring) {
@@ -248,32 +303,88 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-            Text(
-              'Question ${_index + 1} of ${widget.questions.length} · Untimed',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
+        leading: IconButton(
+          key: const Key('learn-practice-back'),
+          tooltip: 'Back',
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back_rounded),
         ),
+        titleSpacing: 4,
+        title: Text(
+          widget.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actions: [
+          TextButton(
+            key: const Key('learn-practice-submit'),
+            onPressed: (_index > 0 || _revealed) ? _submitEarly : null,
+            child: const Text(
+              'Submit',
+              style: TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+        ],
       ),
       body: Column(
         children: [
           LinearProgressIndicator(value: progress, minHeight: 5),
           Expanded(
             child: ListView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
-                Text(
-                  question.text,
-                  key: const Key('learn-practice-question'),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    height: 1.4,
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(99),
+                      ),
+                      child: Text(
+                        'Question ${_index + 1} of ${widget.questions.length}',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        const Icon(Icons.timer_off_outlined, size: 17),
+                        const SizedBox(width: AppSpacing.xs),
+                        Text(
+                          'Untimed',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: theme.colorScheme.outlineVariant),
+                  ),
+                  child: Text(
+                    question.text,
+                    key: const Key('learn-practice-question'),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      height: 1.4,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),

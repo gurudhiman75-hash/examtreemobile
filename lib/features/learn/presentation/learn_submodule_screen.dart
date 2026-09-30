@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
@@ -32,6 +33,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
 
     if (submodule.id == 'english-vocabulary') {
       final topics = learnPracticeTopicsForSubmodule(submodule.id);
+      final progressItems =
+          ref.watch(learnPracticeProgressListProvider).value ?? const [];
       return Scaffold(
         appBar: AppBar(title: Text(submodule.title)),
         body: ListView(
@@ -42,6 +45,16 @@ class LearnSubmoduleScreen extends ConsumerWidget {
             AppSpacing.xxl,
           ),
           children: [
+            _SubmoduleOverview(
+              title: 'Vocabulary',
+              subtitle: 'Build stronger word power with focused practice.',
+              topicIds: topics.map((topic) => topic.id).toList(growable: false),
+              progressItems: progressItems,
+              icon: Icons.translate_rounded,
+              accent: AppColors.sky,
+              accentContainer: AppColors.skyContainer,
+            ),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.',
               style: theme.textTheme.bodyLarge?.copyWith(
@@ -75,6 +88,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
     }
 
     final subject = polityLearnSubjectFor(language);
+    final progressItems =
+        ref.watch(learnPracticeProgressListProvider).value ?? const [];
     return Scaffold(
       appBar: AppBar(title: Text(submodule.title)),
       body: ListView(
@@ -85,6 +100,17 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           AppSpacing.xxl,
         ),
         children: [
+          _SubmoduleOverview(
+            title: 'Polity',
+            subtitle: 'Indian Constitution, institutions and governance.',
+            topicIds:
+                subject.lessons.map((lesson) => lesson.id).toList(growable: false),
+            progressItems: progressItems,
+            icon: Icons.account_balance_rounded,
+            accent: AppColors.mint,
+            accentContainer: AppColors.mintContainer,
+          ),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Choose a topic for a short untimed practice session. Answers and explanations appear immediately after each question.',
             style: theme.textTheme.bodyLarge?.copyWith(
@@ -97,6 +123,123 @@ class LearnSubmoduleScreen extends ConsumerWidget {
             _TopicCard(lesson: lesson),
             const SizedBox(height: AppSpacing.sm),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+
+class _SubmoduleOverview extends StatelessWidget {
+  const _SubmoduleOverview({
+    required this.title,
+    required this.subtitle,
+    required this.topicIds,
+    required this.progressItems,
+    required this.icon,
+    required this.accent,
+    required this.accentContainer,
+  });
+
+  final String title;
+  final String subtitle;
+  final List<String> topicIds;
+  final List<LearnPracticeProgress> progressItems;
+  final IconData icon;
+  final Color accent;
+  final Color accentContainer;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tracked = progressItems
+        .where((item) => topicIds.contains(item.topicId))
+        .toList(growable: false);
+    final completed = tracked
+        .where((item) => item.status == LearnPracticeStatus.completed)
+        .length;
+    final partial = tracked
+        .where((item) => item.status == LearnPracticeStatus.inProgress)
+        .fold<double>(0, (sum, item) {
+      if (item.totalQuestions <= 0) return sum;
+      return sum +
+          (item.currentQuestion / item.totalQuestions).clamp(0.0, 1.0);
+    });
+    final total = topicIds.isEmpty ? 1 : topicIds.length;
+    final progress = ((completed + partial) / total).clamp(0.0, 1.0).toDouble();
+    final percent = (progress * 100).round();
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: accentContainer,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, color: accent, size: 30),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.3,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '$completed / ${topicIds.length} topics completed',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          SizedBox(
+            width: 54,
+            height: 54,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: 5,
+                  backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                  color: accent,
+                ),
+                Text(
+                  '$percent%',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -128,8 +271,17 @@ class _TopicCard extends ConsumerWidget {
         'Last score ${progress!.correctAnswers}/${progress.totalQuestions}',
     };
 
-    return Card(
-      margin: EdgeInsets.zero,
+    final lessonNumber = int.tryParse(lesson.id.split('-').last) ?? 0;
+    final progressValue = progress == null || progress.totalQuestions <= 0
+        ? 0.0
+        : (progress.currentQuestion / progress.totalQuestions).clamp(0.0, 1.0).toDouble();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -138,6 +290,27 @@ class _TopicCard extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: status == LearnPracticeStatus.completed
+                        ? AppColors.mintContainer
+                        : theme.colorScheme.surfaceContainerLow,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    lessonNumber.toString().padLeft(2, '0'),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: status == LearnPracticeStatus.completed
+                          ? AppColors.onMintContainer
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,18 +333,31 @@ class _TopicCard extends ConsumerWidget {
                   ),
                 ),
                 if (status == LearnPracticeStatus.completed)
-                  const Icon(Icons.check_circle_rounded),
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: AppColors.mint,
+                  ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                minHeight: 5,
+                value: progressValue,
+                backgroundColor: theme.colorScheme.surfaceContainerHigh,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.menu_book_outlined, size: 18),
                     onPressed: () => context.push(
                       '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
                     ),
-                    child: const Text('Review lesson'),
+                    label: const Text('Review lesson'),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -232,8 +418,16 @@ class _StandalonePracticeTopicCard extends ConsumerWidget {
         'Last score ${progress!.correctAnswers}/${progress.totalQuestions}',
     };
 
-    return Card(
-      margin: EdgeInsets.zero,
+    final progressValue = progress == null || progress.totalQuestions <= 0
+        ? 0.0
+        : (progress.currentQuestion / progress.totalQuestions).clamp(0.0, 1.0).toDouble();
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -259,6 +453,15 @@ class _StandalonePracticeTopicCard extends ConsumerWidget {
               style: theme.textTheme.labelMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                minHeight: 5,
+                value: progressValue,
+                backgroundColor: theme.colorScheme.surfaceContainerHigh,
               ),
             ),
             const SizedBox(height: AppSpacing.md),

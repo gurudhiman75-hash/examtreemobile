@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/learn/domain/learning_resource.dart';
+import 'package:examtree/features/learn/domain/learn_practice_models.dart';
+import 'package:examtree/features/learn/presentation/providers/learn_practice_providers.dart';
 import 'package:examtree/features/learn/presentation/learn_screen.dart';
 import 'package:examtree/features/learn/presentation/learning_resource_detail_screen.dart';
 import 'package:examtree/features/learn/presentation/providers/learning_resources_providers.dart';
@@ -148,6 +150,18 @@ void main() {
           ),
           learnFreeTestsProvider.overrideWith(
             (ref) => AsyncValue.data(tests),
+          ),
+          learnPracticeProgressListProvider.overrideWith(
+            (ref) async => [
+              LearnPracticeProgress(
+                topicId: 'POL-LRN-006',
+                status: LearnPracticeStatus.inProgress,
+                currentQuestion: 12,
+                totalQuestions: 20,
+                correctAnswers: 9,
+                updatedAt: now,
+              ),
+            ],
           ),
         ],
         child: MaterialApp(

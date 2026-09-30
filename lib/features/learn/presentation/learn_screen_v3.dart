@@ -8,6 +8,12 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
+import '../../preferences/domain/question_language.dart';
+import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/learn_practice_catalog.dart';
+import '../data/polity_learn_localizations.dart';
+import '../domain/learn_practice_models.dart';
+import 'providers/learn_practice_providers.dart';
 import '../domain/learning_resource.dart';
 import 'providers/learning_resources_providers.dart';
 import 'learn_modules_section.dart';
@@ -72,6 +78,8 @@ class LearnScreen extends ConsumerWidget {
                     notesCount: notes.length,
                     freeTestsCount: freeTests.length,
                   ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const _ContinueLearningCard(),
                   const SizedBox(height: AppSpacing.xl),
                   const LearnModulesSection(),
                   const SizedBox(height: AppSpacing.xl),
@@ -148,53 +156,116 @@ class _LearnIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Learn for your exams',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
+    return Container(
+      key: const Key('learn-hero'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4338CA), Color(0xFF6D28D9)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: .18),
+            blurRadius: 26,
+            offset: const Offset(0, 12),
           ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Current affairs, notes and free practice selected from what is actually published for you.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.42,
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -28,
+            top: -34,
+            child: Container(
+              width: 118,
+              height: 118,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: .08),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Wrap(
-          spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.sm,
-          children: [
-            _LearnStat(
-              value: '$currentAffairsCount',
-              label: 'updates',
-              icon: Icons.newspaper_rounded,
-              background: AppColors.skyContainer,
-              foreground: AppColors.onSkyContainer,
+          Positioned(
+            right: 28,
+            bottom: -52,
+            child: Container(
+              width: 92,
+              height: 92,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: .055),
+                shape: BoxShape.circle,
+              ),
             ),
-            _LearnStat(
-              value: '$notesCount',
-              label: 'notes',
-              icon: Icons.menu_book_rounded,
-              background: AppColors.tertiaryContainer,
-              foreground: AppColors.onTertiaryContainer,
-            ),
-            _LearnStat(
-              value: '$freeTestsCount',
-              label: 'free tests',
-              icon: Icons.task_alt_rounded,
-              background: AppColors.mintContainer,
-              foreground: AppColors.onMintContainer,
-            ),
-          ],
-        ),
-      ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .14),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  'YOUR LEARNING SPACE',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .85,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Learn smarter.\nPractice better.',
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  height: 1.06,
+                  letterSpacing: -.7,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'Pick a topic, answer at your pace, and learn from every explanation.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: .84),
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  _LearnStat(
+                    value: '$currentAffairsCount',
+                    label: 'updates',
+                    icon: Icons.newspaper_rounded,
+                  ),
+                  _LearnStat(
+                    value: '$notesCount',
+                    label: 'notes',
+                    icon: Icons.menu_book_rounded,
+                  ),
+                  _LearnStat(
+                    value: '$freeTestsCount',
+                    label: 'free tests',
+                    icon: Icons.task_alt_rounded,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -204,47 +275,205 @@ class _LearnStat extends StatelessWidget {
     required this.value,
     required this.label,
     required this.icon,
-    required this.background,
-    required this.foreground,
   });
 
   final String value;
   final String label;
   final IconData icon;
-  final Color background;
-  final Color foreground;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, size: 18, color: foreground),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .13),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: .12),
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Text(
-          value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w900,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.white),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            value,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xxs),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white.withValues(alpha: .8),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class _ContinueLearningCard extends ConsumerWidget {
+  const _ContinueLearningCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progressList = ref.watch(learnPracticeProgressListProvider).value;
+    if (progressList == null || progressList.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    LearnPracticeProgress? latest;
+    for (final item in progressList) {
+      if (item.status == LearnPracticeStatus.inProgress) {
+        latest = item;
+        break;
+      }
+    }
+    latest ??= progressList.firstWhere(
+      (item) => item.status == LearnPracticeStatus.completed,
+      orElse: () => progressList.first,
+    );
+    final resolvedLatest = latest;
+
+    final language =
+        ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final standalone = learnPracticeTopicById(resolvedLatest.topicId);
+
+    String title = standalone?.title ?? 'Continue learning';
+    String area = standalone != null ? 'English · Vocabulary' : 'GK · Polity';
+
+    if (standalone == null) {
+      final polity = polityLearnSubjectFor(language);
+      for (final lesson in polity.lessons) {
+        if (lesson.id == resolvedLatest.topicId) {
+          title = lesson.title;
+          break;
+        }
+      }
+    }
+
+    final total = resolvedLatest.totalQuestions <= 0 ? 20 : resolvedLatest.totalQuestions;
+    final current = resolvedLatest.currentQuestion.clamp(0, total);
+    final value = total == 0 ? 0.0 : current / total;
+    final completed = resolvedLatest.status == LearnPracticeStatus.completed;
+    final action = completed ? 'Retake' : 'Resume';
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFF7F8), Color(0xFFFFEEF2)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFFFDCE4)),
+        ),
+        child: InkWell(
+          onTap: () async {
+            if (completed) {
+              await ref
+                  .read(learnPracticeProgressStoreProvider)
+                  .clear(resolvedLatest.topicId);
+              ref.invalidate(learnPracticeProgressProvider(resolvedLatest.topicId));
+              ref.invalidate(learnPracticeProgressListProvider);
+              ref.invalidate(learnPracticeQuestionsProvider);
+            }
+            if (context.mounted) {
+              final fresh = completed ? '&fresh=1' : '';
+              context.push(
+                '/learn-practice?topic=${Uri.encodeQueryComponent(resolvedLatest.topicId)}$fresh',
+              );
+            }
+          },
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFDDE5),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Icon(
+                    Icons.auto_stories_rounded,
+                    color: Color(0xFFBE123C),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Continue where you left off',
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                              color: const Color(0xFFBE123C),
+                              fontWeight: FontWeight.w900,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        '$area · $current/$total',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(99),
+                        child: LinearProgressIndicator(
+                          minHeight: 5,
+                          value: value.clamp(0.0, 1.0).toDouble(),
+                          backgroundColor: Colors.white.withValues(alpha: .8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                FilledButton(
+                  onPressed: null,
+                  style: FilledButton.styleFrom(
+                    disabledBackgroundColor: const Color(0xFFE11D48),
+                    disabledForegroundColor: Colors.white,
+                    minimumSize: const Size(0, 42),
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                  ),
+                  child: Text(action),
+                ),
+              ],
+            ),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
