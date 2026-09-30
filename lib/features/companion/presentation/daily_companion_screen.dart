@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
@@ -54,8 +55,21 @@ class DailyCompanionScreen extends ConsumerWidget {
     final now = ref.watch(dailyCompanionClockProvider)();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFBFCFE),
       appBar: AppBar(
         title: const Text('Daily Companion'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: const Color(0xFFE8EDF3),
+          ),
+        ),
         actions: [
           IconButton(
             tooltip: 'Refresh',
@@ -260,7 +274,7 @@ class _TodayHero extends StatelessWidget {
         Text(
           'TODAY',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.76),
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w900,
             letterSpacing: 1.0,
           ),
@@ -268,9 +282,10 @@ class _TodayHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Text(
           'Today’s revision',
-          style: theme.textTheme.headlineSmall?.copyWith(
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.w900,
             letterSpacing: -0.45,
           ),
         ),
@@ -293,13 +308,13 @@ class _TodayHero extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         '$dueCount due',
         style: theme.textTheme.labelMedium?.copyWith(
-          color: Colors.white,
+          color: const Color(0xFFFFD36B),
           fontWeight: FontWeight.w900,
         ),
       ),
@@ -310,7 +325,7 @@ class _TodayHero extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.tertiary],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -341,8 +356,8 @@ class _TodayHero extends StatelessWidget {
               value: progress,
               minHeight: 8,
               borderRadius: BorderRadius.circular(99),
-              color: Colors.white,
-              backgroundColor: Colors.white.withValues(alpha: 0.22),
+              color: const Color(0xFFFFD36B),
+              backgroundColor: Colors.white.withValues(alpha: 0.16),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -351,7 +366,7 @@ class _TodayHero extends StatelessWidget {
               Icon(
                 Icons.check_circle_outline_rounded,
                 size: 18,
-                color: Colors.white.withValues(alpha: 0.86),
+                color: const Color(0xFFFFD36B),
               ),
               const SizedBox(width: AppSpacing.xs),
               Expanded(
@@ -385,9 +400,10 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.2,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
@@ -428,6 +444,10 @@ class _QuickRevisionActions extends StatelessWidget {
           label: Text('$minutes min'),
           style: FilledButton.styleFrom(
             minimumSize: const Size(0, 54),
+            backgroundColor: const Color(0xFFEAF2FB),
+            foregroundColor: const Color(0xFF0B3A6F),
+            disabledBackgroundColor: const Color(0xFFF1F3F6),
+            disabledForegroundColor: const Color(0xFF9AA6B2),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.sm,
@@ -470,7 +490,7 @@ class _ExamDayLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Material(
-      color: AppColors.skyContainer,
+      color: const Color(0xFFFFF7E2),
       borderRadius: BorderRadius.circular(22),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -485,12 +505,12 @@ class _ExamDayLink extends StatelessWidget {
                 height: 46,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.62),
+                  color: const Color(0xFFFFEDBE),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: const Icon(
                   Icons.event_available_outlined,
-                  color: AppColors.onSkyContainer,
+                  color: Color(0xFF0B3A6F),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -501,7 +521,7 @@ class _ExamDayLink extends StatelessWidget {
                     Text(
                       'Exam-Day Mode',
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: AppColors.onSkyContainer,
+                        color: const Color(0xFF10264A),
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -509,7 +529,7 @@ class _ExamDayLink extends StatelessWidget {
                     Text(
                       'Countdown, logistics checklist and local reminders',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.onSkyContainer,
+                        color: const Color(0xFF526274),
                         height: 1.35,
                       ),
                     ),
@@ -519,7 +539,7 @@ class _ExamDayLink extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: AppColors.onSkyContainer,
+                color: Color(0xFF0B3A6F),
               ),
             ],
           ),
@@ -539,22 +559,23 @@ class _EmptyRevisionQueue extends StatelessWidget {
       key: const Key('revision-queue-empty'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.mintContainer,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
             Icons.auto_awesome_outlined,
-            color: AppColors.onMintContainer,
+            color: Color(0xFF0B3A6F),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.onMintContainer,
+                color: const Color(0xFF526274),
                 height: 1.45,
               ),
             ),
@@ -608,9 +629,9 @@ class _RevisionQueueItem extends StatelessWidget {
       key: Key('revision-item-${item.id}'),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        boxShadow: _softShadow(),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -684,8 +705,11 @@ class _StudyPlanCard extends StatelessWidget {
 
     return Material(
       key: const Key('study-plan'),
-      color: theme.colorScheme.surfaceContainerLowest,
-      borderRadius: BorderRadius.circular(24),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -700,12 +724,12 @@ class _StudyPlanCard extends StatelessWidget {
                   height: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryContainer,
+                    color: const Color(0xFFFFEDBE),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(
                     Icons.tune_rounded,
-                    color: AppColors.onPrimaryContainer,
+                    color: Color(0xFF0B3A6F),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -715,8 +739,10 @@ class _StudyPlanCard extends StatelessWidget {
                     children: [
                       Text(
                         'My study plan',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
+                        style: AppTypography.premiumHeading(
+                          theme.textTheme.titleLarge,
+                        ).copyWith(
+                          color: const Color(0xFF10264A),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xxs),
