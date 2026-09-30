@@ -185,6 +185,22 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  verify_oauth:
+    name: Verify Google OAuth signing registration
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download authenticated Android APK metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: ExamTree-1.0.1-auth-debug
+          path: build/app/outputs/flutter-apk
+
       - name: Verify Google OAuth signing registration
         shell: bash
         run: |
@@ -228,4 +244,3 @@ jobs:
             echo "::error::The APK signing SHA-1 is not registered for com.examtree.examtree in Google/Firebase OAuth. Add $APK_SHA1 to Firebase project sarbedutech, download the refreshed google-services.json, and commit it before publishing this APK."
             exit 1
           fi
-
