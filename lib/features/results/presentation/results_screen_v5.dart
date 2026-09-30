@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import 'providers/result_providers.dart';
 import 'result_history_filter.dart';
@@ -113,7 +114,23 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                     onReset: _resetFilters,
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  SearchBar(
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                      searchBarTheme: SearchBarThemeData(
+                        elevation: const WidgetStatePropertyAll(0),
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Colors.white),
+                        side: const WidgetStatePropertyAll(
+                          BorderSide(color: Color(0xFFDCE5EF)),
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: SearchBar(
                     key: const Key('results-search'),
                     controller: _searchController,
                     hintText: 'Search tests or exam categories',
@@ -130,6 +147,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                         ),
                     ],
                     onChanged: (value) => setState(() => _query = value),
+                  ),
                   ),
                   if (categories.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.sm),
@@ -185,14 +203,14 @@ class _PerformanceHero extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF4F46E5), Color(0xFF6D4AE8), Color(0xFF7C3AED)],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.18),
+            color: const Color(0xFF062D5C).withValues(alpha: 0.18),
             blurRadius: 28,
             offset: const Offset(0, 12),
           ),
@@ -204,7 +222,7 @@ class _PerformanceHero extends StatelessWidget {
           Text(
             'YOUR PERFORMANCE',
             style: theme.textTheme.labelSmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.82),
+              color: const Color(0xFFFFD36B),
               fontWeight: FontWeight.w900,
               letterSpacing: 0.8,
             ),
@@ -224,13 +242,13 @@ class _PerformanceHero extends StatelessWidget {
                       strokeWidth: 8,
                       strokeCap: StrokeCap.round,
                       backgroundColor: Colors.white.withValues(alpha: 0.18),
-                      color: Colors.white,
+                      color: const Color(0xFFFFD36B),
                     ),
                     Center(
                       child: Text(
                         '${average.round()}%',
                         style: theme.textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
+                          color: const Color(0xFFFFD36B),
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -367,9 +385,10 @@ class _HistoryToolsIntro extends StatelessWidget {
             children: [
               Text(
                 'Find an attempt',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.3,
+                style: AppTypography.premiumHeading(
+                  theme.textTheme.titleLarge,
+                ).copyWith(
+                  color: const Color(0xFF10264A),
                 ),
               ),
               const SizedBox(height: AppSpacing.xxs),
@@ -417,9 +436,21 @@ class _CategoryRail extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, index) {
           final category = index == 0 ? null : categories[index - 1];
+          final selected = category == selectedCategory;
           return ChoiceChip(
             label: Text(category ?? 'All exams'),
-            selected: category == selectedCategory,
+            selected: selected,
+            selectedColor: const Color(0xFF0B3A6F),
+            backgroundColor: Colors.white,
+            side: BorderSide(
+              color: selected
+                  ? const Color(0xFF0B3A6F)
+                  : const Color(0xFFDCE5EF),
+            ),
+            labelStyle: TextStyle(
+              color: selected ? Colors.white : const Color(0xFF526274),
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+            ),
             onSelected: (_) => onChanged(category),
           );
         },
@@ -443,9 +474,10 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.25,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         if (subtitle != null) ...[
@@ -554,9 +586,9 @@ class _ResultCard extends StatelessWidget {
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLowest,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(22),
-          boxShadow: _softShadow(),
+          border: Border.all(color: const Color(0xFFE8EDF3)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -730,7 +762,6 @@ class _ScoreBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final good = percentage >= 70;
     return Semantics(
       label: 'Score ${_formatNumber(percentage)} percent',
       child: Container(
@@ -738,16 +769,14 @@ class _ScoreBadge extends StatelessWidget {
         height: 62,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: good ? AppColors.mintContainer : AppColors.primaryContainer,
+          color: const Color(0xFFEAF2FB),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           '${_formatNumber(percentage)}%',
           textAlign: TextAlign.center,
           style: theme.textTheme.titleSmall?.copyWith(
-            color: good
-                ? AppColors.onMintContainer
-                : AppColors.onPrimaryContainer,
+            color: const Color(0xFF0B3A6F),
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -813,8 +842,9 @@ class _EmptyResults extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         children: [
@@ -822,13 +852,13 @@ class _EmptyResults extends StatelessWidget {
             width: 62,
             height: 62,
             decoration: BoxDecoration(
-              color: AppColors.primaryContainer,
+              color: const Color(0xFFEAF2FB),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
               Icons.fact_check_rounded,
               size: 30,
-              color: AppColors.onPrimaryContainer,
+              color: const Color(0xFF0B3A6F),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -964,10 +994,3 @@ String _formatDateCompact(DateTime value) {
   return '${local.day} ${months[local.month - 1]} ${local.year}';
 }
 
-List<BoxShadow> _softShadow() => [
-      BoxShadow(
-        color: AppColors.shadow.withValues(alpha: 0.05),
-        blurRadius: 20,
-        offset: const Offset(0, 7),
-      ),
-    ];
