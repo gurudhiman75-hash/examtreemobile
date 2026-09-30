@@ -152,7 +152,7 @@ void main() {
             (ref) => AsyncValue.data(tests),
           ),
           learnPracticeProgressListProvider.overrideWith(
-            (ref) => AsyncValue.data([
+            (ref) async => [
               LearnPracticeProgress(
                 topicId: 'POL-LRN-006',
                 status: LearnPracticeStatus.inProgress,
@@ -161,7 +161,7 @@ void main() {
                 correctAnswers: 9,
                 updatedAt: now,
               ),
-            ]),
+            ],
           ),
         ],
         child: MaterialApp(
