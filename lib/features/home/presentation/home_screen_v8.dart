@@ -229,9 +229,10 @@ class _HomePromoFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final largeText = textScale > 1.3;
     return Container(
-      height: largeText ? 310 : 210,
+      height: largeText ? (210 * textScale).clamp(310, 390).toDouble() : 210,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
         gradient: const LinearGradient(
