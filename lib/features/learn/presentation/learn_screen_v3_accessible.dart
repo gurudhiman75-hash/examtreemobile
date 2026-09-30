@@ -288,6 +288,7 @@ class _AccessibleStat extends StatelessWidget {
           child: Text(
             '$value $label',
             style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
           ),
