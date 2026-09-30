@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../domain/store_product.dart';
 import 'providers/store_providers.dart';
 
@@ -40,7 +41,17 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
     final products = ref.watch(storeProductsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Store')),
+      appBar: AppBar(
+        title: const Text('Store'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: RefreshIndicator(
@@ -105,12 +116,12 @@ class _StoreHero extends StatelessWidget {
       height: 58,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(19),
       ),
       child: const Icon(
         Icons.shopping_bag_outlined,
-        color: Colors.white,
+        color: Color(0xFFFFD36B),
         size: 28,
       ),
     );
@@ -120,7 +131,7 @@ class _StoreHero extends StatelessWidget {
         Text(
           'PREPARATION STORE',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.76),
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w900,
             letterSpacing: 0.65,
           ),
@@ -128,9 +139,10 @@ class _StoreHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Preparation products',
-          style: theme.textTheme.headlineSmall?.copyWith(
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.w900,
             letterSpacing: -0.45,
           ),
         ),
@@ -149,7 +161,7 @@ class _StoreHero extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.tertiary],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -200,8 +212,12 @@ class _SectionSwitch extends StatelessWidget {
     );
 
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      color: Colors.white,
       borderRadius: BorderRadius.circular(20),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: largeText
@@ -241,9 +257,7 @@ class _SectionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Material(
-      color: selected
-          ? theme.colorScheme.surfaceContainerLowest
-          : Colors.transparent,
+      color: selected ? const Color(0xFF0B3A6F) : Colors.transparent,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -259,9 +273,7 @@ class _SectionButton extends StatelessWidget {
               Icon(
                 icon,
                 size: 20,
-                color: selected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurfaceVariant,
+                color: selected ? Colors.white : theme.colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: AppSpacing.xs),
               Flexible(
@@ -269,9 +281,7 @@ class _SectionButton extends StatelessWidget {
                   label,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: selected
-                        ? theme.colorScheme.onSurface
-                        : theme.colorScheme.onSurfaceVariant,
+                    color: selected ? Colors.white : theme.colorScheme.onSurfaceVariant,
                     fontWeight: selected ? FontWeight.w900 : FontWeight.w700,
                   ),
                 ),
@@ -354,10 +364,9 @@ class _CatalogHeading extends StatelessWidget {
       children: [
         Text(
           'Test series',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.2,
-          ),
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(color: const Color(0xFF10264A)),
         ),
         Text(
           '$count published ${count == 1 ? 'product' : 'products'}',
@@ -398,10 +407,12 @@ class _ProductCard extends StatelessWidget {
     ];
 
     return Material(
-      color: theme.colorScheme.surfaceContainerLowest,
-      elevation: 1,
-      shadowColor: AppColors.shadow.withValues(alpha: 0.12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -518,7 +529,7 @@ class _ProductPrice extends StatelessWidget {
         Text(
           formatStoreMoney(product.salePriceMinor, product.currency),
           style: theme.textTheme.headlineSmall?.copyWith(
-            color: AppColors.primary,
+            color: const Color(0xFF0B3A6F),
             fontWeight: FontWeight.w900,
             letterSpacing: -0.4,
           ),
@@ -604,22 +615,23 @@ class _TrustNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.mintContainer,
+        color: const Color(0xFFFFF7E2),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFF2DFAD)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
             Icons.verified_user_outlined,
-            color: AppColors.onMintContainer,
+            color: Color(0xFF0B3A6F),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               'Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.onMintContainer,
+                color: const Color(0xFF526274),
                 height: 1.4,
               ),
             ),
@@ -658,8 +670,9 @@ class _FoundationState extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
