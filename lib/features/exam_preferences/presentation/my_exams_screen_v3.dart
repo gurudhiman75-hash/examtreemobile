@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../data/exam_preferences_repository.dart';
 import '../domain/exam_preferences.dart';
@@ -15,7 +16,17 @@ class MyExamsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshotAsync = ref.watch(examPreferenceSnapshotProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('My exams')),
+      appBar: AppBar(
+        title: const Text('My exams'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: snapshotAsync.when(
@@ -175,7 +186,22 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
                     : () => setState(_selectedIds.clear),
               ),
               const SizedBox(height: AppSpacing.md),
-              SearchBar(
+              Theme(
+                data: Theme.of(context).copyWith(
+                  searchBarTheme: SearchBarThemeData(
+                    elevation: const WidgetStatePropertyAll(0),
+                    backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                    side: const WidgetStatePropertyAll(
+                      BorderSide(color: Color(0xFFDCE5EF)),
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                  ),
+                ),
+                child: SearchBar(
                 key: const Key('my-exams-search'),
                 controller: _searchController,
                 hintText: 'Search exams or exam families',
@@ -193,16 +219,16 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
                 ],
                 onChanged: (value) => setState(() => _query = value),
               ),
+              ),
               const SizedBox(height: AppSpacing.xl),
               Row(
                 children: [
                   Expanded(
                     child: Text(
                       query.isEmpty ? 'Available exam families' : 'Search results',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.25,
-                      ),
+                      style: AppTypography.premiumHeading(
+                        theme.textTheme.titleLarge,
+                      ).copyWith(color: const Color(0xFF10264A)),
                     ),
                   ),
                   Text(
@@ -269,7 +295,7 @@ class _PreparationHero extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEEF2FF), Color(0xFFF5F3FF)],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
         ),
         borderRadius: BorderRadius.circular(26),
       ),
@@ -279,7 +305,7 @@ class _PreparationHero extends StatelessWidget {
           Text(
             'YOUR PREPARATION',
             style: theme.textTheme.labelMedium?.copyWith(
-              color: AppColors.primary,
+              color: const Color(0xFFFFD36B),
               fontWeight: FontWeight.w900,
               letterSpacing: 1.1,
             ),
@@ -287,17 +313,15 @@ class _PreparationHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Choose what you are preparing for',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: AppColors.onPrimaryContainer,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.45,
-            ),
+            style: AppTypography.premiumHeading(
+              theme.textTheme.headlineSmall,
+            ).copyWith(color: Colors.white, letterSpacing: -0.45),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
             'ExamTree will use these choices to organise tests, free material and relevant updates. You can change them anytime.',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.onPrimaryContainer.withValues(alpha: 0.76),
+              color: Colors.white.withValues(alpha: 0.82),
               height: 1.45,
             ),
           ),
@@ -341,8 +365,8 @@ class _PreparationHero extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 7,
-              backgroundColor: Colors.white.withValues(alpha: 0.72),
-              color: AppColors.primary,
+              backgroundColor: Colors.white.withValues(alpha: 0.16),
+              color: const Color(0xFFFFD36B),
             ),
           ),
         ],
@@ -374,7 +398,7 @@ class _SelectionCount extends StatelessWidget {
           child: const Icon(
             Icons.bookmark_added_outlined,
             size: 20,
-            color: AppColors.primary,
+            color: Color(0xFFFFD36B),
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -382,7 +406,7 @@ class _SelectionCount extends StatelessWidget {
           child: Text(
             '$selected of $maximum selected',
             style: theme.textTheme.titleSmall?.copyWith(
-              color: AppColors.onPrimaryContainer,
+              color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -414,8 +438,11 @@ class _FamilyGroup extends StatelessWidget {
 
     return Material(
       key: Key('my-exams-family-${family.id}'),
-      color: scheme.surfaceContainerLowest,
-      borderRadius: BorderRadius.circular(22),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(22),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,9 +584,7 @@ class _ExamChoiceRow extends StatelessWidget {
               : 'Tap to add this exam.',
       child: Material(
         key: Key('my-exams-choice-${exam.id}'),
-        color: selected
-            ? AppColors.primaryContainer.withValues(alpha: 0.72)
-            : Colors.transparent,
+        color: selected ? const Color(0xFFEAF2FB) : Colors.transparent,
         child: InkWell(
           onTap: () => onChanged(!selected),
           child: Padding(
@@ -573,7 +598,7 @@ class _ExamChoiceRow extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: selected
-                        ? AppColors.primary
+                        ? const Color(0xFF0B3A6F)
                         : scheme.surfaceContainerLow,
                     shape: BoxShape.circle,
                   ),
@@ -584,7 +609,7 @@ class _ExamChoiceRow extends StatelessWidget {
                         ? Colors.white
                         : limitReached
                             ? scheme.outline
-                            : AppColors.primary,
+                            : const Color(0xFF0B3A6F),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -596,7 +621,7 @@ class _ExamChoiceRow extends StatelessWidget {
                         exam.name,
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: selected
-                              ? AppColors.onPrimaryContainer
+                              ? const Color(0xFF10264A)
                               : scheme.onSurface,
                           fontWeight: FontWeight.w900,
                         ),
