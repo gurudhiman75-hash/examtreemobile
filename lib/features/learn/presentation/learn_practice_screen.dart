@@ -149,6 +149,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
   int? _selected;
   var _revealed = false;
   var _restoring = true;
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -181,10 +182,24 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
       _revealed = true;
       if (correct) _correct += 1;
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
+      );
+    });
     await _save(
       status: LearnPracticeStatus.inProgress,
       currentQuestion: _index < widget.questions.length - 1 ? _index + 1 : _index,
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _next() async {
@@ -317,6 +332,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
           LinearProgressIndicator(value: progress, minHeight: 5),
           Expanded(
             child: ListView(
+              controller: _scrollController,
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
                 Row(
