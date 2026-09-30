@@ -225,6 +225,14 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
           ? null
           : AppBar(
               automaticallyImplyLeading: false,
+              backgroundColor: const Color(0xFFFFFFFF),
+              foregroundColor: const Color(0xFF10264A),
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              shape: const Border(
+                bottom: BorderSide(color: Color(0xFFE8EDF3)),
+              ),
               leading: expandedNavigation
                   ? null
                   : Builder(
@@ -235,7 +243,14 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         icon: const Icon(Icons.menu_rounded),
                       ),
                     ),
-              title: Text(shellDestinationLabel(currentIndex)),
+              title: Text(
+                shellDestinationLabel(currentIndex),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: const Color(0xFF10264A),
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.25,
+                    ),
+              ),
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -247,8 +262,8 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                       customBorder: const CircleBorder(),
                       child: CircleAvatar(
                         radius: 18,
-                        backgroundColor: scheme.primaryContainer,
-                        foregroundColor: scheme.onPrimaryContainer,
+                        backgroundColor: const Color(0xFFEAF2FB),
+                        foregroundColor: const Color(0xFF0B3A6F),
                         child: Text(
                           initial,
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -416,50 +431,81 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
           ? null
           : DecoratedBox(
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerLowest,
+                color: Colors.white,
+                border: const Border(
+                  top: BorderSide(color: Color(0xFFE8EDF3)),
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.shadow.withValues(alpha: 0.06),
-                    blurRadius: 18,
-                    offset: const Offset(0, -4),
+                    color: const Color(0xFF10264A).withValues(alpha: 0.07),
+                    blurRadius: 24,
+                    offset: const Offset(0, -6),
                   ),
                 ],
               ),
               child: SafeArea(
                 top: false,
-                child: NavigationBar(
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  indicatorColor: scheme.primaryContainer,
-                  labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-                  selectedIndex: currentIndex,
-                  onDestinationSelected: _goBranch,
-                  destinations: const [
-                    NavigationDestination(
-                      icon: Icon(Icons.home_outlined),
-                      selectedIcon: Icon(Icons.home_rounded),
-                      label: 'Home',
-                      tooltip: 'Home',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.assignment_outlined),
-                      selectedIcon: Icon(Icons.assignment_rounded),
-                      label: 'Tests',
-                      tooltip: 'Tests',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.menu_book_outlined),
-                      selectedIcon: Icon(Icons.menu_book_rounded),
-                      label: 'Learn',
-                      tooltip: 'Learn',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.bar_chart_outlined),
-                      selectedIcon: Icon(Icons.bar_chart_rounded),
-                      label: 'Results',
-                      tooltip: 'Results',
-                    ),
-                  ],
+                child: NavigationBarTheme(
+                  data: NavigationBarThemeData(
+                    height: 72,
+                    backgroundColor: Colors.white,
+                    indicatorColor: const Color(0xFFEAF2FB),
+                    elevation: 0,
+                    labelBehavior:
+                        NavigationDestinationLabelBehavior.alwaysShow,
+                    iconTheme: WidgetStateProperty.resolveWith((states) {
+                      final selected = states.contains(WidgetState.selected);
+                      return IconThemeData(
+                        color: selected
+                            ? const Color(0xFF0B3A6F)
+                            : const Color(0xFF7B8796),
+                        size: selected ? 25 : 23,
+                      );
+                    }),
+                    labelTextStyle:
+                        WidgetStateProperty.resolveWith((states) {
+                      final selected = states.contains(WidgetState.selected);
+                      return TextStyle(
+                        color: selected
+                            ? const Color(0xFF0B3A6F)
+                            : const Color(0xFF7B8796),
+                        fontSize: 11,
+                        fontWeight:
+                            selected ? FontWeight.w800 : FontWeight.w600,
+                        letterSpacing: 0.1,
+                      );
+                    }),
+                  ),
+                  child: NavigationBar(
+                    selectedIndex: currentIndex,
+                    onDestinationSelected: _goBranch,
+                    destinations: const [
+                      NavigationDestination(
+                        icon: Icon(Icons.home_outlined),
+                        selectedIcon: Icon(Icons.home_rounded),
+                        label: 'Home',
+                        tooltip: 'Home',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.assignment_outlined),
+                        selectedIcon: Icon(Icons.assignment_rounded),
+                        label: 'Tests',
+                        tooltip: 'Tests',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.menu_book_outlined),
+                        selectedIcon: Icon(Icons.menu_book_rounded),
+                        label: 'Learn',
+                        tooltip: 'Learn',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.bar_chart_outlined),
+                        selectedIcon: Icon(Icons.bar_chart_rounded),
+                        label: 'Results',
+                        tooltip: 'Results',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
