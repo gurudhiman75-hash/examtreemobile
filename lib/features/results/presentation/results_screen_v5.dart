@@ -994,10 +994,3 @@ String _formatDateCompact(DateTime value) {
   return '${local.day} ${months[local.month - 1]} ${local.year}';
 }
 
-List<BoxShadow> _softShadow() => [
-      BoxShadow(
-        color: AppColors.shadow.withValues(alpha: 0.05),
-        blurRadius: 20,
-        offset: const Offset(0, 7),
-      ),
-    ];
