@@ -488,7 +488,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
-                        '$area · $current/$total · \${(value * 100).round()}%',
+                        '$area · $current/$total · ${(value * 100).round()}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
