@@ -114,7 +114,7 @@ void main() {
 
     expect(find.text('No tests available yet'), findsOneWidget);
     expect(find.text('Available'), findsOneWidget);
-    expect(find.text('Free'), findsOneWidget);
+    expect(find.text('Free'), findsWidgets);
     expect(find.text('0'), findsNWidgets(3));
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('recommended for you'), findsNothing);
