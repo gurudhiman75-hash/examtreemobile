@@ -3,6 +3,15 @@ import 'package:flutter/material.dart';
 class AppTypography {
   AppTypography._();
 
+  static TextStyle premiumHeading(TextStyle? base) {
+    return (base ?? const TextStyle()).copyWith(
+      fontFamily: 'serif',
+      fontWeight: FontWeight.w800,
+      letterSpacing: -0.25,
+      height: 1.08,
+    );
+  }
+
   // Mobile-first type scale. Weight carries hierarchy so the UI can stay
   // compact without relying on oversized headings.
   static const TextTheme textTheme = TextTheme(

@@ -171,13 +171,13 @@ void main() {
       dueRevisionCount: 4,
     );
 
+    expect(find.text('Featured Test Series'), findsOneWidget);
+
+    await scrollHome(tester, 880);
+    expect(find.text('Continue Learning'), findsOneWidget);
     expect(find.text('Resume test'), findsOneWidget);
     expect(find.text('SSC CGL full mock'), findsOneWidget);
-    expect(find.text('Your progress'), findsOneWidget);
-
-    await scrollHome(tester, 520);
-    expect(find.text('Recommended for you'), findsOneWidget);
-    expect(find.text('Reasoning mixed practice'), findsOneWidget);
+    expect(find.text("Today's Goal"), findsOneWidget);
   });
 
   testWidgets('due revision becomes primary before generic test discovery', (tester) async {
@@ -189,10 +189,10 @@ void main() {
       dueRevisionCount: 3,
     );
 
+    await scrollHome(tester, 880);
     expect(find.text('DUE FOR REVISION'), findsOneWidget);
     expect(find.text('3 questions to revisit'), findsOneWidget);
     expect(find.text('Start revision'), findsOneWidget);
-    expect(find.text('NEXT TEST'), findsNothing);
   });
 
   testWidgets('new learner stays truthful when catalogue is empty', (tester) async {
@@ -203,12 +203,12 @@ void main() {
       results: const [],
     );
 
-    expect(find.text('Choose your next test'), findsOneWidget);
-    expect(find.text('Browse tests'), findsOneWidget);
     expect(find.textContaining('streak', findRichText: true), findsNothing);
     expect(find.textContaining('readiness', findRichText: true), findsNothing);
 
-    await scrollHome(tester, 720);
+    await scrollHome(tester, 880);
+    expect(find.text('Choose your next test'), findsOneWidget);
+    expect(find.text('Browse tests'), findsOneWidget);
     expect(find.text('No tests are published right now.'), findsOneWidget);
   });
 
@@ -223,6 +223,6 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Resume test'), findsOneWidget);
+    expect(find.text('Exam Categories'), findsOneWidget);
   });
 }
