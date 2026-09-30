@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/exam_day_mode.dart';
 import 'providers/exam_day_providers.dart';
@@ -194,8 +195,17 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     final now = ref.watch(examDayClockProvider)();
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFBFCFE),
       appBar: AppBar(
         title: const Text('Exam-Day Mode'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
         actions: [
           targetAsync.whenOrNull(
                 data: (target) => target == null
@@ -363,7 +373,7 @@ class _EmptyExamDay extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [AppColors.primary, AppColors.tertiary],
+              colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -377,23 +387,22 @@ class _EmptyExamDay extends StatelessWidget {
                 height: 64,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
+                  color: const Color(0xFFFFD36B).withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Icon(
                   Icons.event_available_outlined,
                   size: 32,
-                  color: Colors.white,
+                  color: Color(0xFFFFD36B),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 'Set one active exam target',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTypography.premiumHeading(
+                  theme.textTheme.headlineSmall,
+                ).copyWith(color: Colors.white),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -549,13 +558,13 @@ class _CountdownHero extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         examDayStageTitle(stage),
         style: theme.textTheme.labelMedium?.copyWith(
-          color: Colors.white,
+          color: const Color(0xFFFFD36B),
           fontWeight: FontWeight.w900,
         ),
       ),
@@ -566,7 +575,7 @@ class _CountdownHero extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.tertiary],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -594,11 +603,9 @@ class _CountdownHero extends StatelessWidget {
                 Expanded(
                   child: Text(
                     target.examName,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2,
-                    ),
+                    style: AppTypography.premiumHeading(
+                      theme.textTheme.headlineSmall,
+                    ).copyWith(color: Colors.white, height: 1.2),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -615,9 +622,10 @@ class _CountdownHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl),
           Text(
             examCountdownLabel(target.examAt, now),
-            style: theme.textTheme.displaySmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
+            style: AppTypography.premiumHeading(
+              theme.textTheme.displaySmall,
+            ).copyWith(
+              color: const Color(0xFFFFD36B),
               letterSpacing: -1,
             ),
           ),
@@ -647,16 +655,28 @@ class _QuickActions extends StatelessWidget {
         onPressed: () => context.push('/quick-revision?minutes=5'),
         icon: const Icon(Icons.bolt_rounded),
         label: const Text('5 min revision'),
+        style: FilledButton.styleFrom(
+          backgroundColor: const Color(0xFFEAF2FB),
+          foregroundColor: const Color(0xFF0B3A6F),
+        ),
       ),
       FilledButton.tonalIcon(
         onPressed: () => context.push('/daily'),
         icon: const Icon(Icons.auto_awesome_rounded),
         label: const Text('Daily Companion'),
+        style: FilledButton.styleFrom(
+          backgroundColor: const Color(0xFFEAF2FB),
+          foregroundColor: const Color(0xFF0B3A6F),
+        ),
       ),
       FilledButton.tonalIcon(
         onPressed: () => context.go('/exams'),
         icon: const Icon(Icons.assignment_outlined),
         label: const Text('Tests'),
+        style: FilledButton.styleFrom(
+          backgroundColor: const Color(0xFFEAF2FB),
+          foregroundColor: const Color(0xFF0B3A6F),
+        ),
       ),
     ];
 
@@ -701,10 +721,9 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.2,
-          ),
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(color: const Color(0xFF10264A)),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -746,8 +765,11 @@ class _LogisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLowest,
-      borderRadius: BorderRadius.circular(24),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -860,8 +882,11 @@ class _ChecklistCard extends StatelessWidget {
 
     return Material(
       key: const Key('exam-day-checklist'),
-      color: theme.colorScheme.surfaceContainerLowest,
-      borderRadius: BorderRadius.circular(24),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -881,9 +906,9 @@ class _ChecklistCard extends StatelessWidget {
                     children: [
                       Text(
                         'Exam-day checklist',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
+                        style: AppTypography.premiumHeading(
+                          theme.textTheme.titleLarge,
+                        ).copyWith(color: const Color(0xFF10264A)),
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
@@ -920,6 +945,8 @@ class _ChecklistCard extends StatelessWidget {
               value: progress,
               minHeight: 8,
               borderRadius: BorderRadius.circular(99),
+              backgroundColor: const Color(0xFFEAF2FB),
+              valueColor: const AlwaysStoppedAnimation(Color(0xFFD6A63D)),
             ),
             const SizedBox(height: AppSpacing.sm),
             for (var index = 0; index < target.checklist.length; index++) ...[
@@ -1150,8 +1177,17 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: const Color(0xFFFBFCFE),
       appBar: AppBar(
         title: Text(widget.initial == null ? 'Set exam target' : 'Edit exam target'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -1184,8 +1220,11 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
             Material(
-              color: theme.colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(22),
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(22),
+                side: const BorderSide(color: Color(0xFFE8EDF3)),
+              ),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
