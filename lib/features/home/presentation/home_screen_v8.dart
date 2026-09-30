@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, unused_element_parameter, unnecessary_underscores
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -227,8 +229,9 @@ class _HomePromoFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     return Container(
-      height: 210,
+      height: largeText ? 310 : 210,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
         gradient: const LinearGradient(
@@ -292,24 +295,14 @@ class _HomePromoFallback extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Row(
-                  children: [
-                    FilledButton(
-                      onPressed: () => context.go('/exams'),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD36B),
-                        foregroundColor: const Color(0xFF082A52),
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                      ),
-                      child: const Text('Start Preparing'),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.auto_graph_rounded,
-                      color: Colors.white.withValues(alpha: 0.72),
-                      size: 34,
-                    ),
-                  ],
+                FilledButton(
+                  onPressed: () => context.go('/exams'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFD36B),
+                    foregroundColor: const Color(0xFF082A52),
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                  ),
+                  child: const Text('Start Preparing'),
                 ),
               ],
             ),
@@ -424,8 +417,9 @@ class _FeaturedSeriesRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
     return SizedBox(
-      height: 196,
+      height: largeText ? 250 : 196,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
@@ -511,26 +505,33 @@ class _FeaturedSeriesCard extends StatelessWidget {
                 const Spacer(),
                 Row(
                   children: [
-                    _SeriesMetric(
-                      icon: Icons.quiz_outlined,
-                      value: '${exam.totalQuestions}',
-                      label: 'Questions',
-                      light: alternate,
+                    Expanded(
+                      child: Wrap(
+                        spacing: 14,
+                        runSpacing: 6,
+                        children: [
+                          _SeriesMetric(
+                            icon: Icons.quiz_outlined,
+                            value: '${exam.totalQuestions}',
+                            label: 'Questions',
+                            light: alternate,
+                          ),
+                          _SeriesMetric(
+                            icon: Icons.schedule_rounded,
+                            value: '$durationMinutes min',
+                            label: 'Duration',
+                            light: alternate,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    _SeriesMetric(
-                      icon: Icons.schedule_rounded,
-                      value: '$durationMinutes min',
-                      label: 'Duration',
-                      light: alternate,
-                    ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     CircleAvatar(
                       radius: 21,
                       backgroundColor: alternate
                           ? const Color(0xFF10264A)
                           : Colors.white.withValues(alpha: 0.13),
-                      child: Icon(
+                      child: const Icon(
                         Icons.arrow_forward_rounded,
                         color: Colors.white,
                         size: 21,
@@ -616,54 +617,81 @@ class _ContinueLearningCard extends StatelessWidget {
     final theme = Theme.of(context);
     return _SurfaceCard(
       onTap: () => onOpen(action),
-      child: Row(
-        children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE9F2FF),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Icon(
-              Icons.menu_book_rounded,
-              color: Color(0xFF1672E8),
-              size: 30,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  action.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: const Color(0xFF10264A),
-                  ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+          final content = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                action.eyebrow.toUpperCase(),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFF1672E8),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.7,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  action.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                action.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF10264A),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          CircleAvatar(
-            radius: 23,
-            backgroundColor: const Color(0xFF062D5C),
-            child: const Icon(Icons.play_arrow_rounded, color: Colors.white),
-          ),
-        ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                action.description,
+                maxLines: largeText ? 3 : 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                action.actionLabel,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: const Color(0xFF062D5C),
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          );
+
+          if (largeText || constraints.maxWidth < 330) {
+            return content;
+          }
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE9F2FF),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.menu_book_rounded,
+                  color: Color(0xFF1672E8),
+                  size: 30,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(child: content),
+              const SizedBox(width: AppSpacing.sm),
+              const CircleAvatar(
+                radius: 23,
+                backgroundColor: Color(0xFF062D5C),
+                child: Icon(Icons.play_arrow_rounded, color: Colors.white),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
