@@ -5,8 +5,7 @@ class AppTypography {
 
   static TextStyle premiumHeading(TextStyle? base) {
     return (base ?? const TextStyle()).copyWith(
-      fontFamily: 'Georgia',
-      fontFamilyFallback: const ['Noto Serif', 'serif'],
+      fontFamily: 'serif',
       fontWeight: FontWeight.w800,
       letterSpacing: -0.25,
       height: 1.08,
