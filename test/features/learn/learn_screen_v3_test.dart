@@ -113,7 +113,7 @@ void main() {
       freeTests: [exam('test-1', 'SSC CGL free mock')],
     );
 
-    expect(find.text('Learn for your exams'), findsOneWidget);
+    expect(find.text('Learn smarter.\nPractice better.'), findsOneWidget);
     expect(find.byKey(const Key('learn-module-quant')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
@@ -148,6 +148,11 @@ void main() {
     await pumpLearn(tester, resources: const [], freeTests: const []);
 
     expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('No free learning resources are published yet.'),
+      320,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(
       find.text('No free learning resources are published yet.'),
       findsOneWidget,
@@ -182,7 +187,7 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Learn for your exams'), findsOneWidget);
+    expect(find.text('Learn smarter.\nPractice better.'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('learn-current-affairs')),
