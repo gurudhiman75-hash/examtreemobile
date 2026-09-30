@@ -175,6 +175,16 @@ jobs:
 
           printf '%s\n' "$APK_SHA1" > build/app/outputs/flutter-apk/signing-sha1.txt
 
+      - name: Publish authenticated Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExamTree-1.0.1-auth-debug
+          path: |
+            build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
+            build/app/outputs/flutter-apk/signing-sha1.txt
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Verify Google OAuth signing registration
         shell: bash
         run: |
@@ -219,12 +229,3 @@ jobs:
             exit 1
           fi
 
-      - name: Publish authenticated Android APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: ExamTree-1.0.1-auth-debug
-          path: |
-            build/app/outputs/flutter-apk/ExamTree-1.0.1-auth-debug.apk
-            build/app/outputs/flutter-apk/signing-sha1.txt
-          if-no-files-found: error
-          retention-days: 14
