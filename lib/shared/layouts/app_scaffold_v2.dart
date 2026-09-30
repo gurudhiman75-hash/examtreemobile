@@ -27,9 +27,10 @@ bool shouldUseExpandedNavigation(double width) => width >= 840;
 
 String shellDestinationLabel(int index) => switch (index) {
       0 => 'Home',
-      1 => 'Tests',
-      2 => 'Learn',
-      3 => 'Results',
+      1 => 'Learn',
+      2 => 'Tests',
+      3 => 'Current Affairs',
+      4 => 'Profile',
       _ => 'ExamTree',
     };
 
@@ -184,9 +185,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         icon: const Icon(Icons.shopping_bag_outlined),
                       ),
                       IconButton(
-                        tooltip: 'Profile',
-                        onPressed: () => context.push('/profile'),
-                        icon: const Icon(Icons.person_outline_rounded),
+                        tooltip: 'Results & history',
+                        onPressed: () => context.push('/results'),
+                        icon: const Icon(Icons.bar_chart_outlined),
                       ),
                     ],
                   ),
@@ -198,19 +199,24 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     label: Text('Home'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.assignment_outlined),
-                    selectedIcon: Icon(Icons.assignment_rounded),
-                    label: Text('Tests'),
-                  ),
-                  NavigationRailDestination(
                     icon: Icon(Icons.menu_book_outlined),
                     selectedIcon: Icon(Icons.menu_book_rounded),
                     label: Text('Learn'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.bar_chart_outlined),
-                    selectedIcon: Icon(Icons.bar_chart_rounded),
-                    label: Text('Results'),
+                    icon: Icon(Icons.assignment_outlined),
+                    selectedIcon: Icon(Icons.assignment_rounded),
+                    label: Text('Tests'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.newspaper_outlined),
+                    selectedIcon: Icon(Icons.newspaper_rounded),
+                    label: Text('Current Affairs'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.person_outline_rounded),
+                    selectedIcon: Icon(Icons.person_rounded),
+                    label: Text('Profile'),
                   ),
                 ],
               ),
@@ -252,28 +258,30 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     ),
               ),
               actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Semantics(
-                    button: true,
-                    label: 'Open profile',
-                    child: InkWell(
-                      onTap: () => context.push('/profile'),
-                      customBorder: const CircleBorder(),
-                      child: CircleAvatar(
-                        radius: 18,
-                        backgroundColor: const Color(0xFFEAF2FB),
-                        foregroundColor: const Color(0xFF0B3A6F),
-                        child: Text(
-                          initial,
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
+                if (currentIndex != 4)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Semantics(
+                      button: true,
+                      label: 'Open profile',
+                      child: InkWell(
+                        onTap: () => context.go('/profile'),
+                        customBorder: const CircleBorder(),
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: const Color(0xFFEAF2FB),
+                          foregroundColor: const Color(0xFF0B3A6F),
+                          child: Text(
+                            initial,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
       drawer: expandedNavigation
@@ -281,27 +289,27 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
           : NavigationDrawer(
               selectedIndex: currentIndex,
               onDestinationSelected: (index) {
-                if (index <= 3) {
+                if (index <= 4) {
                   _closeDrawerAnd(() => _goBranch(index));
                   return;
                 }
                 switch (index) {
-                  case 4:
-                    _closeDrawerAnd(() => context.push('/my-exams'));
                   case 5:
-                    _closeDrawerAnd(() => context.push('/daily'));
+                    _closeDrawerAnd(() => context.push('/results'));
                   case 6:
-                    _closeDrawerAnd(() => context.push('/exam-day'));
+                    _closeDrawerAnd(() => context.push('/my-exams'));
                   case 7:
+                    _closeDrawerAnd(() => context.push('/daily'));
+                  case 8:
+                    _closeDrawerAnd(() => context.push('/exam-day'));
+                  case 9:
                     _closeDrawerAnd(
                       () => context.push('/store?section=tests'),
                     );
-                  case 8:
+                  case 10:
                     _closeDrawerAnd(
                       () => context.push('/store?section=batches'),
                     );
-                  case 9:
-                    _closeDrawerAnd(() => context.push('/profile'));
                 }
               },
               children: [
@@ -358,23 +366,33 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   label: Text('Home'),
                 ),
                 const NavigationDrawerDestination(
-                  icon: Icon(Icons.assignment_outlined),
-                  selectedIcon: Icon(Icons.assignment_rounded),
-                  label: Text('Tests'),
-                ),
-                const NavigationDrawerDestination(
                   icon: Icon(Icons.menu_book_outlined),
                   selectedIcon: Icon(Icons.menu_book_rounded),
                   label: Text('Learn'),
                 ),
                 const NavigationDrawerDestination(
-                  icon: Icon(Icons.bar_chart_outlined),
-                  selectedIcon: Icon(Icons.bar_chart_rounded),
-                  label: Text('Results'),
+                  icon: Icon(Icons.assignment_outlined),
+                  selectedIcon: Icon(Icons.assignment_rounded),
+                  label: Text('Tests'),
+                ),
+                const NavigationDrawerDestination(
+                  icon: Icon(Icons.newspaper_outlined),
+                  selectedIcon: Icon(Icons.newspaper_rounded),
+                  label: Text('Current Affairs'),
+                ),
+                const NavigationDrawerDestination(
+                  icon: Icon(Icons.person_outline_rounded),
+                  selectedIcon: Icon(Icons.person_rounded),
+                  label: Text('Profile'),
                 ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(28, 18, 16, 8),
                   child: Text('PREPARATION'),
+                ),
+                const NavigationDrawerDestination(
+                  icon: Icon(Icons.bar_chart_outlined),
+                  selectedIcon: Icon(Icons.bar_chart_rounded),
+                  label: Text('Results & history'),
                 ),
                 const NavigationDrawerDestination(
                   icon: Icon(Icons.bookmarks_outlined),
@@ -404,12 +422,6 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   icon: Icon(Icons.school_outlined),
                   selectedIcon: Icon(Icons.school_rounded),
                   label: Text('Buy batches'),
-                ),
-                const Divider(),
-                const NavigationDrawerDestination(
-                  icon: Icon(Icons.person_outline_rounded),
-                  selectedIcon: Icon(Icons.person_rounded),
-                  label: Text('Profile & account'),
                 ),
               ],
             ),
@@ -469,7 +481,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         color: selected
                             ? const Color(0xFF0B3A6F)
                             : const Color(0xFF7B8796),
-                        fontSize: 11,
+                        fontSize: 10.5,
                         fontWeight:
                             selected ? FontWeight.w800 : FontWeight.w600,
                         letterSpacing: 0.1,
@@ -487,22 +499,28 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         tooltip: 'Home',
                       ),
                       NavigationDestination(
-                        icon: Icon(Icons.assignment_outlined),
-                        selectedIcon: Icon(Icons.assignment_rounded),
-                        label: 'Tests',
-                        tooltip: 'Tests',
-                      ),
-                      NavigationDestination(
                         icon: Icon(Icons.menu_book_outlined),
                         selectedIcon: Icon(Icons.menu_book_rounded),
                         label: 'Learn',
                         tooltip: 'Learn',
                       ),
                       NavigationDestination(
-                        icon: Icon(Icons.bar_chart_outlined),
-                        selectedIcon: Icon(Icons.bar_chart_rounded),
-                        label: 'Results',
-                        tooltip: 'Results',
+                        icon: Icon(Icons.assignment_outlined),
+                        selectedIcon: Icon(Icons.assignment_rounded),
+                        label: 'Tests',
+                        tooltip: 'Tests',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.newspaper_outlined),
+                        selectedIcon: Icon(Icons.newspaper_rounded),
+                        label: 'Current Affairs',
+                        tooltip: 'Current Affairs',
+                      ),
+                      NavigationDestination(
+                        icon: Icon(Icons.person_outline_rounded),
+                        selectedIcon: Icon(Icons.person_rounded),
+                        label: 'Profile',
+                        tooltip: 'Profile',
                       ),
                     ],
                   ),

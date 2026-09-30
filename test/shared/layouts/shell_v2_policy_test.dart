@@ -5,9 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('Shell V2 exposes preparation-first primary destinations', () {
     expect(shellDestinationLabel(0), 'Home');
-    expect(shellDestinationLabel(1), 'Tests');
-    expect(shellDestinationLabel(2), 'Learn');
-    expect(shellDestinationLabel(3), 'Results');
+    expect(shellDestinationLabel(1), 'Learn');
+    expect(shellDestinationLabel(2), 'Tests');
+    expect(shellDestinationLabel(3), 'Current Affairs');
+    expect(shellDestinationLabel(4), 'Profile');
     expect(shellDestinationLabel(99), 'ExamTree');
   });
 

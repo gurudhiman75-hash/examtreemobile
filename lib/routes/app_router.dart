@@ -11,6 +11,7 @@ import '../features/auth/presentation/password_recovery_screen.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
 import '../features/companion/presentation/daily_companion_screen.dart';
 import '../features/companion/presentation/quick_revision_screen.dart';
+import '../features/current_affairs/presentation/current_affairs_screen.dart';
 import '../features/exam_day/presentation/exam_day_screen.dart';
 import '../features/exam_preferences/presentation/my_exams_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
@@ -25,7 +26,7 @@ import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
-import '../features/profile/presentation/profile_route_screen.dart';
+import '../features/profile/presentation/profile_screen.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
@@ -38,12 +39,14 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
 );
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellHome');
-final GlobalKey<NavigatorState> _shellNavigatorExamsKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shellExams');
 final GlobalKey<NavigatorState> _shellNavigatorLearnKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellLearn');
-final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shellResults');
+final GlobalKey<NavigatorState> _shellNavigatorExamsKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellExams');
+final GlobalKey<NavigatorState> _shellNavigatorCurrentAffairsKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellCurrentAffairs');
+final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
 bool _routeNeedsIdentifier(String path) => const {
       '/exam-details',
@@ -209,15 +212,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorExamsKey,
-            routes: [
-              GoRoute(
-                path: '/exams',
-                builder: (context, state) => const ExamsScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
             navigatorKey: _shellNavigatorLearnKey,
             routes: [
               GoRoute(
@@ -227,20 +221,52 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorResultsKey,
+            navigatorKey: _shellNavigatorExamsKey,
             routes: [
               GoRoute(
-                path: '/results',
-                builder: (context, state) => const ResultsScreen(),
+                path: '/exams',
+                builder: (context, state) => const ExamsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorCurrentAffairsKey,
+            routes: [
+              GoRoute(
+                path: '/current-affairs',
+                builder: (context, state) => const CurrentAffairsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorProfileKey,
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
               ),
             ],
           ),
         ],
       ),
       GoRoute(
-        path: '/profile',
+        path: '/results',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const ProfileRouteScreen(),
+        builder: (context, state) => Scaffold(
+          backgroundColor: const Color(0xFFFBFCFE),
+          appBar: AppBar(
+            title: const Text('Results'),
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFF10264A),
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(1),
+              child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+            ),
+          ),
+          body: const ResultsScreen(),
+        ),
       ),
       GoRoute(
         path: '/account',

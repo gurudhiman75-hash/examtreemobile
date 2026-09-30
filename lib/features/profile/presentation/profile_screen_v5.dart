@@ -61,7 +61,7 @@ class ProfileScreen extends ConsumerWidget {
             data: (analytics) => _PerformanceContent(
               analytics: analytics,
               onBrowseTests: () => context.go('/exams'),
-              onOpenResults: () => context.go('/results'),
+              onOpenResults: () => context.push('/results'),
               onReviewLatest: analytics.latestAttemptId == null
                   ? null
                   : () => context.push(
@@ -80,7 +80,7 @@ class ProfileScreen extends ConsumerWidget {
             language: language,
             onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
-            onResults: () => context.go('/results'),
+            onResults: () => context.push('/results'),
             onLogout: () => ref.read(authControllerProvider).signOut(),
           ),
         ],
