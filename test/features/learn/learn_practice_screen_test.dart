@@ -95,6 +95,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Untimed'), findsOneWidget);
+    expect(find.byKey(const Key('learn-practice-back')), findsOneWidget);
+    expect(find.byKey(const Key('learn-practice-submit')), findsOneWidget);
     expect(find.byKey(const Key('learn-practice-question')), findsOneWidget);
     expect(find.byIcon(Icons.timer_outlined), findsNothing);
 
@@ -107,6 +109,13 @@ void main() {
       find.textContaining('adopted on 26 November 1949'),
       findsOneWidget,
     );
+
+    await tester.tap(find.byKey(const Key('learn-practice-submit')));
+    await tester.pumpAndSettle();
+    expect(find.text('Submit practice?'), findsOneWidget);
+    expect(find.textContaining('answered 1 of 2'), findsOneWidget);
+    await tester.tap(find.text('Keep practicing'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('learn-practice-next')));
     await tester.pumpAndSettle();
