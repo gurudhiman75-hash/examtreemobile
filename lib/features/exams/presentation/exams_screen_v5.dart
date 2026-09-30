@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import 'exam_catalog_filter.dart';
 import 'providers/exam_providers.dart';
@@ -139,7 +140,23 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                   onReset: _clearFilters,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                SearchBar(
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    searchBarTheme: SearchBarThemeData(
+                      elevation: const WidgetStatePropertyAll(0),
+                      backgroundColor:
+                          const WidgetStatePropertyAll(Color(0xFFFFFFFF)),
+                      side: const WidgetStatePropertyAll(
+                        BorderSide(color: Color(0xFFDCE5EF)),
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: SearchBar(
                   key: const Key('tests-search'),
                   controller: _searchController,
                   hintText: 'Search tests, exams or subjects',
@@ -156,6 +173,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                       ),
                   ],
                   onChanged: (value) => setState(() => _query = value),
+                ),
                 ),
                 if (categories.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.sm),
@@ -184,12 +202,12 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                 ],
                 if (inProgressLoading && inProgressTests.isEmpty) ...[
                   const SizedBox(height: AppSpacing.xl),
-                  const _SectionHeading(title: 'Continue learning'),
+                  const _SectionHeading(title: 'Continue Tests'),
                   const SizedBox(height: AppSpacing.sm),
                   const _ResumeSkeleton(),
                 ] else if (inProgressTests.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.xl),
-                  const _SectionHeading(title: 'Continue learning'),
+                  const _SectionHeading(title: 'Continue Tests'),
                   const SizedBox(height: AppSpacing.sm),
                   _ResumeRail(
                     tests: inProgressTests,
@@ -252,90 +270,161 @@ class _DiscoveryIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    return Container(
+      padding: EdgeInsets.all(textScale > 1.4 ? AppSpacing.md : AppSpacing.lg),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(26),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: 0.16),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -28,
+            top: -34,
+            child: Container(
+              width: 132,
+              height: 132,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.06),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Find your next test',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'TESTS',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: const Color(0xFFFFD36B),
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Find your next test',
+                          style: AppTypography.premiumHeading(
+                            theme.textTheme.headlineSmall,
+                          ).copyWith(
+                            color: Colors.white,
+                            fontSize: textScale > 1.4 ? 21 : 24,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Practice by exam, access or format.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.74),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Practice by exam, access or format.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
+                  if (hasActiveFilters)
+                    TextButton(
+                      key: const Key('tests-reset'),
+                      onPressed: onReset,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.white.withValues(alpha: 0.10),
+                      ),
+                      child: const Text('Reset'),
                     ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  _HeroStat(
+                    icon: Icons.library_books_rounded,
+                    value: '$availableCount',
+                    label: 'Available',
+                  ),
+                  _HeroStat(
+                    icon: Icons.lock_open_rounded,
+                    value: '$freeCount',
+                    label: 'Free',
+                  ),
+                  _HeroStat(
+                    icon: Icons.play_circle_outline_rounded,
+                    value: inProgressCount == null ? '—' : '$inProgressCount',
+                    label: 'In progress',
                   ),
                 ],
               ),
-            ),
-            if (hasActiveFilters)
-              TextButton(
-                key: const Key('tests-reset'),
-                onPressed: onReset,
-                child: const Text('Reset'),
-              ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Wrap(
-          spacing: AppSpacing.lg,
-          runSpacing: AppSpacing.sm,
-          children: [
-            _StatLine(
-              icon: Icons.library_books_rounded,
-              text: '$availableCount available',
-            ),
-            _StatLine(
-              icon: Icons.lock_open_rounded,
-              text: '$freeCount free',
-            ),
-            _StatLine(
-              icon: Icons.play_circle_outline_rounded,
-              text: inProgressCount == null
-                  ? '— in progress'
-                  : '$inProgressCount in progress',
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _StatLine extends StatelessWidget {
-  const _StatLine({required this.icon, required this.text});
+class _HeroStat extends StatelessWidget {
+  const _HeroStat({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
 
   final IconData icon;
-  final String text;
+  final String value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 16, color: theme.colorScheme.primary),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          text,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 17, color: const Color(0xFFFFD36B)),
+          const SizedBox(width: 7),
+          Text(
+            value,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -364,9 +453,21 @@ class _CategoryRail extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, index) {
           final category = index == 0 ? null : categories[index - 1];
+          final selected = category == selectedCategory;
           return ChoiceChip(
             label: Text(category ?? 'All exams'),
-            selected: category == selectedCategory,
+            selected: selected,
+            selectedColor: const Color(0xFF0B3A6F),
+            backgroundColor: Colors.white,
+            side: BorderSide(
+              color: selected
+                  ? const Color(0xFF0B3A6F)
+                  : const Color(0xFFDCE5EF),
+            ),
+            labelStyle: TextStyle(
+              color: selected ? Colors.white : const Color(0xFF526274),
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+            ),
             onSelected: (_) => onChanged(category),
           );
         },
@@ -401,9 +502,21 @@ class _AccessAndSortBar extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
         itemBuilder: (context, index) {
           final option = ExamAccessFilter.values[index];
+          final selected = access == option;
           return ChoiceChip(
             label: Text(option.label),
-            selected: access == option,
+            selected: selected,
+            selectedColor: const Color(0xFF0B3A6F),
+            backgroundColor: Colors.white,
+            side: BorderSide(
+              color: selected
+                  ? const Color(0xFF0B3A6F)
+                  : const Color(0xFFDCE5EF),
+            ),
+            labelStyle: TextStyle(
+              color: selected ? Colors.white : const Color(0xFF526274),
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+            ),
             onSelected: (_) => onAccessChanged(option),
           );
         },
@@ -497,9 +610,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.3,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         if (subtitle != null) ...[
@@ -565,7 +679,7 @@ class _ResumeCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFFEFF2FF), Color(0xFFF4F0FF)],
+            colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -586,7 +700,7 @@ class _ResumeCard extends StatelessWidget {
                       width: 38,
                       height: 38,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: const Color(0xFFFFD36B),
                         borderRadius: BorderRadius.circular(13),
                       ),
                       child: const Icon(
@@ -598,7 +712,7 @@ class _ResumeCard extends StatelessWidget {
                     Text(
                       'RESUME',
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.primary,
+                        color: const Color(0xFFFFD36B),
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.7,
                       ),
@@ -606,7 +720,7 @@ class _ResumeCard extends StatelessWidget {
                     const Spacer(),
                     const Icon(
                       Icons.arrow_forward_rounded,
-                      color: AppColors.primary,
+                      color: Colors.white,
                       size: 19,
                     ),
                   ],
@@ -617,12 +731,20 @@ class _ResumeCard extends StatelessWidget {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white,
                     fontWeight: FontWeight.w900,
                     height: 1.22,
                   ),
                 ),
                 const Spacer(),
-                _MetadataLine(exam: exam),
+                Theme(
+                  data: theme.copyWith(
+                    colorScheme: theme.colorScheme.copyWith(
+                      onSurfaceVariant: Colors.white70,
+                    ),
+                  ),
+                  child: _MetadataLine(exam: exam),
+                ),
               ],
             ),
           ),
@@ -651,9 +773,9 @@ class _TestRow extends StatelessWidget {
         color: Colors.transparent,
         child: Ink(
           decoration: BoxDecoration(
-            color: scheme.surfaceContainerLowest,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: _softShadow(),
+            border: Border.all(color: const Color(0xFFE8EDF3)),
           ),
           child: InkWell(
             onTap: onTap,
