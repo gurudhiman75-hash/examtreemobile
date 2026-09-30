@@ -8,6 +8,12 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
+import '../../preferences/domain/question_language.dart';
+import '../../preferences/presentation/providers/question_language_providers.dart';
+import '../data/learn_practice_catalog.dart';
+import '../data/polity_learn_localizations.dart';
+import '../domain/learn_practice_models.dart';
+import 'providers/learn_practice_providers.dart';
 import '../domain/learning_resource.dart';
 import 'providers/learning_resources_providers.dart';
 import 'learn_modules_section.dart';
@@ -72,6 +78,8 @@ class LearnScreen extends ConsumerWidget {
                     notesCount: notes.length,
                     freeTestsCount: freeTests.length,
                   ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const _ContinueLearningCard(),
                   const SizedBox(height: AppSpacing.xl),
                   const LearnModulesSection(),
                   const SizedBox(height: AppSpacing.xl),
@@ -308,6 +316,161 @@ class _LearnStat extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+class _ContinueLearningCard extends ConsumerWidget {
+  const _ContinueLearningCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progressList = ref.watch(learnPracticeProgressListProvider).value;
+    if (progressList == null || progressList.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    LearnPracticeProgress? latest;
+    for (final item in progressList) {
+      if (item.status == LearnPracticeStatus.inProgress) {
+        latest = item;
+        break;
+      }
+    }
+    latest ??= progressList.firstWhere(
+      (item) => item.status == LearnPracticeStatus.completed,
+      orElse: () => progressList.first,
+    );
+
+    final language =
+        ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
+    final standalone = learnPracticeTopicById(latest.topicId);
+
+    String title = standalone?.title ?? 'Continue learning';
+    String area = standalone != null ? 'English · Vocabulary' : 'GK · Polity';
+
+    if (standalone == null) {
+      final polity = polityLearnSubjectFor(language);
+      for (final lesson in polity.lessons) {
+        if (lesson.id == latest.topicId) {
+          title = lesson.title;
+          break;
+        }
+      }
+    }
+
+    final total = latest.totalQuestions <= 0 ? 20 : latest.totalQuestions;
+    final current = latest.currentQuestion.clamp(0, total);
+    final value = total == 0 ? 0.0 : current / total;
+    final completed = latest.status == LearnPracticeStatus.completed;
+    final action = completed ? 'Retake' : 'Resume';
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFF7F8), Color(0xFFFFEEF2)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFFFDCE4)),
+        ),
+        child: InkWell(
+          onTap: () async {
+            if (completed) {
+              await ref
+                  .read(learnPracticeProgressStoreProvider)
+                  .clear(latest!.topicId);
+              ref.invalidate(learnPracticeProgressProvider(latest.topicId));
+              ref.invalidate(learnPracticeProgressListProvider);
+              ref.invalidate(learnPracticeQuestionsProvider);
+            }
+            if (context.mounted) {
+              final fresh = completed ? '&fresh=1' : '';
+              context.push(
+                '/learn-practice?topic=${Uri.encodeQueryComponent(latest!.topicId)}$fresh',
+              );
+            }
+          },
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFDDE5),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Icon(
+                    Icons.auto_stories_rounded,
+                    color: Color(0xFFBE123C),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Continue where you left off',
+                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                              color: const Color(0xFFBE123C),
+                              fontWeight: FontWeight.w900,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.xxs),
+                      Text(
+                        '$area · $current/$total',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(99),
+                        child: LinearProgressIndicator(
+                          minHeight: 5,
+                          value: value.clamp(0, 1),
+                          backgroundColor: Colors.white.withValues(alpha: .8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                FilledButton(
+                  onPressed: null,
+                  style: FilledButton.styleFrom(
+                    disabledBackgroundColor: const Color(0xFFE11D48),
+                    disabledForegroundColor: Colors.white,
+                    minimumSize: const Size(0, 42),
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                  ),
+                  child: Text(action),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
