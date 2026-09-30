@@ -343,10 +343,11 @@ class _ContinueLearningCard extends ConsumerWidget {
       (item) => item.status == LearnPracticeStatus.completed,
       orElse: () => progressList.first,
     );
+    final resolvedLatest = latest;
 
     final language =
         ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
-    final standalone = learnPracticeTopicById(latest.topicId);
+    final standalone = learnPracticeTopicById(resolvedLatest.topicId);
 
     String title = standalone?.title ?? 'Continue learning';
     String area = standalone != null ? 'English · Vocabulary' : 'GK · Polity';
@@ -354,17 +355,17 @@ class _ContinueLearningCard extends ConsumerWidget {
     if (standalone == null) {
       final polity = polityLearnSubjectFor(language);
       for (final lesson in polity.lessons) {
-        if (lesson.id == latest.topicId) {
+        if (lesson.id == resolvedLatest.topicId) {
           title = lesson.title;
           break;
         }
       }
     }
 
-    final total = latest.totalQuestions <= 0 ? 20 : latest.totalQuestions;
-    final current = latest.currentQuestion.clamp(0, total);
+    final total = resolvedLatest.totalQuestions <= 0 ? 20 : resolvedLatest.totalQuestions;
+    final current = resolvedLatest.currentQuestion.clamp(0, total);
     final value = total == 0 ? 0.0 : current / total;
-    final completed = latest.status == LearnPracticeStatus.completed;
+    final completed = resolvedLatest.status == LearnPracticeStatus.completed;
     final action = completed ? 'Retake' : 'Resume';
 
     return Material(
@@ -384,15 +385,15 @@ class _ContinueLearningCard extends ConsumerWidget {
             if (completed) {
               await ref
                   .read(learnPracticeProgressStoreProvider)
-                  .clear(latest!.topicId);
-              ref.invalidate(learnPracticeProgressProvider(latest.topicId));
+                  .clear(resolvedLatest.topicId);
+              ref.invalidate(learnPracticeProgressProvider(resolvedLatest.topicId));
               ref.invalidate(learnPracticeProgressListProvider);
               ref.invalidate(learnPracticeQuestionsProvider);
             }
             if (context.mounted) {
               final fresh = completed ? '&fresh=1' : '';
               context.push(
-                '/learn-practice?topic=${Uri.encodeQueryComponent(latest!.topicId)}$fresh',
+                '/learn-practice?topic=${Uri.encodeQueryComponent(resolvedLatest.topicId)}$fresh',
               );
             }
           },
