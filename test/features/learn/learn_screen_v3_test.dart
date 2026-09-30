@@ -113,7 +113,7 @@ void main() {
       freeTests: [exam('test-1', 'SSC CGL free mock')],
     );
 
-    expect(find.text('Learn smarter.\nPractice better.'), findsOneWidget);
+    expect(find.byKey(const Key('learn-hero')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-quant')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
     expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
@@ -187,7 +187,7 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Learn smarter.\nPractice better.'), findsOneWidget);
+    expect(find.byKey(const Key('learn-hero')), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('learn-current-affairs')),
