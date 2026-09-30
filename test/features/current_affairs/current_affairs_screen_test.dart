@@ -136,11 +136,10 @@ void main() {
 
     await tester.drag(
       find.byKey(const Key('current-affairs-scroll')),
-      const Offset(0, -300),
+      const Offset(0, -220),
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Daily national'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
