@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
@@ -69,7 +70,18 @@ class _QuickRevisionScreenState extends ConsumerState<QuickRevisionScreen> {
     final snapshot = ref.watch(dailyCompanionSnapshotProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text('${widget.minutes}-minute revision')),
+      backgroundColor: const Color(0xFFFBFCFE),
+      appBar: AppBar(
+        title: Text('${widget.minutes}-minute revision'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
+      ),
       body: snapshot.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => _RevisionErrorState(
@@ -192,23 +204,22 @@ class _SessionCompleteState extends StatelessWidget {
                 height: 64,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.72),
+                  color: const Color(0xFFFFEDBE),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Icon(
                   Icons.task_alt_rounded,
                   size: 34,
-                  color: AppColors.success,
+                  color: Color(0xFF0B3A6F),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 empty ? 'You’re caught up' : 'Revision complete',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: AppColors.onSuccessContainer,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: AppTypography.premiumHeading(
+                  theme.textTheme.headlineSmall,
+                ).copyWith(color: const Color(0xFF10264A)),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -217,7 +228,7 @@ class _SessionCompleteState extends StatelessWidget {
                     : 'Your review choices have been saved to the local revision plan.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.onSuccessContainer,
+                  color: const Color(0xFF526274),
                   height: 1.45,
                 ),
               ),
@@ -295,17 +306,18 @@ class _RevisionSessionBody extends StatelessWidget {
         Text(
           'Review the question',
           style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.primary,
+            color: const Color(0xFF0B3A6F),
             fontWeight: FontWeight.w900,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
           item.questionText,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w800,
-            height: 1.38,
-            letterSpacing: -0.15,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
+            height: 1.32,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -367,13 +379,13 @@ class _SessionHeader extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         '$minutes min',
         style: theme.textTheme.labelMedium?.copyWith(
-          color: Colors.white,
+          color: const Color(0xFFFFD36B),
           fontWeight: FontWeight.w900,
         ),
       ),
@@ -384,7 +396,7 @@ class _SessionHeader extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.tertiary],
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -413,8 +425,8 @@ class _SessionHeader extends StatelessWidget {
               value: progress,
               minHeight: 8,
               borderRadius: BorderRadius.circular(99),
-              color: Colors.white,
-              backgroundColor: Colors.white.withValues(alpha: 0.22),
+              color: const Color(0xFFFFD36B),
+              backgroundColor: Colors.white.withValues(alpha: 0.16),
             ),
           ),
         ],
@@ -438,7 +450,7 @@ class _SessionHeaderCopy extends StatelessWidget {
         Text(
           'QUICK REVISION',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.76),
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w900,
             letterSpacing: 0.8,
           ),
@@ -446,11 +458,9 @@ class _SessionHeaderCopy extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Question ${index + 1} of $total',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.35,
-          ),
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(color: Colors.white, letterSpacing: -0.35),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -555,7 +565,7 @@ class _RevisionOption extends StatelessWidget {
         ? AppColors.successContainer
         : wrongChoice
             ? theme.colorScheme.errorContainer
-            : theme.colorScheme.surfaceContainerLow;
+            : Colors.white;
     final foreground = correct
         ? AppColors.onSuccessContainer
         : wrongChoice
@@ -579,6 +589,9 @@ class _RevisionOption extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(20),
+        border: (!correct && !wrongChoice)
+            ? Border.all(color: const Color(0xFFE8EDF3))
+            : null,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -650,8 +663,9 @@ class _ExplanationCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.42),
+        color: const Color(0xFFFFFBF1),
         borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFF2DFAD)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -664,12 +678,12 @@ class _ExplanationCard extends StatelessWidget {
                 height: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerLowest,
+                  color: const Color(0xFFFFEDBE),
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Icon(
                   Icons.lightbulb_outline_rounded,
-                  color: theme.colorScheme.primary,
+                  color: const Color(0xFF0B3A6F),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -680,7 +694,7 @@ class _ExplanationCard extends StatelessWidget {
                     Text(
                       'Explanation',
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: const Color(0xFF0B3A6F),
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -726,17 +740,18 @@ class _RecallPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'How well did you remember this?',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w900,
-            ),
+            style: AppTypography.premiumHeading(
+              theme.textTheme.titleMedium,
+            ).copyWith(color: const Color(0xFF10264A)),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
