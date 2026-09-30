@@ -510,7 +510,7 @@ class _ExamDayLink extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.event_available_outlined,
-                  color: const Color(0xFF0B3A6F),
+                  color: Color(0xFF0B3A6F),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -539,7 +539,7 @@ class _ExamDayLink extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               const Icon(
                 Icons.chevron_right_rounded,
-                color: const Color(0xFF0B3A6F),
+                color: Color(0xFF0B3A6F),
               ),
             ],
           ),
@@ -568,7 +568,7 @@ class _EmptyRevisionQueue extends StatelessWidget {
         children: [
           const Icon(
             Icons.auto_awesome_outlined,
-            color: const Color(0xFF0B3A6F),
+            color: Color(0xFF0B3A6F),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -706,7 +706,6 @@ class _StudyPlanCard extends StatelessWidget {
     return Material(
       key: const Key('study-plan'),
       color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: const BorderSide(color: Color(0xFFE8EDF3)),
@@ -730,7 +729,7 @@ class _StudyPlanCard extends StatelessWidget {
                   ),
                   child: const Icon(
                     Icons.tune_rounded,
-                    color: const Color(0xFF0B3A6F),
+                    color: Color(0xFF0B3A6F),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
