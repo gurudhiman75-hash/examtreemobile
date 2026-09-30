@@ -185,7 +185,7 @@ class _IdentityHero extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'YOUR PROFILE',
+          'Your profile',
           style: theme.textTheme.labelMedium?.copyWith(
             color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w800,
