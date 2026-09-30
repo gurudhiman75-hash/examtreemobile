@@ -166,7 +166,7 @@ class _SubmoduleOverview extends StatelessWidget {
           (item.currentQuestion / item.totalQuestions).clamp(0.0, 1.0);
     });
     final total = topicIds.isEmpty ? 1 : topicIds.length;
-    final progress = ((completed + partial) / total).clamp(0.0, 1.0);
+    final progress = ((completed + partial) / total).clamp(0.0, 1.0).toDouble();
     final percent = (progress * 100).round();
 
     return Container(
@@ -274,7 +274,7 @@ class _TopicCard extends ConsumerWidget {
     final lessonNumber = int.tryParse(lesson.id.split('-').last) ?? 0;
     final progressValue = progress == null || progress.totalQuestions <= 0
         ? 0.0
-        : (progress.currentQuestion / progress.totalQuestions).clamp(0, 1);
+        : (progress.currentQuestion / progress.totalQuestions).clamp(0.0, 1.0).toDouble();
 
     return Container(
       decoration: BoxDecoration(
@@ -420,7 +420,7 @@ class _StandalonePracticeTopicCard extends ConsumerWidget {
 
     final progressValue = progress == null || progress.totalQuestions <= 0
         ? 0.0
-        : (progress.currentQuestion / progress.totalQuestions).clamp(0, 1);
+        : (progress.currentQuestion / progress.totalQuestions).clamp(0.0, 1.0).toDouble();
 
     return Container(
       decoration: BoxDecoration(
