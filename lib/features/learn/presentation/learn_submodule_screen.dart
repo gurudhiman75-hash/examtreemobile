@@ -33,6 +33,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
 
     if (submodule.id == 'english-vocabulary') {
       final topics = learnPracticeTopicsForSubmodule(submodule.id);
+      final progressItems =
+          ref.watch(learnPracticeProgressListProvider).value ?? const [];
       return Scaffold(
         appBar: AppBar(title: Text(submodule.title)),
         body: ListView(
@@ -43,6 +45,16 @@ class LearnSubmoduleScreen extends ConsumerWidget {
             AppSpacing.xxl,
           ),
           children: [
+            _SubmoduleOverview(
+              title: 'Vocabulary',
+              subtitle: 'Build stronger word power with focused practice.',
+              topicIds: topics.map((topic) => topic.id).toList(growable: false),
+              progressItems: progressItems,
+              icon: Icons.translate_rounded,
+              accent: AppColors.sky,
+              accentContainer: AppColors.skyContainer,
+            ),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.',
               style: theme.textTheme.bodyLarge?.copyWith(
@@ -76,6 +88,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
     }
 
     final subject = polityLearnSubjectFor(language);
+    final progressItems =
+        ref.watch(learnPracticeProgressListProvider).value ?? const [];
     return Scaffold(
       appBar: AppBar(title: Text(submodule.title)),
       body: ListView(
@@ -86,6 +100,17 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           AppSpacing.xxl,
         ),
         children: [
+          _SubmoduleOverview(
+            title: 'Polity',
+            subtitle: 'Indian Constitution, institutions and governance.',
+            topicIds:
+                subject.lessons.map((lesson) => lesson.id).toList(growable: false),
+            progressItems: progressItems,
+            icon: Icons.account_balance_rounded,
+            accent: AppColors.mint,
+            accentContainer: AppColors.mintContainer,
+          ),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Choose a topic for a short untimed practice session. Answers and explanations appear immediately after each question.',
             style: theme.textTheme.bodyLarge?.copyWith(
@@ -98,6 +123,123 @@ class LearnSubmoduleScreen extends ConsumerWidget {
             _TopicCard(lesson: lesson),
             const SizedBox(height: AppSpacing.sm),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+
+class _SubmoduleOverview extends StatelessWidget {
+  const _SubmoduleOverview({
+    required this.title,
+    required this.subtitle,
+    required this.topicIds,
+    required this.progressItems,
+    required this.icon,
+    required this.accent,
+    required this.accentContainer,
+  });
+
+  final String title;
+  final String subtitle;
+  final List<String> topicIds;
+  final List<LearnPracticeProgress> progressItems;
+  final IconData icon;
+  final Color accent;
+  final Color accentContainer;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tracked = progressItems
+        .where((item) => topicIds.contains(item.topicId))
+        .toList(growable: false);
+    final completed = tracked
+        .where((item) => item.status == LearnPracticeStatus.completed)
+        .length;
+    final partial = tracked
+        .where((item) => item.status == LearnPracticeStatus.inProgress)
+        .fold<double>(0, (sum, item) {
+      if (item.totalQuestions <= 0) return sum;
+      return sum +
+          (item.currentQuestion / item.totalQuestions).clamp(0.0, 1.0);
+    });
+    final total = topicIds.isEmpty ? 1 : topicIds.length;
+    final progress = ((completed + partial) / total).clamp(0.0, 1.0);
+    final percent = (progress * 100).round();
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color: accentContainer,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, color: accent, size: 30),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.3,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  '$completed / ${topicIds.length} topics completed',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          SizedBox(
+            width: 54,
+            height: 54,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: 5,
+                  backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                  color: accent,
+                ),
+                Text(
+                  '$percent%',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
