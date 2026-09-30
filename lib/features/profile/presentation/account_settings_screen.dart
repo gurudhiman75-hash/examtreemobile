@@ -7,6 +7,7 @@ import '../../../core/providers/repository_providers.dart';
 import '../../../core/repositories/account_repository.dart';
 import '../../../core/repositories/api_account_repository.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exam_day/presentation/providers/exam_day_providers.dart';
@@ -230,7 +231,17 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Privacy & account')),
+      appBar: AppBar(
+        title: const Text('Privacy & account'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: Color(0xFFE8EDF3)),
+        ),
+      ),
       body: SafeArea(
         top: false,
         child: ListView(
@@ -246,10 +257,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             const SizedBox(height: AppSpacing.xl),
             Text(
               'Your learner data',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.2,
-              ),
+              style: AppTypography.premiumHeading(
+                theme.textTheme.titleLarge,
+              ).copyWith(color: const Color(0xFF10264A)),
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(
@@ -310,12 +320,12 @@ class _PrivacyHero extends StatelessWidget {
       height: 58,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(19),
       ),
       child: const Icon(
         Icons.lock_person_outlined,
-        color: Colors.white,
+        color: Color(0xFFFFD36B),
         size: 28,
       ),
     );
@@ -325,7 +335,7 @@ class _PrivacyHero extends StatelessWidget {
         Text(
           'PRIVACY & ACCOUNT',
           style: theme.textTheme.labelSmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.76),
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w900,
             letterSpacing: 0.7,
           ),
@@ -333,11 +343,9 @@ class _PrivacyHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Your privacy, your account',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.4,
-          ),
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(color: Colors.white, letterSpacing: -0.4),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -354,8 +362,8 @@ class _PrivacyHero extends StatelessWidget {
       key: const Key('account-privacy-hero'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [theme.colorScheme.primary, theme.colorScheme.tertiary],
+        gradient: const LinearGradient(
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -407,8 +415,9 @@ class _InfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,10 +427,10 @@ class _InfoCard extends StatelessWidget {
             height: 42,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerLowest,
+              color: const Color(0xFFEAF2FB),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: theme.colorScheme.primary, size: 22),
+            child: Icon(icon, color: const Color(0xFF0B3A6F), size: 22),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -477,8 +486,9 @@ class _DangerZone extends StatelessWidget {
       key: const Key('account-danger-zone'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: scheme.errorContainer.withValues(alpha: 0.46),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: scheme.error.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
