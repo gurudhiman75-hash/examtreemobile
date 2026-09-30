@@ -173,11 +173,11 @@ void main() {
 
     expect(find.text('Resume test'), findsOneWidget);
     expect(find.text('SSC CGL full mock'), findsOneWidget);
-    expect(find.text('Your progress'), findsOneWidget);
+    expect(find.text('Featured Test Series'), findsOneWidget);
 
     await scrollHome(tester, 520);
-    expect(find.text('Recommended for you'), findsOneWidget);
-    expect(find.text('Reasoning mixed practice'), findsOneWidget);
+    expect(find.text('Continue Learning'), findsOneWidget);
+    expect(find.text("Today's Goal"), findsOneWidget);
   });
 
   testWidgets('due revision becomes primary before generic test discovery', (tester) async {
