@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../data/learn_module_catalog.dart';
+import '../data/learn_practice_catalog.dart';
+import '../domain/learn_practice_models.dart';
+import 'providers/learn_practice_providers.dart';
 
-class LearnModulesSection extends StatelessWidget {
+class LearnModulesSection extends ConsumerWidget {
   const LearnModulesSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final progress = ref.watch(learnPracticeProgressListProvider).value ??
+        const <LearnPracticeProgress>[];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,9 +32,10 @@ class LearnModulesSection extends StatelessWidget {
                 children: [
                   Text(
                     'Practice by subject',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.35,
+                    style: AppTypography.premiumHeading(
+                      theme.textTheme.titleLarge,
+                    ).copyWith(
+                      color: const Color(0xFF10264A),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xxs),
@@ -47,13 +55,13 @@ class LearnModulesSection extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.primaryContainer,
+                color: const Color(0xFFFFF1C7),
                 borderRadius: BorderRadius.circular(99),
               ),
               child: Text(
                 'UNTIMED',
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: AppColors.primary,
+                  color: const Color(0xFF8A5A00),
                   fontWeight: FontWeight.w900,
                   letterSpacing: .7,
                 ),
@@ -69,7 +77,11 @@ class LearnModulesSection extends StatelessWidget {
               return Column(
                 children: [
                   for (var index = 0; index < learnModules.length; index++) ...[
-                    _ModuleCard(moduleIndex: index, horizontal: true),
+                    _ModuleCard(
+                      moduleIndex: index,
+                      progress: progress,
+                      horizontal: true,
+                    ),
                     if (index != learnModules.length - 1)
                       const SizedBox(height: AppSpacing.sm),
                   ],
@@ -87,8 +99,10 @@ class LearnModulesSection extends StatelessWidget {
                 mainAxisSpacing: AppSpacing.sm,
                 childAspectRatio: 1.12,
               ),
-              itemBuilder: (context, index) =>
-                  _ModuleCard(moduleIndex: index),
+              itemBuilder: (context, index) => _ModuleCard(
+                moduleIndex: index,
+                progress: progress,
+              ),
             );
           },
         ),
@@ -100,10 +114,12 @@ class LearnModulesSection extends StatelessWidget {
 class _ModuleCard extends StatelessWidget {
   const _ModuleCard({
     required this.moduleIndex,
+    required this.progress,
     this.horizontal = false,
   });
 
   final int moduleIndex;
+  final List<LearnPracticeProgress> progress;
   final bool horizontal;
 
   @override
@@ -111,6 +127,31 @@ class _ModuleCard extends StatelessWidget {
     final theme = Theme.of(context);
     final module = learnModules[moduleIndex];
     final style = _styleFor(module.id);
+    final trackedTopicIds = module.submodules
+        .expand((submodule) => submodule.topicIds)
+        .toSet();
+    var trackedTotal = 0;
+    var trackedCurrent = 0;
+    for (final topicId in trackedTopicIds) {
+      final topic = learnPracticeTopicById(topicId);
+      final expected = topic?.questionTarget ?? 20;
+      trackedTotal += expected;
+      LearnPracticeProgress? item;
+      for (final candidate in progress) {
+        if (candidate.topicId == topicId) {
+          item = candidate;
+          break;
+        }
+      }
+      if (item != null) {
+        trackedCurrent += item.status == LearnPracticeStatus.completed
+            ? expected
+            : item.currentQuestion.clamp(0, expected);
+      }
+    }
+    final trackedPercent = trackedTotal == 0
+        ? null
+        : ((trackedCurrent / trackedTotal) * 100).round();
 
     final iconBox = Container(
       width: 46,
@@ -137,8 +178,10 @@ class _ModuleCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Row(
-          mainAxisSize: MainAxisSize.min,
+        Wrap(
+          spacing: AppSpacing.xs,
+          runSpacing: AppSpacing.xs,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(
               '${module.submodules.length} areas',
@@ -147,12 +190,28 @@ class _ModuleCard extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(width: AppSpacing.xs),
-            Icon(
-              Icons.arrow_forward_rounded,
-              size: 15,
-              color: style.iconForeground,
-            ),
+            if (trackedPercent != null)
+              Container(
+                key: Key('learn-module-progress-${module.id}'),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .82),
+                  borderRadius: BorderRadius.circular(99),
+                ),
+                child: Text(
+                  '$trackedPercent%',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: style.iconForeground,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              )
+            else
+              Icon(
+                Icons.arrow_forward_rounded,
+                size: 15,
+                color: style.iconForeground,
+              ),
           ],
         ),
       ],
@@ -162,18 +221,14 @@ class _ModuleCard extends StatelessWidget {
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [style.backgroundStart, style.backgroundEnd],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(color: style.border),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.055),
-              blurRadius: 16,
-              offset: const Offset(0, 7),
+              color: AppColors.shadow.withValues(alpha: 0.035),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
             ),
           ],
         ),

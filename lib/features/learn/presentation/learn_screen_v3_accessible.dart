@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../domain/learning_resource.dart';
@@ -184,22 +185,42 @@ class _AccessibleIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
+    return Container(
       key: const Key('learn-hero'),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(26),
+      ),
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Learn for your exams',
-          style: theme.textTheme.headlineSmall?.copyWith(
+          'YOUR LEARNING SPACE',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w900,
-            letterSpacing: -0.4,
+            letterSpacing: .8,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          'Learn for your exams',
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(
+            color: Colors.white,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Current affairs, notes and free practice selected from what is actually published for you.',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+            color: Colors.white.withValues(alpha: .78),
             height: 1.45,
           ),
         ),
@@ -228,6 +249,7 @@ class _AccessibleIntro extends StatelessWidget {
           foreground: AppColors.onMintContainer,
         ),
       ],
+      ),
     );
   }
 }
@@ -266,6 +288,7 @@ class _AccessibleStat extends StatelessWidget {
           child: Text(
             '$value $label',
             style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -289,8 +312,10 @@ class _Heading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
