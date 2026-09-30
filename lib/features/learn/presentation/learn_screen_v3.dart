@@ -449,7 +449,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(99),
                         child: LinearProgressIndicator(
                           minHeight: 5,
-                          value: value.clamp(0, 1),
+                          value: value.clamp(0.0, 1.0).toDouble(),
                           backgroundColor: Colors.white.withValues(alpha: .8),
                         ),
                       ),
