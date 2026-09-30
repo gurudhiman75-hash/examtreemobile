@@ -185,6 +185,7 @@ class _AccessibleIntro extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
+      key: const Key('learn-hero'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
