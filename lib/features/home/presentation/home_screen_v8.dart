@@ -510,14 +510,14 @@ class _FeaturedSeriesCard extends StatelessWidget {
                   children: [
                     _SeriesMetric(
                       icon: Icons.quiz_outlined,
-                      value: '\${exam.totalQuestions}',
+                      value: '${exam.totalQuestions}',
                       label: 'Questions',
                       light: alternate,
                     ),
                     const SizedBox(width: 16),
                     _SeriesMetric(
                       icon: Icons.schedule_rounded,
-                      value: '\$durationMinutes min',
+                      value: '$durationMinutes min',
                       label: 'Duration',
                       light: alternate,
                     ),
@@ -707,7 +707,7 @@ class _TodayGoalCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  '\${analytics.totalTestsAttempted} tests attempted',
+                  '${analytics.totalTestsAttempted} tests attempted',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -715,9 +715,9 @@ class _TodayGoalCard extends StatelessWidget {
               ],
             ),
           ),
-          _GoalMetric(value: '\${analytics.totalTestsAttempted}', label: 'Tests'),
+          _GoalMetric(value: '${analytics.totalTestsAttempted}', label: 'Tests'),
           const SizedBox(width: AppSpacing.lg),
-          _GoalMetric(value: '\$accuracy%', label: 'Accuracy'),
+          _GoalMetric(value: '$accuracy%', label: 'Accuracy'),
         ],
       ),
     );
