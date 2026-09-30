@@ -20,8 +20,13 @@ class LearningResourceDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(learningResourceDetailProvider(resourceId));
+    final detail = detailAsync.value;
+    final title =
+        detail?.summary.category == LearningResourceCategory.currentAffairs
+            ? 'Current Affairs'
+            : 'Learn';
     return Scaffold(
-      appBar: AppBar(title: const Text('Learn')),
+      appBar: AppBar(title: Text(title)),
       body: SafeArea(
         top: false,
         child: detailAsync.when(
