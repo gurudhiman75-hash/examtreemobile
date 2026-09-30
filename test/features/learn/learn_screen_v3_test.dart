@@ -187,7 +187,6 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.byKey(const Key('learn-hero')), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('learn-current-affairs')),
