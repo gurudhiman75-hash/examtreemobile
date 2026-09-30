@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
@@ -169,13 +170,13 @@ class _IdentityHero extends StatelessWidget {
       height: largeText ? 64 : 58,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: const Color(0xFFFFD36B).withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         initial,
         style: theme.textTheme.headlineSmall?.copyWith(
-          color: Colors.white,
+          color: const Color(0xFFFFD36B),
           fontWeight: FontWeight.w900,
         ),
       ),
@@ -184,9 +185,9 @@ class _IdentityHero extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your profile',
+          'YOUR PROFILE',
           style: theme.textTheme.labelMedium?.copyWith(
-            color: Colors.white.withValues(alpha: 0.78),
+            color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w800,
             letterSpacing: 0.35,
           ),
@@ -196,9 +197,10 @@ class _IdentityHero extends StatelessWidget {
           name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.headlineSmall?.copyWith(
+          style: AppTypography.premiumHeading(
+            theme.textTheme.headlineSmall,
+          ).copyWith(
             color: Colors.white,
-            fontWeight: FontWeight.w900,
             letterSpacing: -0.45,
           ),
         ),
@@ -223,7 +225,7 @@ class _IdentityHero extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [AppColors.primary, AppColors.tertiary],
+            colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -336,9 +338,9 @@ class _PerformanceHero extends StatelessWidget {
       key: const Key('profile-performance-hero'),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(26),
-        boxShadow: _softShadow(),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,7 +363,7 @@ class _PerformanceHero extends StatelessWidget {
                     Text(
                       '${_formatPercent(analytics.averageScore)}%',
                       style: theme.textTheme.displaySmall?.copyWith(
-                        color: AppColors.primary,
+                        color: const Color(0xFF0B3A6F),
                         fontWeight: FontWeight.w900,
                         letterSpacing: -1.2,
                       ),
@@ -382,6 +384,8 @@ class _PerformanceHero extends StatelessWidget {
             minHeight: 8,
             borderRadius: BorderRadius.circular(999),
             value: analytics.averageScore.clamp(0, 100) / 100,
+            backgroundColor: const Color(0xFFEAF2FB),
+            valueColor: const AlwaysStoppedAnimation(Color(0xFFD6A63D)),
           ),
           const SizedBox(height: AppSpacing.lg),
           LayoutBuilder(
@@ -433,12 +437,13 @@ class _HeroMetric extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLow,
+          color: const Color(0xFFF7F9FC),
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8EDF3)),
         ),
         child: Row(
           children: [
-            Icon(metric.icon, size: 18, color: AppColors.primary),
+            Icon(metric.icon, size: 18, color: const Color(0xFF0B3A6F)),
             const SizedBox(width: AppSpacing.xs),
             Expanded(
               child: Column(
@@ -496,9 +501,10 @@ class _FocusSection extends StatelessWidget {
             Expanded(
               child: Text(
                 'What to focus on',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.2,
+                style: AppTypography.premiumHeading(
+                  theme.textTheme.titleLarge,
+                ).copyWith(
+                  color: const Color(0xFF10264A),
                 ),
               ),
             ),
@@ -706,10 +712,12 @@ class _RecentTrend extends StatelessWidget {
         ? analytics.scoreTrend
         : analytics.scoreTrend.sublist(analytics.scoreTrend.length - 4);
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLowest,
-      elevation: 1,
-      shadowColor: AppColors.shadow.withValues(alpha: 0.12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
@@ -747,13 +755,13 @@ class _TrendRow extends StatelessWidget {
             height: 48,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.primaryContainer,
+              color: const Color(0xFFEAF2FB),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Text(
               '${score.round()}%',
               style: theme.textTheme.labelMedium?.copyWith(
-                color: AppColors.onPrimaryContainer,
+                color: const Color(0xFF0B3A6F),
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -800,8 +808,9 @@ class _EmptyPerformance extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLow,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
         children: [
@@ -810,12 +819,12 @@ class _EmptyPerformance extends StatelessWidget {
             height: 56,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.primaryContainer,
+              color: const Color(0xFFEAF2FB),
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Icon(
               Icons.insights_outlined,
-              color: AppColors.primary,
+              color: const Color(0xFF0B3A6F),
               size: 28,
             ),
           ),
@@ -868,9 +877,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.2,
+          style: AppTypography.premiumHeading(
+            theme.textTheme.titleLarge,
+          ).copyWith(
+            color: const Color(0xFF10264A),
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
@@ -922,10 +932,12 @@ class _AccountActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLowest,
-      elevation: 1,
-      shadowColor: AppColors.shadow.withValues(alpha: 0.12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFFE8EDF3)),
+      ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
