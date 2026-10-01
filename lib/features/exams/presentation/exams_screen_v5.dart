@@ -185,7 +185,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                 ),
                 if (categories.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.sm),
-                  _CategoryRail(
+                  _CategoryGrid(
                     categories: categories,
                     selectedCategory: selectedCategory,
                     onChanged: (category) {
@@ -481,8 +481,8 @@ class _HeroStat extends StatelessWidget {
   }
 }
 
-class _CategoryRail extends StatelessWidget {
-  const _CategoryRail({
+class _CategoryGrid extends StatelessWidget {
+  const _CategoryGrid({
     required this.categories,
     required this.selectedCategory,
     required this.onChanged,
@@ -494,38 +494,230 @@ class _CategoryRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = <String?>[null, ...categories];
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    return SizedBox(
-      height: textScale > 1.5 ? 56 : 42,
-      child: ListView.separated(
-        key: const Key('tests-category-rail'),
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length + 1,
-        separatorBuilder: (context, index) =>
-            const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final category = index == 0 ? null : categories[index - 1];
-          final selected = category == selectedCategory;
-          return ChoiceChip(
-            label: Text(category ?? 'All exams'),
-            selected: selected,
-            selectedColor: const Color(0xFF0B3A6F),
-            backgroundColor: Colors.white,
-            side: BorderSide(
-              color: selected
-                  ? const Color(0xFF0B3A6F)
-                  : const Color(0xFFDCE5EF),
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const gap = 8.0;
+        const columns = 3;
+        final tileWidth =
+            (constraints.maxWidth - gap * (columns - 1)) / columns;
+        final tileHeight = textScale > 1.35 ? 124.0 : 108.0;
+
+        return Wrap(
+          key: const Key('tests-category-grid'),
+          spacing: gap,
+          runSpacing: gap,
+          children: items.map((category) {
+            final selected = category == selectedCategory;
+            final visual = _examCategoryVisual(category);
+
+            return SizedBox(
+              width: tileWidth,
+              height: tileHeight,
+              child: _ExamCategoryFilterTile(
+                label: category ?? 'All exams',
+                icon: visual.$1,
+                background: visual.$2,
+                foreground: visual.$3,
+                selected: selected,
+                onTap: () => onChanged(category),
+              ),
+            );
+          }).toList(growable: false),
+        );
+      },
+    );
+  }
+}
+
+class _ExamCategoryFilterTile extends StatelessWidget {
+  const _ExamCategoryFilterTile({
+    required this.label,
+    required this.icon,
+    required this.background,
+    required this.foreground,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color background;
+  final Color foreground;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final radius = BorderRadius.circular(18);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: selected ? const Color(0xFFEAF2FF) : background,
+        borderRadius: radius,
+        border: Border.all(
+          color: selected
+              ? const Color(0xFF0B3A6F)
+              : foreground.withValues(alpha: .20),
+          width: selected ? 1.8 : 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: selected
+                ? const Color(0xFF0B3A6F).withValues(alpha: .12)
+                : foreground.withValues(alpha: .09),
+            blurRadius: 13,
+            offset: const Offset(0, 5),
+          ),
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .03),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: radius,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: radius,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? const Color(0xFF0B3A6F)
+                        : foreground.withValues(alpha: .10),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: selected ? Colors.white : foreground,
+                    size: 25,
+                  ),
+                ),
+                const SizedBox(height: 9),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: const Color(0xFF10264A),
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                    letterSpacing: -.05,
+                  ),
+                ),
+              ],
             ),
-            labelStyle: TextStyle(
-              color: selected ? Colors.white : const Color(0xFF526274),
-              fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-            ),
-            onSelected: (_) => onChanged(category),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
+}
+
+(IconData, Color, Color) _examCategoryVisual(String? category) {
+  if (category == null) {
+    return (
+      Icons.apps_rounded,
+      const Color(0xFFF1F4F8),
+      const Color(0xFF526274),
+    );
+  }
+
+  final key = category.toLowerCase();
+
+  if (key.contains('bank') || key.contains('insurance')) {
+    return (
+      Icons.account_balance_rounded,
+      const Color(0xFFFFF5DD),
+      const Color(0xFFB77900),
+    );
+  }
+  if (key.contains('ssc') || key.contains('government')) {
+    return (
+      Icons.account_balance_rounded,
+      const Color(0xFFFFF1E2),
+      const Color(0xFFB46616),
+    );
+  }
+  if (key.contains('rail')) {
+    return (
+      Icons.train_rounded,
+      const Color(0xFFE9F4FF),
+      const Color(0xFF2563A8),
+    );
+  }
+  if (key.contains('teach') || key.contains('education')) {
+    return (
+      Icons.school_rounded,
+      const Color(0xFFEAF8EE),
+      const Color(0xFF2B7B4B),
+    );
+  }
+  if (key.contains('defence') ||
+      key.contains('defense') ||
+      key.contains('army')) {
+    return (
+      Icons.shield_rounded,
+      const Color(0xFFFFF1E2),
+      const Color(0xFF9A5C15),
+    );
+  }
+  if (key.contains('police')) {
+    return (
+      Icons.local_police_rounded,
+      const Color(0xFFF0EEFF),
+      const Color(0xFF6154A8),
+    );
+  }
+  if (key.contains('medical') || key.contains('neet')) {
+    return (
+      Icons.medical_services_rounded,
+      const Color(0xFFFFEEF2),
+      const Color(0xFFC54667),
+    );
+  }
+  if (key.contains('engineer') ||
+      key.contains('jee') ||
+      key.contains('gate')) {
+    return (
+      Icons.engineering_rounded,
+      const Color(0xFFE9F4FF),
+      const Color(0xFF2563A8),
+    );
+  }
+  if (key.contains('punjab')) {
+    return (
+      Icons.location_on_rounded,
+      const Color(0xFFFFF5DD),
+      const Color(0xFFB77900),
+    );
+  }
+  if (key.contains('state') || key.contains('pcs')) {
+    return (
+      Icons.apartment_rounded,
+      const Color(0xFFFFEEEE),
+      const Color(0xFFF04452),
+    );
+  }
+
+  return (
+    Icons.grid_view_rounded,
+    const Color(0xFFF1F4F8),
+    const Color(0xFF718096),
+  );
 }
 
 class _AccessAndSortBar extends StatelessWidget {
