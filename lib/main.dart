@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/observability/crash_reporting.dart';
+import 'core/providers/mobile_analytics_provider.dart';
 import 'core/providers/repository_providers.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
 import 'features/companion/presentation/providers/daily_companion_providers.dart';
 import 'features/exam_day/presentation/providers/exam_day_providers.dart';
 import 'features/mobile_config/presentation/mobile_runtime_gate.dart';
+import 'features/notifications/presentation/push_notification_providers.dart';
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
 
@@ -81,6 +83,14 @@ class ExamTreeApp extends ConsumerWidget {
     // Prime the canonical API in the background without gating Firebase auth.
     // Profile synchronization remains the authoritative authenticated API check.
     ref.watch(apiServerWarmupProvider);
+    ref.watch(pushNotificationBootstrapProvider);
+    unawaited(
+      ref.read(mobileAnalyticsClientProvider).trackOnce(
+            'app_open',
+            'app_open',
+            metadata: const <String, Object?>{'surface': 'mobile'},
+          ),
+    );
 
     ref.listen(authStateChangesProvider, (previous, next) {
       next.whenData((user) {
