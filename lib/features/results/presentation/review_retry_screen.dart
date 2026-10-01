@@ -52,10 +52,10 @@ class _ReviewLearningFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-
     return Material(
-      color: scheme.surfaceContainerLowest,
+      color: Colors.white,
+      shadowColor: const Color(0xFF10264A).withValues(alpha: .08),
+      elevation: 8,
       child: SafeArea(
         top: false,
         child: Container(
@@ -67,7 +67,9 @@ class _ReviewLearningFooter extends StatelessWidget {
             AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: scheme.outlineVariant)),
+            border: const Border(
+              top: BorderSide(color: Color(0xFFE3E9F1)),
+            ),
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -84,13 +86,13 @@ class _ReviewLearningFooter extends StatelessWidget {
                     height: 36,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: scheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      color: const Color(0xFFFFF4D6),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       Icons.auto_awesome_rounded,
                       size: 19,
-                      color: scheme.onPrimaryContainer,
+                      color: const Color(0xFFB2770D),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -102,7 +104,8 @@ class _ReviewLearningFooter extends StatelessWidget {
                         Text(
                           'Revision ready',
                           style: theme.textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF10264A),
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                         Text(
@@ -110,7 +113,7 @@ class _ReviewLearningFooter extends StatelessWidget {
                           maxLines: stack ? 2 : 1,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant,
+                            color: const Color(0xFF718096),
                           ),
                         ),
                       ],
@@ -118,9 +121,19 @@ class _ReviewLearningFooter extends StatelessWidget {
                   ),
                 ],
               );
-              final start = FilledButton.tonalIcon(
+              final start = FilledButton.icon(
                 key: const Key('review-start-revision'),
                 onPressed: onStart,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 44),
+                  backgroundColor: const Color(0xFF073A6A),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                ),
+                iconAlignment: IconAlignment.end,
                 icon: const Icon(Icons.arrow_forward_rounded, size: 18),
                 label: const Text('Start 5 min'),
               );
