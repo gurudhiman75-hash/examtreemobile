@@ -114,9 +114,9 @@ class HomeScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                12,
+                8,
                 AppSpacing.sm,
-                12,
+                8,
                 112,
               ),
               sliver: SliverList.list(
@@ -130,32 +130,32 @@ class HomeScreen extends ConsumerWidget {
                     onNotifications: () => context.push('/daily'),
                     onProfile: () => context.push('/profile'),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
                   if (campaigns.isNotEmpty)
                     PromotionCarousel(campaigns: campaigns, compact: true)
                   else
                     const Column(
                       children: [
                         _HomePromoFallback(),
-                        SizedBox(height: AppSpacing.sm),
+                        SizedBox(height: 6),
                         _HeroPageDots(),
                       ],
                     ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 12),
                   _SectionTitle(
                     title: 'Exam Categories',
                     action: 'See All',
                     onAction: () => context.go('/exams'),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 6),
                   _ExamCategoriesGrid(onOpen: () => context.go('/exams')),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: 16),
                   _SectionTitle(
                     title: 'Featured Test Series',
                     action: 'See All',
                     onAction: () => context.go('/exams'),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 6),
                   availableAsync.when(
                     loading: () => const _LoadingCard(height: 194),
                     error: (error, stack) => _ErrorCard(
@@ -180,13 +180,13 @@ class HomeScreen extends ConsumerWidget {
                             );
                     },
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: 16),
                   _SectionTitle(
                     title: 'Continue Learning',
                     action: 'See All',
                     onAction: () => context.go('/learn'),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 6),
                   _ContinueLearningCard(
                     key: const Key('home-primary-action'),
                     state: actionState,
@@ -199,13 +199,13 @@ class HomeScreen extends ConsumerWidget {
                         ..invalidate(dailyCompanionSnapshotProvider);
                     },
                   ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: 16),
                   _SectionTitle(
                     title: "Today's Goal",
                     action: 'See All',
                     onAction: () => context.push('/profile'),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 6),
                   analyticsAsync.when(
                     loading: () => const _LoadingCard(height: 112),
                     error: (error, stack) => _ErrorCard(
@@ -237,8 +237,8 @@ class _HomePromoFallback extends StatelessWidget {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
     final heroHeight = largeText
-        ? (268 * textScale).clamp(370, 470).toDouble()
-        : 248.0;
+        ? (238 * textScale).clamp(335, 425).toDouble()
+        : 216.0;
 
     return Container(
       height: heroHeight,
@@ -287,7 +287,7 @@ class _HomePromoFallback extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 13),
+            padding: const EdgeInsets.fromLTRB(13, 12, 13, 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -295,8 +295,8 @@ class _HomePromoFallback extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: 10,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color(0xFFE9B94E)),
@@ -313,7 +313,7 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 11),
+                const SizedBox(height: 7),
                 FractionallySizedBox(
                   widthFactor: largeText ? 0.88 : 0.64,
                   alignment: Alignment.centerLeft,
@@ -330,7 +330,7 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 5),
                 if (!largeText)
                   FractionallySizedBox(
                     widthFactor: .67,
@@ -392,8 +392,8 @@ class _HomePromoFallback extends StatelessWidget {
                           backgroundColor: const Color(0xFFFFD36B),
                           foregroundColor: const Color(0xFF082A52),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 11,
+                            horizontal: 14,
+                            vertical: 8,
                           ),
                           shape: const StadiumBorder(),
                         ),
@@ -633,7 +633,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gap = 6.0;
+        final gap = 4.0;
         // Approved Home layout: keep four exam-category cards per row on
         // normal phone widths. Only collapse on exceptionally narrow surfaces.
         final columns = constraints.maxWidth < 260 ? 2 : 4;
