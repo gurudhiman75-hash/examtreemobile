@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 
@@ -9,12 +10,18 @@ class AuthEntryView extends StatefulWidget {
     required this.obscurePassword,
     required this.loadingMessage,
     required this.phoneController,
+    required this.otpController,
+    required this.phoneCodeSent,
+    required this.phoneNumber,
     required this.nameController,
     required this.emailController,
     required this.passwordController,
     required this.confirmPasswordController,
     required this.showApple,
     required this.onPhoneContinue,
+    required this.onVerifyPhoneCode,
+    required this.onResendPhoneCode,
+    required this.onChangePhone,
     required this.onApple,
     required this.onGoogle,
     required this.onSubmit,
@@ -30,12 +37,18 @@ class AuthEntryView extends StatefulWidget {
   final bool obscurePassword;
   final String? loadingMessage;
   final TextEditingController phoneController;
+  final TextEditingController otpController;
+  final bool phoneCodeSent;
+  final String? phoneNumber;
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final bool showApple;
   final VoidCallback onPhoneContinue;
+  final VoidCallback onVerifyPhoneCode;
+  final VoidCallback onResendPhoneCode;
+  final VoidCallback onChangePhone;
   final VoidCallback onApple;
   final VoidCallback onGoogle;
   final VoidCallback onSubmit;
@@ -93,38 +106,51 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                           const SizedBox(height: 10),
                         ],
                         if (!widget.registering) ...[
-                          _MobileLoginCard(
-                            isLoading: widget.isLoading,
-                            phoneController: widget.phoneController,
-                            onContinue: widget.onPhoneContinue,
-                          ),
-                          const SizedBox(height: 10),
-                          const _DividerLabel(label: 'or continue with'),
-                          const SizedBox(height: 10),
-                          _CompactAlternativeRow(
-                            showApple: widget.showApple,
-                            isLoading: widget.isLoading,
-                            onGoogle: widget.onGoogle,
-                            onEmail: () {
-                              setState(() => _emailExpanded = !_emailExpanded);
-                            },
-                            onApple: widget.onApple,
-                          ),
-                          if (_emailExpanded) ...[
-                            const SizedBox(height: 12),
-                            _EmailPanel(
-                              registering: false,
+                          if (widget.phoneCodeSent)
+                            _OtpVerificationCard(
                               isLoading: widget.isLoading,
-                              obscurePassword: widget.obscurePassword,
-                              nameController: widget.nameController,
-                              emailController: widget.emailController,
-                              passwordController: widget.passwordController,
-                              confirmPasswordController:
-                                  widget.confirmPasswordController,
-                              onSubmit: widget.onSubmit,
-                              onTogglePassword: widget.onTogglePassword,
-                              onForgotPassword: widget.onForgotPassword,
+                              phoneNumber: widget.phoneNumber ?? '',
+                              otpController: widget.otpController,
+                              onVerify: widget.onVerifyPhoneCode,
+                              onResend: widget.onResendPhoneCode,
+                              onChangePhone: widget.onChangePhone,
+                            )
+                          else ...[
+                            _MobileLoginCard(
+                              isLoading: widget.isLoading,
+                              phoneController: widget.phoneController,
+                              onContinue: widget.onPhoneContinue,
                             ),
+                            const SizedBox(height: 10),
+                            const _DividerLabel(label: 'or continue with'),
+                            const SizedBox(height: 10),
+                            _CompactAlternativeRow(
+                              showApple: widget.showApple,
+                              isLoading: widget.isLoading,
+                              onGoogle: widget.onGoogle,
+                              onEmail: () {
+                                setState(
+                                  () => _emailExpanded = !_emailExpanded,
+                                );
+                              },
+                              onApple: widget.onApple,
+                            ),
+                            if (_emailExpanded) ...[
+                              const SizedBox(height: 12),
+                              _EmailPanel(
+                                registering: false,
+                                isLoading: widget.isLoading,
+                                obscurePassword: widget.obscurePassword,
+                                nameController: widget.nameController,
+                                emailController: widget.emailController,
+                                passwordController: widget.passwordController,
+                                confirmPasswordController:
+                                    widget.confirmPasswordController,
+                                onSubmit: widget.onSubmit,
+                                onTogglePassword: widget.onTogglePassword,
+                                onForgotPassword: widget.onForgotPassword,
+                              ),
+                            ],
                           ],
                         ] else ...[
                           Text(
@@ -366,6 +392,186 @@ class _MobileLoginCard extends StatelessWidget {
                 Icon(Icons.arrow_forward_rounded, size: 18),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OtpVerificationCard extends StatelessWidget {
+  const _OtpVerificationCard({
+    required this.isLoading,
+    required this.phoneNumber,
+    required this.otpController,
+    required this.onVerify,
+    required this.onResend,
+    required this.onChangePhone,
+  });
+
+  final bool isLoading;
+  final String phoneNumber;
+  final TextEditingController otpController;
+  final VoidCallback onVerify;
+  final VoidCallback onResend;
+  final VoidCallback onChangePhone;
+
+  String get _maskedPhone {
+    final digits = phoneNumber.replaceAll(RegExp(r'\D'), '');
+    if (digits.length < 4) return phoneNumber;
+    final suffix = digits.substring(digits.length - 4);
+    return '+91 ••••••$suffix';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E7EF)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10284D).withValues(alpha: .08),
+            blurRadius: 18,
+            offset: const Offset(0, 7),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF2D2),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: const Icon(
+                  Icons.sms_outlined,
+                  color: Color(0xFFB2770D),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Enter OTP',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: const Color(0xFF0B2343),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Text(
+                      'Code sent to $_maskedPhone',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF6E7B90),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: isLoading ? null : onChangePhone,
+                style: TextButton.styleFrom(
+                  minimumSize: Size.zero,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  foregroundColor: const Color(0xFFB2770D),
+                ),
+                child: const Text('Change'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            key: const Key('auth-phone-otp'),
+            controller: otpController,
+            enabled: !isLoading,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            maxLength: 6,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onSubmitted: (_) {
+              if (!isLoading) onVerify();
+            },
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFF0B2343),
+              fontSize: 21,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 12,
+            ),
+            decoration: InputDecoration(
+              counterText: '',
+              hintText: '••••••',
+              hintStyle: TextStyle(
+                color: const Color(0xFF9AA6B7).withValues(alpha: .72),
+                letterSpacing: 12,
+              ),
+              filled: true,
+              fillColor: const Color(0xFFFBFCFE),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFFD9E1EC)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: Color(0xFFD9E1EC)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide:
+                    const BorderSide(color: Color(0xFF0B3565), width: 1.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          FilledButton(
+            key: const Key('auth-phone-verify'),
+            onPressed: isLoading ? null : onVerify,
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(50),
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              disabledBackgroundColor:
+                  const Color(0xFF073A6A).withValues(alpha: .42),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Verify & Continue'),
+                SizedBox(width: 8),
+                Icon(Icons.arrow_forward_rounded, size: 18),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            key: const Key('auth-phone-resend'),
+            onPressed: isLoading ? null : onResend,
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF4E6077),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            child: const Text('Didn’t receive the code? Resend OTP'),
           ),
         ],
       ),
