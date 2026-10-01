@@ -64,15 +64,32 @@ void main() {
     addTearDown(password.dispose);
     addTearDown(confirmation.dispose);
 
-    const campaign = PromotionCampaign(
-      id: 'preview-current-affairs',
-      title: 'Free current affairs',
-      subtitle: 'Daily updates, quizzes and monthly revision material in one place.',
-      placements: {PromotionPlacement.login},
-      ctaLabel: 'Explore free material',
-      deepLink: '/learn',
-      priority: 10,
-    );
+    const campaigns = <PromotionCampaign>[
+      PromotionCampaign(
+        id: 'preview-learn',
+        title: 'Everything you need to prepare with focus',
+        subtitle:
+            'Structured learning, exam-style practice and progress tracking in one place.',
+        placements: {PromotionPlacement.login},
+        priority: 30,
+      ),
+      PromotionCampaign(
+        id: 'preview-practice',
+        title: 'Practice the way real exams ask',
+        subtitle:
+            'Focused mock tests and detailed solutions build exam readiness.',
+        placements: {PromotionPlacement.login},
+        priority: 20,
+      ),
+      PromotionCampaign(
+        id: 'preview-progress',
+        title: 'Know what to revise next',
+        subtitle:
+            'Continue where you left off and keep revision targeted.',
+        placements: {PromotionPlacement.login},
+        priority: 10,
+      ),
+    ];
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -100,8 +117,8 @@ void main() {
           onForgotPassword: () {},
           onToggleMode: () {},
           promotionalContent: const PromotionCarousel(
-            campaigns: [campaign],
-            compact: true,
+            campaigns: campaigns,
+            visualStyle: PromotionCarouselVisualStyle.loginFeature,
           ),
         ),
       ),
