@@ -7,6 +7,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../promotions/domain/promotion_campaign.dart';
+import '../../promotions/presentation/providers/promotion_providers.dart';
+import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import 'exam_catalog_filter.dart';
 import 'providers/exam_providers.dart';
 
@@ -55,7 +58,8 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
   Future<void> _refresh() async {
     ref
       ..invalidate(availableExamsProvider)
-      ..invalidate(inProgressExamsProvider);
+      ..invalidate(inProgressExamsProvider)
+      ..invalidate(promotionsForPlacementProvider(PromotionPlacement.tests));
 
     Future<void> settle(Future<Object?> request) async {
       try {
@@ -138,6 +142,11 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
                       inProgressFailed ? null : inProgressTests.length,
                   hasActiveFilters: _hasActiveFilters,
                   onReset: _clearFilters,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const PromotionPlacementView(
+                  placement: PromotionPlacement.tests,
+                  compact: true,
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Theme(
