@@ -5,11 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/providers/mobile_analytics_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/promotion_campaign.dart';
 import '../providers/promotion_providers.dart';
 
 enum PromotionCarouselVisualStyle { standard, loginFeature }
+
+String _placementKey(PromotionPlacement placement) => switch (placement) {
+      PromotionPlacement.login => 'login',
+      PromotionPlacement.home => 'home',
+      PromotionPlacement.learn => 'learn',
+      PromotionPlacement.tests => 'tests',
+      PromotionPlacement.results => 'results',
+      PromotionPlacement.postLogin => 'post_login',
+    };
 
 class PromotionPlacementView extends ConsumerWidget {
   const PromotionPlacementView({
@@ -56,10 +66,28 @@ class PromotionPlacementView extends ConsumerWidget {
                 .markLoginCampaignsPresented(campaigns);
           });
         }
+        final analytics = ref.read(mobileAnalyticsClientProvider);
+        final placementKey = _placementKey(placement);
         return PromotionCarousel(
           campaigns: effectiveCampaigns,
           compact: compact,
           visualStyle: visualStyle,
+          onImpression: (campaign) => unawaited(
+            analytics.track(
+              'promotion_impression',
+              entityType: 'promotion',
+              entityId: campaign.id,
+              placement: placementKey,
+            ),
+          ),
+          onAction: (campaign) => unawaited(
+            analytics.track(
+              'promotion_click',
+              entityType: 'promotion',
+              entityId: campaign.id,
+              placement: placementKey,
+            ),
+          ),
         );
       },
     );
@@ -529,17 +557,6 @@ class _PromotionCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (onDismiss != null)
-            Positioned(
-              top: 6,
-              right: 6,
-              child: IconButton(
-                tooltip: 'Hide promotion',
-                onPressed: onDismiss,
-                visualDensity: VisualDensity.compact,
-                icon: const Icon(Icons.close_rounded, size: 18),
-              ),
-            ),
           Positioned(
             right: -34,
             top: -42,
@@ -660,6 +677,21 @@ class _PromotionCard extends StatelessWidget {
               ],
             ),
           ),
+          if (onDismiss != null)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: Material(
+                color: Theme.of(context).colorScheme.surface.withValues(alpha: .86),
+                shape: const CircleBorder(),
+                child: IconButton(
+                  tooltip: 'Hide promotion',
+                  onPressed: onDismiss,
+                  visualDensity: VisualDensity.compact,
+                  icon: const Icon(Icons.close_rounded, size: 18),
+                ),
+              ),
+            ),
         ],
       ),
     );
