@@ -11,6 +11,8 @@ import '../../../shared/widgets/network_failure_view.dart';
 import '../../content_planning/presentation/mobile_content_planning_providers.dart';
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
+import '../../promotions/domain/promotion_campaign.dart';
+import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../data/learn_practice_catalog.dart';
@@ -28,7 +30,8 @@ class LearnScreen extends ConsumerWidget {
     ref
       ..invalidate(learningResourcesProvider)
       ..invalidate(mobileContentPlanProvider('learn_featured'))
-      ..invalidate(availableExamsProvider);
+      ..invalidate(availableExamsProvider)
+      ..invalidate(promotionsForPlacementProvider(PromotionPlacement.learn));
 
     Future<void> settle(Future<Object?> request) async {
       try {
@@ -81,6 +84,11 @@ class LearnScreen extends ConsumerWidget {
                     currentAffairsCount: currentAffairs.length,
                     notesCount: notes.length,
                     freeTestsCount: freeTests.length,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const PromotionPlacementView(
+                    placement: PromotionPlacement.learn,
+                    compact: true,
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   const _ContinueLearningCard(),
