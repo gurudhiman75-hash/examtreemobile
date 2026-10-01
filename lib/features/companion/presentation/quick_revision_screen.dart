@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
@@ -194,7 +193,7 @@ class _SessionCompleteState extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             color: AppColors.successContainer,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -217,9 +216,11 @@ class _SessionCompleteState extends StatelessWidget {
               Text(
                 empty ? 'You’re caught up' : 'Revision complete',
                 textAlign: TextAlign.center,
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.headlineSmall,
-                ).copyWith(color: const Color(0xFF10264A)),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: const Color(0xFF10264A),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.4,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -278,9 +279,9 @@ class _RevisionSessionBody extends StatelessWidget {
       key: const Key('quick-revision-scroll'),
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
+        12,
         AppSpacing.sm,
-        AppSpacing.md,
+        12,
         AppSpacing.xxl,
       ),
       children: [
@@ -313,11 +314,11 @@ class _RevisionSessionBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Text(
           item.questionText,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
             height: 1.32,
+            letterSpacing: -.25,
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -338,7 +339,13 @@ class _RevisionSessionBody extends StatelessWidget {
             key: const Key('quick-revision-show-answer'),
             onPressed: onReveal,
             style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(54),
+              minimumSize: const Size.fromHeight(50),
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: const Icon(Icons.visibility_outlined),
             label: const Text('Show answer'),
@@ -396,7 +403,11 @@ class _SessionHeader extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -458,9 +469,11 @@ class _SessionHeaderCopy extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Question ${index + 1} of $total',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(color: Colors.white, letterSpacing: -0.35),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.35,
+          ),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -741,17 +754,18 @@ class _RecallPanel extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'How well did you remember this?',
-            style: AppTypography.premiumHeading(
-              theme.textTheme.titleMedium,
-            ).copyWith(color: const Color(0xFF10264A)),
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: const Color(0xFF10264A),
+              fontWeight: FontWeight.w900,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -801,6 +815,14 @@ class _OutcomeActions extends StatelessWidget {
     final remembered = FilledButton.icon(
       key: const Key('quick-revision-got-it'),
       onPressed: saving ? null : onRemembered,
+      style: FilledButton.styleFrom(
+        backgroundColor: const Color(0xFF073A6A),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        textStyle: const TextStyle(fontWeight: FontWeight.w900),
+      ),
       icon: const Icon(Icons.check_rounded),
       label: const Text('Got it'),
     );
