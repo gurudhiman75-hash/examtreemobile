@@ -83,7 +83,9 @@ class _AuthEntryViewState extends State<AuthEntryView> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final featureHeight = textScale > 1.45 ? 250.0 : 194.0;
+    final featureHeight = textScale > 1.45
+        ? (190 * textScale).clamp(290, 390).toDouble()
+        : 200.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
@@ -254,7 +256,7 @@ class _FeatureSlide extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 1),
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(26),
         gradient: const LinearGradient(
@@ -472,8 +474,6 @@ class _AuthPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     InputDecoration fieldDecoration({
       required String label,
       required IconData icon,
