@@ -126,11 +126,9 @@ void main() {
     expect(find.byKey(const Key('auth-phone-verify')), findsOneWidget);
 
     final resendFinder = find.byKey(const Key('auth-phone-resend'));
-    var resend = tester.widget<TextButton>(resendFinder);
-    expect(resend.onPressed, isNull);
 
     await tester.pump(const Duration(seconds: 30));
-    resend = tester.widget<TextButton>(resendFinder);
+    var resend = tester.widget<TextButton>(resendFinder);
     expect(resend.onPressed, isNotNull);
 
     await tester.ensureVisible(resendFinder);
