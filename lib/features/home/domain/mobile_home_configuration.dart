@@ -279,6 +279,9 @@ class MobileHomeConfiguration {
       'exam_categories',
       'featured_test_series',
       'continue_learning',
+      'recommended_learning',
+      'current_affairs',
+      'today_goal',
     ],
   );
 
@@ -332,6 +335,9 @@ class MobileHomeConfiguration {
       'exam_categories',
       'featured_test_series',
       'continue_learning',
+      'recommended_learning',
+      'current_affairs',
+      'today_goal',
     ];
     final order = <String>[
       ...requested.where((section) =>
