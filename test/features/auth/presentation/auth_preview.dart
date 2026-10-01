@@ -55,10 +55,12 @@ void main() {
   }
 
   Widget preview({required bool registering}) {
+    final phone = TextEditingController();
     final name = TextEditingController();
     final email = TextEditingController();
     final password = TextEditingController();
     final confirmation = TextEditingController();
+    addTearDown(phone.dispose);
     addTearDown(name.dispose);
     addTearDown(email.dispose);
     addTearDown(password.dispose);
@@ -105,11 +107,13 @@ void main() {
           isLoading: false,
           obscurePassword: true,
           loadingMessage: null,
+          phoneController: phone,
           nameController: name,
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
           showApple: false,
+          onPhoneContinue: () {},
           onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
