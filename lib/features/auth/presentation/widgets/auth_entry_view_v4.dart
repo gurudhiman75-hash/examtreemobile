@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -399,7 +401,7 @@ class _MobileLoginCard extends StatelessWidget {
   }
 }
 
-class _OtpVerificationCard extends StatelessWidget {
+class _OtpVerificationCard extends StatefulWidget {
   const _OtpVerificationCard({
     required this.isLoading,
     required this.phoneNumber,
@@ -416,16 +418,62 @@ class _OtpVerificationCard extends StatelessWidget {
   final VoidCallback onResend;
   final VoidCallback onChangePhone;
 
+  @override
+  State<_OtpVerificationCard> createState() => _OtpVerificationCardState();
+}
+
+class _OtpVerificationCardState extends State<_OtpVerificationCard> {
+  static const _resendDelaySeconds = 30;
+
+  Timer? _resendTimer;
+  int _resendSecondsRemaining = _resendDelaySeconds;
+
+  @override
+  void initState() {
+    super.initState();
+    _startResendCountdown();
+  }
+
+  @override
+  void dispose() {
+    _resendTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startResendCountdown() {
+    _resendTimer?.cancel();
+    _resendSecondsRemaining = _resendDelaySeconds;
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_resendSecondsRemaining <= 1) {
+        timer.cancel();
+        setState(() => _resendSecondsRemaining = 0);
+        return;
+      }
+      setState(() => _resendSecondsRemaining--);
+    });
+  }
+
   String get _maskedPhone {
-    final digits = phoneNumber.replaceAll(RegExp(r'\D'), '');
-    if (digits.length < 4) return phoneNumber;
+    final digits = widget.phoneNumber.replaceAll(RegExp(r'\D'), '');
+    if (digits.length < 4) return widget.phoneNumber;
     final suffix = digits.substring(digits.length - 4);
     return '+91 ••••••$suffix';
+  }
+
+  void _resend() {
+    if (widget.isLoading || _resendSecondsRemaining > 0) return;
+    widget.onResend();
+    _startResendCountdown();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final canResend = !widget.isLoading && _resendSecondsRemaining == 0;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
@@ -480,7 +528,7 @@ class _OtpVerificationCard extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: isLoading ? null : onChangePhone,
+                onPressed: widget.isLoading ? null : widget.onChangePhone,
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   padding:
@@ -495,15 +543,15 @@ class _OtpVerificationCard extends StatelessWidget {
           const SizedBox(height: 14),
           TextField(
             key: const Key('auth-phone-otp'),
-            controller: otpController,
-            enabled: !isLoading,
+            controller: widget.otpController,
+            enabled: !widget.isLoading,
             autofocus: true,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
             maxLength: 6,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onSubmitted: (_) {
-              if (!isLoading) onVerify();
+              if (!widget.isLoading) widget.onVerify();
             },
             textAlign: TextAlign.center,
             style: const TextStyle(
@@ -539,7 +587,7 @@ class _OtpVerificationCard extends StatelessWidget {
           const SizedBox(height: 10),
           FilledButton(
             key: const Key('auth-phone-verify'),
-            onPressed: isLoading ? null : onVerify,
+            onPressed: widget.isLoading ? null : widget.onVerify,
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(50),
               backgroundColor: const Color(0xFF073A6A),
@@ -566,12 +614,17 @@ class _OtpVerificationCard extends StatelessWidget {
           const SizedBox(height: 8),
           TextButton(
             key: const Key('auth-phone-resend'),
-            onPressed: isLoading ? null : onResend,
+            onPressed: canResend ? _resend : null,
             style: TextButton.styleFrom(
               foregroundColor: const Color(0xFF4E6077),
+              disabledForegroundColor: const Color(0xFF9AA6B7),
               textStyle: const TextStyle(fontWeight: FontWeight.w700),
             ),
-            child: const Text('Didn’t receive the code? Resend OTP'),
+            child: Text(
+              _resendSecondsRemaining > 0
+                  ? 'Resend OTP in ${_resendSecondsRemaining}s'
+                  : 'Didn’t receive the code? Resend OTP',
+            ),
           ),
         ],
       ),
