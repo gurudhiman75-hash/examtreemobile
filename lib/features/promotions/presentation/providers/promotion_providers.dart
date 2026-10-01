@@ -1,26 +1,44 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../../../../core/providers/repository_providers.dart';
-
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
+import '../../../preferences/domain/question_language.dart';
+import '../../../preferences/presentation/providers/question_language_providers.dart';
+import '../../data/local_promotion_exposure_store.dart';
 import '../../domain/promotion_campaign.dart';
 
 const promotionCampaignsRemoteKey = 'promotion_campaigns_json';
+
+String _apiPlacement(PromotionPlacement placement) => switch (placement) {
+      PromotionPlacement.home => 'home',
+      PromotionPlacement.learn => 'learn',
+      PromotionPlacement.tests => 'tests',
+      PromotionPlacement.results => 'results',
+      _ => 'home',
+    };
+
+String _languageCode(QuestionLanguage language) => switch (language) {
+      QuestionLanguage.english => 'en',
+      QuestionLanguage.hindi => 'hi',
+      QuestionLanguage.punjabi => 'pa',
+    };
 
 class ApiMobilePromotionSource {
   const ApiMobilePromotionSource(this._apiClient);
 
   final ApiClient _apiClient;
 
-  Future<List<PromotionCampaign>> loadHome() async {
+  Future<List<PromotionCampaign>> load(PromotionPlacement placement) async {
     try {
       final response = await _apiClient.dio.get<Map<String, dynamic>>(
         'mobile/promotions',
-        queryParameters: const <String, Object?>{'placement': 'home'},
+        queryParameters: <String, Object?>{
+          'placement': _apiPlacement(placement),
+        },
       );
       final raw = response.data?['promotions'];
       if (raw is! List) return const <PromotionCampaign>[];
@@ -38,25 +56,53 @@ class ApiMobilePromotionSource {
         final destinationValue =
             map['destinationValue']?.toString().trim() ?? '';
         String? deepLink;
+        String? externalUrl;
         if (destinationType == 'exam' && destinationValue.isNotEmpty) {
-          deepLink = '/exam-details?id=${Uri.encodeQueryComponent(destinationValue)}';
+          deepLink =
+              '/exam-details?id=${Uri.encodeQueryComponent(destinationValue)}';
         } else if (destinationType == 'test_series') {
-          deepLink = '/exams';
+          deepLink = '/store?section=tests';
         } else if (destinationType == 'learn') {
-          deepLink = destinationValue.startsWith('/') ? destinationValue : '/learn';
+          deepLink =
+              destinationValue.startsWith('/') ? destinationValue : '/learn';
+        } else if (destinationType == 'url' &&
+            isSafePromotionExternalUrl(destinationValue)) {
+          externalUrl = destinationValue;
+        }
+
+        final audienceRaw = map['audience'];
+        final audience = audienceRaw is Map
+            ? Map<String, dynamic>.from(audienceRaw)
+            : const <String, dynamic>{};
+        List<String> list(String key) {
+          final value = audience[key];
+          if (value is! List) return const <String>[];
+          return value
+              .map((item) => item.toString().trim())
+              .where((item) => item.isNotEmpty)
+              .toSet()
+              .toList(growable: false);
         }
 
         final order = int.tryParse(map['sortOrder']?.toString() ?? '') ?? 0;
+        final cap =
+            int.tryParse(map['frequencyCapPerDay']?.toString() ?? '');
+
         campaigns.add(
           PromotionCampaign(
             id: id,
             title: title,
             subtitle: subtitle,
-            placements: const <PromotionPlacement>{PromotionPlacement.home},
-            ctaLabel: deepLink == null ? null : 'Explore',
+            placements: <PromotionPlacement>{placement},
+            ctaLabel: deepLink == null && externalUrl == null ? null : 'Explore',
             deepLink: deepLink,
+            externalUrl: externalUrl,
             imageUrl: map['imageUrl']?.toString(),
             priority: 1000 - order,
+            languageCodes: list('languageCodes'),
+            examIds: list('examIds'),
+            isDismissible: map['isDismissible'] == true,
+            frequencyCapPerDay: cap != null && cap > 0 ? cap : null,
           ),
         );
       }
@@ -67,11 +113,11 @@ class ApiMobilePromotionSource {
   }
 }
 
-final apiMobilePromotionSourceProvider = Provider<ApiMobilePromotionSource?>((ref) {
+final apiMobilePromotionSourceProvider =
+    Provider<ApiMobilePromotionSource?>((ref) {
   if (Firebase.apps.isEmpty) return null;
   return ApiMobilePromotionSource(ref.watch(apiClientProvider));
 });
-
 
 class PromotionCampaignSource {
   PromotionCampaignSource(this._remoteConfig);
@@ -102,32 +148,41 @@ class PromotionCampaignSource {
   }
 }
 
-final promotionCampaignSourceProvider = Provider<PromotionCampaignSource?>((ref) {
+final promotionCampaignSourceProvider =
+    Provider<PromotionCampaignSource?>((ref) {
   try {
     return PromotionCampaignSource(FirebaseRemoteConfig.instance);
   } catch (_) {
-    // Widget tests and partially configured clients may not have a Firebase app.
-    // Promotions are optional, so this must resolve to an empty campaign set
-    // instead of entering Riverpod's retry cycle.
     return null;
   }
 });
 
-final promotionCampaignsProvider = FutureProvider<List<PromotionCampaign>>((ref) async {
+final promotionCampaignsProvider =
+    FutureProvider<List<PromotionCampaign>>((ref) async {
   final source = ref.watch(promotionCampaignSourceProvider);
   if (source == null) return const <PromotionCampaign>[];
   return source.load();
 });
 
-final promotionClockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+final promotionClockProvider =
+    Provider<DateTime Function()>((ref) => DateTime.now);
 
-/// Returns My Exams only for a verified authenticated learner. Firebase-less
-/// tests, signed-out clients, loading preferences and preference failures all
-/// fail closed for exam-targeted campaigns while general campaigns remain safe.
-final promotionAudienceExamIdsProvider = Provider<AsyncValue<List<String>>?>((ref) {
+final promotionExposureStoreProvider =
+    Provider<LocalPromotionExposureStore>((ref) {
+  return LocalPromotionExposureStore();
+});
+
+/// Returns My Exams only for an authenticated learner. Firebase-less tests,
+/// signed-out clients, loading preferences and preference failures fail closed
+/// for exam-targeted campaigns while general campaigns remain safe.
+final promotionAudienceExamIdsProvider =
+    Provider<AsyncValue<List<String>>?>((ref) {
   try {
     final user = ref.watch(firebaseAuthProvider).currentUser;
-    if (user == null || !user.emailVerified) return null;
+    final authenticated = user != null &&
+        (user.emailVerified ||
+            (user.phoneNumber?.trim().isNotEmpty ?? false));
+    if (!authenticated) return null;
     return ref.watch(selectedExamIdsProvider);
   } catch (_) {
     return null;
@@ -139,28 +194,55 @@ final promotionsForPlacementProvider = FutureProvider.family<
   final audience = placement == PromotionPlacement.login
       ? null
       : ref.watch(promotionAudienceExamIdsProvider);
-  final campaigns = placement == PromotionPlacement.home
+
+  final isApiPlacement = {
+    PromotionPlacement.home,
+    PromotionPlacement.learn,
+    PromotionPlacement.tests,
+    PromotionPlacement.results,
+  }.contains(placement);
+
+  final campaigns = isApiPlacement
       ? await (() async {
           final source = ref.watch(apiMobilePromotionSourceProvider);
           if (source == null) return const <PromotionCampaign>[];
-          return source.loadHome();
+          return source.load(placement);
         })()
       : await ref.watch(promotionCampaignsProvider.future);
+
   final now = ref.watch(promotionClockProvider)();
   final selectedExamIds = switch (audience) {
     AsyncData(value: final ids) => ids.toSet(),
     _ => const <String>{},
   };
 
-  return selectPromotionCampaigns(
+  String? languageCode;
+  if (placement != PromotionPlacement.login) {
+    try {
+      languageCode =
+          _languageCode(await ref.watch(questionLanguageProvider.future));
+    } catch (_) {
+      languageCode = 'en';
+    }
+  }
+
+  final selected = selectPromotionCampaigns(
     campaigns: campaigns,
     placement: placement,
     now: now,
+    languageCode: languageCode,
     selectedExamIds: selectedExamIds,
-    // Login remains unchanged because the learner is not authenticated there.
-    // Home/post-login require a real My Exams match before targeted copy appears.
     requireExplicitExamMatch: placement != PromotionPlacement.login,
   );
+
+  final exposureStore = ref.watch(promotionExposureStoreProvider);
+  final visible = <PromotionCampaign>[];
+  for (final campaign in selected) {
+    if (await exposureStore.isEligible(campaign, now: now)) {
+      visible.add(campaign);
+    }
+  }
+  return List.unmodifiable(visible);
 });
 
 class PromotionSessionRegistry {
@@ -188,6 +270,7 @@ class PromotionSessionRegistry {
   }
 }
 
-final promotionSessionRegistryProvider = Provider<PromotionSessionRegistry>((ref) {
+final promotionSessionRegistryProvider =
+    Provider<PromotionSessionRegistry>((ref) {
   return PromotionSessionRegistry();
 });
