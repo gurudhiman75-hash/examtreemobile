@@ -92,6 +92,14 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
               if (campaign.hasAction)
                 FilledButton.icon(
                   key: Key('post-login-promotion-action-${campaign.id}'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF073A6A),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                   onPressed: () {
                     Navigator.of(sheetContext).pop();
                     context.push(campaign.deepLink!);
