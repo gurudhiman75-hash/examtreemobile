@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../content_planning/presentation/mobile_content_planning_providers.dart';
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
@@ -74,9 +73,9 @@ class LearnScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
+                10,
                 AppSpacing.sm,
-                AppSpacing.md,
+                10,
                 AppSpacing.xxl,
               ),
               sliver: SliverList.list(
@@ -186,19 +185,23 @@ class _LearnIntro extends ConsumerWidget {
 
     return Container(
       key: const Key('learn-hero'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: .18),
-            blurRadius: 26,
-            offset: const Offset(0, 12),
+            color: const Color(0xFF062D5C).withValues(alpha: .14),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
           ),
         ],
       ),
@@ -249,15 +252,14 @@ class _LearnIntro extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: 10),
               Text(
-                'Learn smarter.\nPractice better.',
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.headlineMedium,
-                ).copyWith(
+                'Learn smarter. Practice better.',
+                style: theme.textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
-                  height: 1.06,
-                  letterSpacing: -.7,
+                  fontWeight: FontWeight.w900,
+                  height: 1.08,
+                  letterSpacing: -.45,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -269,7 +271,7 @@ class _LearnIntro extends ConsumerWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 14),
               Row(
                 children: [
                   Expanded(
@@ -295,7 +297,7 @@ class _LearnIntro extends ConsumerWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(99),
                 child: LinearProgressIndicator(
-                  minHeight: 7,
+                  minHeight: 5,
                   value: progressValue.clamp(0.0, 1.0).toDouble(),
                   backgroundColor: Colors.white.withValues(alpha: .14),
                   valueColor: const AlwaysStoppedAnimation(
@@ -303,7 +305,7 @@ class _LearnIntro extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 14),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -563,10 +565,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
