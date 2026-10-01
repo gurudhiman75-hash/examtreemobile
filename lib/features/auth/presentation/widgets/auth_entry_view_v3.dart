@@ -129,10 +129,6 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                             );
                           },
                         ),
-                        if (widget.promotionalContent != null) ...[
-                          const SizedBox(height: 10),
-                          widget.promotionalContent!,
-                        ],
                         const SizedBox(height: 18),
                         Text(
                           widget.registering
@@ -216,6 +212,10 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                             ),
                           ],
                         ),
+                        if (widget.promotionalContent != null) ...[
+                          const SizedBox(height: 18),
+                          widget.promotionalContent!,
+                        ],
                       ],
                     ),
                   ),
