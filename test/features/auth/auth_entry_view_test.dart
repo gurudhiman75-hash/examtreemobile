@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late TextEditingController phone;
+  late TextEditingController otp;
   late TextEditingController name;
   late TextEditingController email;
   late TextEditingController password;
@@ -12,6 +13,7 @@ void main() {
 
   setUp(() {
     phone = TextEditingController();
+    otp = TextEditingController();
     name = TextEditingController();
     email = TextEditingController();
     password = TextEditingController();
@@ -20,6 +22,7 @@ void main() {
 
   tearDown(() {
     phone.dispose();
+    otp.dispose();
     name.dispose();
     email.dispose();
     password.dispose();
@@ -46,12 +49,18 @@ void main() {
           obscurePassword: true,
           loadingMessage: loadingMessage,
           phoneController: phone,
+          otpController: otp,
+          phoneCodeSent: false,
+          phoneNumber: null,
           nameController: name,
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
           showApple: showApple,
           onPhoneContinue: () {},
+          onVerifyPhoneCode: () {},
+          onResendPhoneCode: () {},
+          onChangePhone: () {},
           onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
