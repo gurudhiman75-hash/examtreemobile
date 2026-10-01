@@ -207,6 +207,8 @@ class HomeScreen extends ConsumerWidget {
                 : 'Exam Categories',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            iconName: examCategoriesSetting.iconName,
+            iconUrl: examCategoriesSetting.iconUrl,
           ),
           const SizedBox(height: 3),
           _ExamCategoriesGrid(
@@ -227,6 +229,8 @@ class HomeScreen extends ConsumerWidget {
                 : 'Featured Test Series',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            iconName: featuredSeriesSetting.iconName,
+            iconUrl: featuredSeriesSetting.iconUrl,
           ),
           const SizedBox(height: 6),
           if (homeConfig.featuredTestSeries.isNotEmpty)
@@ -273,6 +277,8 @@ class HomeScreen extends ConsumerWidget {
                 : 'Continue Learning',
             action: 'See All',
             onAction: () => context.go('/learn'),
+            iconName: continueLearningSetting.iconName,
+            iconUrl: continueLearningSetting.iconUrl,
           ),
           const SizedBox(height: 6),
           _ContinueLearningCard(
@@ -663,8 +669,18 @@ class _ConfiguredSeriesRail extends StatelessWidget {
                               width: 24,
                               height: 24,
                               fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) =>
-                                  const SizedBox.shrink(),
+                              errorBuilder: (_, __, ___) => Icon(
+                                _homeIconFromName(override.iconName),
+                                size: 24,
+                                color: foreground,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ] else if (override?.iconName.trim().isNotEmpty == true) ...[
+                            Icon(
+                              _homeIconFromName(override!.iconName),
+                              size: 24,
+                              color: foreground,
                             ),
                             const SizedBox(width: 8),
                           ],
@@ -1099,6 +1115,41 @@ class _PunjabLandmarkPainter extends CustomPainter {
   bool shouldRepaint(covariant _PunjabLandmarkPainter oldDelegate) => false;
 }
 
+IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded}) {
+  switch (value.trim().toLowerCase()) {
+    case 'school':
+    case 'teaching':
+      return Icons.school_rounded;
+    case 'bank':
+    case 'banking':
+      return Icons.account_balance_rounded;
+    case 'railway':
+    case 'train':
+      return Icons.train_rounded;
+    case 'defence':
+      return Icons.shield_rounded;
+    case 'government':
+    case 'govt':
+      return Icons.apartment_rounded;
+    case 'learn':
+    case 'book':
+      return Icons.menu_book_rounded;
+    case 'test':
+    case 'quiz':
+      return Icons.quiz_rounded;
+    case 'news':
+    case 'current_affairs':
+      return Icons.newspaper_rounded;
+    case 'star':
+      return Icons.star_rounded;
+    case 'location':
+    case 'punjab':
+      return Icons.location_on_rounded;
+    default:
+      return fallback;
+  }
+}
+
 class _ExamCategoriesGrid extends StatelessWidget {
   const _ExamCategoriesGrid({
     required this.onOpen,
@@ -1171,7 +1222,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                 override?.title.trim().isNotEmpty == true
                     ? override!.title
                     : base.$1,
-                base.$2,
+                override?.iconName.trim().isNotEmpty == true
+                    ? _homeIconFromName(override!.iconName, fallback: base.$2)
+                    : base.$2,
                 base.$3,
                 base.$4,
                 override?.iconUrl ?? '',
@@ -2488,21 +2541,51 @@ class _SectionTitle extends StatelessWidget {
     required this.title,
     required this.action,
     required this.onAction,
+    this.iconName = '',
+    this.iconUrl = '',
   });
 
   final String title;
   final String action;
   final VoidCallback onAction;
+  final String iconName;
+  final String iconUrl;
 
   @override
   Widget build(BuildContext context) {
-    final titleWidget = Text(
+    final titleText = Text(
       title,
       style: AppTypography.premiumHeading(
         Theme.of(context).textTheme.titleLarge,
       ).copyWith(
         color: const Color(0xFF10264A),
       ),
+    );
+    final titleWidget = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (iconUrl.trim().isNotEmpty)
+          Image.network(
+            iconUrl,
+            width: 22,
+            height: 22,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
+              _homeIconFromName(iconName),
+              size: 22,
+              color: const Color(0xFF10264A),
+            ),
+          )
+        else if (iconName.trim().isNotEmpty)
+          Icon(
+            _homeIconFromName(iconName),
+            size: 22,
+            color: const Color(0xFF10264A),
+          ),
+        if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
+          const SizedBox(width: 7),
+        Flexible(child: titleText),
+      ],
     );
     final actionWidget = TextButton(
       onPressed: onAction,
