@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/providers/promotion_providers.dart';
@@ -99,9 +98,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
+              10,
               AppSpacing.sm,
-              AppSpacing.md,
+              10,
               AppSpacing.xxl,
             ),
             sliver: SliverList.list(
@@ -210,19 +209,23 @@ class _PerformanceHero extends StatelessWidget {
     final theme = Theme.of(context);
     final average = summary.averageScore.clamp(0, 100).toDouble();
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: 0.18),
-            blurRadius: 28,
-            offset: const Offset(0, 12),
+            color: const Color(0xFF062D5C).withValues(alpha: .14),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
           ),
         ],
       ),
@@ -292,7 +295,7 @@ class _PerformanceHero extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: 14),
           LayoutBuilder(
             builder: (context, constraints) {
               final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
@@ -395,10 +398,10 @@ class _HistoryToolsIntro extends StatelessWidget {
             children: [
               Text(
                 'Find an attempt',
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.titleLarge,
-                ).copyWith(
+                style: theme.textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.3,
                 ),
               ),
               const SizedBox(height: AppSpacing.xxs),
@@ -484,10 +487,10 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         if (subtitle != null) ...[
@@ -597,8 +600,15 @@ class _ResultCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFE8EDF3)),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE3E9F1)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF10264A).withValues(alpha: .035),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
