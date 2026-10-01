@@ -8,6 +8,7 @@ import 'package:examtree/features/preferences/domain/question_language.dart';
 import 'package:examtree/features/preferences/presentation/providers/question_language_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeQuestions implements LearnPracticeQuestionRepository {
@@ -123,4 +124,51 @@ void main() {
     expect(find.text('Who chaired the Drafting Committee?'), findsOneWidget);
     expect(progress.values['POL-LRN-001']?.currentQuestion, 1);
   });
+
+  testWidgets('practice back falls back to Learn when there is no route to pop', (tester) async {
+    final progress = _MemoryProgress();
+    final router = GoRouter(
+      initialLocation: '/learn-practice',
+      routes: [
+        GoRoute(
+          path: '/learn-practice',
+          builder: (context, state) =>
+              const LearnPracticeScreen(topicId: 'POL-LRN-001'),
+        ),
+        GoRoute(
+          path: '/learn',
+          builder: (context, state) =>
+              const Scaffold(body: Center(child: Text('Learn landing'))),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          questionLanguageProvider.overrideWith(
+            (ref) async => QuestionLanguage.english,
+          ),
+          learnPracticeQuestionRepositoryProvider.overrideWithValue(
+            _FakeQuestions(),
+          ),
+          learnPracticeProgressStoreProvider.overrideWithValue(progress),
+        ],
+        child: MaterialApp.router(
+          theme: AppTheme.lightTheme,
+          routerConfig: router,
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('learn-practice-back')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('learn-practice-back')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Learn landing'), findsOneWidget);
+    expect(router.routeInformationProvider.value.uri.path, '/learn');
+  });
+
 }
