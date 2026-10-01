@@ -5,7 +5,6 @@ import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
-import '../../../shared/widgets/primary_button.dart';
 import 'providers/result_providers.dart';
 import 'review_question_filter.dart';
 
@@ -853,7 +852,7 @@ class _ReviewNavigation extends StatelessWidget {
     final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     return Material(
-      color: theme.colorScheme.surface,
+      color: Colors.white,
       elevation: 8,
       shadowColor: AppColors.shadow.withValues(alpha: 0.08),
       child: SafeArea(
@@ -869,10 +868,24 @@ class _ReviewNavigation extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back_rounded),
                 label: const Text('Previous'),
               );
-              final next = PrimaryButton(
+              final next = FilledButton.icon(
                 key: const Key('review-next-finish'),
-                text: canGoForward ? 'Next' : 'Finish',
                 onPressed: canGoForward ? onForward : onFinish,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                  backgroundColor: const Color(0xFF073A6A),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                ),
+                icon: Icon(
+                  canGoForward
+                      ? Icons.arrow_forward_rounded
+                      : Icons.check_rounded,
+                ),
+                label: Text(canGoForward ? 'Next' : 'Finish'),
               );
               if (stack) {
                 return Column(
