@@ -73,12 +73,31 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                campaign.title,
-                style: Theme.of(sheetContext).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.35,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      campaign.title,
+                      style: Theme.of(sheetContext)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(
+                            color: const Color(0xFF10264A),
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -.35,
+                          ),
                     ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  IconButton(
+                    key: Key('post-login-promotion-close-${campaign.id}'),
+                    tooltip: 'Close promotion',
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+                ],
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
