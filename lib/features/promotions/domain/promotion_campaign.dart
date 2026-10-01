@@ -1,12 +1,15 @@
 import 'dart:convert';
 
-enum PromotionPlacement { login, home, postLogin }
+enum PromotionPlacement { login, home, learn, tests, results, postLogin }
 
 PromotionPlacement? promotionPlacementFromJson(Object? value) {
   final normalized = value?.toString().trim().toLowerCase();
   return switch (normalized) {
     'login' => PromotionPlacement.login,
     'home' => PromotionPlacement.home,
+    'learn' => PromotionPlacement.learn,
+    'tests' || 'exams' => PromotionPlacement.tests,
+    'results' => PromotionPlacement.results,
     'postlogin' || 'post_login' || 'post-login' => PromotionPlacement.postLogin,
     _ => null,
   };
@@ -20,6 +23,14 @@ bool isSafePromotionDeepLink(String? value) {
   return uri.path.startsWith('/');
 }
 
+bool isSafePromotionExternalUrl(String? value) {
+  final raw = value?.trim() ?? '';
+  final uri = Uri.tryParse(raw);
+  return uri != null &&
+      (uri.scheme == 'https' || uri.scheme == 'http') &&
+      uri.host.isNotEmpty;
+}
+
 class PromotionCampaign {
   const PromotionCampaign({
     required this.id,
@@ -28,12 +39,15 @@ class PromotionCampaign {
     required this.placements,
     this.ctaLabel,
     this.deepLink,
+    this.externalUrl,
     this.imageUrl,
     this.priority = 0,
     this.startsAt,
     this.endsAt,
     this.languageCodes = const <String>[],
     this.examIds = const <String>[],
+    this.isDismissible = false,
+    this.frequencyCapPerDay,
   });
 
   final String id;
@@ -42,15 +56,20 @@ class PromotionCampaign {
   final Set<PromotionPlacement> placements;
   final String? ctaLabel;
   final String? deepLink;
+  final String? externalUrl;
   final String? imageUrl;
   final int priority;
   final DateTime? startsAt;
   final DateTime? endsAt;
   final List<String> languageCodes;
   final List<String> examIds;
+  final bool isDismissible;
+  final int? frequencyCapPerDay;
 
   bool get hasAction =>
-      (ctaLabel?.trim().isNotEmpty ?? false) && isSafePromotionDeepLink(deepLink);
+      (ctaLabel?.trim().isNotEmpty ?? false) &&
+      (isSafePromotionDeepLink(deepLink) ||
+          isSafePromotionExternalUrl(externalUrl));
 
   bool isActiveAt(DateTime now) {
     if (startsAt != null && now.isBefore(startsAt!)) return false;
@@ -110,11 +129,19 @@ class PromotionCampaign {
     }
 
     final rawDeepLink = optionalText('deepLink');
-    final safeDeepLink = isSafePromotionDeepLink(rawDeepLink) ? rawDeepLink : null;
+    final safeDeepLink =
+        isSafePromotionDeepLink(rawDeepLink) ? rawDeepLink : null;
+    final rawExternalUrl = optionalText('externalUrl');
+    final safeExternalUrl =
+        isSafePromotionExternalUrl(rawExternalUrl) ? rawExternalUrl : null;
     final priorityValue = map['priority'];
     final priority = priorityValue is num
         ? priorityValue.toInt()
         : int.tryParse(priorityValue?.toString() ?? '') ?? 0;
+    final capValue = map['frequencyCapPerDay'];
+    final frequencyCapPerDay = capValue is num
+        ? capValue.toInt()
+        : int.tryParse(capValue?.toString() ?? '');
 
     return PromotionCampaign(
       id: id,
@@ -123,12 +150,17 @@ class PromotionCampaign {
       placements: placements,
       ctaLabel: optionalText('ctaLabel'),
       deepLink: safeDeepLink,
+      externalUrl: safeExternalUrl,
       imageUrl: optionalText('imageUrl'),
       priority: priority,
       startsAt: date('startsAt'),
       endsAt: date('endsAt'),
       languageCodes: strings('languageCodes'),
       examIds: strings('examIds'),
+      isDismissible: map['isDismissible'] == true,
+      frequencyCapPerDay: frequencyCapPerDay != null && frequencyCapPerDay > 0
+          ? frequencyCapPerDay
+          : null,
     );
   }
 }
