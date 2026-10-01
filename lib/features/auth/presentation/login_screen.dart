@@ -11,6 +11,34 @@ import '../domain/auth_error_messages.dart';
 import 'providers/auth_providers.dart';
 import 'widgets/auth_entry_view.dart';
 
+const _loginFallbackCampaigns = <PromotionCampaign>[
+  PromotionCampaign(
+    id: 'login-feature-learn',
+    title: 'Everything you need to prepare with focus',
+    subtitle:
+        'Structured learning, exam-style practice and progress tracking in one place.',
+    placements: {PromotionPlacement.login},
+    priority: 30,
+  ),
+  PromotionCampaign(
+    id: 'login-feature-practice',
+    title: 'Practice the way real exams ask',
+    subtitle:
+        'Use focused mock tests and detailed solutions to turn preparation into exam readiness.',
+    placements: {PromotionPlacement.login},
+    priority: 20,
+  ),
+  PromotionCampaign(
+    id: 'login-feature-progress',
+    title: 'Know what to revise next',
+    subtitle:
+        'Continue where you left off and use your progress to keep revision targeted.',
+    placements: {PromotionPlacement.login},
+    priority: 10,
+  ),
+];
+
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -292,8 +320,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       confirmPasswordController: _confirmPasswordController,
       promotionalContent: const PromotionPlacementView(
         placement: PromotionPlacement.login,
-        compact: true,
         markLoginCampaignsPresented: true,
+        visualStyle: PromotionCarouselVisualStyle.loginFeature,
+        fallbackCampaigns: _loginFallbackCampaigns,
       ),
       showApple: showApple,
       onApple: _signInWithApple,
