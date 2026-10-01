@@ -239,7 +239,7 @@ class _ReviewOverview extends StatelessWidget {
           Text(
             'ATTEMPT REVIEW',
             style: theme.textTheme.labelSmall?.copyWith(
-              color: AppColors.primary,
+              color: const Color(0xFFFFD36B),
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
             ),
@@ -685,7 +685,12 @@ class _OptionReviewTile extends StatelessWidget {
         ? AppColors.onMintContainer
         : isSelected
             ? AppColors.onRoseContainer
-            : theme.colorScheme.onSurface;
+            : const Color(0xFF26384F);
+    final border = isCorrect
+        ? AppColors.mint.withValues(alpha: .18)
+        : isSelected
+            ? AppColors.rose.withValues(alpha: .18)
+            : const Color(0xFFE3E9F1);
 
     String? annotation;
     IconData? icon;
@@ -697,80 +702,68 @@ class _OptionReviewTile extends StatelessWidget {
       icon = Icons.cancel_rounded;
     }
 
-    return Material(
-      color: background,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: isCorrect
-                ? AppColors.mint.withValues(alpha: .18)
-                : isSelected
-                    ? AppColors.rose.withValues(alpha: .18)
-                    : const Color(0xFFE3E9F1),
-          ),
-        ),
-        child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: foreground.withValues(alpha: 0.1),
-              ),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  optionKey,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w900,
-                  ),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: foreground.withValues(alpha: .09),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                optionKey,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  question.options[optionIndex],
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: foreground,
+                    fontWeight:
+                        isCorrect || isSelected ? FontWeight.w700 : FontWeight.w500,
+                    height: 1.4,
+                  ),
+                ),
+                if (annotation != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
-                    question.options[optionIndex],
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    annotation,
+                    style: theme.textTheme.labelSmall?.copyWith(
                       color: foreground,
-                      fontWeight: isCorrect || isSelected
-                          ? FontWeight.w700
-                          : FontWeight.normal,
-                      height: 1.4,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                  if (annotation != null) ...[
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      annotation,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
-            if (icon != null) ...[
-              const SizedBox(width: AppSpacing.xs),
-              Icon(icon, color: foreground),
-            ],
+          ),
+          if (icon != null) ...[
+            const SizedBox(width: AppSpacing.xs),
+            Icon(icon, color: foreground),
           ],
-        ),
+        ],
       ),
-    ),
     );
   }
 }
@@ -809,7 +802,7 @@ class _ExplanationCard extends StatelessWidget {
                 child: const Icon(
                   Icons.lightbulb_outline_rounded,
                   size: 19,
-                  color: const Color(0xFF0B5D96),
+                  color: Color(0xFF0B5D96),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -830,7 +823,7 @@ class _ExplanationCard extends StatelessWidget {
                 ? 'No explanation was stored for this question.'
                 : explanation,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppColors.onPrimaryContainer,
+              color: const Color(0xFF334E68),
               height: 1.6,
             ),
           ),
