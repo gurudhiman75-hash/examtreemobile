@@ -18,6 +18,7 @@ String _apiPlacement(PromotionPlacement placement) => switch (placement) {
       PromotionPlacement.learn => 'learn',
       PromotionPlacement.tests => 'tests',
       PromotionPlacement.results => 'results',
+      PromotionPlacement.postLogin => 'login_popup',
       _ => 'home',
     };
 
@@ -200,6 +201,7 @@ final promotionsForPlacementProvider = FutureProvider.family<
     PromotionPlacement.learn,
     PromotionPlacement.tests,
     PromotionPlacement.results,
+    PromotionPlacement.postLogin,
   }.contains(placement);
 
   final campaigns = isApiPlacement

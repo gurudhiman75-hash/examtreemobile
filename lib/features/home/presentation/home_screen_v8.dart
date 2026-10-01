@@ -29,6 +29,7 @@ import '../domain/mobile_home_configuration.dart';
 import 'home_exam_priority.dart';
 import 'home_primary_action.dart';
 import 'mobile_home_providers.dart';
+import 'mobile_custom_home_section.dart';
 
 final homeV8SelectedExamCodesProvider =
     Provider<AsyncValue<List<String>>>((ref) {
@@ -128,9 +129,14 @@ class HomeScreen extends ConsumerWidget {
     final campaigns = campaignsAsync.value ?? const <PromotionCampaign>[];
     final homeConfig =
         homeConfigAsync.value ?? MobileHomeConfiguration.fallback;
+    final examCategoriesSetting = homeConfig.settingFor('exam_categories');
+    final featuredSeriesSetting = homeConfig.settingFor('featured_test_series');
+    final continueLearningSetting = homeConfig.settingFor('continue_learning');
+    final heroSetting = homeConfig.settingFor('hero');
 
     final configurableSections = <String, Widget>{
-      'hero': Column(
+      'hero': heroSetting.isVisible
+          ? Column(
         children: [
           if (homeConfig.heroSlides.isNotEmpty)
             _ConfiguredHeroCarousel(
@@ -190,33 +196,47 @@ class HomeScreen extends ConsumerWidget {
           ],
           const SizedBox(height: 12),
         ],
-      ),
-      'exam_categories': Column(
+      )
+          : const SizedBox.shrink(),
+      'exam_categories': examCategoriesSetting.isVisible
+          ? Column(
         children: [
           _SectionTitle(
-            title: 'Exam Categories',
+            title: examCategoriesSetting.title.trim().isNotEmpty
+                ? examCategoriesSetting.title
+                : 'Exam Categories',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            iconName: examCategoriesSetting.iconName,
+            iconUrl: examCategoriesSetting.iconUrl,
           ),
           const SizedBox(height: 3),
           _ExamCategoriesGrid(
             families: homeConfig.featuredExamFamilies,
+            overrides: homeConfig.itemOverrides,
             onOpen: () => context.go('/exams'),
           ),
           const SizedBox(height: 8),
         ],
-      ),
-      'featured_test_series': Column(
+      )
+          : const SizedBox.shrink(),
+      'featured_test_series': featuredSeriesSetting.isVisible
+          ? Column(
         children: [
           _SectionTitle(
-            title: 'Featured Test Series',
+            title: featuredSeriesSetting.title.trim().isNotEmpty
+                ? featuredSeriesSetting.title
+                : 'Featured Test Series',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            iconName: featuredSeriesSetting.iconName,
+            iconUrl: featuredSeriesSetting.iconUrl,
           ),
           const SizedBox(height: 6),
           if (homeConfig.featuredTestSeries.isNotEmpty)
             _ConfiguredSeriesRail(
               series: homeConfig.featuredTestSeries,
+              overrides: homeConfig.itemOverrides,
               onOpen: (_) => context.push('/store?section=tests'),
             )
           else
@@ -246,13 +266,19 @@ class HomeScreen extends ConsumerWidget {
             ),
           const SizedBox(height: 16),
         ],
-      ),
-      'continue_learning': Column(
+      )
+          : const SizedBox.shrink(),
+      'continue_learning': continueLearningSetting.isVisible
+          ? Column(
         children: [
           _SectionTitle(
-            title: 'Continue Learning',
+            title: continueLearningSetting.title.trim().isNotEmpty
+                ? continueLearningSetting.title
+                : 'Continue Learning',
             action: 'See All',
             onAction: () => context.go('/learn'),
+            iconName: continueLearningSetting.iconName,
+            iconUrl: continueLearningSetting.iconUrl,
           ),
           const SizedBox(height: 6),
           _ContinueLearningCard(
@@ -269,7 +295,10 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
         ],
-      ),
+      )
+          : const SizedBox.shrink(),
+      for (final section in homeConfig.customSections)
+        section.id: MobileCustomHomeSectionView(section: section),
     };
 
     final orderedSections = homeConfig.sectionOrder
@@ -569,10 +598,12 @@ class _ConfiguredSeriesRail extends StatelessWidget {
   const _ConfiguredSeriesRail({
     required this.series,
     required this.onOpen,
+    this.overrides = const {},
   });
 
   final List<MobileFeaturedTestSeries> series;
   final ValueChanged<MobileFeaturedTestSeries> onOpen;
+  final Map<String, MobileHomeItemOverride> overrides;
 
   @override
   Widget build(BuildContext context) {
@@ -581,10 +612,20 @@ class _ConfiguredSeriesRail extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: series.length,
+        itemCount: series.where((item) => !(overrides[item.id]?.hidden ?? false)).length,
         separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
         itemBuilder: (context, index) {
-          final item = series[index];
+          final visibleSeries = series
+              .where((value) => !(overrides[value.id]?.hidden ?? false))
+              .toList(growable: false);
+          final item = visibleSeries[index];
+          final override = overrides[item.id];
+          final displayName = override?.title.trim().isNotEmpty == true
+              ? override!.title
+              : item.name;
+          final displaySubtitle = override?.subtitle.trim().isNotEmpty == true
+              ? override!.subtitle
+              : item.examName;
           final alternate = index.isOdd;
           final foreground =
               alternate ? const Color(0xFF152746) : Colors.white;
@@ -620,17 +661,44 @@ class _ConfiguredSeriesRail extends StatelessWidget {
                             ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        item.name,
+                      Row(
+                        children: [
+                          if (override?.iconUrl.trim().isNotEmpty == true) ...[
+                            Image.network(
+                              override!.iconUrl,
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, __, ___) => Icon(
+                                _homeIconFromName(override.iconName),
+                                size: 24,
+                                color: foreground,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ] else if (override?.iconName.trim().isNotEmpty == true) ...[
+                            Icon(
+                              _homeIconFromName(override!.iconName),
+                              size: 24,
+                              color: foreground,
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          Expanded(
+                            child: Text(
+                        displayName,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.premiumHeading(
                           Theme.of(context).textTheme.titleLarge,
                         ).copyWith(color: foreground, height: 1.06),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        item.examName,
+                        displaySubtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1047,21 +1115,61 @@ class _PunjabLandmarkPainter extends CustomPainter {
   bool shouldRepaint(covariant _PunjabLandmarkPainter oldDelegate) => false;
 }
 
+IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded}) {
+  switch (value.trim().toLowerCase()) {
+    case 'school':
+    case 'teaching':
+      return Icons.school_rounded;
+    case 'bank':
+    case 'banking':
+      return Icons.account_balance_rounded;
+    case 'railway':
+    case 'train':
+      return Icons.train_rounded;
+    case 'defence':
+      return Icons.shield_rounded;
+    case 'government':
+    case 'govt':
+      return Icons.apartment_rounded;
+    case 'learn':
+    case 'book':
+      return Icons.menu_book_rounded;
+    case 'test':
+    case 'quiz':
+      return Icons.quiz_rounded;
+    case 'news':
+    case 'current_affairs':
+      return Icons.newspaper_rounded;
+    case 'star':
+      return Icons.star_rounded;
+    case 'location':
+    case 'punjab':
+      return Icons.location_on_rounded;
+    default:
+      return fallback;
+  }
+}
+
 class _ExamCategoriesGrid extends StatelessWidget {
-  const _ExamCategoriesGrid({required this.onOpen, this.families = const []});
+  const _ExamCategoriesGrid({
+    required this.onOpen,
+    this.families = const [],
+    this.overrides = const {},
+  });
 
   final VoidCallback onOpen;
   final List<MobileFeaturedExamFamily> families;
+  final Map<String, MobileHomeItemOverride> overrides;
 
   static const _items = [
-    ('Punjab Govt.', Icons.location_on_rounded, Color(0xFFFFEFEF), Color(0xFFF04452)),
-    ('SSC', Icons.workspace_premium_rounded, Color(0xFFEAF8F2), Color(0xFF11966F)),
-    ('Banking', Icons.account_balance_rounded, Color(0xFFECF4FF), Color(0xFF1672E8)),
-    ('Railway', Icons.train_rounded, Color(0xFFF3EEFF), Color(0xFF7248E8)),
-    ('Teaching', Icons.school_rounded, Color(0xFFFFF5E8), Color(0xFFF28A19)),
-    ('Defence', Icons.shield_rounded, Color(0xFFEAF8F2), Color(0xFF159D73)),
-    ('State PCS', Icons.apartment_rounded, Color(0xFFFFEEEE), Color(0xFFF04452)),
-    ('Other Exams', Icons.grid_view_rounded, Color(0xFFF1F4F8), Color(0xFF718096)),
+    ('Punjab Govt.', Icons.location_on_rounded, Color(0xFFFFEFEF), Color(0xFFF04452), ''),
+    ('SSC', Icons.workspace_premium_rounded, Color(0xFFEAF8F2), Color(0xFF11966F), ''),
+    ('Banking', Icons.account_balance_rounded, Color(0xFFECF4FF), Color(0xFF1672E8), ''),
+    ('Railway', Icons.train_rounded, Color(0xFFF3EEFF), Color(0xFF7248E8), ''),
+    ('Teaching', Icons.school_rounded, Color(0xFFFFF5E8), Color(0xFFF28A19), ''),
+    ('Defence', Icons.shield_rounded, Color(0xFFEAF8F2), Color(0xFF159D73), ''),
+    ('State PCS', Icons.apartment_rounded, Color(0xFFFFEEEE), Color(0xFFF04452), ''),
+    ('Other Exams', Icons.grid_view_rounded, Color(0xFFF1F4F8), Color(0xFF718096), ''),
   ];
 
   static (String, IconData, Color, Color) _visual(
@@ -1104,7 +1212,25 @@ class _ExamCategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = families.isEmpty
         ? _items
-        : families.take(8).map(_visual).toList(growable: false);
+        : families
+            .where((family) => !(overrides[family.id]?.hidden ?? false))
+            .take(8)
+            .map((family) {
+              final base = _visual(family);
+              final override = overrides[family.id];
+              return (
+                override?.title.trim().isNotEmpty == true
+                    ? override!.title
+                    : base.$1,
+                override?.iconName.trim().isNotEmpty == true
+                    ? _homeIconFromName(override!.iconName, fallback: base.$2)
+                    : base.$2,
+                base.$3,
+                base.$4,
+                override?.iconUrl ?? '',
+              );
+            })
+            .toList(growable: false);
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = 4.0;
@@ -1122,6 +1248,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
                   child: _ExamCategoryTile(
                     label: item.$1,
                     icon: item.$2,
+                    iconUrl: item.$5,
                     background: item.$3,
                     foreground: item.$4,
                     onTap: onOpen,
@@ -1139,6 +1266,7 @@ class _ExamCategoryTile extends StatelessWidget {
   const _ExamCategoryTile({
     required this.label,
     required this.icon,
+    this.iconUrl = '',
     required this.background,
     required this.foreground,
     required this.onTap,
@@ -1146,6 +1274,7 @@ class _ExamCategoryTile extends StatelessWidget {
 
   final String label;
   final IconData icon;
+  final String iconUrl;
   final Color background;
   final Color foreground;
   final VoidCallback onTap;
@@ -1187,7 +1316,17 @@ class _ExamCategoryTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, color: foreground, size: 30),
+                if (iconUrl.trim().isNotEmpty)
+                  Image.network(
+                    iconUrl,
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) =>
+                        Icon(icon, color: foreground, size: 30),
+                  )
+                else
+                  Icon(icon, color: foreground, size: 30),
                 const SizedBox(height: 9),
                 Text(
                   label,
@@ -2402,21 +2541,51 @@ class _SectionTitle extends StatelessWidget {
     required this.title,
     required this.action,
     required this.onAction,
+    this.iconName = '',
+    this.iconUrl = '',
   });
 
   final String title;
   final String action;
   final VoidCallback onAction;
+  final String iconName;
+  final String iconUrl;
 
   @override
   Widget build(BuildContext context) {
-    final titleWidget = Text(
+    final titleText = Text(
       title,
       style: AppTypography.premiumHeading(
         Theme.of(context).textTheme.titleLarge,
       ).copyWith(
         color: const Color(0xFF10264A),
       ),
+    );
+    final titleWidget = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (iconUrl.trim().isNotEmpty)
+          Image.network(
+            iconUrl,
+            width: 22,
+            height: 22,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
+              _homeIconFromName(iconName),
+              size: 22,
+              color: const Color(0xFF10264A),
+            ),
+          )
+        else if (iconName.trim().isNotEmpty)
+          Icon(
+            _homeIconFromName(iconName),
+            size: 22,
+            color: const Color(0xFF10264A),
+          ),
+        if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
+          const SizedBox(width: 7),
+        Flexible(child: titleText),
+      ],
     );
     final actionWidget = TextButton(
       onPressed: onAction,
