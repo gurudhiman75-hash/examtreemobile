@@ -302,15 +302,15 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     final progress = (_index + 1) / widget.questions.length;
 
     Future<void> leavePractice() async {
-      if (context.canPop()) {
-        context.pop();
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
       } else {
         context.go('/learn');
       }
     }
 
     return PopScope(
-      canPop: context.canPop(),
+      canPop: Navigator.of(context).canPop(),
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop && context.mounted) {
           context.go('/learn');
