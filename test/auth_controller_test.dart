@@ -474,7 +474,6 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   _FakeAuthSessionGateway({
     this.signInError,
     this.phoneStartResult,
-    this.phoneStartError,
     this.phoneConfirmError,
     this.googleSignInError,
     this.appleSignInError,
@@ -486,7 +485,6 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
 
   final Object? signInError;
   final PhoneVerificationStartResult? phoneStartResult;
-  final Object? phoneStartError;
   final Object? phoneConfirmError;
   final Object? googleSignInError;
   final Object? appleSignInError;
@@ -529,8 +527,6 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   }) async {
     phoneStartCalls++;
     lastPhoneNumber = phoneNumber;
-    final error = phoneStartError;
-    if (error != null) throw error;
     return phoneStartResult ??
         PhoneVerificationCodeSent(
           PhoneVerificationSession(
