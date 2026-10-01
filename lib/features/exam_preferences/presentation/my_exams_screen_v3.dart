@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../data/exam_preferences_repository.dart';
 import '../domain/exam_preferences.dart';
@@ -172,9 +171,9 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
           child: ListView(
             key: const Key('my-exams-scroll'),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
+              12,
               AppSpacing.sm,
-              AppSpacing.md,
+              12,
               AppSpacing.xl,
             ),
             children: [
@@ -226,9 +225,11 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
                   Expanded(
                     child: Text(
                       query.isEmpty ? 'Available exam families' : 'Search results',
-                      style: AppTypography.premiumHeading(
-                        theme.textTheme.titleLarge,
-                      ).copyWith(color: const Color(0xFF10264A)),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: const Color(0xFF10264A),
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -.3,
+                      ),
                     ),
                   ),
                   Text(
@@ -290,14 +291,25 @@ class _PreparationHero extends StatelessWidget {
 
     return Container(
       key: const Key('my-exams-summary'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
         ),
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .12),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,9 +325,11 @@ class _PreparationHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(
             'Choose what you are preparing for',
-            style: AppTypography.premiumHeading(
-              theme.textTheme.headlineSmall,
-            ).copyWith(color: Colors.white, letterSpacing: -0.45),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -.4,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -440,8 +454,8 @@ class _FamilyGroup extends StatelessWidget {
       key: Key('my-exams-family-${family.id}'),
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -584,7 +598,7 @@ class _ExamChoiceRow extends StatelessWidget {
               : 'Tap to add this exam.',
       child: Material(
         key: Key('my-exams-choice-${exam.id}'),
-        color: selected ? const Color(0xFFEAF2FB) : Colors.transparent,
+        color: selected ? const Color(0xFFEAF4FF) : Colors.transparent,
         child: InkWell(
           onTap: () => onChanged(!selected),
           child: Padding(
@@ -758,7 +772,15 @@ class _SaveBar extends StatelessWidget {
             key: const Key('my-exams-save'),
             onPressed: saving || !dirty ? null : onSave,
             style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(54),
+              minimumSize: const Size.fromHeight(50),
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              disabledBackgroundColor:
+                  const Color(0xFF073A6A).withValues(alpha: .28),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             child: saving
                 ? const SizedBox.square(
