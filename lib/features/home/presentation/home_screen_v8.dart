@@ -16,6 +16,8 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
+import '../../content_planning/presentation/mobile_content_planning_providers.dart';
+import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
@@ -49,7 +51,9 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(dailyCompanionSnapshotProvider)
       ..invalidate(homeV8SelectedExamCodesProvider)
       ..invalidate(mobileHomeConfigurationProvider)
-      ..invalidate(promotionsForPlacementProvider(PromotionPlacement.home));
+      ..invalidate(promotionsForPlacementProvider(PromotionPlacement.home))
+      ..invalidate(mobileContentPlanProvider('home_learn'))
+      ..invalidate(mobileContentPlanProvider('home_current_affairs'));
 
     Future<void> settle(Future<Object?> request) async {
       try {
@@ -147,7 +151,16 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
             )
-          else if (campaigns.isNotEmpty)
+          else
+            const Column(
+              children: [
+                _HomePromoFallback(),
+                SizedBox(height: 6),
+                _HeroPageDots(),
+              ],
+            ),
+          if (campaigns.isNotEmpty) ...[
+            const SizedBox(height: 10),
             PromotionCarousel(
               campaigns: campaigns,
               compact: true,
@@ -167,15 +180,8 @@ class HomeScreen extends ConsumerWidget {
                   placement: 'home',
                 ),
               ),
-            )
-          else
-            const Column(
-              children: [
-                _HomePromoFallback(),
-                SizedBox(height: 6),
-                _HeroPageDots(),
-              ],
             ),
+          ],
           const SizedBox(height: 12),
         ],
       ),
@@ -205,7 +211,7 @@ class HomeScreen extends ConsumerWidget {
           if (homeConfig.featuredTestSeries.isNotEmpty)
             _ConfiguredSeriesRail(
               series: homeConfig.featuredTestSeries,
-              onOpen: () => context.go('/exams'),
+              onOpen: (_) => context.push('/store?section=tests'),
             )
           else
             availableAsync.when(
@@ -291,6 +297,14 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   ...orderedSections,
+                  const MobilePlannedContentSection(
+                    slotKey: 'home_learn',
+                    title: 'Recommended Learning',
+                  ),
+                  const MobilePlannedContentSection(
+                    slotKey: 'home_current_affairs',
+                    title: 'Current Affairs',
+                  ),
                   _SectionTitle(
                     title: "Today's Goal",
                     action: 'See All',
@@ -399,7 +413,8 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
               final slide = slides[index];
               final hasImage = slide.imageUrl.trim().isNotEmpty;
               final hasAction = slide.destinationType != 'none' &&
-                  slide.destinationValue.trim().isNotEmpty;
+                  (slide.destinationType != 'url' ||
+                      slide.destinationValue.trim().isNotEmpty);
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 1),
                 child: Material(
@@ -551,7 +566,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
   });
 
   final List<MobileFeaturedTestSeries> series;
-  final VoidCallback onOpen;
+  final ValueChanged<MobileFeaturedTestSeries> onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -573,7 +588,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(22),
               child: InkWell(
-                onTap: onOpen,
+                onTap: () => onOpen(item),
                 borderRadius: BorderRadius.circular(22),
                 child: Ink(
                   padding: const EdgeInsets.all(16),
