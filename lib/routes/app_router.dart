@@ -26,6 +26,7 @@ import '../features/learn/presentation/learn_submodule_screen.dart';
 import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
+import '../features/managed_pages/presentation/managed_mobile_page_screen.dart';
 import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
@@ -307,6 +308,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           }
           return MobileTestSeriesDetailScreen(seriesId: seriesId);
         },
+      ),
+      GoRoute(
+        path: '/page/:slug',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => ManagedMobilePageScreen(
+          slug: state.pathParameters['slug'] ?? '',
+        ),
       ),
       GoRoute(
         path: '/notifications',
