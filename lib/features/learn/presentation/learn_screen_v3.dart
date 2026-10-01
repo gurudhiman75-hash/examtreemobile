@@ -12,6 +12,7 @@ import '../../content_planning/presentation/mobile_content_planning_providers.da
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../promotions/domain/promotion_campaign.dart';
+import '../../promotions/presentation/providers/promotion_providers.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
