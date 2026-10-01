@@ -14,10 +14,14 @@ class MobilePlannedContentSection extends ConsumerWidget {
     super.key,
     required this.slotKey,
     this.title = 'Featured for you',
+    this.iconName = '',
+    this.iconUrl = '',
   });
 
   final String slotKey;
   final String title;
+  final String iconName;
+  final String iconUrl;
 
   void _open(
     BuildContext context,
@@ -74,12 +78,38 @@ class MobilePlannedContentSection extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text(
-          title,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFF10264A),
-          ),
+        Row(
+          children: [
+            if (iconUrl.trim().isNotEmpty)
+              Image.network(
+                iconUrl,
+                width: 22,
+                height: 22,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Icon(
+                  _iconFor(iconName),
+                  size: 22,
+                  color: const Color(0xFF10264A),
+                ),
+              )
+            else if (iconName.trim().isNotEmpty)
+              Icon(
+                _iconFor(iconName),
+                size: 22,
+                color: const Color(0xFF10264A),
+              ),
+            if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
+              const SizedBox(width: 7),
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF10264A),
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
@@ -154,6 +184,24 @@ class MobilePlannedContentSection extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  IconData _iconFor(String value) {
+    switch (value.trim().toLowerCase()) {
+      case 'news':
+      case 'current_affairs':
+        return Icons.newspaper_rounded;
+      case 'book':
+      case 'learn':
+      case 'school':
+        return Icons.menu_book_rounded;
+      case 'star':
+        return Icons.star_rounded;
+      case 'sparkles':
+        return Icons.auto_awesome_rounded;
+      default:
+        return Icons.apps_rounded;
+    }
   }
 
   String _typeLabel(String type) => switch (type) {
