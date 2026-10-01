@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  late TextEditingController phone;
   late TextEditingController name;
   late TextEditingController email;
   late TextEditingController password;
   late TextEditingController confirmation;
 
   setUp(() {
+    phone = TextEditingController();
     name = TextEditingController();
     email = TextEditingController();
     password = TextEditingController();
@@ -17,6 +19,7 @@ void main() {
   });
 
   tearDown(() {
+    phone.dispose();
     name.dispose();
     email.dispose();
     password.dispose();
@@ -42,11 +45,13 @@ void main() {
           isLoading: loading,
           obscurePassword: true,
           loadingMessage: loadingMessage,
+          phoneController: phone,
           nameController: name,
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
           showApple: showApple,
+          onPhoneContinue: () {},
           onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
@@ -65,13 +70,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ExamTree'), findsOneWidget);
-    expect(find.text('Sign in to ExamTree'), findsOneWidget);
-    expect(find.text('Continue with Google'), findsOneWidget);
-    expect(find.text('Continue with Apple'), findsNothing);
-    expect(find.text('Email'), findsOneWidget);
-    expect(find.text('Password'), findsOneWidget);
-    expect(find.text('Forgot password?'), findsOneWidget);
-    expect(find.byKey(const Key('auth-submit')), findsOneWidget);
+    expect(find.text('Login with Mobile Number'), findsOneWidget);
+    expect(find.byKey(const Key('auth-phone')), findsOneWidget);
+    expect(find.byKey(const Key('auth-phone-submit')), findsOneWidget);
+    expect(find.byKey(const Key('auth-google')), findsOneWidget);
+    expect(find.byKey(const Key('auth-email-toggle')), findsOneWidget);
+    expect(find.text('Email'), findsNothing);
+    expect(find.text('Password'), findsNothing);
     expect(find.text('Name'), findsNothing);
   });
 
@@ -82,7 +87,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('auth-apple')), findsOneWidget);
-    expect(find.text('Continue with Apple'), findsOneWidget);
+    expect(find.byKey(const Key('auth-apple')), findsOneWidget);
     expect(find.byKey(const Key('auth-google')), findsOneWidget);
   });
 
@@ -118,17 +123,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('Starting ExamTree server…'), findsOneWidget);
-    final apple = tester.widget<FilledButton>(
-      find.byKey(const Key('auth-apple')),
+    final phoneSubmit = tester.widget<FilledButton>(
+      find.byKey(const Key('auth-phone-submit')),
     );
     final google = tester.widget<OutlinedButton>(
       find.byKey(const Key('auth-google')),
     );
-    final submit = tester.widget<FilledButton>(
-      find.byKey(const Key('auth-submit')),
-    );
-    expect(apple.onPressed, isNull);
+    expect(phoneSubmit.onPressed, isNull);
     expect(google.onPressed, isNull);
-    expect(submit.onPressed, isNull);
   });
 }
