@@ -445,6 +445,12 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
         final destination = slide.destinationValue.trim();
         context.go(destination.startsWith('/') ? destination : '/learn');
         return;
+      case 'page':
+        final destination = slide.destinationValue.trim();
+        if (destination.isNotEmpty) {
+          context.push('/page/${Uri.encodeComponent(destination)}');
+        }
+        return;
       case 'url':
         final uri = Uri.tryParse(slide.destinationValue);
         if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
