@@ -292,18 +292,22 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
         } else {
           context.go('/exams');
         }
+        return;
       case 'test_series':
         context.go('/exams');
+        return;
       case 'learn':
         final destination = slide.destinationValue.trim();
         context.go(destination.startsWith('/') ? destination : '/learn');
+        return;
       case 'url':
         final uri = Uri.tryParse(slide.destinationValue);
         if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         }
+        return;
       default:
-        break;
+        return;
     }
   }
 
