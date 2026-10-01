@@ -69,7 +69,7 @@ class AuthEntryView extends StatelessWidget {
                         ],
                         const SizedBox(height: 18),
                         Text(
-                          registering ? 'Create your account' : 'Sign in to ExamTree',
+                          registering ? 'Join ExamTree' : 'Sign in to ExamTree',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: const Color(0xFF0A2546),
                             fontWeight: FontWeight.w900,
@@ -235,8 +235,6 @@ class _AuthPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     InputDecoration fieldDecoration({
       required String label,
       required IconData icon,
