@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../domain/store_product.dart';
 import 'providers/store_providers.dart';
 
@@ -66,9 +65,9 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
+              12,
               AppSpacing.sm,
-              AppSpacing.md,
+              12,
               AppSpacing.xxl,
             ),
             children: [
@@ -139,11 +138,10 @@ class _StoreHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Preparation products',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(
+          style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
-            letterSpacing: -0.45,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.4,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -158,14 +156,18 @@ class _StoreHero extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: _softShadow(),
       ),
       child: largeText
@@ -363,9 +365,11 @@ class _CatalogHeading extends StatelessWidget {
       children: [
         Text(
           'Test series',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(color: const Color(0xFF10264A)),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
+          ),
         ),
         Text(
           '$count published ${count == 1 ? 'product' : 'products'}',
@@ -409,8 +413,8 @@ class _ProductCard extends StatelessWidget {
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -488,6 +492,14 @@ class _ProductCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.md),
                   OutlinedButton.icon(
                     onPressed: onBrowseTests,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF173A61),
+                      side: const BorderSide(color: Color(0xFFD8E1EB)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text('View tests'),
                   ),
@@ -501,6 +513,14 @@ class _ProductCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   OutlinedButton.icon(
                     onPressed: onBrowseTests,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF173A61),
+                      side: const BorderSide(color: Color(0xFFD8E1EB)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
                     icon: const Icon(Icons.arrow_forward_rounded),
                     label: const Text('View tests'),
                   ),
@@ -713,6 +733,14 @@ class _FoundationState extends StatelessWidget {
               children: [
                 FilledButton(
                   onPressed: onAction,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF073A6A),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                   child: Text(actionLabel!),
                 ),
                 if (secondaryActionLabel != null &&
