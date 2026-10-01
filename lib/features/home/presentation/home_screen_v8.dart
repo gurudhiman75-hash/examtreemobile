@@ -87,6 +87,7 @@ class HomeScreen extends ConsumerWidget {
     final user = ref.watch(authStateChangesProvider).value;
     final currentTime = now?.call() ?? DateTime.now();
     final mobileAnalytics = ref.read(mobileAnalyticsClientProvider);
+    final promotionExposureStore = ref.read(promotionExposureStoreProvider);
     unawaited(
       mobileAnalytics.trackOnce(
         'home_view',
@@ -164,14 +165,17 @@ class HomeScreen extends ConsumerWidget {
             PromotionCarousel(
               campaigns: campaigns,
               compact: true,
-              onImpression: (campaign) => unawaited(
-                mobileAnalytics.track(
-                  'promotion_impression',
-                  entityType: 'promotion',
-                  entityId: campaign.id,
-                  placement: 'home',
-                ),
-              ),
+              onImpression: (campaign) {
+                unawaited(promotionExposureStore.recordImpression(campaign));
+                unawaited(
+                  mobileAnalytics.track(
+                    'promotion_impression',
+                    entityType: 'promotion',
+                    entityId: campaign.id,
+                    placement: 'home',
+                  ),
+                );
+              },
               onAction: (campaign) => unawaited(
                 mobileAnalytics.track(
                   'promotion_click',
@@ -180,6 +184,8 @@ class HomeScreen extends ConsumerWidget {
                   placement: 'home',
                 ),
               ),
+              onDismiss: (campaign) =>
+                  unawaited(promotionExposureStore.dismiss(campaign.id)),
             ),
           ],
           const SizedBox(height: 12),
