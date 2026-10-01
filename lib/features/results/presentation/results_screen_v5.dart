@@ -712,6 +712,15 @@ class _ResultCard extends StatelessWidget {
                                     extra: result.examId.trim(),
                                   )
                               : null,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF173A61),
+                            side: const BorderSide(color: Color(0xFFD8E1EB)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            textStyle:
+                                const TextStyle(fontWeight: FontWeight.w800),
+                          ),
                           icon: const Icon(Icons.replay_rounded),
                           label: const Text('Retake'),
                         )
