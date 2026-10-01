@@ -440,6 +440,26 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   }
 
   @override
+  Future<PhoneVerificationStartResult> startPhoneVerification(
+    String phoneNumber, {
+    int? forceResendingToken,
+  }) async {
+    return PhoneVerificationCodeSent(
+      PhoneVerificationSession(
+        phoneNumber: phoneNumber,
+        verificationId: 'test-verification-id',
+        forceResendingToken: forceResendingToken,
+      ),
+    );
+  }
+
+  @override
+  Future<void> confirmPhoneVerification({
+    required String verificationId,
+    required String smsCode,
+  }) async {}
+
+  @override
   Future<void> signInWithGoogle() async {
     googleSignInCalls++;
     final error = googleSignInError;
