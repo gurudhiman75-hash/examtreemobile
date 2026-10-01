@@ -215,7 +215,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/home',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'home', nativeChild: HomeScreen()),
               ),
             ],
           ),
@@ -224,7 +224,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/learn',
-                builder: (context, state) => const LearnScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'learn', nativeChild: LearnScreen()),
               ),
             ],
           ),
@@ -233,7 +233,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/exams',
-                builder: (context, state) => const ExamsScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'exams', nativeChild: ExamsScreen()),
               ),
             ],
           ),
@@ -242,7 +242,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/current-affairs',
-                builder: (context, state) => const CurrentAffairsScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'current-affairs', nativeChild: CurrentAffairsScreen()),
               ),
             ],
           ),
@@ -251,7 +251,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'profile', nativeChild: ProfileScreen()),
               ),
             ],
           ),
@@ -289,9 +289,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/store',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => StoreScreen(
-          initialSection: storeSectionFromQuery(
-            state.uri.queryParameters['section'],
+        builder: (context, state) => RegisteredMobilePageScreen(
+          slug: 'store',
+          nativeChild: StoreScreen(
+            initialSection: storeSectionFromQuery(
+              state.uri.queryParameters['section'],
+            ),
           ),
         ),
       ),
