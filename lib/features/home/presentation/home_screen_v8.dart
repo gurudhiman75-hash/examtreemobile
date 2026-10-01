@@ -2227,6 +2227,68 @@ class _SurfaceCard extends StatelessWidget {
   }
 }
 
+class _ErrorCard extends StatelessWidget {
+  const _ErrorCard({required this.title, required this.onRetry});
+
+  final String title;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SurfaceCard(
+      child: Row(
+        children: [
+          const Icon(Icons.cloud_off_rounded, color: AppColors.error),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(child: Text(title)),
+          TextButton(onPressed: onRetry, child: const Text('Retry')),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyRecommendations extends StatelessWidget {
+  const _EmptyRecommendations({
+    required this.catalogueEmpty,
+    required this.onBrowse,
+  });
+
+  final bool catalogueEmpty;
+  final VoidCallback onBrowse;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SurfaceCard(
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppColors.skyContainer,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(
+              Icons.explore_rounded,
+              color: AppColors.onSkyContainer,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              catalogueEmpty
+                  ? 'No tests are published right now.'
+                  : 'You are caught up on current recommendations.',
+            ),
+          ),
+          TextButton(onPressed: onBrowse, child: const Text('Browse')),
+        ],
+      ),
+    );
+  }
+}
+
 class _LoadingCard extends StatelessWidget {
   const _LoadingCard({required this.height});
 
