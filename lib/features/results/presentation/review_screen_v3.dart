@@ -418,6 +418,7 @@ class _QuestionReviewPane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
 
     return Column(
@@ -848,7 +849,6 @@ class _ReviewNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     return Material(
       color: Colors.white,
