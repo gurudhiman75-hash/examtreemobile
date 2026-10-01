@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/promotion_campaign.dart';
@@ -63,7 +66,7 @@ class PromotionPlacementView extends ConsumerWidget {
   }
 }
 
-class PromotionCarousel extends StatefulWidget {
+class PromotionCarousel extends ConsumerStatefulWidget {
   const PromotionCarousel({
     super.key,
     required this.campaigns,
@@ -80,27 +83,48 @@ class PromotionCarousel extends StatefulWidget {
   final ValueChanged<PromotionCampaign>? onAction;
 
   @override
-  State<PromotionCarousel> createState() => _PromotionCarouselState();
+  ConsumerState<PromotionCarousel> createState() => _PromotionCarouselState();
 }
 
-class _PromotionCarouselState extends State<PromotionCarousel> {
+class _PromotionCarouselState extends ConsumerState<PromotionCarousel> {
   late final PageController _controller;
+  final Set<String> _dismissedIds = <String>{};
   int _page = 0;
+
+  List<PromotionCampaign> get _visibleCampaigns => widget.campaigns
+      .where((campaign) => !_dismissedIds.contains(campaign.id))
+      .toList(growable: false);
+
+  void _recordImpression(PromotionCampaign campaign) {
+    widget.onImpression?.call(campaign);
+    unawaited(ref.read(promotionExposureStoreProvider).recordImpression(campaign));
+  }
+
+  void _dismiss(PromotionCampaign campaign) {
+    setState(() {
+      _dismissedIds.add(campaign.id);
+      _page = 0;
+    });
+    if (_controller.hasClients) _controller.jumpToPage(0);
+    unawaited(ref.read(promotionExposureStoreProvider).dismiss(campaign.id));
+  }
 
   @override
   void initState() {
     super.initState();
     _controller = PageController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || widget.campaigns.isEmpty) return;
-      widget.onImpression?.call(widget.campaigns.first);
+      final campaigns = _visibleCampaigns;
+      if (!mounted || campaigns.isEmpty) return;
+      _recordImpression(campaigns.first);
     });
   }
 
   @override
   void didUpdateWidget(covariant PromotionCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_page >= widget.campaigns.length) {
+    final campaigns = _visibleCampaigns;
+    if (_page >= campaigns.length) {
       _page = 0;
       if (_controller.hasClients) _controller.jumpToPage(0);
     }
@@ -114,7 +138,8 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.campaigns.isEmpty) return const SizedBox.shrink();
+    final campaigns = _visibleCampaigns;
+    if (campaigns.isEmpty) return const SizedBox.shrink();
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.5;
     final loginFeature =
@@ -138,15 +163,15 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
             child: PageView.builder(
               key: const Key('promotion-carousel'),
               controller: _controller,
-              itemCount: widget.campaigns.length,
+              itemCount: campaigns.length,
               onPageChanged: (value) {
                 setState(() => _page = value);
-                if (value >= 0 && value < widget.campaigns.length) {
-                  widget.onImpression?.call(widget.campaigns[value]);
+                if (value >= 0 && value < campaigns.length) {
+                  _recordImpression(campaigns[value]);
                 }
               },
               itemBuilder: (context, index) {
-                final campaign = widget.campaigns[index];
+                final campaign = campaigns[index];
                 if (loginFeature) {
                   return _LoginFeatureCard(
                     campaign: campaign,
@@ -157,21 +182,22 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
                   campaign: campaign,
                   compact: widget.compact,
                   onAction: widget.onAction,
+                  onDismiss: campaign.isDismissible ? () => _dismiss(campaign) : null,
                 );
               },
             ),
           ),
-          if (widget.campaigns.length > 1) ...[
+          if (campaigns.length > 1) ...[
             const SizedBox(height: 8),
             Semantics(
               label: loginFeature
-                  ? 'Feature ${_page + 1} of ${widget.campaigns.length}'
-                  : 'Promotion ${_page + 1} of ${widget.campaigns.length}',
+                  ? 'Feature ${_page + 1} of ${campaigns.length}'
+                  : 'Promotion ${_page + 1} of ${campaigns.length}',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var index = 0;
-                      index < widget.campaigns.length;
+                      index < campaigns.length;
                       index++)
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
@@ -479,11 +505,13 @@ class _PromotionCard extends StatelessWidget {
     required this.campaign,
     required this.compact,
     this.onAction,
+    this.onDismiss,
   });
 
   final PromotionCampaign campaign;
   final bool compact;
   final ValueChanged<PromotionCampaign>? onAction;
+  final VoidCallback? onDismiss;
 
   @override
   Widget build(BuildContext context) {
@@ -501,6 +529,17 @@ class _PromotionCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          if (onDismiss != null)
+            Positioned(
+              top: 6,
+              right: 6,
+              child: IconButton(
+                tooltip: 'Hide promotion',
+                onPressed: onDismiss,
+                visualDensity: VisualDensity.compact,
+                icon: const Icon(Icons.close_rounded, size: 18),
+              ),
+            ),
           Positioned(
             right: -34,
             top: -42,
@@ -584,9 +623,21 @@ class _PromotionCard extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: TextButton.icon(
                             key: Key('promotion-action-${campaign.id}'),
-                            onPressed: () {
+                            onPressed: () async {
                               onAction?.call(campaign);
-                              context.push(campaign.deepLink!);
+                              final external = campaign.externalUrl?.trim();
+                              if (external != null &&
+                                  isSafePromotionExternalUrl(external)) {
+                                await launchUrl(
+                                  Uri.parse(external),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                                return;
+                              }
+                              final deepLink = campaign.deepLink;
+                              if (isSafePromotionDeepLink(deepLink)) {
+                                context.push(deepLink!);
+                              }
                             },
                             style: TextButton.styleFrom(
                               visualDensity: VisualDensity.compact,
