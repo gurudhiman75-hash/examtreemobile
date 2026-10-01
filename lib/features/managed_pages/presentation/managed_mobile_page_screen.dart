@@ -8,7 +8,7 @@ import '../../../core/providers/repository_providers.dart';
 final managedMobilePageProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, slug) async {
   final response = await ref.watch(apiClientProvider).dio.get<Map<String, dynamic>>(
-        'mobile/pages/\${Uri.encodeComponent(slug)}',
+        'mobile/pages/${Uri.encodeComponent(slug)}',
       );
   final body = response.data;
   final page = body?['page'];
@@ -437,11 +437,11 @@ Future<void> _openDestination(BuildContext context, Map<String, dynamic> source)
   final value = source['destinationValue']?.toString().trim() ?? '';
   switch (type) {
     case 'page':
-      if (value.isNotEmpty) context.push('/page/\${Uri.encodeComponent(value)}');
+      if (value.isNotEmpty) context.push('/page/${Uri.encodeComponent(value)}');
       return;
     case 'exam':
       if (value.isNotEmpty) {
-        context.push('/exam-details?id=\${Uri.encodeQueryComponent(value)}');
+        context.push('/exam-details?id=${Uri.encodeQueryComponent(value)}');
       } else {
         context.go('/exams');
       }
@@ -451,7 +451,7 @@ Future<void> _openDestination(BuildContext context, Map<String, dynamic> source)
       return;
     case 'test_series':
       if (value.isNotEmpty) {
-        context.push('/test-series?id=\${Uri.encodeQueryComponent(value)}');
+        context.push('/test-series?id=${Uri.encodeQueryComponent(value)}');
       } else {
         context.push('/store?section=tests');
       }
