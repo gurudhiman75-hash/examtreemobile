@@ -431,7 +431,7 @@ class _OtpVerificationCardState extends State<_OtpVerificationCard> {
   @override
   void initState() {
     super.initState();
-    _startResendCountdown();
+    _startResendCountdown(notify: false);
   }
 
   @override
@@ -440,9 +440,13 @@ class _OtpVerificationCardState extends State<_OtpVerificationCard> {
     super.dispose();
   }
 
-  void _startResendCountdown() {
+  void _startResendCountdown({bool notify = true}) {
     _resendTimer?.cancel();
-    _resendSecondsRemaining = _resendDelaySeconds;
+    if (notify && mounted) {
+      setState(() => _resendSecondsRemaining = _resendDelaySeconds);
+    } else {
+      _resendSecondsRemaining = _resendDelaySeconds;
+    }
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
         timer.cancel();
