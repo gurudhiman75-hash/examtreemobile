@@ -6,21 +6,35 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  PromotionCampaign campaign(String id, String title) => PromotionCampaign(
+  PromotionCampaign campaign(
+    String id,
+    String title, {
+    bool isDismissible = false,
+  }) =>
+      PromotionCampaign(
         id: id,
         title: title,
         subtitle: 'Fresh preparation material',
         placements: const {PromotionPlacement.login},
         ctaLabel: 'Explore',
         deepLink: '/learn',
+        isDismissible: isDismissible,
       );
 
-  Widget app(List<PromotionCampaign> campaigns, {double textScale = 1}) {
+  Widget app(
+    List<PromotionCampaign> campaigns, {
+    double textScale = 1,
+    ValueChanged<PromotionCampaign>? onDismiss,
+  }) {
     final router = GoRouter(
       initialLocation: '/',
       routes: [
         GoRoute(path: '/', builder: (context, state) => Scaffold(
-              body: PromotionCarousel(campaigns: campaigns, compact: true),
+              body: PromotionCarousel(
+                campaigns: campaigns,
+                compact: true,
+                onDismiss: onDismiss,
+              ),
             )),
         GoRoute(path: '/learn', builder: (context, state) => const Scaffold(
               body: Text('Learn destination'),
@@ -54,6 +68,33 @@ void main() {
     await tester.tap(find.byKey(const Key('promotion-action-one')));
     await tester.pumpAndSettle();
     expect(find.text('Learn destination'), findsOneWidget);
+  });
+
+  testWidgets('dismissible promotion exposes and applies close control', (
+    tester,
+  ) async {
+    PromotionCampaign? dismissed;
+
+    await tester.pumpWidget(
+      app(
+        [
+          campaign(
+            'one',
+            'Free current affairs',
+            isDismissible: true,
+          ),
+        ],
+        onDismiss: (value) => dismissed = value,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Hide promotion'), findsOneWidget);
+    await tester.tap(find.byTooltip('Hide promotion'));
+    await tester.pumpAndSettle();
+
+    expect(dismissed?.id, 'one');
+    expect(find.text('Free current affairs'), findsNothing);
   });
 
   testWidgets('compact carousel remains usable at 200 percent text scale', (tester) async {
