@@ -69,9 +69,9 @@ void main() {
     const campaigns = <PromotionCampaign>[
       PromotionCampaign(
         id: 'preview-learn',
-        title: 'Everything you need to prepare with focus',
+        title: 'Let’s build your exam success',
         subtitle:
-            'Structured learning, exam-style practice and progress tracking in one place.',
+            'Master concepts. Practice smarter. Get real results.',
         placements: {PromotionPlacement.login},
         priority: 30,
       ),
