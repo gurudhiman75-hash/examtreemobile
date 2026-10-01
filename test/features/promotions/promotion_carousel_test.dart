@@ -15,12 +15,20 @@ void main() {
         deepLink: '/learn',
       );
 
-  Widget app(List<PromotionCampaign> campaigns, {double textScale = 1}) {
+  Widget app(
+    List<PromotionCampaign> campaigns, {
+    double textScale = 1,
+    ValueChanged<PromotionCampaign>? onDismiss,
+  }) {
     final router = GoRouter(
       initialLocation: '/',
       routes: [
         GoRoute(path: '/', builder: (context, state) => Scaffold(
-              body: PromotionCarousel(campaigns: campaigns, compact: true),
+              body: PromotionCarousel(
+                campaigns: campaigns,
+                compact: true,
+                onDismiss: onDismiss,
+              ),
             )),
         GoRoute(path: '/learn', builder: (context, state) => const Scaffold(
               body: Text('Learn destination'),
@@ -54,6 +62,27 @@ void main() {
     await tester.tap(find.byKey(const Key('promotion-action-one')));
     await tester.pumpAndSettle();
     expect(find.text('Learn destination'), findsOneWidget);
+  });
+
+  testWidgets('promotion exposes an explicit close control when dismissible', (
+    tester,
+  ) async {
+    PromotionCampaign? dismissed;
+
+    await tester.pumpWidget(
+      app(
+        [campaign('one', 'Free current affairs')],
+        onDismiss: (value) => dismissed = value,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Hide promotion'), findsOneWidget);
+    await tester.tap(find.byTooltip('Hide promotion'));
+    await tester.pumpAndSettle();
+
+    expect(dismissed?.id, 'one');
+    expect(find.text('Free current affairs'), findsNothing);
   });
 
   testWidgets('compact carousel remains usable at 200 percent text scale', (tester) async {
