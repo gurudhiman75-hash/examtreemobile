@@ -7,7 +7,6 @@ import '../../../core/providers/repository_providers.dart';
 import '../../../core/repositories/account_repository.dart';
 import '../../../core/repositories/api_account_repository.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exam_day/presentation/providers/exam_day_providers.dart';
@@ -247,9 +246,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         child: ListView(
           key: const Key('account-settings-scroll'),
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
+            12,
             AppSpacing.sm,
-            AppSpacing.md,
+            12,
             AppSpacing.xxl,
           ),
           children: [
@@ -257,9 +256,11 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             const SizedBox(height: AppSpacing.xl),
             Text(
               'Your learner data',
-              style: AppTypography.premiumHeading(
-                theme.textTheme.titleLarge,
-              ).copyWith(color: const Color(0xFF10264A)),
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: const Color(0xFF10264A),
+                fontWeight: FontWeight.w900,
+                letterSpacing: -.3,
+              ),
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(
@@ -343,9 +344,11 @@ class _PrivacyHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xxs),
         Text(
           'Your privacy, your account',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(color: Colors.white, letterSpacing: -0.4),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.4,
+          ),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
@@ -360,14 +363,25 @@ class _PrivacyHero extends StatelessWidget {
 
     return Container(
       key: const Key('account-privacy-hero'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .12),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: largeText
           ? Column(
@@ -416,8 +430,15 @@ class _InfoCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .03),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,8 +508,8 @@ class _DangerZone extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: scheme.error.withValues(alpha: 0.22)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: scheme.error.withValues(alpha: 0.20)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,7 +556,11 @@ class _DangerZone extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: scheme.error,
               foregroundColor: scheme.onError,
-              minimumSize: const Size.fromHeight(52),
+              minimumSize: const Size.fromHeight(50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: deleting
                 ? SizedBox(
