@@ -143,10 +143,15 @@ class RouterAuthRefresh extends ChangeNotifier {
 
   bool get isReady => _ready;
 
-  bool get isAuthenticated =>
-      _user != null &&
-      _user!.emailVerified &&
-      !_navigationGate.blocksAuthenticatedRedirect;
+  bool get isAuthenticated {
+    final user = _user;
+    if (user == null || _navigationGate.blocksAuthenticatedRedirect) {
+      return false;
+    }
+    final hasVerifiedEmail = user.emailVerified;
+    final hasVerifiedPhone = user.phoneNumber?.trim().isNotEmpty ?? false;
+    return hasVerifiedEmail || hasVerifiedPhone;
+  }
 
   void _handleNavigationGateChanged() {
     notifyListeners();
