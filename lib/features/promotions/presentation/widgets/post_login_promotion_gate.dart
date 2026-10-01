@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/promotion_campaign.dart';
@@ -111,9 +112,21 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
               if (campaign.hasAction)
                 FilledButton.icon(
                   key: Key('post-login-promotion-action-${campaign.id}'),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(sheetContext).pop();
-                    context.push(campaign.deepLink!);
+                    final external = campaign.externalUrl?.trim();
+                    if (external != null &&
+                        isSafePromotionExternalUrl(external)) {
+                      await launchUrl(
+                        Uri.parse(external),
+                        mode: LaunchMode.externalApplication,
+                      );
+                      return;
+                    }
+                    final deepLink = campaign.deepLink;
+                    if (isSafePromotionDeepLink(deepLink) && mounted) {
+                      context.push(deepLink!);
+                    }
                   },
                   iconAlignment: IconAlignment.end,
                   icon: const Icon(Icons.arrow_forward_rounded),
