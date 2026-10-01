@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
 const _authRetryKey = 'examtreeAuthRetried';
@@ -82,6 +83,16 @@ class FirebaseAuthTokenProvider implements AuthTokenProvider {
   }
 }
 
+class _UnauthenticatedTokenProvider implements AuthTokenProvider {
+  const _UnauthenticatedTokenProvider();
+
+  @override
+  bool get hasAuthenticatedUser => false;
+
+  @override
+  Future<String?> getToken({bool forceRefresh = false}) async => null;
+}
+
 class ApiClient {
   ApiClient({Dio? dio, AuthTokenProvider? authTokenProvider})
       : dio = dio ?? _createBaseDio() {
@@ -89,10 +100,11 @@ class ApiClient {
     if (configuredBaseUrl.isNotEmpty) {
       this.dio.options.baseUrl = normalizeApiBaseUrl(configuredBaseUrl);
     }
-    _attachInterceptors(
-      this.dio,
-      authTokenProvider ?? FirebaseAuthTokenProvider(FirebaseAuth.instance),
-    );
+    final resolvedAuthTokenProvider = authTokenProvider ??
+        (Firebase.apps.isEmpty
+            ? const _UnauthenticatedTokenProvider()
+            : FirebaseAuthTokenProvider(FirebaseAuth.instance));
+    _attachInterceptors(this.dio, resolvedAuthTokenProvider);
   }
 
   final Dio dio;
