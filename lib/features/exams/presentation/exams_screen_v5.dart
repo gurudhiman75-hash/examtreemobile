@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/providers/promotion_providers.dart';
@@ -128,9 +127,9 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
+              10,
               AppSpacing.sm,
-              AppSpacing.md,
+              10,
               AppSpacing.xxl,
             ),
             sliver: SliverList.list(
@@ -281,19 +280,28 @@ class _DiscoveryIntro extends StatelessWidget {
     final theme = Theme.of(context);
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     return Container(
-      padding: EdgeInsets.all(textScale > 1.4 ? AppSpacing.md : AppSpacing.lg),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        textScale > 1.4 ? 14 : 15,
+        16,
+        textScale > 1.4 ? 14 : 15,
+      ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: 0.16),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
+            color: const Color(0xFF062D5C).withValues(alpha: 0.14),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
           ),
         ],
       ),
@@ -332,11 +340,11 @@ class _DiscoveryIntro extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           'Find your next test',
-                          style: AppTypography.premiumHeading(
-                            theme.textTheme.headlineSmall,
-                          ).copyWith(
+                          style: theme.textTheme.headlineSmall?.copyWith(
                             color: Colors.white,
-                            fontSize: textScale > 1.4 ? 21 : 24,
+                            fontSize: textScale > 1.4 ? 21 : 23,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -.4,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -361,7 +369,7 @@ class _DiscoveryIntro extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 14),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -654,10 +662,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         if (subtitle != null) ...[
@@ -819,7 +827,14 @@ class _TestRow extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE8EDF3)),
+            border: Border.all(color: const Color(0xFFE3E9F1)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF10264A).withValues(alpha: .035),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
           child: InkWell(
             onTap: onTap,
