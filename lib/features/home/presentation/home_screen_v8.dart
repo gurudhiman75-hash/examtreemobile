@@ -241,7 +241,7 @@ class HomeScreen extends ConsumerWidget {
             _ConfiguredSeriesRail(
               series: homeConfig.featuredTestSeries,
               overrides: homeConfig.itemOverrides,
-              onOpen: (_) => context.push('/store?section=tests'),
+              onOpen: (series) => context.push('/test-series?id=${Uri.encodeQueryComponent(series.id)}'),
             )
           else
             availableAsync.when(
@@ -434,7 +434,12 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
         }
         return;
       case 'test_series':
-        context.go('/exams');
+        final destination = slide.destinationValue.trim();
+        if (destination.isNotEmpty) {
+          context.push('/test-series?id=${Uri.encodeQueryComponent(destination)}');
+        } else {
+          context.go('/exams');
+        }
         return;
       case 'learn':
         final destination = slide.destinationValue.trim();
@@ -1169,6 +1174,14 @@ IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded
       return Icons.newspaper_rounded;
     case 'star':
       return Icons.star_rounded;
+    case 'brain':
+      return Icons.psychology_alt_rounded;
+    case 'bell':
+      return Icons.notifications_rounded;
+    case 'sparkles':
+      return Icons.auto_awesome_rounded;
+    case 'grid':
+      return Icons.grid_view_rounded;
     case 'location':
     case 'punjab':
       return Icons.location_on_rounded;
