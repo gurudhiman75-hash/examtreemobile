@@ -43,8 +43,10 @@ jobs:
         id: analyse
         continue-on-error: true
         run: |
+          set +e
           flutter analyze --no-fatal-infos > flutter-analyse.log 2>&1
           status=$?
+          set -e
           cat flutter-analyse.log
           exit $status
 
@@ -58,8 +60,10 @@ jobs:
               ! -path '*/home_screen_golden_test.dart' \
               | sort
           )
+          set +e
           flutter test "${test_files[@]}" > flutter-test.log 2>&1
           status=$?
+          set -e
           cat flutter-test.log
           exit $status
 
