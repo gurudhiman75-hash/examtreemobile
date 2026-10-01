@@ -692,6 +692,14 @@ class _ResultCard extends StatelessWidget {
                     onPressed: canReview
                         ? () => context.push('/review', extra: result.attemptId)
                         : null,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF073A6A),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    ),
                     icon: const Icon(Icons.fact_check_outlined),
                     label: Text(reviewLabel),
                   );
@@ -715,6 +723,15 @@ class _ResultCard extends StatelessWidget {
                                     extra: result.examId.trim(),
                                   )
                               : null,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF073A6A),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            textStyle:
+                                const TextStyle(fontWeight: FontWeight.w900),
+                          ),
                           icon: const Icon(Icons.replay_rounded),
                           label: const Text('Retake'),
                         );
