@@ -29,6 +29,7 @@ class PushNotificationRegistrationService {
   StreamSubscription<RemoteMessage>? _openSubscription;
   StreamSubscription<RemoteMessage>? _foregroundSubscription;
   bool _initialized = false;
+  final Map<String, DateTime> _recentNotificationOpens = <String, DateTime>{};
 
   Future<void> initializeForAuthenticatedUser() async {
     if (defaultTargetPlatform != TargetPlatform.android &&
@@ -186,6 +187,19 @@ class PushNotificationRegistrationService {
     String destinationType = 'none',
     String destinationValue = '',
   }) async {
+    final now = DateTime.now();
+    final previous = _recentNotificationOpens[campaignId];
+    if (previous != null && now.difference(previous) < const Duration(seconds: 5)) {
+      return;
+    }
+    _recentNotificationOpens[campaignId] = now;
+    _recentNotificationOpens.removeWhere(
+      (_, openedAt) => now.difference(openedAt) > const Duration(minutes: 1),
+    );
+
+    // Navigation is the learner-visible action and must never wait on telemetry.
+    onOpenDestination?.call(destinationType, destinationValue);
+
     try {
       await _apiClient.dio.post<void>(
         'mobile/notifications/$campaignId/open',
@@ -193,7 +207,6 @@ class PushNotificationRegistrationService {
     } catch (_) {
       // Open telemetry is best-effort and never blocks notification routing.
     }
-    onOpenDestination?.call(destinationType, destinationValue);
   }
 
   Future<void> dispose() async {
