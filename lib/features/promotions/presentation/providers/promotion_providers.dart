@@ -66,8 +66,12 @@ class ApiMobilePromotionSource {
   }
 }
 
-final apiMobilePromotionSourceProvider = Provider<ApiMobilePromotionSource>((ref) {
-  return ApiMobilePromotionSource(ref.watch(apiClientProvider));
+final apiMobilePromotionSourceProvider = Provider<ApiMobilePromotionSource?>((ref) {
+  try {
+    return ApiMobilePromotionSource(ref.watch(apiClientProvider));
+  } catch (_) {
+    return null;
+  }
 });
 
 
@@ -138,7 +142,11 @@ final promotionsForPlacementProvider = FutureProvider.family<
       ? null
       : ref.watch(promotionAudienceExamIdsProvider);
   final campaigns = placement == PromotionPlacement.home
-      ? await ref.watch(apiMobilePromotionSourceProvider).loadHome()
+      ? await (() async {
+          final source = ref.watch(apiMobilePromotionSourceProvider);
+          if (source == null) return const <PromotionCampaign>[];
+          return source.loadHome();
+        })()
       : await ref.watch(promotionCampaignsProvider.future);
   final now = ref.watch(promotionClockProvider)();
   final selectedExamIds = switch (audience) {
