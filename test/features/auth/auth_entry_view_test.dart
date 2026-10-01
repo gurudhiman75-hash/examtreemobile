@@ -87,7 +87,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('auth-apple')), findsOneWidget);
-    expect(find.byKey(const Key('auth-apple')), findsOneWidget);
     expect(find.byKey(const Key('auth-google')), findsOneWidget);
   });
 
@@ -98,7 +97,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Join ExamTree'), findsOneWidget);
+    expect(find.text('Create your ExamTree account'), findsOneWidget);
     expect(find.text('Name'), findsOneWidget);
     expect(find.text('Confirm password'), findsOneWidget);
 
@@ -127,7 +126,10 @@ void main() {
       find.byKey(const Key('auth-phone-submit')),
     );
     final google = tester.widget<OutlinedButton>(
-      find.byKey(const Key('auth-google')),
+      find.descendant(
+        of: find.byKey(const Key('auth-google')),
+        matching: find.byType(OutlinedButton),
+      ),
     );
     expect(phoneSubmit.onPressed, isNull);
     expect(google.onPressed, isNull);
