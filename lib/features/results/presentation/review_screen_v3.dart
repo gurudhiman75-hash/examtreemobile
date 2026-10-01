@@ -18,7 +18,15 @@ class ReviewScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultAsync = ref.watch(resultProvider(resultId));
     return Scaffold(
-      appBar: AppBar(title: const Text('Answer review')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Answer review'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: resultAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => NetworkFailureView(
@@ -63,7 +71,7 @@ class _ReviewLoadState extends StatelessWidget {
               child: const Icon(
                 Icons.fact_check_outlined,
                 size: 34,
-                color: AppColors.primary,
+                color: const Color(0xFFFFD36B),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -204,20 +212,26 @@ class _ReviewOverview extends StatelessWidget {
 
     return Container(
       key: const Key('review-overview'),
-      margin: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.sm,
-        AppSpacing.md,
-        AppSpacing.sm,
-      ),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      margin: const EdgeInsets.fromLTRB(10, AppSpacing.sm, 10, AppSpacing.sm),
+      padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEEF2FF), Color(0xFFF5F3FF)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .10),
+            blurRadius: 18,
+            offset: const Offset(0, 7),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,7 +251,7 @@ class _ReviewOverview extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.titleLarge?.copyWith(
-                color: AppColors.onPrimaryContainer,
+                color: Colors.white,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -0.3,
               ),
@@ -264,14 +278,14 @@ class _ReviewOverview extends StatelessWidget {
                 _OverviewMetric(
                   value: '$unanswered',
                   label: 'Unanswered',
-                  background: Colors.white.withValues(alpha: 0.75),
-                  foreground: theme.colorScheme.onSurfaceVariant,
+                  background: Colors.white.withValues(alpha: .14),
+                  foreground: Colors.white.withValues(alpha: .88),
                 ),
                 _OverviewMetric(
                   value: '${result.accuracy.round()}%',
                   label: 'Accuracy',
-                  background: AppColors.skyContainer,
-                  foreground: AppColors.onSkyContainer,
+                  background: Colors.white.withValues(alpha: .12),
+                  foreground: Colors.white,
                 ),
               ];
               if (!compact) {
@@ -309,12 +323,12 @@ class _ReviewOverview extends StatelessWidget {
                   selected: selectedFilter == filter,
                   showCheckmark: false,
                   side: BorderSide.none,
-                  backgroundColor: Colors.white.withValues(alpha: 0.72),
-                  selectedColor: AppColors.primary,
+                  backgroundColor: Colors.white.withValues(alpha: .10),
+                  selectedColor: const Color(0xFFFFD36B),
                   labelStyle: theme.textTheme.labelMedium?.copyWith(
                     color: selectedFilter == filter
-                        ? Colors.white
-                        : AppColors.onPrimaryContainer,
+                        ? const Color(0xFF0B2748)
+                        : Colors.white.withValues(alpha: .88),
                     fontWeight: FontWeight.w800,
                   ),
                   label: Text('${filter.label} $count'),
@@ -411,16 +425,19 @@ class _QuestionReviewPane extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            0,
-            AppSpacing.md,
-            AppSpacing.sm,
-          ),
-          padding: const EdgeInsets.all(AppSpacing.md),
+          margin: const EdgeInsets.fromLTRB(10, 0, 10, AppSpacing.sm),
+          padding: const EdgeInsets.all(13),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE3E9F1)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF10264A).withValues(alpha: .03),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -490,9 +507,9 @@ class _QuestionReviewPane extends StatelessWidget {
           child: SingleChildScrollView(
             key: const Key('review-question-scroll'),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacing.md,
+              12,
               AppSpacing.xs,
-              AppSpacing.md,
+              12,
               AppSpacing.xxl,
             ),
             child: Column(
@@ -663,7 +680,7 @@ class _OptionReviewTile extends StatelessWidget {
         ? AppColors.mintContainer
         : isSelected
             ? AppColors.roseContainer
-            : theme.colorScheme.surfaceContainerLowest;
+            : Colors.white;
     final foreground = isCorrect
         ? AppColors.onMintContainer
         : isSelected
@@ -683,7 +700,18 @@ class _OptionReviewTile extends StatelessWidget {
     return Material(
       color: background,
       borderRadius: BorderRadius.circular(18),
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: isCorrect
+                ? AppColors.mint.withValues(alpha: .18)
+                : isSelected
+                    ? AppColors.rose.withValues(alpha: .18)
+                    : const Color(0xFFE3E9F1),
+          ),
+        ),
+        child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -742,6 +770,7 @@ class _OptionReviewTile extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -759,8 +788,9 @@ class _ExplanationCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primaryContainer,
-        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFFEAF4FF),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFD7E8FA)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -779,7 +809,7 @@ class _ExplanationCard extends StatelessWidget {
                 child: const Icon(
                   Icons.lightbulb_outline_rounded,
                   size: 19,
-                  color: AppColors.primary,
+                  color: const Color(0xFF0B5D96),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -787,7 +817,7 @@ class _ExplanationCard extends StatelessWidget {
                 child: Text(
                   'Explanation',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: AppColors.onPrimaryContainer,
+                    color: const Color(0xFF164D7E),
                     fontWeight: FontWeight.w900,
                   ),
                 ),
