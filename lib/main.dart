@@ -11,6 +11,7 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/providers/auth_providers.dart';
 import 'features/companion/presentation/providers/daily_companion_providers.dart';
 import 'features/exam_day/presentation/providers/exam_day_providers.dart';
+import 'features/mobile_config/presentation/mobile_runtime_gate.dart';
 import 'firebase_options.dart';
 import 'routes/app_router.dart';
 
@@ -98,6 +99,9 @@ class ExamTreeApp extends ConsumerWidget {
       title: 'ExamTree',
       theme: AppTheme.lightTheme,
       routerConfig: goRouter,
+      builder: (context, child) => MobileRuntimeGate(
+        child: child ?? const SizedBox.shrink(),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
