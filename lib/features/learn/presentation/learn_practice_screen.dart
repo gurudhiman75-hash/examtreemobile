@@ -301,7 +301,22 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     final question = widget.questions[_index];
     final progress = (_index + 1) / widget.questions.length;
 
-    return Scaffold(
+    Future<void> leavePractice() async {
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/learn');
+      }
+    }
+
+    return PopScope(
+      canPop: context.canPop(),
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && context.mounted) {
+          context.go('/learn');
+        }
+      },
+      child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -312,7 +327,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
         leading: IconButton(
           key: const Key('learn-practice-back'),
           tooltip: 'Back',
-          onPressed: () => context.pop(),
+          onPressed: leavePractice,
           icon: const Icon(Icons.arrow_back_rounded),
         ),
         titleSpacing: 4,
@@ -631,6 +646,7 @@ class _FeedbackCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }
