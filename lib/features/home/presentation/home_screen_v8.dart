@@ -286,7 +286,7 @@ class HomeScreen extends ConsumerWidget {
                     dateLabel: _dateLabel(currentTime),
                     photoUrl: user?.photoURL,
                     onSearch: () => context.go('/exams'),
-                    onNotifications: () => context.push('/daily'),
+                    onNotifications: () => context.push('/notifications'),
                     onProfile: () => context.push('/profile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -2033,7 +2033,7 @@ class _NotificationButton extends StatelessWidget {
       children: [
         _HeaderButton(
           icon: Icons.notifications_none_rounded,
-          tooltip: 'Daily reminders',
+          tooltip: 'Notifications',
           onTap: onTap,
         ),
         Positioned(
