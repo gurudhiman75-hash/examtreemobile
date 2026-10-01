@@ -26,6 +26,7 @@ import '../features/learn/presentation/learn_submodule_screen.dart';
 import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
+import '../features/managed_pages/presentation/managed_mobile_page_screen.dart';
 import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
@@ -214,7 +215,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/home',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'home', nativeChild: HomeScreen()),
               ),
             ],
           ),
@@ -223,7 +224,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/learn',
-                builder: (context, state) => const LearnScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'learn', nativeChild: LearnScreen()),
               ),
             ],
           ),
@@ -232,7 +233,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/exams',
-                builder: (context, state) => const ExamsScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'exams', nativeChild: ExamsScreen()),
               ),
             ],
           ),
@@ -241,7 +242,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/current-affairs',
-                builder: (context, state) => const CurrentAffairsScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'current-affairs', nativeChild: CurrentAffairsScreen()),
               ),
             ],
           ),
@@ -250,7 +251,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
+                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'profile', nativeChild: ProfileScreen()),
               ),
             ],
           ),
@@ -288,9 +289,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/store',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => StoreScreen(
-          initialSection: storeSectionFromQuery(
-            state.uri.queryParameters['section'],
+        builder: (context, state) => RegisteredMobilePageScreen(
+          slug: 'store',
+          nativeChild: StoreScreen(
+            initialSection: storeSectionFromQuery(
+              state.uri.queryParameters['section'],
+            ),
           ),
         ),
       ),
@@ -307,6 +311,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           }
           return MobileTestSeriesDetailScreen(seriesId: seriesId);
         },
+      ),
+      GoRoute(
+        path: '/page/:slug',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => ManagedMobilePageScreen(
+          slug: state.pathParameters['slug'] ?? '',
+        ),
       ),
       GoRoute(
         path: '/notifications',

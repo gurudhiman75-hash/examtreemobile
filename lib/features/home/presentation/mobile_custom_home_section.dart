@@ -34,6 +34,12 @@ class MobileCustomHomeSectionView extends StatelessWidget {
         final value = card.destinationValue.trim();
         context.go(value.startsWith('/') ? value : '/learn');
         return;
+      case 'page':
+        final value = card.destinationValue.trim();
+        if (value.isNotEmpty) {
+          context.push('/page/${Uri.encodeComponent(value)}');
+        }
+        return;
       case 'url':
         final uri = Uri.tryParse(card.destinationValue.trim());
         if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
