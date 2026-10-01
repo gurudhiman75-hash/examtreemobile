@@ -67,8 +67,8 @@ class _AuthEntryViewState extends State<AuthEntryView> {
   @override
   void didUpdateWidget(covariant AuthEntryView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.registering != oldWidget.registering && widget.registering) {
-      _emailExpanded = true;
+    if (widget.registering != oldWidget.registering) {
+      _emailExpanded = widget.registering;
     }
   }
 
