@@ -7,6 +7,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../promotions/domain/promotion_campaign.dart';
+import '../../promotions/presentation/providers/promotion_providers.dart';
+import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import 'providers/result_providers.dart';
 import 'result_history_filter.dart';
 
@@ -50,7 +53,9 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   }
 
   Future<void> _refresh() async {
-    ref.invalidate(userResultsProvider);
+    ref
+      ..invalidate(userResultsProvider)
+      ..invalidate(promotionsForPlacementProvider(PromotionPlacement.results));
     try {
       await ref.read(userResultsProvider.future);
     } catch (_) {
@@ -107,6 +112,11 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                   _PerformanceHero(
                     key: const Key('results-performance-snapshot'),
                     summary: summary,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const PromotionPlacementView(
+                    placement: PromotionPlacement.results,
+                    compact: true,
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   _HistoryToolsIntro(
