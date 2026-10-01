@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../content_planning/presentation/mobile_content_planning_providers.dart';
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
