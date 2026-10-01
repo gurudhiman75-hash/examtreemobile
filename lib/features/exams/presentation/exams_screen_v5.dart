@@ -635,7 +635,7 @@ Future<void> _showSortSheet(
                 trailing: option == current
                     ? Icon(
                         Icons.check_circle_rounded,
-                        color: Theme.of(sheetContext).colorScheme.primary,
+                        color: const Color(0xFF0B3A6F),
                       )
                     : null,
                 onTap: () => Navigator.pop(sheetContext, option),

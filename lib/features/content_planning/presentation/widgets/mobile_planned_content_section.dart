@@ -94,8 +94,11 @@ class MobilePlannedContentSection extends ConsumerWidget {
               return SizedBox(
                 width: 220,
                 child: Material(
-                  color: theme.colorScheme.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(18),
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: const BorderSide(color: Color(0xFFE3E9F1)),
+                  ),
                   child: InkWell(
                     onTap: () => _open(context, ref, item),
                     borderRadius: BorderRadius.circular(18),
@@ -111,13 +114,13 @@ class MobilePlannedContentSection extends ConsumerWidget {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.primaryContainer,
+                                color: const Color(0xFFFFF4D6),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
                                 item.badgeText,
                                 style: theme.textTheme.labelSmall?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer,
+                                  color: const Color(0xFF8A5A00),
                                   fontWeight: FontWeight.w800,
                                 ),
                               ),

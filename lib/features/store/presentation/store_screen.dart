@@ -430,12 +430,12 @@ class _ProductCard extends StatelessWidget {
                   height: 48,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryContainer,
+                    color: const Color(0xFFFFF4D6),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Icon(
                     Icons.assignment_turned_in_outlined,
-                    color: AppColors.primary,
+                    color: const Color(0xFF0B3A6F),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -690,8 +690,8 @@ class _FoundationState extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -707,7 +707,7 @@ class _FoundationState extends StatelessWidget {
             child: Icon(
               icon,
               size: 27,
-              color: iconColor ?? theme.colorScheme.primary,
+              color: iconColor ?? const Color(0xFF0B3A6F),
             ),
           ),
           const SizedBox(height: AppSpacing.md),

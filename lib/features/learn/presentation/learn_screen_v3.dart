@@ -743,7 +743,7 @@ class _FeaturedResourceCard extends StatelessWidget {
                     const Icon(
                       Icons.arrow_forward_rounded,
                       size: 19,
-                      color: AppColors.primary,
+                      color: const Color(0xFF0B3A6F),
                     ),
                   ],
                 ),
@@ -998,7 +998,7 @@ class _ResourceRow extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.primary,
+                          color: const Color(0xFF0B3A6F),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
