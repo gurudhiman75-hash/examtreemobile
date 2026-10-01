@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/exam_day_mode.dart';
 import 'providers/exam_day_providers.dart';
@@ -271,7 +270,7 @@ class _ExamDayLoadingState extends StatelessWidget {
           height: 270,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(24),
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -342,6 +341,14 @@ class _ExamDayErrorState extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             FilledButton.icon(
               onPressed: onRetry,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF073A6A),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                textStyle: const TextStyle(fontWeight: FontWeight.w900),
+              ),
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry Exam-Day Mode'),
             ),
@@ -373,11 +380,15 @@ class _EmptyExamDay extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.xl),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+              colors: [
+              Color(0xFF031B3A),
+              Color(0xFF063A70),
+              Color(0xFF0B5D96),
+            ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(24),
             boxShadow: _softShadow(),
           ),
           child: Column(
@@ -400,9 +411,11 @@ class _EmptyExamDay extends StatelessWidget {
               Text(
                 'Set one active exam target',
                 textAlign: TextAlign.center,
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.headlineSmall,
-                ).copyWith(color: Colors.white),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.4,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
@@ -422,7 +435,13 @@ class _EmptyExamDay extends StatelessWidget {
           icon: const Icon(Icons.add_rounded),
           label: const Text('Set exam target'),
           style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(54),
+            minimumSize: const Size.fromHeight(50),
+            backgroundColor: const Color(0xFF073A6A),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            textStyle: const TextStyle(fontWeight: FontWeight.w900),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -572,14 +591,18 @@ class _CountdownHero extends StatelessWidget {
 
     return Container(
       key: const Key('exam-day-countdown'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+              Color(0xFF031B3A),
+              Color(0xFF063A70),
+              Color(0xFF0B5D96),
+            ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: _softShadow(),
       ),
       child: Column(
@@ -603,9 +626,12 @@ class _CountdownHero extends StatelessWidget {
                 Expanded(
                   child: Text(
                     target.examName,
-                    style: AppTypography.premiumHeading(
-                      theme.textTheme.headlineSmall,
-                    ).copyWith(color: Colors.white, height: 1.2),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      height: 1.2,
+                      letterSpacing: -.4,
+                    ),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -622,10 +648,9 @@ class _CountdownHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.xl),
           Text(
             examCountdownLabel(target.examAt, now),
-            style: AppTypography.premiumHeading(
-              theme.textTheme.displaySmall,
-            ).copyWith(
+            style: theme.textTheme.displaySmall?.copyWith(
               color: const Color(0xFFFFD36B),
+              fontWeight: FontWeight.w900,
               letterSpacing: -1,
             ),
           ),
@@ -721,9 +746,11 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(color: const Color(0xFF10264A)),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
+          ),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -767,8 +794,8 @@ class _LogisticsCard extends StatelessWidget {
     return Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -884,8 +911,8 @@ class _ChecklistCard extends StatelessWidget {
       key: const Key('exam-day-checklist'),
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -906,9 +933,11 @@ class _ChecklistCard extends StatelessWidget {
                     children: [
                       Text(
                         'Exam-day checklist',
-                        style: AppTypography.premiumHeading(
-                          theme.textTheme.titleLarge,
-                        ).copyWith(color: const Color(0xFF10264A)),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: const Color(0xFF10264A),
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -.3,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
