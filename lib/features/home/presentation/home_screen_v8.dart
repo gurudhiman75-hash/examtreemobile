@@ -347,22 +347,39 @@ class _HomePromoFallback extends StatelessWidget {
                   ),
                 const Spacer(),
                 if (largeText)
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () => context.go('/exams'),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD36B),
-                        foregroundColor: const Color(0xFF082A52),
+                  Material(
+                    color: const Color(0xFFFFD36B),
+                    borderRadius: BorderRadius.circular(24),
+                    child: InkWell(
+                      onTap: () => context.go('/exams'),
+                      borderRadius: BorderRadius.circular(24),
+                      child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 12,
                         ),
-                        shape: const StadiumBorder(),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Start Preparing',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: const Color(0xFF082A52),
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.arrow_forward_rounded,
+                              size: 19,
+                              color: Color(0xFF082A52),
+                            ),
+                          ],
+                        ),
                       ),
-                      label: const Text('Start Preparing'),
-                      iconAlignment: IconAlignment.end,
-                      icon: const Icon(Icons.arrow_forward_rounded, size: 19),
                     ),
                   )
                 else
@@ -388,10 +405,8 @@ class _HomePromoFallback extends StatelessWidget {
                       const Expanded(child: _HeroFeatureRow()),
                     ],
                   ),
-                if (largeText) ...[
-                  const SizedBox(height: 12),
-                  const _HeroFeatureRow(),
-                ],
+                if (largeText)
+                  const SizedBox(height: 2),
               ],
             ),
           ),
