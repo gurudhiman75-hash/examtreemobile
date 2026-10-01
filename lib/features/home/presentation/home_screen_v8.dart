@@ -147,9 +147,9 @@ class HomeScreen extends ConsumerWidget {
                     action: 'See All',
                     onAction: () => context.go('/exams'),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 3),
                   _ExamCategoriesGrid(onOpen: () => context.go('/exams')),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   _SectionTitle(
                     title: 'Featured Test Series',
                     action: 'See All',
@@ -1946,6 +1946,12 @@ class _SectionTitle extends StatelessWidget {
     );
     final actionWidget = TextButton(
       onPressed: onAction,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
       child: Text(action),
     );
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
