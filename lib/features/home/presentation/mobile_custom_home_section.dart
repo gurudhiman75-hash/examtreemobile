@@ -23,7 +23,12 @@ class MobileCustomHomeSectionView extends StatelessWidget {
         }
         return;
       case 'test_series':
-        context.push('/store?section=tests');
+        final value = card.destinationValue.trim();
+        if (value.isNotEmpty) {
+          context.push('/test-series?id=${Uri.encodeQueryComponent(value)}');
+        } else {
+          context.push('/store?section=tests');
+        }
         return;
       case 'learn':
         final value = card.destinationValue.trim();
@@ -323,6 +328,14 @@ class _ConfigIcon extends StatelessWidget {
         return Icons.newspaper_rounded;
       case 'star':
         return Icons.star_rounded;
+      case 'brain':
+        return Icons.psychology_alt_rounded;
+      case 'bell':
+        return Icons.notifications_rounded;
+      case 'sparkles':
+        return Icons.auto_awesome_rounded;
+      case 'grid':
+        return Icons.grid_view_rounded;
       default:
         return Icons.apps_rounded;
     }
