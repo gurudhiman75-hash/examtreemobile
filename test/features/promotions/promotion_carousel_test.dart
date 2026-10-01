@@ -6,13 +6,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  PromotionCampaign campaign(String id, String title) => PromotionCampaign(
+  PromotionCampaign campaign(
+    String id,
+    String title, {
+    bool isDismissible = false,
+  }) =>
+      PromotionCampaign(
         id: id,
         title: title,
         subtitle: 'Fresh preparation material',
         placements: const {PromotionPlacement.login},
         ctaLabel: 'Explore',
         deepLink: '/learn',
+        isDismissible: isDismissible,
       );
 
   Widget app(
@@ -71,7 +77,13 @@ void main() {
 
     await tester.pumpWidget(
       app(
-        [campaign('one', 'Free current affairs')],
+        [
+          campaign(
+            'one',
+            'Free current affairs',
+            isDismissible: true,
+          ),
+        ],
         onDismiss: (value) => dismissed = value,
       ),
     );
