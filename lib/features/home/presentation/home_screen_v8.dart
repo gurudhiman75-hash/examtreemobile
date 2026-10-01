@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/models/analytics_model.dart';
 import '../../../core/models/exam_model.dart';
@@ -19,8 +20,10 @@ import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/providers/promotion_providers.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../../results/presentation/providers/result_providers.dart';
+import '../domain/mobile_home_configuration.dart';
 import 'home_exam_priority.dart';
 import 'home_primary_action.dart';
+import 'mobile_home_providers.dart';
 
 final homeV8SelectedExamCodesProvider =
     Provider<AsyncValue<List<String>>>((ref) {
@@ -42,6 +45,7 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(userResultsProvider)
       ..invalidate(dailyCompanionSnapshotProvider)
       ..invalidate(homeV8SelectedExamCodesProvider)
+      ..invalidate(mobileHomeConfigurationProvider)
       ..invalidate(promotionsForPlacementProvider(PromotionPlacement.home));
 
     Future<void> settle(Future<Object?> request) async {
@@ -72,6 +76,7 @@ class HomeScreen extends ConsumerWidget {
     final campaignsAsync = ref.watch(
       promotionsForPlacementProvider(PromotionPlacement.home),
     );
+    final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
     final user = ref.watch(authStateChangesProvider).value;
     final currentTime = now?.call() ?? DateTime.now();
 
@@ -105,6 +110,112 @@ class HomeScreen extends ConsumerWidget {
         .take(6)
         .toList(growable: false);
     final campaigns = campaignsAsync.value ?? const <PromotionCampaign>[];
+    final homeConfig =
+        homeConfigAsync.value ?? MobileHomeConfiguration.fallback;
+
+    final configurableSections = <String, Widget>{
+      'hero': Column(
+        children: [
+          if (homeConfig.heroSlides.isNotEmpty)
+            _ConfiguredHeroCarousel(slides: homeConfig.heroSlides)
+          else if (campaigns.isNotEmpty)
+            PromotionCarousel(campaigns: campaigns, compact: true)
+          else
+            const Column(
+              children: [
+                _HomePromoFallback(),
+                SizedBox(height: 6),
+                _HeroPageDots(),
+              ],
+            ),
+          const SizedBox(height: 12),
+        ],
+      ),
+      'exam_categories': Column(
+        children: [
+          _SectionTitle(
+            title: 'Exam Categories',
+            action: 'See All',
+            onAction: () => context.go('/exams'),
+          ),
+          const SizedBox(height: 3),
+          _ExamCategoriesGrid(
+            families: homeConfig.featuredExamFamilies,
+            onOpen: () => context.go('/exams'),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+      'featured_test_series': Column(
+        children: [
+          _SectionTitle(
+            title: 'Featured Test Series',
+            action: 'See All',
+            onAction: () => context.go('/exams'),
+          ),
+          const SizedBox(height: 6),
+          if (homeConfig.featuredTestSeries.isNotEmpty)
+            _ConfiguredSeriesRail(
+              series: homeConfig.featuredTestSeries,
+              onOpen: () => context.go('/exams'),
+            )
+          else
+            availableAsync.when(
+              loading: () => const _LoadingCard(height: 194),
+              error: (error, stack) => _ErrorCard(
+                title: 'Test series could not be loaded',
+                onRetry: () => ref.invalidate(availableExamsProvider),
+              ),
+              data: (tests) {
+                final featured = recommendations.isNotEmpty
+                    ? recommendations.take(4).toList(growable: false)
+                    : prioritizedAvailable.take(4).toList(growable: false);
+                return featured.isEmpty
+                    ? _EmptyRecommendations(
+                        catalogueEmpty: tests.isEmpty,
+                        onBrowse: () => context.go('/exams'),
+                      )
+                    : _FeaturedSeriesRail(
+                        exams: featured,
+                        onOpen: (exam) => context.push(
+                          '/exam-details',
+                          extra: exam.id,
+                        ),
+                      );
+              },
+            ),
+          const SizedBox(height: 16),
+        ],
+      ),
+      'continue_learning': Column(
+        children: [
+          _SectionTitle(
+            title: 'Continue Learning',
+            action: 'See All',
+            onAction: () => context.go('/learn'),
+          ),
+          const SizedBox(height: 6),
+          _ContinueLearningCard(
+            key: const Key('home-primary-action'),
+            state: actionState,
+            onOpen: (action) => _openAction(context, action),
+            onRetry: () {
+              ref
+                ..invalidate(inProgressExamsProvider)
+                ..invalidate(userResultsProvider)
+                ..invalidate(availableExamsProvider)
+                ..invalidate(dailyCompanionSnapshotProvider);
+            },
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    };
+
+    final orderedSections = homeConfig.sectionOrder
+        .map((key) => configurableSections[key])
+        .whereType<Widget>()
+        .toList(growable: false);
 
     return SafeArea(
       child: RefreshIndicator(
@@ -131,75 +242,7 @@ class HomeScreen extends ConsumerWidget {
                     onProfile: () => context.push('/profile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
-                  if (campaigns.isNotEmpty)
-                    PromotionCarousel(campaigns: campaigns, compact: true)
-                  else
-                    const Column(
-                      children: [
-                        _HomePromoFallback(),
-                        SizedBox(height: 6),
-                        _HeroPageDots(),
-                      ],
-                    ),
-                  const SizedBox(height: 12),
-                  _SectionTitle(
-                    title: 'Exam Categories',
-                    action: 'See All',
-                    onAction: () => context.go('/exams'),
-                  ),
-                  const SizedBox(height: 3),
-                  _ExamCategoriesGrid(onOpen: () => context.go('/exams')),
-                  const SizedBox(height: 8),
-                  _SectionTitle(
-                    title: 'Featured Test Series',
-                    action: 'See All',
-                    onAction: () => context.go('/exams'),
-                  ),
-                  const SizedBox(height: 6),
-                  availableAsync.when(
-                    loading: () => const _LoadingCard(height: 194),
-                    error: (error, stack) => _ErrorCard(
-                      title: 'Test series could not be loaded',
-                      onRetry: () => ref.invalidate(availableExamsProvider),
-                    ),
-                    data: (tests) {
-                      final featured = recommendations.isNotEmpty
-                          ? recommendations.take(4).toList(growable: false)
-                          : prioritizedAvailable.take(4).toList(growable: false);
-                      return featured.isEmpty
-                          ? _EmptyRecommendations(
-                              catalogueEmpty: tests.isEmpty,
-                              onBrowse: () => context.go('/exams'),
-                            )
-                          : _FeaturedSeriesRail(
-                              exams: featured,
-                              onOpen: (exam) => context.push(
-                                '/exam-details',
-                                extra: exam.id,
-                              ),
-                            );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _SectionTitle(
-                    title: 'Continue Learning',
-                    action: 'See All',
-                    onAction: () => context.go('/learn'),
-                  ),
-                  const SizedBox(height: 6),
-                  _ContinueLearningCard(
-                    key: const Key('home-primary-action'),
-                    state: actionState,
-                    onOpen: (action) => _openAction(context, action),
-                    onRetry: () {
-                      ref
-                        ..invalidate(inProgressExamsProvider)
-                        ..invalidate(userResultsProvider)
-                        ..invalidate(availableExamsProvider)
-                        ..invalidate(dailyCompanionSnapshotProvider);
-                    },
-                  ),
-                  const SizedBox(height: 16),
+                  ...orderedSections,
                   _SectionTitle(
                     title: "Today's Goal",
                     action: 'See All',
@@ -238,7 +281,7 @@ class _HomePromoFallback extends StatelessWidget {
     final largeText = textScale > 1.3;
     final heroHeight = largeText
         ? (238 * textScale).clamp(335, 425).toDouble()
-        : 216.0;
+        : 194.0;
 
     return Container(
       height: heroHeight,
