@@ -1,3 +1,5 @@
+import 'dart:async';
+
 // ignore_for_file: unused_element, unused_element_parameter, unnecessary_underscores
 
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/models/analytics_model.dart';
+import '../../../core/providers/mobile_analytics_provider.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
@@ -79,6 +82,14 @@ class HomeScreen extends ConsumerWidget {
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
     final user = ref.watch(authStateChangesProvider).value;
     final currentTime = now?.call() ?? DateTime.now();
+    final mobileAnalytics = ref.read(mobileAnalyticsClientProvider);
+    unawaited(
+      mobileAnalytics.trackOnce(
+        'home_view',
+        'home_view',
+        metadata: const <String, Object?>{'screen': 'home'},
+      ),
+    );
 
     final active = activeAsync.value ?? const <Exam>[];
     final available = availableAsync.value ?? const <Exam>[];
@@ -117,9 +128,46 @@ class HomeScreen extends ConsumerWidget {
       'hero': Column(
         children: [
           if (homeConfig.heroSlides.isNotEmpty)
-            _ConfiguredHeroCarousel(slides: homeConfig.heroSlides)
+            _ConfiguredHeroCarousel(
+              slides: homeConfig.heroSlides,
+              onImpression: (slide) => unawaited(
+                mobileAnalytics.track(
+                  'hero_impression',
+                  entityType: 'hero_slide',
+                  entityId: slide.id,
+                  placement: 'home',
+                ),
+              ),
+              onClick: (slide) => unawaited(
+                mobileAnalytics.track(
+                  'hero_click',
+                  entityType: 'hero_slide',
+                  entityId: slide.id,
+                  placement: 'home',
+                ),
+              ),
+            )
           else if (campaigns.isNotEmpty)
-            PromotionCarousel(campaigns: campaigns, compact: true)
+            PromotionCarousel(
+              campaigns: campaigns,
+              compact: true,
+              onImpression: (campaign) => unawaited(
+                mobileAnalytics.track(
+                  'promotion_impression',
+                  entityType: 'promotion',
+                  entityId: campaign.id,
+                  placement: 'home',
+                ),
+              ),
+              onAction: (campaign) => unawaited(
+                mobileAnalytics.track(
+                  'promotion_click',
+                  entityType: 'promotion',
+                  entityId: campaign.id,
+                  placement: 'home',
+                ),
+              ),
+            )
           else
             const Column(
               children: [
@@ -272,9 +320,15 @@ class HomeScreen extends ConsumerWidget {
 
 
 class _ConfiguredHeroCarousel extends StatefulWidget {
-  const _ConfiguredHeroCarousel({required this.slides});
+  const _ConfiguredHeroCarousel({
+    required this.slides,
+    this.onImpression,
+    this.onClick,
+  });
 
   final List<MobileHeroSlide> slides;
+  final ValueChanged<MobileHeroSlide>? onImpression;
+  final ValueChanged<MobileHeroSlide>? onClick;
 
   @override
   State<_ConfiguredHeroCarousel> createState() => _ConfiguredHeroCarouselState();
@@ -283,8 +337,18 @@ class _ConfiguredHeroCarousel extends StatefulWidget {
 class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
   int _index = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.slides.isEmpty) return;
+      widget.onImpression?.call(widget.slides.first);
+    });
+  }
+
   Future<void> _open(MobileHeroSlide slide) async {
     if (!mounted) return;
+    widget.onClick?.call(slide);
     switch (slide.destinationType) {
       case 'exam':
         if (slide.destinationValue.isNotEmpty) {
@@ -325,7 +389,12 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
           height: height,
           child: PageView.builder(
             itemCount: slides.length,
-            onPageChanged: (value) => setState(() => _index = value),
+            onPageChanged: (value) {
+              setState(() => _index = value);
+              if (value >= 0 && value < slides.length) {
+                widget.onImpression?.call(slides[value]);
+              }
+            },
             itemBuilder: (context, index) {
               final slide = slides[index];
               final hasImage = slide.imageUrl.trim().isNotEmpty;
