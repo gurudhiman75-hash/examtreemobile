@@ -302,7 +302,13 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     final progress = (_index + 1) / widget.questions.length;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           key: const Key('learn-practice-back'),
           tooltip: 'Back',
@@ -314,11 +320,18 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
           widget.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+          ),
         ),
         actions: [
           TextButton(
             key: const Key('learn-practice-submit'),
             onPressed: (_index > 0 || _revealed) ? _submitEarly : null,
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF073A6A),
+            ),
             child: const Text(
               'Submit',
               style: TextStyle(fontWeight: FontWeight.w900),
@@ -329,11 +342,21 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
       ),
       body: Column(
         children: [
-          LinearProgressIndicator(value: progress, minHeight: 5),
+          LinearProgressIndicator(
+            value: progress,
+            minHeight: 4,
+            backgroundColor: const Color(0xFFEAF0F6),
+            color: const Color(0xFFD6A63D),
+          ),
           Expanded(
             child: ListView(
               controller: _scrollController,
-              padding: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.fromLTRB(
+                12,
+                AppSpacing.md,
+                12,
+                AppSpacing.xl,
+              ),
               children: [
                 Row(
                   children: [
@@ -343,13 +366,13 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
                         vertical: AppSpacing.xs,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer,
+                        color: const Color(0xFFEAF4FF),
                         borderRadius: BorderRadius.circular(99),
                       ),
                       child: Text(
                         'Question ${_index + 1} of ${widget.questions.length}',
                         style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.primary,
+                          color: const Color(0xFF0B5D96),
                           fontWeight: FontWeight.w900,
                         ),
                       ),
@@ -372,18 +395,27 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Container(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerLowest,
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: theme.colorScheme.outlineVariant),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: const Color(0xFFE3E9F1)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF10264A).withValues(alpha: .04),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
                   child: Text(
                     question.text,
                     key: const Key('learn-practice-question'),
                     style: theme.textTheme.titleLarge?.copyWith(
+                      color: const Color(0xFF162A48),
                       fontWeight: FontWeight.w800,
-                      height: 1.4,
+                      height: 1.42,
+                      letterSpacing: -.15,
                     ),
                   ),
                 ),
@@ -415,10 +447,21 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
         ],
       ),
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.all(AppSpacing.md),
+        minimum: const EdgeInsets.fromLTRB(12, 8, 12, 12),
         child: FilledButton(
           key: const Key('learn-practice-next'),
           onPressed: _revealed ? _next : null,
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(50),
+            backgroundColor: const Color(0xFF073A6A),
+            foregroundColor: Colors.white,
+            disabledBackgroundColor:
+                const Color(0xFF073A6A).withValues(alpha: .32),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            textStyle: const TextStyle(fontWeight: FontWeight.w900),
+          ),
           child: Text(
             _index == widget.questions.length - 1
                 ? 'View result'
@@ -452,20 +495,24 @@ class _PracticeOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    Color background = theme.colorScheme.surfaceContainerLow;
-    Color border = theme.colorScheme.outlineVariant;
+    Color background = Colors.white;
+    Color border = const Color(0xFFE3E9F1);
+    Color accent = const Color(0xFF52708F);
     IconData? trailing;
     if (correct) {
-      background = theme.colorScheme.secondaryContainer;
-      border = theme.colorScheme.secondary;
+      background = const Color(0xFFEAF8F1);
+      border = const Color(0xFF6FC59A);
+      accent = const Color(0xFF237A50);
       trailing = Icons.check_circle_rounded;
     } else if (incorrect) {
-      background = theme.colorScheme.errorContainer;
-      border = theme.colorScheme.error;
+      background = const Color(0xFFFFEEF0);
+      border = const Color(0xFFE79AA4);
+      accent = const Color(0xFFA53B4C);
       trailing = Icons.cancel_rounded;
     } else if (selected) {
-      background = theme.colorScheme.primaryContainer;
-      border = theme.colorScheme.primary;
+      background = const Color(0xFFEAF4FF);
+      border = const Color(0xFF8FBCE8);
+      accent = const Color(0xFF0B5D96);
     }
 
     return Material(
@@ -483,18 +530,35 @@ class _PracticeOption extends StatelessWidget {
           ),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 17,
-                child: Text(String.fromCharCode(65 + index)),
+              Container(
+                width: 34,
+                height: 34,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: .10),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  String.fromCharCode(65 + index),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
                   text,
-                  style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: const Color(0xFF334155),
+                    height: 1.4,
+                    fontWeight:
+                        selected || correct || incorrect ? FontWeight.w700 : null,
+                  ),
                 ),
               ),
-              if (trailing != null) Icon(trailing),
+              if (trailing != null) Icon(trailing, color: accent),
             ],
           ),
         ),
@@ -515,30 +579,55 @@ class _FeedbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final foreground =
+        correct ? const Color(0xFF237A50) : const Color(0xFFA53B4C);
     return Container(
       key: const Key('learn-practice-feedback'),
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: correct
-            ? theme.colorScheme.secondaryContainer
-            : theme.colorScheme.errorContainer,
+        color: correct ? const Color(0xFFEAF8F1) : const Color(0xFFFFEEF0),
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: foreground.withValues(alpha: .16)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            correct ? 'Correct' : 'Incorrect',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w900,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .8),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: Icon(
+                  correct
+                      ? Icons.check_rounded
+                      : Icons.close_rounded,
+                  color: foreground,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 9),
+              Text(
+                correct ? 'Correct' : 'Incorrect',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: 10),
           Text(
             explanation.isEmpty
                 ? 'Explanation will be added by Question Studio.'
                 : explanation,
-            style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: const Color(0xFF334155),
+              height: 1.5,
+            ),
           ),
         ],
       ),
