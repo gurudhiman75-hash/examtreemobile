@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +12,7 @@ import '../../../core/observability/crash_reporting.dart';
 class PushNotificationRegistrationService {
   PushNotificationRegistrationService({
     required ApiClient apiClient,
+    this.onOpenDestination,
     FirebaseMessaging? messaging,
     FlutterLocalNotificationsPlugin? localNotifications,
   })  : _apiClient = apiClient,
@@ -21,6 +23,8 @@ class PushNotificationRegistrationService {
   final ApiClient _apiClient;
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _localNotifications;
+  final void Function(String destinationType, String destinationValue)?
+      onOpenDestination;
   StreamSubscription<String>? _tokenSubscription;
   StreamSubscription<RemoteMessage>? _openSubscription;
   StreamSubscription<RemoteMessage>? _foregroundSubscription;
@@ -81,10 +85,31 @@ class PushNotificationRegistrationService {
         macOS: darwin,
       ),
       onDidReceiveNotificationResponse: (response) {
-        final campaignId = response.payload?.trim() ?? '';
-        if (campaignId.isNotEmpty) {
-          unawaited(_recordOpenByCampaignId(campaignId));
+        final payload = response.payload?.trim() ?? '';
+        if (payload.isEmpty) return;
+        try {
+          final data = jsonDecode(payload);
+          if (data is Map) {
+            final campaignId = data['campaignId']?.toString().trim() ?? '';
+            final destinationType =
+                data['destinationType']?.toString().trim() ?? 'none';
+            final destinationValue =
+                data['destinationValue']?.toString().trim() ?? '';
+            if (campaignId.isNotEmpty) {
+              unawaited(
+                _recordOpenByCampaignId(
+                  campaignId,
+                  destinationType: destinationType,
+                  destinationValue: destinationValue,
+                ),
+              );
+            }
+            return;
+          }
+        } catch (_) {
+          // Older builds stored only the campaign id as the payload.
         }
+        unawaited(_recordOpenByCampaignId(payload));
       },
     );
   }
@@ -104,12 +129,21 @@ class PushNotificationRegistrationService {
       macOS: DarwinNotificationDetails(),
     );
     final campaignId = message.data['campaignId']?.trim() ?? '';
+    final payload = campaignId.isEmpty
+        ? null
+        : jsonEncode(<String, String>{
+            'campaignId': campaignId,
+            'destinationType':
+                message.data['destinationType']?.trim() ?? 'none',
+            'destinationValue':
+                message.data['destinationValue']?.trim() ?? '',
+          });
     await _localNotifications.show(
       id: message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch,
       title: notification.title ?? 'ExamTree',
       body: notification.body ?? '',
       notificationDetails: details,
-      payload: campaignId.isEmpty ? null : campaignId,
+      payload: payload,
     );
   }
 
@@ -140,10 +174,18 @@ class PushNotificationRegistrationService {
   Future<void> _recordOpen(RemoteMessage message) async {
     final campaignId = message.data['campaignId']?.trim() ?? '';
     if (campaignId.isEmpty) return;
-    await _recordOpenByCampaignId(campaignId);
+    await _recordOpenByCampaignId(
+      campaignId,
+      destinationType: message.data['destinationType']?.trim() ?? 'none',
+      destinationValue: message.data['destinationValue']?.trim() ?? '',
+    );
   }
 
-  Future<void> _recordOpenByCampaignId(String campaignId) async {
+  Future<void> _recordOpenByCampaignId(
+    String campaignId, {
+    String destinationType = 'none',
+    String destinationValue = '',
+  }) async {
     try {
       await _apiClient.dio.post<void>(
         'mobile/notifications/$campaignId/open',
@@ -151,6 +193,7 @@ class PushNotificationRegistrationService {
     } catch (_) {
       // Open telemetry is best-effort and never blocks notification routing.
     }
+    onOpenDestination?.call(destinationType, destinationValue);
   }
 
   Future<void> dispose() async {
