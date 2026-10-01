@@ -47,10 +47,14 @@ class PromotionCarousel extends StatefulWidget {
     super.key,
     required this.campaigns,
     this.compact = false,
+    this.onImpression,
+    this.onAction,
   });
 
   final List<PromotionCampaign> campaigns;
   final bool compact;
+  final ValueChanged<PromotionCampaign>? onImpression;
+  final ValueChanged<PromotionCampaign>? onAction;
 
   @override
   State<PromotionCarousel> createState() => _PromotionCarouselState();
@@ -64,6 +68,10 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
   void initState() {
     super.initState();
     _controller = PageController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || widget.campaigns.isEmpty) return;
+      widget.onImpression?.call(widget.campaigns.first);
+    });
   }
 
   @override
@@ -102,10 +110,16 @@ class _PromotionCarouselState extends State<PromotionCarousel> {
               key: const Key('promotion-carousel'),
               controller: _controller,
               itemCount: widget.campaigns.length,
-              onPageChanged: (value) => setState(() => _page = value),
+              onPageChanged: (value) {
+                setState(() => _page = value);
+                if (value >= 0 && value < widget.campaigns.length) {
+                  widget.onImpression?.call(widget.campaigns[value]);
+                }
+              },
               itemBuilder: (context, index) => _PromotionCard(
                 campaign: widget.campaigns[index],
                 compact: widget.compact,
+                onAction: widget.onAction,
               ),
             ),
           ),
@@ -143,10 +157,12 @@ class _PromotionCard extends StatelessWidget {
   const _PromotionCard({
     required this.campaign,
     required this.compact,
+    this.onAction,
   });
 
   final PromotionCampaign campaign;
   final bool compact;
+  final ValueChanged<PromotionCampaign>? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +262,10 @@ class _PromotionCard extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: TextButton.icon(
                             key: Key('promotion-action-${campaign.id}'),
-                            onPressed: () => context.push(campaign.deepLink!),
+                            onPressed: () {
+                              onAction?.call(campaign);
+                              context.push(campaign.deepLink!);
+                            },
                             style: TextButton.styleFrom(
                               visualDensity: VisualDensity.compact,
                               padding: const EdgeInsets.symmetric(horizontal: 2),
