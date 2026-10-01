@@ -149,7 +149,7 @@ class MobileNotificationsScreen extends ConsumerWidget {
           await ref.read(mobileNotificationInboxProvider.future);
         },
         child: notifications.when(
-          loading: () => const ListView(
+          loading: () => ListView(
             physics: AlwaysScrollableScrollPhysics(),
             children: [
               SizedBox(height: 220),
