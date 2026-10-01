@@ -33,71 +33,67 @@ class LearnCourseScreen extends ConsumerWidget {
 
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(subject.title)),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(subject.title),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         top: false,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
+            12,
             AppSpacing.sm,
-            AppSpacing.md,
+            12,
             AppSpacing.xxl,
           ),
           children: [
             const LearnLanguageSelector(),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.account_balance_rounded,
-                    size: 34,
-                    color: theme.colorScheme.onPrimaryContainer,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    subject.title,
-                    style: theme.textTheme.headlineSmall?.copyWith(
+            const SizedBox(height: 12),
+            _CourseHero(subject: subject, copy: copy),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    copy.lessons,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: const Color(0xFF10264A),
                       fontWeight: FontWeight.w900,
-                      color: theme.colorScheme.onPrimaryContainer,
+                      letterSpacing: -.3,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    subject.subtitle,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer,
-                      height: 1.45,
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF4D6),
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                  child: Text(
+                    '${subject.readyLessonCount} ready',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: const Color(0xFF8A5A00),
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    '${subject.readyLessonCount} ${copy.lessonsReady} · ${subject.lessons.length} ${copy.lessonsMapped}',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: theme.colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppSpacing.xl),
-            Text(
-              copy.lessons,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w900,
+            const SizedBox(height: 10),
+            for (var index = 0; index < subject.lessons.length; index++) ...[
+              _LessonTile(
+                lesson: subject.lessons[index],
+                copy: copy,
+                index: index,
               ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            for (final lesson in subject.lessons) ...[
-              _LessonTile(lesson: lesson, copy: copy),
-              const SizedBox(height: AppSpacing.sm),
+              if (index != subject.lessons.length - 1)
+                const SizedBox(height: 10),
             ],
           ],
         ),
@@ -106,88 +102,276 @@ class LearnCourseScreen extends ConsumerWidget {
   }
 }
 
-class _LessonTile extends StatelessWidget {
-  const _LessonTile({required this.lesson, required this.copy});
+class _CourseHero extends StatelessWidget {
+  const _CourseHero({required this.subject, required this.copy});
 
-  final LearnLesson lesson;
+  final LearnSubject subject;
   final LearnUiCopy copy;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      margin: EdgeInsets.zero,
-      child: InkWell(
-        onTap: lesson.isReady
-            ? () => context.push(
-                  '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
-                )
-            : null,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 15),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .13),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -24,
+            top: -30,
+            child: Container(
+              width: 104,
+              height: 104,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: .07),
+              ),
+            ),
+          ),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 42,
-                height: 42,
-                alignment: Alignment.center,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
-                  color: lesson.isReady
-                      ? theme.colorScheme.secondaryContainer
-                      : theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(13),
+                  color: Colors.white.withValues(alpha: .12),
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                child: Icon(
-                  lesson.isReady
-                      ? Icons.menu_book_rounded
-                      : Icons.lock_outline_rounded,
-                  size: 21,
-                  color: lesson.isReady
-                      ? theme.colorScheme.onSecondaryContainer
-                      : theme.colorScheme.onSurfaceVariant,
+                child: const Icon(
+                  Icons.account_balance_rounded,
+                  color: Color(0xFFFFD36B),
                 ),
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      lesson.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      lesson.summary,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      lesson.isReady
-                          ? '${lesson.estimatedMinutes} ${copy.minutes} · ${lesson.id}'
-                          : '${copy.comingNext} · ${lesson.id}',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: lesson.isReady
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.outline,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 12),
+              Text(
+                subject.title,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: -.4,
                 ),
               ),
-              if (lesson.isReady) ...[
-                const SizedBox(width: AppSpacing.sm),
-                const Icon(Icons.chevron_right_rounded),
-              ],
+              const SizedBox(height: 5),
+              Text(
+                subject.subtitle,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: .84),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 13),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _CoursePill(
+                    icon: Icons.menu_book_rounded,
+                    label:
+                        '${subject.readyLessonCount} ${copy.lessonsReady}',
+                  ),
+                  _CoursePill(
+                    icon: Icons.layers_rounded,
+                    label: '${subject.lessons.length} ${copy.lessonsMapped}',
+                  ),
+                ],
+              ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoursePill extends StatelessWidget {
+  const _CoursePill({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .11),
+        borderRadius: BorderRadius.circular(99),
+        border: Border.all(color: Colors.white.withValues(alpha: .1)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: const Color(0xFFFFD36B)),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LessonTile extends StatelessWidget {
+  const _LessonTile({
+    required this.lesson,
+    required this.copy,
+    required this.index,
+  });
+
+  final LearnLesson lesson;
+  final LearnUiCopy copy;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ready = lesson.isReady;
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: ready ? Colors.white : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: ready
+                ? const Color(0xFFE3E9F1)
+                : const Color(0xFFEDF1F5),
+          ),
+          boxShadow: ready
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF10264A).withValues(alpha: .04),
+                    blurRadius: 14,
+                    offset: const Offset(0, 5),
+                  ),
+                ]
+              : null,
+        ),
+        child: InkWell(
+          onTap: ready
+              ? () => context.push(
+                    '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
+                  )
+              : null,
+          borderRadius: BorderRadius.circular(18),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(13, 12, 12, 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ready
+                        ? const Color(0xFFEAF7FF)
+                        : const Color(0xFFEEF2F6),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: ready
+                      ? Text(
+                          '${index + 1}',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: const Color(0xFF0369A1),
+                            fontWeight: FontWeight.w900,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                          color: Color(0xFF94A3B8),
+                        ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        lesson.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: const Color(0xFF162A48),
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -.15,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        lesson.summary,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: const Color(0xFF718096),
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 7),
+                      Row(
+                        children: [
+                          Icon(
+                            ready
+                                ? Icons.schedule_rounded
+                                : Icons.hourglass_top_rounded,
+                            size: 14,
+                            color: ready
+                                ? const Color(0xFF8A5A00)
+                                : const Color(0xFF94A3B8),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              ready
+                                  ? '${lesson.estimatedMinutes} ${copy.minutes} · ${lesson.id}'
+                                  : '${copy.comingNext} · ${lesson.id}',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: ready
+                                    ? const Color(0xFF8A5A00)
+                                    : const Color(0xFF94A3B8),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                if (ready) ...[
+                  const SizedBox(width: 6),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      color: Color(0xFF52708F),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),
