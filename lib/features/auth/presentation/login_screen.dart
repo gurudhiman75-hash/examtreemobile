@@ -47,6 +47,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _phoneController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -59,6 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void dispose() {
+    _phoneController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -116,6 +118,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } finally {
       _endLoading();
     }
+  }
+
+  void _startPhoneSignIn() {
+    if (_isLoading) return;
+    final digits = _phoneController.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length != 10) {
+      _showMessage('Enter a valid 10-digit mobile number.');
+      return;
+    }
+    _showMessage(
+      'Mobile OTP sign-in is being connected to the shared ExamTree authentication service. Use Google or Email for this build.',
+    );
   }
 
   Future<void> _signInWithGoogle() async {
@@ -314,6 +328,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       isLoading: _isLoading,
       obscurePassword: _obscurePassword,
       loadingMessage: _loadingMessage,
+      phoneController: _phoneController,
       nameController: _nameController,
       emailController: _emailController,
       passwordController: _passwordController,
@@ -325,6 +340,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         fallbackCampaigns: _loginFallbackCampaigns,
       ),
       showApple: showApple,
+      onPhoneContinue: _startPhoneSignIn,
       onApple: _signInWithApple,
       onGoogle: _signInWithGoogle,
       onSubmit: _submit,
