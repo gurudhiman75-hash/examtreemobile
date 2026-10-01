@@ -14,9 +14,9 @@ import 'widgets/auth_entry_view.dart';
 const _loginFallbackCampaigns = <PromotionCampaign>[
   PromotionCampaign(
     id: 'login-feature-learn',
-    title: 'Everything you need to prepare with focus',
+    title: 'Let’s build your exam success',
     subtitle:
-        'Structured learning, exam-style practice and progress tracking in one place.',
+        'Master concepts. Practice smarter. Get real results.',
     placements: {PromotionPlacement.login},
     priority: 30,
   ),
@@ -47,6 +47,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _phoneController = TextEditingController();
+  final _otpController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -55,10 +57,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _registerMode = false;
+  PhoneVerificationSession? _phoneVerificationSession;
   String? _loadingMessage;
 
   @override
   void dispose() {
+    _phoneController.dispose();
+    _otpController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -116,6 +121,146 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } finally {
       _endLoading();
     }
+  }
+
+  String? _normalizedIndianPhone() {
+    final digits = _phoneController.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length != 10 || digits.startsWith('0')) return null;
+    return '+91$digits';
+  }
+
+  String _phoneErrorMessage(FirebaseAuthException error) {
+    return switch (error.code) {
+      'invalid-phone-number' => 'Enter a valid mobile number.',
+      'too-many-requests' =>
+        'Too many verification attempts. Please wait a little and try again.',
+      'quota-exceeded' =>
+        'SMS verification is temporarily unavailable. Please try again later.',
+      'app-not-authorized' =>
+        'This ExamTree build is not authorized for phone sign-in.',
+      'captcha-check-failed' =>
+        'Phone verification could not be confirmed. Please try again.',
+      'network-request-failed' =>
+        'Could not reach the verification service. Check your connection and try again.',
+      'session-expired' =>
+        'This verification session has expired. Request a new OTP.',
+      'invalid-verification-code' => 'The OTP you entered is incorrect.',
+      'operation-not-allowed' =>
+        'Phone sign-in is not enabled for this ExamTree build.',
+      _ => 'Unable to verify this mobile number. Please try again.',
+    };
+  }
+
+  Future<void> _startPhoneSignIn() async {
+    if (_isLoading) return;
+    final phoneNumber = _normalizedIndianPhone();
+    if (phoneNumber == null) {
+      _showMessage('Enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    _beginLoading('Sending OTP…');
+    try {
+      final result = await ref.read(authControllerProvider).startPhoneVerification(
+            phoneNumber,
+            onSetupStage: _onSetupStage,
+          );
+      if (!mounted) return;
+      if (result is PhoneVerificationCodeSent) {
+        setState(() {
+          _phoneVerificationSession = result.session;
+          _otpController.clear();
+        });
+      }
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(_phoneErrorMessage(error));
+    } on AuthProfileSyncException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to send the OTP. Please try again.');
+    } finally {
+      _endLoading();
+    }
+  }
+
+  Future<void> _verifyPhoneOtp() async {
+    if (_isLoading) return;
+    final session = _phoneVerificationSession;
+    if (session == null) {
+      _showMessage('Request a new OTP first.');
+      return;
+    }
+
+    final code = _otpController.text.replaceAll(RegExp(r'\D'), '');
+    if (code.length != 6) {
+      _showMessage('Enter the 6-digit OTP.');
+      return;
+    }
+
+    _beginLoading('Verifying OTP…');
+    try {
+      await ref.read(authControllerProvider).confirmPhoneVerification(
+            session: session,
+            smsCode: code,
+            onSetupStage: _onSetupStage,
+          );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(_phoneErrorMessage(error));
+    } on AuthProfileSyncException catch (error) {
+      if (!mounted) return;
+      _showMessage(error.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to verify the OTP. Please try again.');
+    } finally {
+      _endLoading();
+    }
+  }
+
+  Future<void> _resendPhoneOtp() async {
+    if (_isLoading) return;
+    final session = _phoneVerificationSession;
+    if (session == null) {
+      await _startPhoneSignIn();
+      return;
+    }
+
+    _beginLoading('Sending a new OTP…');
+    try {
+      final result = await ref.read(authControllerProvider).startPhoneVerification(
+            session.phoneNumber,
+            forceResendingToken: session.forceResendingToken,
+            onSetupStage: _onSetupStage,
+          );
+      if (!mounted) return;
+      if (result is PhoneVerificationCodeSent) {
+        setState(() {
+          _phoneVerificationSession = result.session;
+          _otpController.clear();
+        });
+        _showMessage('A new OTP has been sent.');
+      }
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      _showMessage(_phoneErrorMessage(error));
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to resend the OTP. Please try again.');
+    } finally {
+      _endLoading();
+    }
+  }
+
+  void _changePhoneNumber() {
+    if (_isLoading) return;
+    setState(() {
+      _phoneVerificationSession = null;
+      _otpController.clear();
+    });
   }
 
   Future<void> _signInWithGoogle() async {
@@ -314,6 +459,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       isLoading: _isLoading,
       obscurePassword: _obscurePassword,
       loadingMessage: _loadingMessage,
+      phoneController: _phoneController,
+      otpController: _otpController,
+      phoneCodeSent: _phoneVerificationSession != null,
+      phoneNumber: _phoneVerificationSession?.phoneNumber,
       nameController: _nameController,
       emailController: _emailController,
       passwordController: _passwordController,
@@ -325,6 +474,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         fallbackCampaigns: _loginFallbackCampaigns,
       ),
       showApple: showApple,
+      onPhoneContinue: _startPhoneSignIn,
+      onVerifyPhoneCode: _verifyPhoneOtp,
+      onResendPhoneCode: _resendPhoneOtp,
+      onChangePhone: _changePhoneNumber,
       onApple: _signInWithApple,
       onGoogle: _signInWithGoogle,
       onSubmit: _submit,

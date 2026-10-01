@@ -55,10 +55,14 @@ void main() {
   }
 
   Widget preview({required bool registering}) {
+    final phone = TextEditingController();
+    final otp = TextEditingController();
     final name = TextEditingController();
     final email = TextEditingController();
     final password = TextEditingController();
     final confirmation = TextEditingController();
+    addTearDown(phone.dispose);
+    addTearDown(otp.dispose);
     addTearDown(name.dispose);
     addTearDown(email.dispose);
     addTearDown(password.dispose);
@@ -67,9 +71,9 @@ void main() {
     const campaigns = <PromotionCampaign>[
       PromotionCampaign(
         id: 'preview-learn',
-        title: 'Everything you need to prepare with focus',
+        title: 'Let’s build your exam success',
         subtitle:
-            'Structured learning, exam-style practice and progress tracking in one place.',
+            'Master concepts. Practice smarter. Get real results.',
         placements: {PromotionPlacement.login},
         priority: 30,
       ),
@@ -105,11 +109,19 @@ void main() {
           isLoading: false,
           obscurePassword: true,
           loadingMessage: null,
+          phoneController: phone,
+          otpController: otp,
+          phoneCodeSent: false,
+          phoneNumber: null,
           nameController: name,
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
           showApple: false,
+          onPhoneContinue: () {},
+          onVerifyPhoneCode: () {},
+          onResendPhoneCode: () {},
+          onChangePhone: () {},
           onApple: () {},
           onGoogle: () {},
           onSubmit: () {},

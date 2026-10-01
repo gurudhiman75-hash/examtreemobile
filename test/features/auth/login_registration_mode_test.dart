@@ -13,8 +13,8 @@ void main() {
       ),
     );
 
-    expect(find.text('Sign in to ExamTree'), findsOneWidget);
-    expect(find.text('Forgot password?'), findsOneWidget);
+    expect(find.text('Login with Mobile Number'), findsOneWidget);
+    expect(find.text('Forgot password?'), findsNothing);
     expect(find.text('Name'), findsNothing);
     expect(find.text('Confirm password'), findsNothing);
 
@@ -23,7 +23,7 @@ void main() {
     await tester.tap(createAccount);
     await tester.pumpAndSettle();
 
-    expect(find.text('Join ExamTree'), findsOneWidget);
+    expect(find.text('Create your ExamTree account'), findsOneWidget);
     expect(find.text('Name'), findsOneWidget);
     expect(find.text('Confirm password'), findsOneWidget);
     expect(find.text('Forgot password?'), findsNothing);
@@ -34,7 +34,7 @@ void main() {
     await tester.tap(signIn);
     await tester.pumpAndSettle();
 
-    expect(find.text('Sign in to ExamTree'), findsOneWidget);
-    expect(find.text('Forgot password?'), findsOneWidget);
+    expect(find.text('Login with Mobile Number'), findsOneWidget);
+    expect(find.text('Forgot password?'), findsNothing);
   });
 }

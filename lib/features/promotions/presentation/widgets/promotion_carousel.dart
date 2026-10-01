@@ -217,133 +217,157 @@ class _LoginFeatureCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 1),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFDF8),
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFFE9E0D0)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF26374C).withValues(alpha: .08),
-            blurRadius: 22,
-            offset: const Offset(0, 9),
-          ),
-        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE1E7EF)),
       ),
       child: Stack(
         children: [
           Positioned(
-            right: -44,
-            top: -56,
+            right: -30,
+            top: -34,
             child: Container(
-              width: 160,
-              height: 160,
+              width: 126,
+              height: 126,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFF3C96B).withValues(alpha: .14),
+                color: const Color(0xFFFFE8A8).withValues(alpha: .38),
               ),
             ),
           ),
           Positioned(
-            left: -54,
-            bottom: -68,
+            left: -28,
+            bottom: -42,
             child: Container(
-              width: 165,
-              height: 165,
+              width: 104,
+              height: 104,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF0B3565).withValues(alpha: .045),
+                color: const Color(0xFFEAF1F8).withValues(alpha: .8),
               ),
             ),
           ),
-          if (imageUrl != null && imageUrl.isNotEmpty)
-            Positioned(
-              right: 10,
-              top: 18,
-              bottom: 18,
-              width: 132,
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) =>
-                    const _LoginStudyIllustration(),
-              ),
-            )
-          else
-            const Positioned(
-              right: 10,
-              top: 18,
-              bottom: 18,
-              width: 132,
-              child: _LoginStudyIllustration(),
-            ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 17, 144, 16),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 13),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF2CF),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    'EXAMTREE',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: const Color(0xFF8B6412),
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: .65,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        campaign.title,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: const Color(0xFF0A2546),
-                          fontWeight: FontWeight.w900,
-                          height: 1.06,
-                          letterSpacing: -.45,
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              campaign.title,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: const Color(0xFF0B2A50),
+                                fontWeight: FontWeight.w900,
+                                height: 1.03,
+                                letterSpacing: -.45,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              campaign.subtitle,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: const Color(0xFF68778A),
+                                height: 1.32,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 7),
-                      Text(
-                        campaign.subtitle,
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF627086),
-                          height: 1.35,
-                        ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 4,
+                        child: imageUrl != null && imageUrl.isNotEmpty
+                            ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const _LoginStudyIllustration(),
+                              )
+                            : const _LoginStudyIllustration(),
                       ),
                     ],
                   ),
                 ),
-                if (campaign.hasAction)
-                  TextButton.icon(
-                    key: Key('promotion-action-${campaign.id}'),
-                    onPressed: () {
-                      onAction?.call(campaign);
-                      context.push(campaign.deepLink!);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      foregroundColor: const Color(0xFFB47A0A),
-                      textStyle: const TextStyle(fontWeight: FontWeight.w800),
+                const SizedBox(height: 8),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: _LoginFeaturePill(
+                        icon: Icons.query_stats_rounded,
+                        label: 'Exam Focused',
+                      ),
                     ),
-                    iconAlignment: IconAlignment.end,
-                    icon: const Icon(Icons.arrow_forward_rounded, size: 17),
-                    label: Text(campaign.ctaLabel!),
-                  ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: _LoginFeaturePill(
+                        icon: Icons.description_outlined,
+                        label: 'Expert Content',
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    Expanded(
+                      child: _LoginFeaturePill(
+                        icon: Icons.insights_rounded,
+                        label: 'Track Progress',
+                      ),
+                    ),
+                  ],
+                ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoginFeaturePill extends StatelessWidget {
+  const _LoginFeaturePill({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 38,
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFD),
+        borderRadius: BorderRadius.circular(11),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 15, color: const Color(0xFFB77A0B)),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: const Color(0xFF1A385E),
+                    fontWeight: FontWeight.w800,
+                  ),
             ),
           ),
         ],
@@ -358,93 +382,91 @@ class _LoginStudyIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.bottomCenter,
       children: [
         Positioned(
-          top: 8,
-          right: 10,
+          top: 0,
+          right: 0,
           child: Container(
-            width: 68,
-            height: 68,
+            width: 46,
+            height: 46,
             decoration: const BoxDecoration(
-              color: Color(0xFFE9F0F7),
+              color: Color(0xFFFFF3D4),
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.public_rounded,
-              color: Color(0xFF476A87),
-              size: 38,
+              Icons.school_rounded,
+              color: Color(0xFFB77A0B),
+              size: 25,
             ),
           ),
         ),
         Positioned(
-          bottom: 17,
+          bottom: 8,
           left: 8,
-          right: 4,
-          child: Transform.rotate(
-            angle: -.05,
-            child: Container(
-              height: 35,
-              decoration: BoxDecoration(
-                color: const Color(0xFFD2A646),
-                borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: const Color(0xFFAD812B)),
-              ),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.menu_book_rounded,
-                color: Color(0xFF0B3565),
-                size: 23,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 48,
-          left: 18,
-          right: 14,
-          child: Container(
-            height: 31,
-            decoration: BoxDecoration(
-              color: const Color(0xFF183C67),
-              borderRadius: BorderRadius.circular(7),
-            ),
-            alignment: Alignment.center,
-            child: const Text(
-              'LEARN',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: .8,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 78,
-          left: 28,
-          right: 4,
-          child: Transform.rotate(
-            angle: .04,
-            child: Container(
-              height: 29,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF2E4C5),
-                borderRadius: BorderRadius.circular(7),
-                border: Border.all(color: const Color(0xFFD6C29C)),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'PRACTICE',
-                style: TextStyle(
-                  color: Color(0xFF15385F),
-                  fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: .65,
+          right: 0,
+          child: Column(
+            children: [
+              Transform.rotate(
+                angle: -.04,
+                child: Container(
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF173F70),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'POLITY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: .55,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(height: 3),
+              Container(
+                height: 27,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFCEA13A),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'HISTORY',
+                  style: TextStyle(
+                    color: Color(0xFF0A2B53),
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .55,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 3),
+              Transform.rotate(
+                angle: .03,
+                child: Container(
+                  height: 27,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0E315B),
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'GEOGRAPHY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: .45,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

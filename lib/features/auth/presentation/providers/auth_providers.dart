@@ -62,8 +62,44 @@ class AuthEmailVerificationRequiredException implements Exception {
   String toString() => message;
 }
 
+class PhoneVerificationSession {
+  const PhoneVerificationSession({
+    required this.phoneNumber,
+    required this.verificationId,
+    this.forceResendingToken,
+  });
+
+  final String phoneNumber;
+  final String verificationId;
+  final int? forceResendingToken;
+}
+
+sealed class PhoneVerificationStartResult {
+  const PhoneVerificationStartResult();
+}
+
+class PhoneVerificationCodeSent extends PhoneVerificationStartResult {
+  const PhoneVerificationCodeSent(this.session);
+
+  final PhoneVerificationSession session;
+}
+
+class PhoneVerificationAutoVerified extends PhoneVerificationStartResult {
+  const PhoneVerificationAutoVerified();
+}
+
 abstract interface class AuthSessionGateway {
   Future<void> signInWithEmailAndPassword(String email, String password);
+
+  Future<PhoneVerificationStartResult> startPhoneVerification(
+    String phoneNumber, {
+    int? forceResendingToken,
+  });
+
+  Future<void> confirmPhoneVerification({
+    required String verificationId,
+    required String smsCode,
+  });
 
   Future<void> signInWithGoogle();
 
@@ -207,6 +243,102 @@ class FirebaseAuthSessionGateway implements AuthSessionGateway {
       await _auth.signOut();
       rethrow;
     }
+  }
+
+  @override
+  Future<PhoneVerificationStartResult> startPhoneVerification(
+    String phoneNumber, {
+    int? forceResendingToken,
+  }) async {
+    if (kIsWeb) {
+      throw FirebaseAuthException(
+        code: 'phone-sign-in-web-unsupported',
+        message: 'Use the ExamTree web phone sign-in flow in a browser.',
+      );
+    }
+
+    final completer = Completer<PhoneVerificationStartResult>();
+
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      forceResendingToken: forceResendingToken,
+      timeout: const Duration(seconds: 60),
+      verificationCompleted: (credential) async {
+        if (completer.isCompleted) return;
+        try {
+          final result = await _auth.signInWithCredential(credential);
+          final user = result.user;
+          if (user == null) {
+            throw FirebaseAuthException(
+              code: 'missing-user',
+              message: 'Firebase phone sign-in did not return a user.',
+            );
+          }
+          await user.getIdToken(true);
+          if (!completer.isCompleted) {
+            completer.complete(const PhoneVerificationAutoVerified());
+          }
+        } catch (error, stackTrace) {
+          if (!completer.isCompleted) {
+            completer.completeError(error, stackTrace);
+          }
+        }
+      },
+      verificationFailed: (error) {
+        if (!completer.isCompleted) {
+          completer.completeError(error);
+        }
+      },
+      codeSent: (verificationId, resendToken) {
+        if (!completer.isCompleted) {
+          completer.complete(
+            PhoneVerificationCodeSent(
+              PhoneVerificationSession(
+                phoneNumber: phoneNumber,
+                verificationId: verificationId,
+                forceResendingToken: resendToken,
+              ),
+            ),
+          );
+        }
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        if (!completer.isCompleted) {
+          completer.complete(
+            PhoneVerificationCodeSent(
+              PhoneVerificationSession(
+                phoneNumber: phoneNumber,
+                verificationId: verificationId,
+                forceResendingToken: forceResendingToken,
+              ),
+            ),
+          );
+        }
+      },
+    );
+
+    return completer.future;
+  }
+
+  @override
+  Future<void> confirmPhoneVerification({
+    required String verificationId,
+    required String smsCode,
+  }) async {
+    final credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
+    final result = await _auth.signInWithCredential(credential);
+    final user = result.user;
+    if (user == null) {
+      await _auth.signOut();
+      throw FirebaseAuthException(
+        code: 'missing-user',
+        message: 'Firebase phone sign-in did not return a user.',
+      );
+    }
+    await user.getIdToken(true);
   }
 
   @override
@@ -411,6 +543,77 @@ class AuthController {
     await _sessionGateway.signInWithEmailAndPassword(email, password);
     onSetupStage?.call(AuthSetupStage.syncingProfile);
     await _provisionProfile();
+  }
+
+  Future<PhoneVerificationStartResult> startPhoneVerification(
+    String phoneNumber, {
+    int? forceResendingToken,
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  }) async {
+    _navigationGate?.beginFederatedSignIn();
+    var authenticated = false;
+    try {
+      _startServerWarmup();
+      onSetupStage?.call(AuthSetupStage.authenticating);
+      final result = await _sessionGateway.startPhoneVerification(
+        phoneNumber,
+        forceResendingToken: forceResendingToken,
+      );
+      if (result is PhoneVerificationAutoVerified) {
+        authenticated = true;
+        onSetupStage?.call(AuthSetupStage.syncingProfile);
+        await _provisionProfile(
+          failureMessage:
+              'Phone verification succeeded, but ExamTree could not finish account setup. Please try again.',
+        );
+      }
+      return result;
+    } catch (_) {
+      if (authenticated) {
+        try {
+          await _sessionGateway.signOut();
+        } catch (_) {
+          // Preserve the original phone/profile failure.
+        }
+      }
+      rethrow;
+    } finally {
+      _navigationGate?.endFederatedSignIn();
+    }
+  }
+
+  Future<void> confirmPhoneVerification({
+    required PhoneVerificationSession session,
+    required String smsCode,
+    ValueChanged<AuthSetupStage>? onSetupStage,
+  }) async {
+    _navigationGate?.beginFederatedSignIn();
+    var authenticated = false;
+    try {
+      _startServerWarmup();
+      onSetupStage?.call(AuthSetupStage.authenticating);
+      await _sessionGateway.confirmPhoneVerification(
+        verificationId: session.verificationId,
+        smsCode: smsCode,
+      );
+      authenticated = true;
+      onSetupStage?.call(AuthSetupStage.syncingProfile);
+      await _provisionProfile(
+        failureMessage:
+            'Phone verification succeeded, but ExamTree could not finish account setup. Please try again.',
+      );
+    } catch (_) {
+      if (authenticated) {
+        try {
+          await _sessionGateway.signOut();
+        } catch (_) {
+          // Preserve the original phone/profile failure.
+        }
+      }
+      rethrow;
+    } finally {
+      _navigationGate?.endFederatedSignIn();
+    }
   }
 
   Future<void> signInWithGoogle({
