@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
@@ -36,6 +35,8 @@ class ProfileScreen extends ConsumerWidget {
         ? user!.displayName!.trim()
         : user?.email?.split('@').first ?? 'Student';
     final email = user?.email?.trim() ?? '';
+    final phone = user?.phoneNumber?.trim() ?? '';
+    final contact = email.isNotEmpty ? email : phone;
     final initial = name.trim().isEmpty ? 'S' : name.trim()[0].toUpperCase();
 
     return RefreshIndicator(
@@ -43,13 +44,13 @@ class ProfileScreen extends ConsumerWidget {
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
+          10,
           AppSpacing.sm,
-          AppSpacing.md,
+          10,
           AppSpacing.xxl,
         ),
         children: [
-          _IdentityHero(name: name, email: email, initial: initial),
+          _IdentityHero(name: name, contact: contact, initial: initial),
           const SizedBox(height: AppSpacing.lg),
           analyticsAsync.when(
             loading: () => const _ProfileLoadingState(),
@@ -153,12 +154,12 @@ class ProfileScreen extends ConsumerWidget {
 class _IdentityHero extends StatelessWidget {
   const _IdentityHero({
     required this.name,
-    required this.email,
+    required this.contact,
     required this.initial,
   });
 
   final String name;
-  final String email;
+  final String contact;
   final String initial;
 
   @override
@@ -197,17 +198,16 @@ class _IdentityHero extends StatelessWidget {
           name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(
+          style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
-            letterSpacing: -0.45,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.4,
           ),
         ),
-        if (email.isNotEmpty) ...[
+        if (contact.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xxs),
           Text(
-            email,
+            contact,
             maxLines: largeText ? 2 : 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -220,16 +220,22 @@ class _IdentityHero extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label: email.isEmpty ? 'Profile for $name' : 'Profile for $name, $email',
+      label: contact.isEmpty
+          ? 'Profile for $name'
+          : 'Profile for $name, $contact',
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+            colors: [
+              Color(0xFF031B3A),
+              Color(0xFF063A70),
+              Color(0xFF0B5D96),
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: _softShadow(),
         ),
         child: largeText
@@ -339,8 +345,15 @@ class _PerformanceHero extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .035),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,10 +514,10 @@ class _FocusSection extends StatelessWidget {
             Expanded(
               child: Text(
                 'What to focus on',
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.titleLarge,
-                ).copyWith(
+                style: theme.textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.3,
                 ),
               ),
             ),
@@ -715,8 +728,8 @@ class _RecentTrend extends StatelessWidget {
       color: Colors.white,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -848,6 +861,14 @@ class _EmptyPerformance extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           FilledButton.icon(
             onPressed: onBrowseTests,
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
+            ),
             icon: const Icon(Icons.assignment_outlined),
             label: const Text('Browse tests'),
           ),
@@ -877,10 +898,10 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
