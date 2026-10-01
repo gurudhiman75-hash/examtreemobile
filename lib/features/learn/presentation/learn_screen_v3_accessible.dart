@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/exam_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../content_planning/presentation/mobile_content_planning_providers.dart';
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
@@ -74,9 +73,9 @@ class LearnScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
+                10,
                 AppSpacing.sm,
-                AppSpacing.md,
+                10,
                 AppSpacing.xxl,
               ),
               sliver: SliverList.list(
@@ -200,14 +199,25 @@ class _AccessibleIntro extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       key: const Key('learn-hero'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .14),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
+          ),
+        ],
       ),
       child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,10 +233,10 @@ class _AccessibleIntro extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Learn for your exams',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(
+          style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.4,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -325,10 +335,10 @@ class _Heading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -377,11 +387,16 @@ class _AccessibleResourceCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: featured
+                ? const Color(0xFFD9EAF7)
+                : const Color(0xFFE3E9F1),
+          ),
         ),
         child: InkWell(
           onTap: () => _openResource(context, resource),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
@@ -439,7 +454,7 @@ class _AccessibleResourceCard extends StatelessWidget {
                 Text(
                   _resourceTarget(resource),
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.primary,
+                    color: const Color(0xFF0B3A6F),
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -465,12 +480,13 @@ class _AccessibleTestCard extends StatelessWidget {
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(22),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE3E9F1)),
         ),
         child: InkWell(
           onTap: () => context.push('/exam-details', extra: exam.id),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
@@ -555,7 +571,7 @@ class _AccessibleLoading extends StatelessWidget {
             height: 180,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
           if (index != 2) const SizedBox(height: AppSpacing.md),
@@ -585,7 +601,7 @@ class _AccessibleEmpty extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         'No free learning resources are published yet. Published material will appear here automatically.',
