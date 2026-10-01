@@ -379,11 +379,12 @@ class _HomePromoFallback extends StatelessWidget {
                     widthFactor: .67,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Mock tests · Detailed solutions\nPractice · Bilingual content',
-                      maxLines: 2,
+                      'Mock tests · Solutions · Bilingual practice',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white.withValues(alpha: .88),
-                        height: 1.3,
+                        height: 1.2,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
