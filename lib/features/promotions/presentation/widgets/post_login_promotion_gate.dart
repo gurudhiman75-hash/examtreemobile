@@ -56,9 +56,13 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
   Future<void> _showCampaign(PromotionCampaign campaign) async {
     if (!mounted) return;
     setState(() => _sheetOpen = true);
+    final exposureStore = ref.read(promotionExposureStoreProvider);
+    await exposureStore.recordImpression(campaign);
     await showModalBottomSheet<void>(
       context: context,
-      showDragHandle: true,
+      showDragHandle: false,
+      isDismissible: campaign.isDismissible,
+      enableDrag: campaign.isDismissible,
       isScrollControlled: true,
       builder: (sheetContext) => SafeArea(
         top: false,
@@ -69,11 +73,26 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
             AppSpacing.lg,
             AppSpacing.lg + MediaQuery.viewInsetsOf(sheetContext).bottom,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Stack(
             children: [
-              Text(
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if ((campaign.imageUrl?.trim().isNotEmpty ?? false)) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: Image.network(
+                        campaign.imageUrl!,
+                        height: 170,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
+                  Text(
                 campaign.title,
                 style: Theme.of(sheetContext).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w800,
@@ -100,12 +119,37 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                   icon: const Icon(Icons.arrow_forward_rounded),
                   label: Text(campaign.ctaLabel!),
                 ),
-              const SizedBox(height: AppSpacing.xs),
-              TextButton(
-                key: Key('post-login-promotion-dismiss-${campaign.id}'),
-                onPressed: () => Navigator.of(sheetContext).pop(),
-                child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
+                  const SizedBox(height: AppSpacing.xs),
+                  TextButton(
+                    key: Key('post-login-promotion-dismiss-' + campaign.id),
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
+                  ),
+                ],
               ),
+              if (campaign.isDismissible)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Material(
+                    color: Theme.of(sheetContext)
+                        .colorScheme
+                        .surface
+                        .withValues(alpha: .92),
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      tooltip: 'Close promotion',
+                      key: Key('post-login-promotion-close-' + campaign.id),
+                      onPressed: () async {
+                        await exposureStore.dismiss(campaign.id);
+                        if (sheetContext.mounted) {
+                          Navigator.of(sheetContext).pop();
+                        }
+                      },
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
