@@ -25,6 +25,7 @@ import '../features/learn/presentation/learn_submodule_screen.dart';
 import '../features/learn/presentation/learn_lesson_screen.dart';
 import '../features/learn/presentation/learn_screen.dart';
 import '../features/learn/presentation/learning_resource_detail_screen.dart';
+import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/results/presentation/results_screen.dart';
@@ -286,6 +287,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             state.uri.queryParameters['section'],
           ),
         ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const MobileNotificationsScreen(),
       ),
       GoRoute(
         path: '/daily',
