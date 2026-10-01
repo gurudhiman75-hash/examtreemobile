@@ -89,15 +89,23 @@ class _PasswordRecoveryScreenState
     final email = _emailController.text.trim();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Reset password')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Reset password'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(
+                12,
                 AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.md,
+                12,
                 AppSpacing.xl,
               ),
               child: Center(
@@ -172,10 +180,11 @@ class _RecoveryForm extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Material(
-            color: scheme.surfaceContainerLowest,
+            color: Colors.white,
+            elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-              side: BorderSide(color: scheme.outlineVariant),
+              borderRadius: BorderRadius.circular(20),
+              side: const BorderSide(color: Color(0xFFE3E9F1)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -205,7 +214,15 @@ class _RecoveryForm extends StatelessWidget {
                     key: const Key('password-recovery-send'),
                     onPressed: isSending ? null : onSend,
                     style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(52),
+                      minimumSize: const Size.fromHeight(50),
+                      backgroundColor: const Color(0xFF073A6A),
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor:
+                          const Color(0xFF073A6A).withValues(alpha: .32),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     icon: isSending
                         ? const SizedBox.square(
@@ -223,8 +240,9 @@ class _RecoveryForm extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              color: const Color(0xFFEAF4FF),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFD6E8F8)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +250,7 @@ class _RecoveryForm extends StatelessWidget {
                 Icon(
                   Icons.privacy_tip_outlined,
                   size: 20,
-                  color: scheme.onSurfaceVariant,
+                  color: const Color(0xFF0B5D96),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -273,45 +291,67 @@ class _RecoveryHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: scheme.primaryContainer,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          ),
-          child: Icon(icon, color: scheme.onPrimaryContainer),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.3,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                message,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  height: 1.45,
-                ),
-              ),
-            ],
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .12),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
-        ),
-      ],
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Icon(icon, color: const Color(0xFFFFD36B)),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.35,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  message,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: .84),
+                    height: 1.43,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -349,9 +389,10 @@ class _SuccessState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xl),
           Material(
-            color: scheme.secondaryContainer,
+            color: const Color(0xFFEAF8F1),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+              borderRadius: BorderRadius.circular(18),
+              side: const BorderSide(color: Color(0xFFD2EEDF)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -360,14 +401,14 @@ class _SuccessState extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.shield_outlined,
-                    color: scheme.onSecondaryContainer,
+                    color: const Color(0xFF237A50),
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
                       'Check your spam folder too. For privacy, we do not confirm whether an email is registered.',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSecondaryContainer,
+                        color: const Color(0xFF237A50),
                         height: 1.45,
                       ),
                     ),
@@ -404,7 +445,15 @@ class _SuccessState extends StatelessWidget {
             key: const Key('password-recovery-back'),
             onPressed: isSending ? null : onBackToLogin,
             style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(52),
+              minimumSize: const Size.fromHeight(50),
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              disabledBackgroundColor:
+                  const Color(0xFF073A6A).withValues(alpha: .32),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: const Icon(Icons.login_rounded),
             label: const Text('Back to sign in'),
