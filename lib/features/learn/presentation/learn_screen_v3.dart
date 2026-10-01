@@ -8,6 +8,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../content_planning/presentation/mobile_content_planning_providers.dart';
+import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
@@ -25,6 +27,7 @@ class LearnScreen extends ConsumerWidget {
   Future<void> _refresh(WidgetRef ref) async {
     ref
       ..invalidate(learningResourcesProvider)
+      ..invalidate(mobileContentPlanProvider('learn_featured'))
       ..invalidate(availableExamsProvider);
 
     Future<void> settle(Future<Object?> request) async {
@@ -84,6 +87,7 @@ class LearnScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.xl),
                   const LearnModulesSection(),
                   const SizedBox(height: AppSpacing.xl),
+                  const MobilePlannedContentSection(slotKey: 'learn_featured'),
                   if (initialLoading)
                     const _LearnLoading()
                   else if (!hasContent)
