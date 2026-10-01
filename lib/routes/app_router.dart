@@ -17,6 +17,7 @@ import '../features/exam_preferences/presentation/my_exams_screen.dart';
 import '../features/exams/presentation/exam_details_screen.dart';
 import '../features/exams/presentation/exams_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/home/presentation/mobile_test_series_detail_screen.dart';
 import '../features/learn/presentation/learn_course_screen.dart';
 import '../features/learn/presentation/learn_module_screen.dart';
 import '../features/learn/presentation/learn_practice_result_screen.dart';
@@ -292,6 +293,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             state.uri.queryParameters['section'],
           ),
         ),
+      ),
+      GoRoute(
+        path: '/test-series',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['id']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Test series unavailable',
+              message: 'No test-series identifier was supplied. Open the series again from Home.',
+            );
+          }
+          return MobileTestSeriesDetailScreen(seriesId: seriesId);
+        },
       ),
       GoRoute(
         path: '/notifications',
