@@ -130,6 +130,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
     final displayName = user?.displayName?.trim().isNotEmpty == true
         ? user!.displayName!.trim()
         : user?.email?.split('@').first ?? 'Student';
+    final email = user?.email?.trim() ?? '';
+    final phone = user?.phoneNumber?.trim() ?? '';
+    final contact = email.isNotEmpty ? email : phone;
     final initial = displayName.isEmpty ? 'S' : displayName[0].toUpperCase();
     final expandedNavigation = shouldUseExpandedNavigation(
       MediaQuery.sizeOf(context).width,
@@ -319,8 +322,8 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     children: [
                       CircleAvatar(
                         radius: 22,
-                        backgroundColor: scheme.primaryContainer,
-                        foregroundColor: scheme.onPrimaryContainer,
+                        backgroundColor: const Color(0xFFFFF0C2),
+                        foregroundColor: const Color(0xFF0B3A6F),
                         child: Text(
                           initial,
                           style: Theme.of(context)
@@ -343,9 +346,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                                   .titleSmall
                                   ?.copyWith(fontWeight: FontWeight.w800),
                             ),
-                            if ((user?.email ?? '').isNotEmpty)
+                            if (contact.isNotEmpty)
                               Text(
-                                user!.email!,
+                                contact,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
@@ -432,8 +435,8 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
               tooltip: dueCount > 0
                   ? 'Open Daily Companion with $dueCount revision ${dueCount == 1 ? 'question' : 'questions'} due'
                   : 'Open Daily Companion',
-              backgroundColor: scheme.tertiaryContainer,
-              foregroundColor: scheme.onTertiaryContainer,
+              backgroundColor: const Color(0xFFFFF0C2),
+              foregroundColor: const Color(0xFF0B3A6F),
               icon: const Icon(Icons.auto_awesome_rounded, size: 20),
               label: Text(dailyLabel),
             )
@@ -459,9 +462,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                 top: false,
                 child: NavigationBarTheme(
                   data: NavigationBarThemeData(
-                    height: 72,
+                    height: 68,
                     backgroundColor: Colors.white,
-                    indicatorColor: const Color(0xFFEAF2FB),
+                    indicatorColor: const Color(0xFFFFF0C2),
                     elevation: 0,
                     labelBehavior:
                         NavigationDestinationLabelBehavior.alwaysShow,
