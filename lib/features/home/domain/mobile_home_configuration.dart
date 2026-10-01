@@ -36,23 +36,75 @@ class MobileHeroSlide {
   }
 }
 
+class MobileFeaturedExamFamily {
+  const MobileFeaturedExamFamily({
+    required this.id,
+    required this.code,
+    required this.name,
+  });
+
+  final String id;
+  final String code;
+  final String name;
+
+  factory MobileFeaturedExamFamily.fromJson(Map<String, dynamic> json) {
+    return MobileFeaturedExamFamily(
+      id: json['id']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+    );
+  }
+}
+
+class MobileFeaturedTestSeries {
+  const MobileFeaturedTestSeries({
+    required this.id,
+    required this.code,
+    required this.name,
+    required this.examName,
+    required this.testCount,
+  });
+
+  final String id;
+  final String code;
+  final String name;
+  final String examName;
+  final int testCount;
+
+  factory MobileFeaturedTestSeries.fromJson(Map<String, dynamic> json) {
+    return MobileFeaturedTestSeries(
+      id: json['id']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      examName: json['examName']?.toString() ?? '',
+      testCount: int.tryParse(json['testCount']?.toString() ?? '') ?? 0,
+    );
+  }
+}
+
 class MobileHomeConfiguration {
   const MobileHomeConfiguration({
     required this.heroSlides,
     required this.featuredExamFamilyIds,
     required this.featuredTestSeriesIds,
+    required this.featuredExamFamilies,
+    required this.featuredTestSeries,
     required this.sectionOrder,
   });
 
   final List<MobileHeroSlide> heroSlides;
   final List<String> featuredExamFamilyIds;
   final List<String> featuredTestSeriesIds;
+  final List<MobileFeaturedExamFamily> featuredExamFamilies;
+  final List<MobileFeaturedTestSeries> featuredTestSeries;
   final List<String> sectionOrder;
 
   static const fallback = MobileHomeConfiguration(
     heroSlides: <MobileHeroSlide>[],
     featuredExamFamilyIds: <String>[],
     featuredTestSeriesIds: <String>[],
+    featuredExamFamilies: <MobileFeaturedExamFamily>[],
+    featuredTestSeries: <MobileFeaturedTestSeries>[],
     sectionOrder: <String>[
       'hero',
       'exam_categories',
@@ -92,6 +144,24 @@ class MobileHomeConfiguration {
       heroSlides: slides,
       featuredExamFamilyIds: strings(json['featuredExamFamilyIds']),
       featuredTestSeriesIds: strings(json['featuredTestSeriesIds']),
+      featuredExamFamilies: (json['featuredExamFamilies'] is List)
+          ? (json['featuredExamFamilies'] as List)
+              .whereType<Map>()
+              .map((item) => MobileFeaturedExamFamily.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .where((item) => item.id.isNotEmpty && item.name.isNotEmpty)
+              .toList()
+          : const <MobileFeaturedExamFamily>[],
+      featuredTestSeries: (json['featuredTestSeries'] is List)
+          ? (json['featuredTestSeries'] as List)
+              .whereType<Map>()
+              .map((item) => MobileFeaturedTestSeries.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .where((item) => item.id.isNotEmpty && item.name.isNotEmpty)
+              .toList()
+          : const <MobileFeaturedTestSeries>[],
       sectionOrder: order,
     );
   }
