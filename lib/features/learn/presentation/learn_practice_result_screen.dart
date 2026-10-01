@@ -61,47 +61,89 @@ class LearnPracticeResultScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Practice result')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Practice result'),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          AppSpacing.lg,
-          AppSpacing.md,
+          12,
+          AppSpacing.sm,
+          12,
           AppSpacing.xxl,
         ),
         children: [
-          Center(
-            child: Container(
-              width: 112,
-              height: 112,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primaryContainer,
-                shape: BoxShape.circle,
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF031B3A),
+                  Color(0xFF063A70),
+                  Color(0xFF0B5D96),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: Text(
-                '$accuracy%',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF062D5C).withValues(alpha: .13),
+                  blurRadius: 22,
+                  offset: const Offset(0, 9),
                 ),
-              ),
+              ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            '$correct of $total correct',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w700,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 108,
+                  height: 108,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: accuracy.clamp(0, 100) / 100,
+                        strokeWidth: 8,
+                        strokeCap: StrokeCap.round,
+                        backgroundColor: Colors.white.withValues(alpha: .16),
+                        color: const Color(0xFFFFD36B),
+                      ),
+                      Text(
+                        '$accuracy%',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.35,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  '$correct of $total correct',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: .82),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -129,8 +171,15 @@ class LearnPracticeResultScreen extends ConsumerWidget {
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () =>
-                      context.go(allTopicsPath),
+                  onPressed: () => context.go(allTopicsPath),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF073A6A),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                   icon: const Icon(Icons.grid_view_rounded),
                   label: const Text('All topics'),
                 ),
@@ -146,40 +195,73 @@ class LearnPracticeResultScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            Card(
-              margin: EdgeInsets.zero,
-              child: InkWell(
-                key: const Key('learn-next-suggested-topic'),
-                onTap: () => context.go(
-                  '/learn-practice?topic=${Uri.encodeQueryComponent(nextTopicId!)}',
+            Material(
+              color: Colors.transparent,
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: const Color(0xFFE3E9F1)),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          const Color(0xFF10264A).withValues(alpha: .035),
+                      blurRadius: 14,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(18),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              nextTopicTitle,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              '20 questions · Untimed · Instant explanations',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+                child: InkWell(
+                  key: const Key('learn-next-suggested-topic'),
+                  onTap: () => context.go(
+                    '/learn-practice?topic=${Uri.encodeQueryComponent(nextTopicId!)}',
+                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEAF4FF),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Color(0xFF0B5D96),
+                          ),
                         ),
-                      ),
-                      const Icon(Icons.arrow_forward_rounded),
-                    ],
+                        const SizedBox(width: 11),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                nextTopicTitle,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: const Color(0xFF162A48),
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '20 questions · Untimed · Instant explanations',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: const Color(0xFF718096),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.chevron_right_rounded,
+                          color: Color(0xFF52708F),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
