@@ -32,6 +32,13 @@ final pushNotificationRegistrationServiceProvider =
             router.go('/learn');
           }
           return;
+        case 'page':
+          if (destinationValue.isNotEmpty) {
+            router.push('/page/${Uri.encodeComponent(destinationValue)}');
+          } else {
+            router.push('/notifications');
+          }
+          return;
         case 'url':
           final uri = Uri.tryParse(destinationValue);
           if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
