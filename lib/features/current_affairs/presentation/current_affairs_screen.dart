@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../learn/domain/learning_resource.dart';
 import '../../learn/presentation/providers/learning_resources_providers.dart';
@@ -89,9 +88,9 @@ class _CurrentAffairsScreenState extends ConsumerState<CurrentAffairsScreen> {
               key: const Key('current-affairs-scroll'),
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
+                10,
                 AppSpacing.sm,
-                AppSpacing.md,
+                10,
                 AppSpacing.xxl,
               ),
               children: [
@@ -167,19 +166,23 @@ class _Hero extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       key: const Key('current-affairs-hero'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: 0.16),
-            blurRadius: 26,
-            offset: const Offset(0, 12),
+            color: const Color(0xFF062D5C).withValues(alpha: 0.14),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
           ),
         ],
       ),
@@ -208,15 +211,14 @@ class _Hero extends StatelessWidget {
                   letterSpacing: 0.9,
                 ),
               ),
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: 10),
               Text(
                 'Stay ready for what changed.',
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.headlineMedium,
-                ).copyWith(
+                style: theme.textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
                   height: 1.08,
-                  letterSpacing: -0.6,
+                  letterSpacing: -.45,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -227,7 +229,7 @@ class _Hero extends StatelessWidget {
                   height: 1.42,
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: 14),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
@@ -322,9 +324,11 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(color: const Color(0xFF10264A)),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
+          ),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -405,9 +409,11 @@ class _CurrentAffairsCard extends StatelessWidget {
     final target = _targetLabel(resource);
     return Material(
       color: Colors.white,
+      shadowColor: const Color(0xFF10264A).withValues(alpha: .08),
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(22),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -461,11 +467,11 @@ class _CurrentAffairsCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(
                 resource.title,
-                style: AppTypography.premiumHeading(
-                  theme.textTheme.titleLarge,
-                ).copyWith(
+                style: theme.textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
                   height: 1.2,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.25,
                 ),
               ),
               if (resource.summary.isNotEmpty) ...[
@@ -546,7 +552,7 @@ class _EmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Column(
@@ -560,9 +566,10 @@ class _EmptyState extends StatelessWidget {
           Text(
             'No current affairs are published yet.',
             textAlign: TextAlign.center,
-            style: AppTypography.premiumHeading(
-              theme.textTheme.titleMedium,
-            ).copyWith(color: const Color(0xFF10264A)),
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: const Color(0xFF10264A),
+              fontWeight: FontWeight.w900,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -588,7 +595,7 @@ class _FilteredEmptyState extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Text(
@@ -624,7 +631,7 @@ class _LoadingState extends StatelessWidget {
             height: 180,
             decoration: BoxDecoration(
               color: scheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
           if (i != 2) const SizedBox(height: AppSpacing.sm),
