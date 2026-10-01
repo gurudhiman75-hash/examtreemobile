@@ -103,6 +103,11 @@ class MobileNotificationsScreen extends ConsumerWidget {
           context.go('/learn');
         }
         return;
+      case 'page':
+        if (item.destinationValue.isNotEmpty) {
+          context.push('/page/${Uri.encodeComponent(item.destinationValue)}');
+        }
+        return;
       case 'url':
         final uri = Uri.tryParse(item.destinationValue);
         if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
