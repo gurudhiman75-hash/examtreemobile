@@ -69,9 +69,11 @@ class MobilePlannedContentSection extends ConsumerWidget {
     }
 
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Text(
           title,
           style: theme.textTheme.titleLarge?.copyWith(
@@ -146,7 +148,8 @@ class MobilePlannedContentSection extends ConsumerWidget {
             },
           ),
         ),
-      ],
+        ],
+      ),
     );
   }
 
