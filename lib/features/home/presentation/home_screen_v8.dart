@@ -132,6 +132,10 @@ class HomeScreen extends ConsumerWidget {
     final examCategoriesSetting = homeConfig.settingFor('exam_categories');
     final featuredSeriesSetting = homeConfig.settingFor('featured_test_series');
     final continueLearningSetting = homeConfig.settingFor('continue_learning');
+    final recommendedLearningSetting =
+        homeConfig.settingFor('recommended_learning');
+    final currentAffairsSetting = homeConfig.settingFor('current_affairs');
+    final todayGoalSetting = homeConfig.settingFor('today_goal');
     final heroSetting = homeConfig.settingFor('hero');
 
     final configurableSections = <String, Widget>{
@@ -297,6 +301,54 @@ class HomeScreen extends ConsumerWidget {
         ],
       )
           : const SizedBox.shrink(),
+      'recommended_learning': recommendedLearningSetting.isVisible
+          ? MobilePlannedContentSection(
+              slotKey: 'home_learn',
+              title: recommendedLearningSetting.title.trim().isNotEmpty
+                  ? recommendedLearningSetting.title
+                  : 'Recommended Learning',
+              iconName: recommendedLearningSetting.iconName,
+              iconUrl: recommendedLearningSetting.iconUrl,
+            )
+          : const SizedBox.shrink(),
+      'current_affairs': currentAffairsSetting.isVisible
+          ? MobilePlannedContentSection(
+              slotKey: 'home_current_affairs',
+              title: currentAffairsSetting.title.trim().isNotEmpty
+                  ? currentAffairsSetting.title
+                  : 'Current Affairs',
+              iconName: currentAffairsSetting.iconName,
+              iconUrl: currentAffairsSetting.iconUrl,
+            )
+          : const SizedBox.shrink(),
+      'today_goal': todayGoalSetting.isVisible
+          ? Column(
+              children: [
+                _SectionTitle(
+                  title: todayGoalSetting.title.trim().isNotEmpty
+                      ? todayGoalSetting.title
+                      : "Today's Goal",
+                  action: 'See All',
+                  onAction: () => context.push('/profile'),
+                  iconName: todayGoalSetting.iconName,
+                  iconUrl: todayGoalSetting.iconUrl,
+                ),
+                const SizedBox(height: 6),
+                analyticsAsync.when(
+                  loading: () => const _LoadingCard(height: 112),
+                  error: (error, stack) => _ErrorCard(
+                    title: 'Progress is temporarily unavailable',
+                    onRetry: () => ref.invalidate(userAnalyticsProvider),
+                  ),
+                  data: (analytics) => _TodayGoalCard(
+                    analytics: analytics,
+                    onTap: () => context.push('/profile'),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            )
+          : const SizedBox.shrink(),
       for (final section in homeConfig.customSections)
         section.id: MobileCustomHomeSectionView(section: section),
     };
@@ -332,31 +384,6 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   ...orderedSections,
-                  const MobilePlannedContentSection(
-                    slotKey: 'home_learn',
-                    title: 'Recommended Learning',
-                  ),
-                  const MobilePlannedContentSection(
-                    slotKey: 'home_current_affairs',
-                    title: 'Current Affairs',
-                  ),
-                  _SectionTitle(
-                    title: "Today's Goal",
-                    action: 'See All',
-                    onAction: () => context.push('/profile'),
-                  ),
-                  const SizedBox(height: 6),
-                  analyticsAsync.when(
-                    loading: () => const _LoadingCard(height: 112),
-                    error: (error, stack) => _ErrorCard(
-                      title: 'Progress is temporarily unavailable',
-                      onRetry: () => ref.invalidate(userAnalyticsProvider),
-                    ),
-                    data: (analytics) => _TodayGoalCard(
-                      analytics: analytics,
-                      onTap: () => context.push('/profile'),
-                    ),
-                  ),
                 ],
               ),
             ),
