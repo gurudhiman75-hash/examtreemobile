@@ -757,21 +757,7 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),
-                if (!largeText)
-                  FractionallySizedBox(
-                    widthFactor: .67,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Mock tests · Detailed solutions\nPractice · Bilingual content',
-                      maxLines: 2,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: .88),
-                        height: 1.3,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                const SizedBox(height: 4),
                 const Spacer(),
                 if (largeText)
                   Material(
