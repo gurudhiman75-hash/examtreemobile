@@ -131,7 +131,7 @@ class MobileNotificationsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Notifications'),
         backgroundColor: Colors.white,
@@ -176,6 +176,14 @@ class MobileNotificationsScreen extends ConsumerWidget {
                 child: FilledButton(
                   onPressed: () =>
                       ref.invalidate(mobileNotificationInboxProvider),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF073A6A),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
                   child: const Text('Try again'),
                 ),
               ),
@@ -191,7 +199,7 @@ class MobileNotificationsScreen extends ConsumerWidget {
                   Icon(
                     Icons.notifications_none_rounded,
                     size: 58,
-                    color: theme.colorScheme.outlineVariant,
+                    color: const Color(0xFF0B3A6F),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -222,10 +230,15 @@ class MobileNotificationsScreen extends ConsumerWidget {
                 final item = items[index];
                 return Material(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  elevation: 1,
+                  shadowColor: const Color(0xFF10264A).withValues(alpha: .06),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: const BorderSide(color: Color(0xFFE3E9F1)),
+                  ),
                   child: InkWell(
                     onTap: () => _open(context, ref, item),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(18),
                     child: Padding(
                       padding: const EdgeInsets.all(14),
                       child: Row(
@@ -236,14 +249,14 @@ class MobileNotificationsScreen extends ConsumerWidget {
                             height: 42,
                             decoration: BoxDecoration(
                               color: item.isUnread
-                                  ? const Color(0xFFE9F1FF)
+                                  ? const Color(0xFFFFF4D6)
                                   : const Color(0xFFF1F5F9),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               Icons.notifications_outlined,
                               color: item.isUnread
-                                  ? const Color(0xFF155EEF)
+                                  ? const Color(0xFF0B3A6F)
                                   : const Color(0xFF64748B),
                             ),
                           ),
@@ -274,7 +287,7 @@ class MobileNotificationsScreen extends ConsumerWidget {
                                         height: 8,
                                         margin: const EdgeInsets.only(top: 4),
                                         decoration: const BoxDecoration(
-                                          color: Color(0xFF155EEF),
+                                          color: Color(0xFFD4A73A),
                                           shape: BoxShape.circle,
                                         ),
                                       ),

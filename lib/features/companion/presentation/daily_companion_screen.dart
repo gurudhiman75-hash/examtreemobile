@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
@@ -171,7 +170,7 @@ class _DailyLoadingState extends StatelessWidget {
           height: 210,
           decoration: BoxDecoration(
             color: scheme.surfaceContainerHigh,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(24),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -243,6 +242,14 @@ class _DailyErrorState extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             FilledButton.icon(
               onPressed: onRetry,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF073A6A),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                textStyle: const TextStyle(fontWeight: FontWeight.w900),
+              ),
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry Daily Companion'),
             ),
@@ -282,11 +289,10 @@ class _TodayHero extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         Text(
           'Today’s revision',
-          style: AppTypography.premiumHeading(
-            theme.textTheme.headlineSmall,
-          ).copyWith(
+          style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
-            letterSpacing: -0.45,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.4,
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -322,14 +328,18 @@ class _TodayHero extends StatelessWidget {
 
     return Container(
       key: const Key('daily-summary'),
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF062D5C), Color(0xFF0A4B82)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: _softShadow(),
       ),
       child: Column(
@@ -400,10 +410,10 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTypography.premiumHeading(
-            theme.textTheme.titleLarge,
-          ).copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
           ),
         ),
         const SizedBox(height: AppSpacing.xxs),
@@ -707,8 +717,8 @@ class _StudyPlanCard extends StatelessWidget {
       key: const Key('study-plan'),
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: const BorderSide(color: Color(0xFFE8EDF3)),
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -739,10 +749,10 @@ class _StudyPlanCard extends StatelessWidget {
                     children: [
                       Text(
                         'My study plan',
-                        style: AppTypography.premiumHeading(
-                          theme.textTheme.titleLarge,
-                        ).copyWith(
+                        style: theme.textTheme.titleLarge?.copyWith(
                           color: const Color(0xFF10264A),
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -.3,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xxs),
