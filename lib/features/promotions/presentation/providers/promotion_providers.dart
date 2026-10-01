@@ -66,6 +66,8 @@ class ApiMobilePromotionSource {
         } else if (destinationType == 'learn') {
           deepLink =
               destinationValue.startsWith('/') ? destinationValue : '/learn';
+        } else if (destinationType == 'page' && destinationValue.isNotEmpty) {
+          deepLink = '/page/${Uri.encodeComponent(destinationValue)}';
         } else if (destinationType == 'url' &&
             isSafePromotionExternalUrl(destinationValue)) {
           externalUrl = destinationValue;
