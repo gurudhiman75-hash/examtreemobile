@@ -147,9 +147,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       'invalid-verification-code' => 'The OTP you entered is incorrect.',
       'operation-not-allowed' =>
         'Phone sign-in is not enabled for this ExamTree build.',
-      _ => error.message?.trim().isNotEmpty == true
-          ? error.message!.trim()
-          : 'Unable to verify this mobile number. Please try again.',
+      _ => 'Unable to verify this mobile number. Please try again.',
     };
   }
 
