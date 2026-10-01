@@ -37,11 +37,27 @@ class ExamDetailsScreen extends ConsumerWidget {
 
     return examAsync.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: const Text('Test details')),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text('Test details'),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF10264A),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
         body: const _DetailsLoadingState(),
       ),
       error: (error, stackTrace) => Scaffold(
-        appBar: AppBar(title: const Text('Test details')),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text('Test details'),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF10264A),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
         body: NetworkFailureView(
           error: error,
           fallbackTitle: 'Unable to load these test details',
@@ -55,7 +71,15 @@ class ExamDetailsScreen extends ConsumerWidget {
             completedCount >= exam.maxAttempts;
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Test details')),
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+          title: const Text('Test details'),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF10264A),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
           body: _ExamDetailsBody(
             exam: exam,
             completedAttemptsAsync: completedAttemptsAsync,
@@ -98,9 +122,9 @@ class _ExamDetailsBody extends StatelessWidget {
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
+          12,
           AppSpacing.sm,
-          AppSpacing.md,
+          12,
           AppSpacing.xxl,
         ),
         children: [
@@ -178,63 +202,88 @@ class _TestSummaryHero extends StatelessWidget {
         ? 'Premium'
         : 'Free';
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFF0F2FF), Color(0xFFF7F4FF)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .13),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
+          Positioned(
+            right: -28,
+            top: -34,
+            child: Container(
+              width: 110,
+              height: 110,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: .07),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _HeroLabel(
-                label: exam.category.trim().isEmpty ? 'General' : exam.category,
-                background: AppColors.primaryContainer,
-                foreground: AppColors.onPrimaryContainer,
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  _HeroLabel(
+                    label:
+                        exam.category.trim().isEmpty ? 'General' : exam.category,
+                    background: Colors.white.withValues(alpha: .11),
+                    foreground: Colors.white,
+                  ),
+                  _HeroLabel(
+                    label: access,
+                    background: const Color(0xFFFFD36B).withValues(alpha: .16),
+                    foreground: const Color(0xFFFFD36B),
+                  ),
+                  if (exam.difficulty.trim().isNotEmpty)
+                    _HeroLabel(
+                      label: exam.difficulty,
+                      background: Colors.white.withValues(alpha: .10),
+                      foreground: Colors.white.withValues(alpha: .88),
+                    ),
+                ],
               ),
-              _HeroLabel(
-                label: access,
-                background: access == 'Premium'
-                    ? AppColors.tertiaryContainer
-                    : AppColors.mintContainer,
-                foreground: access == 'Premium'
-                    ? AppColors.onTertiaryContainer
-                    : AppColors.onMintContainer,
-              ),
-              if (exam.difficulty.trim().isNotEmpty)
-                _HeroLabel(
-                  label: exam.difficulty,
-                  background: AppColors.skyContainer,
-                  foreground: AppColors.onSkyContainer,
+              const SizedBox(height: 13),
+              Text(
+                exam.title,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.45,
+                  height: 1.13,
                 ),
+              ),
+              if (exam.description.trim().isNotEmpty) ...[
+                const SizedBox(height: 7),
+                Text(
+                  exam.description,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: .84),
+                    height: 1.42,
+                  ),
+                ),
+              ],
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            exam.title,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.55,
-              height: 1.14,
-            ),
-          ),
-          if (exam.description.trim().isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              exam.description,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                height: 1.45,
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -328,8 +377,9 @@ class _InfoTile extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 82),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLowest,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: const Color(0xFFE3E9F1)),
           boxShadow: _softShadow(),
         ),
         child: Row(
@@ -470,13 +520,13 @@ class _InstructionRow extends StatelessWidget {
           height: 34,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: AppColors.primaryContainer,
+            color: const Color(0xFFEAF4FF),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             '$number',
             style: theme.textTheme.labelMedium?.copyWith(
-              color: AppColors.onPrimaryContainer,
+              color: const Color(0xFF0B5D96),
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -503,13 +553,13 @@ class _ResumeNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primaryContainer.withValues(alpha: 0.68),
+        color: const Color(0xFFEAF4FF),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.cloud_done_rounded, color: AppColors.onPrimaryContainer),
+          const Icon(Icons.cloud_done_rounded, color: Color(0xFF0B5D96)),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -613,6 +663,15 @@ class _StartBar extends StatelessWidget {
               FilledButton.icon(
                 key: const Key('exam-details-start'),
                 onPressed: attemptLimitReached ? null : onStart,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  backgroundColor: const Color(0xFF073A6A),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                ),
                 icon: Icon(
                   attemptLimitReached
                       ? Icons.block_rounded
