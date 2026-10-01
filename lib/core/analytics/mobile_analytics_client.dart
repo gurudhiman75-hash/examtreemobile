@@ -11,7 +11,12 @@ class MobileAnalyticsClient {
       : _sessionId =
             '${DateTime.now().microsecondsSinceEpoch}-${Random.secure().nextInt(1 << 32)}';
 
-  final ApiClient _apiClient;
+  MobileAnalyticsClient.disabled()
+      : _apiClient = null,
+        _sessionId =
+            '${DateTime.now().microsecondsSinceEpoch}-disabled';
+
+  final ApiClient? _apiClient;
   final String _sessionId;
   final Set<String> _once = <String>{};
 
@@ -22,8 +27,10 @@ class MobileAnalyticsClient {
     String placement = '',
     Map<String, Object?> metadata = const <String, Object?>{},
   }) async {
+    final apiClient = _apiClient;
+    if (apiClient == null) return;
     try {
-      await _apiClient.dio.post<void>(
+      await apiClient.dio.post<void>(
         'mobile/analytics/events',
         data: <String, Object?>{
           'eventName': eventName,
