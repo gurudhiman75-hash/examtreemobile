@@ -67,19 +67,23 @@ class PromotionPlacementView extends ConsumerWidget {
           });
         }
         final analytics = ref.read(mobileAnalyticsClientProvider);
+        final exposureStore = ref.read(promotionExposureStoreProvider);
         final placementKey = _placementKey(placement);
         return PromotionCarousel(
           campaigns: effectiveCampaigns,
           compact: compact,
           visualStyle: visualStyle,
-          onImpression: (campaign) => unawaited(
-            analytics.track(
-              'promotion_impression',
-              entityType: 'promotion',
-              entityId: campaign.id,
-              placement: placementKey,
-            ),
-          ),
+          onImpression: (campaign) {
+            unawaited(exposureStore.recordImpression(campaign));
+            unawaited(
+              analytics.track(
+                'promotion_impression',
+                entityType: 'promotion',
+                entityId: campaign.id,
+                placement: placementKey,
+              ),
+            );
+          },
           onAction: (campaign) => unawaited(
             analytics.track(
               'promotion_click',
@@ -88,13 +92,15 @@ class PromotionPlacementView extends ConsumerWidget {
               placement: placementKey,
             ),
           ),
+          onDismiss: (campaign) =>
+              unawaited(exposureStore.dismiss(campaign.id)),
         );
       },
     );
   }
 }
 
-class PromotionCarousel extends ConsumerStatefulWidget {
+class PromotionCarousel extends StatefulWidget {
   const PromotionCarousel({
     super.key,
     required this.campaigns,
@@ -102,6 +108,7 @@ class PromotionCarousel extends ConsumerStatefulWidget {
     this.visualStyle = PromotionCarouselVisualStyle.standard,
     this.onImpression,
     this.onAction,
+    this.onDismiss,
   });
 
   final List<PromotionCampaign> campaigns;
@@ -109,12 +116,13 @@ class PromotionCarousel extends ConsumerStatefulWidget {
   final PromotionCarouselVisualStyle visualStyle;
   final ValueChanged<PromotionCampaign>? onImpression;
   final ValueChanged<PromotionCampaign>? onAction;
+  final ValueChanged<PromotionCampaign>? onDismiss;
 
   @override
-  ConsumerState<PromotionCarousel> createState() => _PromotionCarouselState();
+  State<PromotionCarousel> createState() => _PromotionCarouselState();
 }
 
-class _PromotionCarouselState extends ConsumerState<PromotionCarousel> {
+class _PromotionCarouselState extends State<PromotionCarousel> {
   late final PageController _controller;
   final Set<String> _dismissedIds = <String>{};
   int _page = 0;
@@ -125,7 +133,6 @@ class _PromotionCarouselState extends ConsumerState<PromotionCarousel> {
 
   void _recordImpression(PromotionCampaign campaign) {
     widget.onImpression?.call(campaign);
-    unawaited(ref.read(promotionExposureStoreProvider).recordImpression(campaign));
   }
 
   void _dismiss(PromotionCampaign campaign) {
@@ -134,7 +141,7 @@ class _PromotionCarouselState extends ConsumerState<PromotionCarousel> {
       _page = 0;
     });
     if (_controller.hasClients) _controller.jumpToPage(0);
-    unawaited(ref.read(promotionExposureStoreProvider).dismiss(campaign.id));
+    widget.onDismiss?.call(campaign);
   }
 
   @override
