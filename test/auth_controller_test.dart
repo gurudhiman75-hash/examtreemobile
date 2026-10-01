@@ -23,6 +23,78 @@ void main() {
       expect(session.signOutCalls, 0);
     });
 
+    test('phone verification code-sent waits for OTP before provisioning', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      final result = await controller.startPhoneVerification('+919876543210');
+
+      expect(result, isA<PhoneVerificationCodeSent>());
+      expect(session.phoneStartCalls, 1);
+      expect(session.lastPhoneNumber, '+919876543210');
+      expect(profile.provisionCalls, 0);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('phone auto-verification provisions the canonical profile', () async {
+      final session = _FakeAuthSessionGateway(
+        phoneStartResult: const PhoneVerificationAutoVerified(),
+      );
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+
+      final result = await controller.startPhoneVerification('+919876543210');
+
+      expect(result, isA<PhoneVerificationAutoVerified>());
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('confirmed phone OTP provisions the canonical profile', () async {
+      final session = _FakeAuthSessionGateway();
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+      const verification = PhoneVerificationSession(
+        phoneNumber: '+919876543210',
+        verificationId: 'verification-123',
+      );
+
+      await controller.confirmPhoneVerification(
+        session: verification,
+        smsCode: '123456',
+      );
+
+      expect(session.phoneConfirmCalls, 1);
+      expect(session.lastVerificationId, 'verification-123');
+      expect(session.lastSmsCode, '123456');
+      expect(profile.provisionCalls, 1);
+      expect(session.signOutCalls, 0);
+    });
+
+    test('invalid phone OTP does not provision a profile', () async {
+      final session = _FakeAuthSessionGateway(
+        phoneConfirmError: StateError('invalid otp'),
+      );
+      final profile = _FakeStudentProfileProvisioner();
+      final controller = AuthController(session, profile);
+      const verification = PhoneVerificationSession(
+        phoneNumber: '+919876543210',
+        verificationId: 'verification-123',
+      );
+
+      await expectLater(
+        controller.confirmPhoneVerification(
+          session: verification,
+          smsCode: '000000',
+        ),
+        throwsA(isA<StateError>()),
+      );
+
+      expect(profile.provisionCalls, 0);
+      expect(session.signOutCalls, 0);
+    });
+
     test('provisions the canonical profile after Google sign-in', () async {
       final session = _FakeAuthSessionGateway();
       final profile = _FakeStudentProfileProvisioner();
@@ -401,6 +473,8 @@ DioException _apiFailure(int statusCode, String code) {
 class _FakeAuthSessionGateway implements AuthSessionGateway {
   _FakeAuthSessionGateway({
     this.signInError,
+    this.phoneStartResult,
+    this.phoneConfirmError,
     this.googleSignInError,
     this.appleSignInError,
     this.registrationError,
@@ -410,6 +484,8 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   });
 
   final Object? signInError;
+  final PhoneVerificationStartResult? phoneStartResult;
+  final Object? phoneConfirmError;
   final Object? googleSignInError;
   final Object? appleSignInError;
   final Object? registrationError;
@@ -417,12 +493,17 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
   final Object? signOutError;
 
   int signInCalls = 0;
+  int phoneStartCalls = 0;
+  int phoneConfirmCalls = 0;
   int googleSignInCalls = 0;
   int appleSignInCalls = 0;
   int registrationCalls = 0;
   int passwordResetCalls = 0;
   int signOutCalls = 0;
   String? lastDisplayName;
+  String? lastPhoneNumber;
+  String? lastVerificationId;
+  String? lastSmsCode;
   String? lastEmail;
   String? lastPassword;
   String? lastResetEmail;
@@ -444,20 +525,29 @@ class _FakeAuthSessionGateway implements AuthSessionGateway {
     String phoneNumber, {
     int? forceResendingToken,
   }) async {
-    return PhoneVerificationCodeSent(
-      PhoneVerificationSession(
-        phoneNumber: phoneNumber,
-        verificationId: 'test-verification-id',
-        forceResendingToken: forceResendingToken,
-      ),
-    );
+    phoneStartCalls++;
+    lastPhoneNumber = phoneNumber;
+    return phoneStartResult ??
+        PhoneVerificationCodeSent(
+          PhoneVerificationSession(
+            phoneNumber: phoneNumber,
+            verificationId: 'test-verification-id',
+            forceResendingToken: forceResendingToken,
+          ),
+        );
   }
 
   @override
   Future<void> confirmPhoneVerification({
     required String verificationId,
     required String smsCode,
-  }) async {}
+  }) async {
+    phoneConfirmCalls++;
+    lastVerificationId = verificationId;
+    lastSmsCode = smsCode;
+    final error = phoneConfirmError;
+    if (error != null) throw error;
+  }
 
   @override
   Future<void> signInWithGoogle() async {
