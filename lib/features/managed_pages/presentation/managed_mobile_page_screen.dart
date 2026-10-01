@@ -16,6 +16,28 @@ final managedMobilePageProvider =
   return Map<String, dynamic>.from(page);
 });
 
+class RegisteredMobilePageScreen extends ConsumerWidget {
+  const RegisteredMobilePageScreen({
+    super.key,
+    required this.slug,
+    required this.nativeChild,
+  });
+
+  final String slug;
+  final Widget nativeChild;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(managedMobilePageProvider(slug));
+    return state.maybeWhen(
+      data: (page) => page['renderMode']?.toString() == 'managed'
+          ? ManagedMobilePageScreen(slug: slug)
+          : nativeChild,
+      orElse: () => nativeChild,
+    );
+  }
+}
+
 class ManagedMobilePageScreen extends ConsumerWidget {
   const ManagedMobilePageScreen({super.key, required this.slug});
 
