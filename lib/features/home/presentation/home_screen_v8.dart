@@ -346,17 +346,17 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 const Spacer(),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    FilledButton.icon(
+                if (largeText)
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
                       onPressed: () => context.go('/exams'),
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFFFFD36B),
                         foregroundColor: const Color(0xFF082A52),
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 11,
+                          horizontal: 14,
+                          vertical: 12,
                         ),
                         shape: const StadiumBorder(),
                       ),
@@ -364,14 +364,30 @@ class _HomePromoFallback extends StatelessWidget {
                       iconAlignment: IconAlignment.end,
                       icon: const Icon(Icons.arrow_forward_rounded, size: 19),
                     ),
-                    if (!largeText) ...[
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: _HeroFeatureRow(),
+                  )
+                else
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () => context.go('/exams'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD36B),
+                          foregroundColor: const Color(0xFF082A52),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 11,
+                          ),
+                          shape: const StadiumBorder(),
+                        ),
+                        label: const Text('Start Preparing'),
+                        iconAlignment: IconAlignment.end,
+                        icon: const Icon(Icons.arrow_forward_rounded, size: 19),
                       ),
+                      const SizedBox(width: 12),
+                      const Expanded(child: _HeroFeatureRow()),
                     ],
-                  ],
-                ),
+                  ),
                 if (largeText) ...[
                   const SizedBox(height: 12),
                   const _HeroFeatureRow(),
@@ -1363,65 +1379,89 @@ class _HomeHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final imageUrl = photoUrl?.trim();
     final hasPhoto = imageUrl != null && imageUrl.isNotEmpty;
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+
+    final brand = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(
+          width: 38,
+          height: 40,
+          child: CustomPaint(painter: _ExamtreeMarkPainter()),
+        ),
+        const SizedBox(width: 9),
+        Flexible(
+          child: Text(
+            'Examtree',
+            maxLines: 1,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+            style: AppTypography.premiumHeading(
+              theme.textTheme.headlineSmall,
+            ).copyWith(
+              color: const Color(0xFF092B5A),
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.45,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    final actions = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _HeaderButton(
+          icon: Icons.search_rounded,
+          tooltip: 'Search tests',
+          onTap: onSearch,
+        ),
+        const SizedBox(width: 2),
+        _NotificationButton(onTap: onNotifications),
+        const SizedBox(width: 7),
+        Semantics(
+          button: true,
+          label: 'Open profile',
+          child: InkWell(
+            onTap: onProfile,
+            customBorder: const CircleBorder(),
+            child: CircleAvatar(
+              radius: 21,
+              backgroundColor: const Color(0xFFEAF2FB),
+              backgroundImage: hasPhoto ? NetworkImage(imageUrl) : null,
+              foregroundColor: const Color(0xFF0B3A6F),
+              child: hasPhoto
+                  ? null
+                  : Text(
+                      name.isEmpty ? 'S' : name[0].toUpperCase(),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ],
+    );
 
     return Semantics(
       container: true,
       label: '$greeting, $name. $dateLabel.',
-      child: Row(
-        children: [
-          const SizedBox(
-            width: 38,
-            height: 40,
-            child: CustomPaint(painter: _ExamtreeMarkPainter()),
-          ),
-          const SizedBox(width: 9),
-          Expanded(
-            child: Text(
-              'Examtree',
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-              style: AppTypography.premiumHeading(
-                theme.textTheme.headlineSmall,
-              ).copyWith(
-                color: const Color(0xFF092B5A),
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.45,
-              ),
+      child: largeText
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(alignment: Alignment.centerLeft, child: brand),
+                const SizedBox(height: 6),
+                Align(alignment: Alignment.centerRight, child: actions),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: brand),
+                actions,
+              ],
             ),
-          ),
-          _HeaderButton(
-            icon: Icons.search_rounded,
-            tooltip: 'Search tests',
-            onTap: onSearch,
-          ),
-          const SizedBox(width: 2),
-          _NotificationButton(onTap: onNotifications),
-          const SizedBox(width: 7),
-          Semantics(
-            button: true,
-            label: 'Open profile',
-            child: InkWell(
-              onTap: onProfile,
-              customBorder: const CircleBorder(),
-              child: CircleAvatar(
-                radius: 21,
-                backgroundColor: const Color(0xFFEAF2FB),
-                backgroundImage: hasPhoto ? NetworkImage(imageUrl!) : null,
-                foregroundColor: const Color(0xFF0B3A6F),
-                child: hasPhoto
-                    ? null
-                    : Text(
-                        name.isEmpty ? 'S' : name[0].toUpperCase(),
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -1881,19 +1921,38 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleWidget = Text(
+      title,
+      style: AppTypography.premiumHeading(
+        Theme.of(context).textTheme.titleLarge,
+      ).copyWith(
+        color: const Color(0xFF10264A),
+      ),
+    );
+    final actionWidget = TextButton(
+      onPressed: onAction,
+      child: Text(action),
+    );
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleWidget,
+          const SizedBox(height: 2),
+          Align(
+            alignment: Alignment.centerRight,
+            child: actionWidget,
+          ),
+        ],
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            title,
-            style: AppTypography.premiumHeading(
-              Theme.of(context).textTheme.titleLarge,
-            ).copyWith(
-              color: const Color(0xFF10264A),
-            ),
-          ),
-        ),
-        TextButton(onPressed: onAction, child: Text(action)),
+        Expanded(child: titleWidget),
+        actionWidget,
       ],
     );
   }
