@@ -33,8 +33,13 @@ void main() {
     bool registering = false,
     bool loading = false,
     bool showApple = false,
+    bool phoneCodeSent = false,
+    String? phoneNumber,
     String? loadingMessage,
     double textScale = 1,
+    VoidCallback? onVerifyPhoneCode,
+    VoidCallback? onResendPhoneCode,
+    VoidCallback? onChangePhone,
   }) {
     return MaterialApp(
       theme: AppTheme.lightTheme,
@@ -50,17 +55,17 @@ void main() {
           loadingMessage: loadingMessage,
           phoneController: phone,
           otpController: otp,
-          phoneCodeSent: false,
-          phoneNumber: null,
+          phoneCodeSent: phoneCodeSent,
+          phoneNumber: phoneNumber,
           nameController: name,
           emailController: email,
           passwordController: password,
           confirmPasswordController: confirmation,
           showApple: showApple,
           onPhoneContinue: () {},
-          onVerifyPhoneCode: () {},
-          onResendPhoneCode: () {},
-          onChangePhone: () {},
+          onVerifyPhoneCode: onVerifyPhoneCode ?? () {},
+          onResendPhoneCode: onResendPhoneCode ?? () {},
+          onChangePhone: onChangePhone ?? () {},
           onApple: () {},
           onGoogle: () {},
           onSubmit: () {},
@@ -97,6 +102,45 @@ void main() {
 
     expect(find.byKey(const Key('auth-apple')), findsOneWidget);
     expect(find.byKey(const Key('auth-google')), findsOneWidget);
+  });
+
+  testWidgets('OTP state masks the number and rate-limits resend', (
+    tester,
+  ) async {
+    var resendCalls = 0;
+    var changeCalls = 0;
+
+    await tester.pumpWidget(
+      view(
+        phoneCodeSent: true,
+        phoneNumber: '+919876543210',
+        onResendPhoneCode: () => resendCalls++,
+        onChangePhone: () => changeCalls++,
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Enter OTP'), findsOneWidget);
+    expect(find.text('Code sent to +91 ••••••3210'), findsOneWidget);
+    expect(find.byKey(const Key('auth-phone-otp')), findsOneWidget);
+    expect(find.byKey(const Key('auth-phone-verify')), findsOneWidget);
+    expect(find.text('Resend OTP in 30s'), findsOneWidget);
+
+    final resend = tester.widget<TextButton>(
+      find.byKey(const Key('auth-phone-resend')),
+    );
+    expect(resend.onPressed, isNull);
+
+    await tester.pump(const Duration(seconds: 30));
+    expect(find.text('Didn’t receive the code? Resend OTP'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('auth-phone-resend')));
+    await tester.pump();
+    expect(resendCalls, 1);
+    expect(find.text('Resend OTP in 30s'), findsOneWidget);
+
+    await tester.tap(find.text('Change'));
+    expect(changeCalls, 1);
   });
 
   testWidgets('registration remains usable at 200 percent text scaling', (
