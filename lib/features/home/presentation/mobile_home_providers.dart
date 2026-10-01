@@ -10,5 +10,9 @@ final mobileHomeRepositoryProvider = Provider<MobileHomeRepository>((ref) {
 
 final mobileHomeConfigurationProvider =
     FutureProvider<MobileHomeConfiguration>((ref) async {
-  return ref.watch(mobileHomeRepositoryProvider).load();
+  try {
+    return await ref.watch(mobileHomeRepositoryProvider).load();
+  } catch (_) {
+    return MobileHomeConfiguration.fallback;
+  }
 });
