@@ -154,7 +154,7 @@ class _ManagedHero extends StatelessWidget {
                 child: Image.network(
                   imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
                 ),
               ),
             Positioned.fill(
@@ -309,7 +309,7 @@ class _ManagedSection extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: cards.length,
-            separatorBuilder: (_, __) => SizedBox(width: gap),
+            separatorBuilder: (_, _) => SizedBox(width: gap),
             itemBuilder: (context, index) => SizedBox(
               width: sectionStyle == 'compact' ? 176 : 220,
               child: _ManagedCard(card: cards[index], sectionStyle: sectionStyle),
@@ -358,7 +358,7 @@ class _ManagedCard extends StatelessWidget {
               height: bannerMode ? 150 : compact ? 58 : 84,
               width: bannerMode ? double.infinity : listMode ? 72 : double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
             ),
           )
         : iconUrl.isNotEmpty
@@ -367,7 +367,7 @@ class _ManagedCard extends StatelessWidget {
                 width: compact ? 30 : 42,
                 height: compact ? 30 : 42,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => Icon(Icons.apps_rounded, size: compact ? 26 : 30),
+                errorBuilder: (_, _, _) => Icon(Icons.apps_rounded, size: compact ? 26 : 30),
               )
             : Icon(Icons.apps_rounded, color: const Color(0xFF0B5D96), size: compact ? 26 : 30);
 
