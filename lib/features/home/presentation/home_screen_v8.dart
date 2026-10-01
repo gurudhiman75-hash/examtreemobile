@@ -634,9 +634,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = AppSpacing.sm;
-        final scaledLabel = MediaQuery.textScalerOf(context).scale(12);
-        final compactColumns = constraints.maxWidth < 340 || scaledLabel > 15;
-        final columns = compactColumns ? 2 : 4;
+        // Approved Home layout: keep four exam-category cards per row on
+        // normal phone widths. Only collapse on exceptionally narrow surfaces.
+        final columns = constraints.maxWidth < 260 ? 2 : 4;
         final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
         return Wrap(
           spacing: gap,
