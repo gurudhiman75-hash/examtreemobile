@@ -36,12 +36,20 @@ class LearnSubmoduleScreen extends ConsumerWidget {
       final progressItems =
           ref.watch(learnPracticeProgressListProvider).value ?? const [];
       return Scaffold(
-        appBar: AppBar(title: Text(submodule.title)),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(submodule.title),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF10264A),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
         body: ListView(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
+            12,
             AppSpacing.sm,
-            AppSpacing.md,
+            12,
             AppSpacing.xxl,
           ),
           children: [
@@ -74,7 +82,15 @@ class LearnSubmoduleScreen extends ConsumerWidget {
 
     if (submodule.id != 'gk-polity') {
       return Scaffold(
-        appBar: AppBar(title: Text(submodule.title)),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(submodule.title),
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF10264A),
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
         body: const Center(
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.lg),
@@ -91,12 +107,20 @@ class LearnSubmoduleScreen extends ConsumerWidget {
     final progressItems =
         ref.watch(learnPracticeProgressListProvider).value ?? const [];
     return Scaffold(
-      appBar: AppBar(title: Text(submodule.title)),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(submodule.title),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
+          12,
           AppSpacing.sm,
-          AppSpacing.md,
+          12,
           AppSpacing.xxl,
         ),
         children: [
@@ -170,24 +194,38 @@ class _SubmoduleOverview extends StatelessWidget {
     final percent = (progress * 100).round();
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 15),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .13),
+            blurRadius: 22,
+            offset: const Offset(0, 9),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 58,
-            height: 58,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
-              color: accentContainer,
-              borderRadius: BorderRadius.circular(18),
+              color: Colors.white.withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: accent, size: 30),
+            child: Icon(icon, color: const Color(0xFFFFD36B), size: 27),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,45 +233,47 @@ class _SubmoduleOverview extends StatelessWidget {
                 Text(
                   title,
                   style: theme.textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
                     fontWeight: FontWeight.w900,
                     letterSpacing: -.3,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xxs),
+                const SizedBox(height: 3),
                 Text(
                   subtitle,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                    color: Colors.white.withValues(alpha: .82),
                     height: 1.35,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: 8),
                 Text(
                   '$completed / ${topicIds.length} topics completed',
                   style: theme.textTheme.labelMedium?.copyWith(
-                    color: accent,
+                    color: const Color(0xFFFFD36B),
                     fontWeight: FontWeight.w800,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: 10),
           SizedBox(
-            width: 54,
-            height: 54,
+            width: 52,
+            height: 52,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 CircularProgressIndicator(
                   value: progress,
                   strokeWidth: 5,
-                  backgroundColor: theme.colorScheme.surfaceContainerHigh,
-                  color: accent,
+                  backgroundColor: Colors.white.withValues(alpha: .16),
+                  color: const Color(0xFFFFD36B),
                 ),
                 Text(
                   '$percent%',
                   style: theme.textTheme.labelMedium?.copyWith(
+                    color: Colors.white,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -278,9 +318,16 @@ class _TopicCard extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .035),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -364,6 +411,14 @@ class _TopicCard extends ConsumerWidget {
                 Expanded(
                   child: FilledButton(
                     key: Key('learn-practice-${lesson.id}'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF073A6A),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                    ),
                     onPressed: () async {
                       if (status == LearnPracticeStatus.completed) {
                         await ref
@@ -424,9 +479,16 @@ class _StandalonePracticeTopicCard extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE3E9F1)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .035),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -469,6 +531,14 @@ class _StandalonePracticeTopicCard extends ConsumerWidget {
               width: double.infinity,
               child: FilledButton(
                 key: Key('learn-practice-${topic.id}'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF073A6A),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
+                ),
                 onPressed: () async {
                   if (status == LearnPracticeStatus.completed) {
                     await ref
