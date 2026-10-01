@@ -271,6 +271,317 @@ class HomeScreen extends ConsumerWidget {
 }
 
 
+class _ConfiguredHeroCarousel extends StatefulWidget {
+  const _ConfiguredHeroCarousel({required this.slides});
+
+  final List<MobileHeroSlide> slides;
+
+  @override
+  State<_ConfiguredHeroCarousel> createState() => _ConfiguredHeroCarouselState();
+}
+
+class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
+  int _index = 0;
+
+  Future<void> _open(MobileHeroSlide slide) async {
+    if (!mounted) return;
+    switch (slide.destinationType) {
+      case 'exam':
+        if (slide.destinationValue.isNotEmpty) {
+          context.push('/exam-details', extra: slide.destinationValue);
+        } else {
+          context.go('/exams');
+        }
+      case 'test_series':
+        context.go('/exams');
+      case 'learn':
+        final destination = slide.destinationValue.trim();
+        context.go(destination.startsWith('/') ? destination : '/learn');
+      case 'url':
+        final uri = Uri.tryParse(slide.destinationValue);
+        if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      default:
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final slides = widget.slides;
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final height = textScale > 1.3
+        ? (214 * textScale).clamp(285, 360).toDouble()
+        : 194.0;
+
+    return Column(
+      children: [
+        SizedBox(
+          height: height,
+          child: PageView.builder(
+            itemCount: slides.length,
+            onPageChanged: (value) => setState(() => _index = value),
+            itemBuilder: (context, index) {
+              final slide = slides[index];
+              final hasImage = slide.imageUrl.trim().isNotEmpty;
+              final hasAction = slide.destinationType != 'none' &&
+                  slide.destinationValue.trim().isNotEmpty;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 1),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(24),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: hasAction ? () => _open(slide) : null,
+                    child: Ink(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF031B3A),
+                            Color(0xFF063A70),
+                            Color(0xFF0B5D96),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (hasImage)
+                            Image.network(
+                              slide.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  const SizedBox.shrink(),
+                            ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xFF02172F)
+                                      .withValues(alpha: .96),
+                                  const Color(0xFF031B3A)
+                                      .withValues(alpha: .76),
+                                  const Color(0xFF031B3A)
+                                      .withValues(alpha: .18),
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 15, 16, 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  slide.title,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.premiumHeading(
+                                    Theme.of(context).textTheme.headlineSmall,
+                                  ).copyWith(
+                                    color: Colors.white,
+                                    height: 1.04,
+                                  ),
+                                ),
+                                if (slide.subtitle.trim().isNotEmpty) ...[
+                                  const SizedBox(height: 7),
+                                  SizedBox(
+                                    width: MediaQuery.sizeOf(context).width * .62,
+                                    child: Text(
+                                      slide.subtitle,
+                                      maxLines: textScale > 1.3 ? 3 : 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Colors.white
+                                                .withValues(alpha: .88),
+                                            height: 1.3,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                                const Spacer(),
+                                if (hasAction)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFD36B),
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      slide.ctaLabel.trim().isEmpty
+                                          ? 'Explore'
+                                          : slide.ctaLabel,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(
+                                            color: const Color(0xFF0B2748),
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        if (slides.length > 1) ...[
+          const SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              slides.length,
+              (index) => AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: index == _index ? 9 : 7,
+                height: index == _index ? 9 : 7,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  color: index == _index
+                      ? const Color(0xFF073A78)
+                      : const Color(0xFFD9E1EA),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ConfiguredSeriesRail extends StatelessWidget {
+  const _ConfiguredSeriesRail({
+    required this.series,
+    required this.onOpen,
+  });
+
+  final List<MobileFeaturedTestSeries> series;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 166,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: series.length,
+        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+        itemBuilder: (context, index) {
+          final item = series[index];
+          final alternate = index.isOdd;
+          final foreground =
+              alternate ? const Color(0xFF152746) : Colors.white;
+          return SizedBox(
+            width: 286,
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(22),
+              child: InkWell(
+                onTap: onOpen,
+                borderRadius: BorderRadius.circular(22),
+                child: Ink(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    gradient: LinearGradient(
+                      colors: alternate
+                          ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
+                          : const [Color(0xFF04366B), Color(0xFF075A98)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'TEST SERIES',
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: foreground.withValues(alpha: .76),
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: .7,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        item.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.premiumHeading(
+                          Theme.of(context).textTheme.titleLarge,
+                        ).copyWith(color: foreground, height: 1.06),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        item.examName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: foreground.withValues(alpha: .72),
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.layers_rounded,
+                            size: 17,
+                            color: foreground.withValues(alpha: .82),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            item.testCount == 1
+                                ? '1 test'
+                                : '${item.testCount} tests',
+                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: foreground,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            color: foreground,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _HomePromoFallback extends StatelessWidget {
   const _HomePromoFallback();
 
@@ -657,9 +968,10 @@ class _PunjabLandmarkPainter extends CustomPainter {
 }
 
 class _ExamCategoriesGrid extends StatelessWidget {
-  const _ExamCategoriesGrid({required this.onOpen});
+  const _ExamCategoriesGrid({required this.onOpen, this.families = const []});
 
   final VoidCallback onOpen;
+  final List<MobileFeaturedExamFamily> families;
 
   static const _items = [
     ('Punjab Govt.', Icons.location_on_rounded, Color(0xFFFFEFEF), Color(0xFFF04452)),
@@ -672,8 +984,47 @@ class _ExamCategoriesGrid extends StatelessWidget {
     ('Other Exams', Icons.grid_view_rounded, Color(0xFFF1F4F8), Color(0xFF718096)),
   ];
 
+  static (String, IconData, Color, Color) _visual(
+    MobileFeaturedExamFamily family,
+  ) {
+    final key = '${family.code} ${family.name}'.toLowerCase();
+    if (key.contains('punjab')) {
+      return (family.name, Icons.location_on_rounded,
+          const Color(0xFFFFEFEF), const Color(0xFFF04452));
+    }
+    if (key.contains('ssc')) {
+      return (family.name, Icons.workspace_premium_rounded,
+          const Color(0xFFEAF8F2), const Color(0xFF11966F));
+    }
+    if (key.contains('bank')) {
+      return (family.name, Icons.account_balance_rounded,
+          const Color(0xFFECF4FF), const Color(0xFF1672E8));
+    }
+    if (key.contains('rail')) {
+      return (family.name, Icons.train_rounded,
+          const Color(0xFFF3EEFF), const Color(0xFF7248E8));
+    }
+    if (key.contains('teach')) {
+      return (family.name, Icons.school_rounded,
+          const Color(0xFFFFF5E8), const Color(0xFFF28A19));
+    }
+    if (key.contains('defen')) {
+      return (family.name, Icons.shield_rounded,
+          const Color(0xFFEAF8F2), const Color(0xFF159D73));
+    }
+    if (key.contains('pcs') || key.contains('state')) {
+      return (family.name, Icons.apartment_rounded,
+          const Color(0xFFFFEEEE), const Color(0xFFF04452));
+    }
+    return (family.name, Icons.grid_view_rounded,
+        const Color(0xFFF1F4F8), const Color(0xFF718096));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final items = families.isEmpty
+        ? _items
+        : families.take(8).map(_visual).toList(growable: false);
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = 4.0;
@@ -684,7 +1035,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
         return Wrap(
           spacing: gap,
           runSpacing: gap,
-          children: _items
+          children: items
               .map(
                 (item) => SizedBox(
                   width: width,
