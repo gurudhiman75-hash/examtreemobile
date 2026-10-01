@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_typography.dart';
 import '../data/learn_module_catalog.dart';
 import '../data/learn_practice_catalog.dart';
 import '../domain/learn_practice_models.dart';
@@ -31,19 +30,20 @@ class LearnModulesSection extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Practice by subject',
-                    style: AppTypography.premiumHeading(
-                      theme.textTheme.titleLarge,
-                    ).copyWith(
+                    'Learn by Subject',
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: const Color(0xFF10264A),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.35,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xxs),
+                  const SizedBox(height: 3),
                   Text(
-                    'Choose a module and continue at your own pace.',
+                    'Build concepts, revise quickly and practice each topic.',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: const Color(0xFF718096),
                       height: 1.35,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -55,7 +55,7 @@ class LearnModulesSection extends ConsumerWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF1C7),
+                color: const Color(0xFFFFF4D6),
                 borderRadius: BorderRadius.circular(99),
               ),
               child: Text(
@@ -97,7 +97,7 @@ class LearnModulesSection extends ConsumerWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: AppSpacing.sm,
                 mainAxisSpacing: AppSpacing.sm,
-                childAspectRatio: 1.12,
+                childAspectRatio: 1.06,
               ),
               itemBuilder: (context, index) => _ModuleCard(
                 moduleIndex: index,
@@ -217,18 +217,39 @@ class _ModuleCard extends StatelessWidget {
       ],
     );
 
+    final progressBar = trackedPercent == null
+        ? null
+        : Column(
+            children: [
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: LinearProgressIndicator(
+                  minHeight: 4,
+                  value: (trackedPercent / 100).clamp(0.0, 1.0),
+                  backgroundColor: Colors.white.withValues(alpha: .72),
+                  valueColor: AlwaysStoppedAnimation(style.iconForeground),
+                ),
+              ),
+            ],
+          );
+
     return Material(
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
+          gradient: LinearGradient(
+            colors: [style.backgroundStart, style.backgroundEnd],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(color: style.border),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow.withValues(alpha: 0.035),
-              blurRadius: 14,
-              offset: const Offset(0, 5),
+              color: AppColors.shadow.withValues(alpha: 0.045),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -237,25 +258,29 @@ class _ModuleCard extends StatelessWidget {
           onTap: () => context.push(
             '/learn-module?module=${Uri.encodeQueryComponent(module.id)}',
           ),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(14),
             child: horizontal
                 ? Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       iconBox,
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(child: copy),
-                      const SizedBox(width: AppSpacing.sm),
-                      Container(
-                        width: 34,
-                        height: 34,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: .72),
-                          shape: BoxShape.circle,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            copy,
+                            if (progressBar != null) progressBar,
+                          ],
                         ),
-                        child: const Icon(Icons.chevron_right_rounded, size: 20),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 22,
+                        color: style.iconForeground,
                       ),
                     ],
                   )
@@ -266,23 +291,16 @@ class _ModuleCard extends StatelessWidget {
                         children: [
                           iconBox,
                           const Spacer(),
-                          Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: .7),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.north_east_rounded,
-                              size: 16,
-                              color: style.iconForeground,
-                            ),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 18,
+                            color: style.iconForeground,
                           ),
                         ],
                       ),
                       const Spacer(),
                       copy,
+                      if (progressBar != null) progressBar,
                     ],
                   ),
           ),
