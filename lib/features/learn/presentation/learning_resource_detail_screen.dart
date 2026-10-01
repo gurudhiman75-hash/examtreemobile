@@ -26,7 +26,15 @@ class LearningResourceDetailScreen extends ConsumerWidget {
             ? 'Current Affairs'
             : 'Learn';
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF10264A),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         top: false,
         child: detailAsync.when(
@@ -87,9 +95,9 @@ class _ResourceDetail extends StatelessWidget {
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
+        12,
         AppSpacing.sm,
-        AppSpacing.md,
+        12,
         AppSpacing.xxl,
       ),
       children: [
@@ -187,98 +195,118 @@ class _ResourceHero extends StatelessWidget {
             : Icons.menu_book_rounded;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 15),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFEEF2FF), Color(0xFFF4F0FF), Color(0xFFE0F2FE)],
+          colors: [
+            Color(0xFF031B3A),
+            Color(0xFF063A70),
+            Color(0xFF0B5D96),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF062D5C).withValues(alpha: .12),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
+          Positioned(
+            right: -26,
+            top: -32,
+            child: Container(
+              width: 108,
+              height: 108,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: .07),
+              ),
+            ),
+          ),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.82),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(
-                  icon,
-                  color: currentAffairs
-                      ? AppColors.sky
-                      : formula
-                          ? AppColors.amber
-                          : AppColors.tertiary,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Wrap(
-                  spacing: AppSpacing.xs,
-                  runSpacing: AppSpacing.xs,
-                  children: [
-                    _HeroBadge(label: resource.category.label),
-                    _HeroBadge(
-                      label: resource.format == LearningResourceFormat.pdf
-                          ? 'PDF'
-                          : 'Article',
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: .12),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    _HeroBadge(label: resource.languageCode.toUpperCase()),
-                    if (date != null) _HeroBadge(label: _dateLabel(date!)),
-                  ],
+                    child: Icon(icon, color: const Color(0xFFFFD36B)),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        _HeroBadge(label: resource.category.label),
+                        _HeroBadge(
+                          label: resource.format == LearningResourceFormat.pdf
+                              ? 'PDF'
+                              : 'Article',
+                        ),
+                        _HeroBadge(label: resource.languageCode.toUpperCase()),
+                        if (date != null) _HeroBadge(label: _dateLabel(date!)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 13),
+              Text(
+                resource.title,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -.4,
+                  height: 1.16,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            resource.title,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: AppColors.onPrimaryContainer,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.45,
-              height: 1.18,
-            ),
-          ),
-          if (resource.summary.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              resource.summary,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: AppColors.onPrimaryContainer.withValues(alpha: 0.74),
-                height: 1.48,
-              ),
-            ),
-          ],
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 2),
-                child: Icon(
-                  Icons.flag_outlined,
-                  size: 18,
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  target,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: AppColors.onPrimaryContainer,
-                    fontWeight: FontWeight.w800,
-                    height: 1.35,
+              if (resource.summary.isNotEmpty) ...[
+                const SizedBox(height: 7),
+                Text(
+                  resource.summary,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: .84),
+                    height: 1.45,
                   ),
                 ),
+              ],
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.flag_outlined,
+                      size: 17,
+                      color: Color(0xFFFFD36B),
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text(
+                      target,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: Colors.white.withValues(alpha: .88),
+                        fontWeight: FontWeight.w800,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -298,13 +326,13 @@ class _HeroBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.76),
+        color: Colors.white.withValues(alpha: .11),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: AppColors.onPrimaryContainer,
+              color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
       ),
@@ -361,6 +389,14 @@ class _DocumentCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.lg),
           FilledButton.icon(
             onPressed: onOpen,
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF073A6A),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(fontWeight: FontWeight.w900),
+            ),
             icon: const Icon(Icons.open_in_new_rounded),
             label: const Text('Open document'),
           ),
