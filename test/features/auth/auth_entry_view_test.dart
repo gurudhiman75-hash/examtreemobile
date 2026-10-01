@@ -124,21 +124,23 @@ void main() {
     expect(find.text('Code sent to +91 ••••••3210'), findsOneWidget);
     expect(find.byKey(const Key('auth-phone-otp')), findsOneWidget);
     expect(find.byKey(const Key('auth-phone-verify')), findsOneWidget);
-    expect(find.textContaining('Resend OTP in '), findsOneWidget);
 
-    final resend = tester.widget<TextButton>(
-      find.byKey(const Key('auth-phone-resend')),
-    );
+    final resendFinder = find.byKey(const Key('auth-phone-resend'));
+    var resend = tester.widget<TextButton>(resendFinder);
     expect(resend.onPressed, isNull);
 
     await tester.pump(const Duration(seconds: 30));
-    expect(find.text('Didn’t receive the code? Resend OTP'), findsOneWidget);
+    resend = tester.widget<TextButton>(resendFinder);
+    expect(resend.onPressed, isNotNull);
 
-    await tester.tap(find.byKey(const Key('auth-phone-resend')));
+    await tester.ensureVisible(resendFinder);
+    await tester.tap(resendFinder);
     await tester.pump();
     expect(resendCalls, 1);
-    expect(find.textContaining('Resend OTP in '), findsOneWidget);
+    resend = tester.widget<TextButton>(resendFinder);
+    expect(resend.onPressed, isNull);
 
+    await tester.ensureVisible(find.text('Change'));
     await tester.tap(find.text('Change'));
     expect(changeCalls, 1);
   });
