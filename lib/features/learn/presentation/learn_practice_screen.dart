@@ -647,7 +647,6 @@ class _FeedbackCard extends StatelessWidget {
           ),
         ],
       ),
-    ),
     );
   }
 }
