@@ -114,9 +114,9 @@ class HomeScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                12,
+                8,
                 AppSpacing.sm,
-                12,
+                8,
                 112,
               ),
               sliver: SliverList.list(
@@ -237,8 +237,8 @@ class _HomePromoFallback extends StatelessWidget {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
     final heroHeight = largeText
-        ? (268 * textScale).clamp(370, 470).toDouble()
-        : 248.0;
+        ? (250 * textScale).clamp(350, 445).toDouble()
+        : 228.0;
 
     return Container(
       height: heroHeight,
@@ -287,7 +287,7 @@ class _HomePromoFallback extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 13),
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -295,8 +295,8 @@ class _HomePromoFallback extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: 11,
+                      vertical: 5,
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: const Color(0xFFE9B94E)),
@@ -313,7 +313,7 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 11),
+                const SizedBox(height: 8),
                 FractionallySizedBox(
                   widthFactor: largeText ? 0.88 : 0.64,
                   alignment: Alignment.centerLeft,
@@ -330,7 +330,7 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 if (!largeText)
                   FractionallySizedBox(
                     widthFactor: .67,
@@ -392,8 +392,8 @@ class _HomePromoFallback extends StatelessWidget {
                           backgroundColor: const Color(0xFFFFD36B),
                           foregroundColor: const Color(0xFF082A52),
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 11,
+                            horizontal: 15,
+                            vertical: 9,
                           ),
                           shape: const StadiumBorder(),
                         ),
@@ -633,7 +633,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gap = 6.0;
+        final gap = 4.0;
         // Approved Home layout: keep four exam-category cards per row on
         // normal phone widths. Only collapse on exceptionally narrow surfaces.
         final columns = constraints.maxWidth < 260 ? 2 : 4;
