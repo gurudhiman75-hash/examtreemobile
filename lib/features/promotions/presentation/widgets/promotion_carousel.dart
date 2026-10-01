@@ -551,15 +551,14 @@ class _PromotionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final imageUrl = campaign.imageUrl?.trim();
 
     return Material(
-      color: scheme.primaryContainer.withValues(alpha: 0.66),
+      color: Colors.white,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-        side: BorderSide(color: scheme.outlineVariant),
+        side: const BorderSide(color: Color(0xFFE3E9F1)),
       ),
       child: Stack(
         fit: StackFit.expand,
@@ -572,7 +571,7 @@ class _PromotionCard extends StatelessWidget {
               height: 150,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: scheme.primary.withValues(alpha: 0.08),
+                color: const Color(0xFFFFE8A8).withValues(alpha: .42),
               ),
             ),
           ),
@@ -604,14 +603,14 @@ class _PromotionCard extends StatelessWidget {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: scheme.surface.withValues(alpha: 0.72),
+                          color: const Color(0xFFFFF4D6),
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
                           'EXAMTREE',
                           style: theme.textTheme.labelSmall?.copyWith(
-                            color: scheme.primary,
-                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF8A5A00),
+                            fontWeight: FontWeight.w900,
                             letterSpacing: 0.7,
                           ),
                         ),
@@ -625,8 +624,8 @@ class _PromotionCard extends StatelessWidget {
                                 ? theme.textTheme.titleMedium
                                 : theme.textTheme.titleLarge)
                             ?.copyWith(
-                          color: scheme.onPrimaryContainer,
-                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF10264A),
+                          fontWeight: FontWeight.w900,
                           letterSpacing: -0.25,
                         ),
                       ),
@@ -636,8 +635,7 @@ class _PromotionCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color:
-                              scheme.onPrimaryContainer.withValues(alpha: 0.82),
+                          color: const Color(0xFF68778A),
                           height: 1.35,
                         ),
                       ),
@@ -667,7 +665,7 @@ class _PromotionCard extends StatelessWidget {
                               visualDensity: VisualDensity.compact,
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 2),
-                              foregroundColor: scheme.primary,
+                              foregroundColor: const Color(0xFF0B3A6F),
                             ),
                             iconAlignment: IconAlignment.end,
                             icon:
@@ -689,7 +687,7 @@ class _PromotionCard extends StatelessWidget {
               top: 6,
               right: 6,
               child: Material(
-                color: Theme.of(context).colorScheme.surface.withValues(alpha: .86),
+                color: Colors.white.withValues(alpha: .94),
                 shape: const CircleBorder(),
                 child: IconButton(
                   tooltip: 'Hide promotion',
