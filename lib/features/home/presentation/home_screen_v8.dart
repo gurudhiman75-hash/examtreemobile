@@ -114,9 +114,9 @@ class HomeScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
+                12,
                 AppSpacing.sm,
-                AppSpacing.md,
+                12,
                 112,
               ),
               sliver: SliverList.list(
@@ -130,18 +130,18 @@ class HomeScreen extends ConsumerWidget {
                     onNotifications: () => context.push('/daily'),
                     onProfile: () => context.push('/profile'),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const SizedBox(height: 12),
                   if (campaigns.isNotEmpty)
                     PromotionCarousel(campaigns: campaigns, compact: true)
                   else
                     const Column(
                       children: [
                         _HomePromoFallback(),
-                        SizedBox(height: 10),
+                        SizedBox(height: AppSpacing.sm),
                         _HeroPageDots(),
                       ],
                     ),
-                  const SizedBox(height: AppSpacing.lg),
+                  const SizedBox(height: 18),
                   _SectionTitle(
                     title: 'Exam Categories',
                     action: 'See All',
@@ -149,7 +149,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   _ExamCategoriesGrid(onOpen: () => context.go('/exams')),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
                   _SectionTitle(
                     title: 'Featured Test Series',
                     action: 'See All',
@@ -180,7 +180,7 @@ class HomeScreen extends ConsumerWidget {
                             );
                     },
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
                   _SectionTitle(
                     title: 'Continue Learning',
                     action: 'See All',
@@ -199,7 +199,7 @@ class HomeScreen extends ConsumerWidget {
                         ..invalidate(dailyCompanionSnapshotProvider);
                     },
                   ),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.lg),
                   _SectionTitle(
                     title: "Today's Goal",
                     action: 'See All',
@@ -237,8 +237,8 @@ class _HomePromoFallback extends StatelessWidget {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
     final heroHeight = largeText
-        ? (285 * textScale).clamp(390, 500).toDouble()
-        : 268.0;
+        ? (268 * textScale).clamp(370, 470).toDouble()
+        : 248.0;
 
     return Container(
       height: heroHeight,
@@ -287,7 +287,7 @@ class _HomePromoFallback extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 15),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 13),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -633,7 +633,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gap = AppSpacing.sm;
+        final gap = 6.0;
         // Approved Home layout: keep four exam-category cards per row on
         // normal phone widths. Only collapse on exceptionally narrow surfaces.
         final columns = constraints.maxWidth < 260 ? 2 : 4;
