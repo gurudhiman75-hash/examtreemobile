@@ -1,11 +1,75 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/network/api_client.dart';
+import '../../../../core/providers/repository_providers.dart';
+
 import '../../../auth/presentation/providers/auth_providers.dart';
 import '../../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
 import '../../domain/promotion_campaign.dart';
 
 const promotionCampaignsRemoteKey = 'promotion_campaigns_json';
+
+class ApiMobilePromotionSource {
+  const ApiMobilePromotionSource(this._apiClient);
+
+  final ApiClient _apiClient;
+
+  Future<List<PromotionCampaign>> loadHome() async {
+    try {
+      final response = await _apiClient.dio.get<Map<String, dynamic>>(
+        'mobile/promotions',
+        queryParameters: const <String, Object?>{'placement': 'home'},
+      );
+      final raw = response.data?['promotions'];
+      if (raw is! List) return const <PromotionCampaign>[];
+
+      final campaigns = <PromotionCampaign>[];
+      for (final item in raw.whereType<Map>()) {
+        final map = Map<String, dynamic>.from(item);
+        final id = map['id']?.toString().trim() ?? '';
+        final title = map['title']?.toString().trim() ?? '';
+        final subtitle = map['subtitle']?.toString().trim() ?? '';
+        if (id.isEmpty || title.isEmpty) continue;
+
+        final destinationType =
+            map['destinationType']?.toString().trim() ?? 'none';
+        final destinationValue =
+            map['destinationValue']?.toString().trim() ?? '';
+        String? deepLink;
+        if (destinationType == 'exam' && destinationValue.isNotEmpty) {
+          deepLink = '/exam-details?id=${Uri.encodeQueryComponent(destinationValue)}';
+        } else if (destinationType == 'test_series') {
+          deepLink = '/exams';
+        } else if (destinationType == 'learn') {
+          deepLink = destinationValue.startsWith('/') ? destinationValue : '/learn';
+        }
+
+        final order = int.tryParse(map['sortOrder']?.toString() ?? '') ?? 0;
+        campaigns.add(
+          PromotionCampaign(
+            id: id,
+            title: title,
+            subtitle: subtitle,
+            placements: const <PromotionPlacement>{PromotionPlacement.home},
+            ctaLabel: deepLink == null ? null : 'Explore',
+            deepLink: deepLink,
+            imageUrl: map['imageUrl']?.toString(),
+            priority: 1000 - order,
+          ),
+        );
+      }
+      return List.unmodifiable(campaigns);
+    } catch (_) {
+      return const <PromotionCampaign>[];
+    }
+  }
+}
+
+final apiMobilePromotionSourceProvider = Provider<ApiMobilePromotionSource>((ref) {
+  return ApiMobilePromotionSource(ref.watch(apiClientProvider));
+});
+
 
 class PromotionCampaignSource {
   PromotionCampaignSource(this._remoteConfig);
@@ -73,7 +137,9 @@ final promotionsForPlacementProvider = FutureProvider.family<
   final audience = placement == PromotionPlacement.login
       ? null
       : ref.watch(promotionAudienceExamIdsProvider);
-  final campaigns = await ref.watch(promotionCampaignsProvider.future);
+  final campaigns = placement == PromotionPlacement.home
+      ? await ref.watch(apiMobilePromotionSourceProvider).loadHome()
+      : await ref.watch(promotionCampaignsProvider.future);
   final now = ref.watch(promotionClockProvider)();
   final selectedExamIds = switch (audience) {
     AsyncData(value: final ids) => ids.toSet(),
