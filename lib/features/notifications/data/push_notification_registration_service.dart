@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -122,19 +124,95 @@ class PushNotificationRegistrationService {
     );
   }
 
+  Future<Uint8List?> _downloadNotificationImage(String rawUrl) async {
+    final uri = Uri.tryParse(rawUrl.trim());
+    if (uri == null || (uri.scheme != 'https' && uri.scheme != 'http')) {
+      return null;
+    }
+    final client = HttpClient()..connectionTimeout = const Duration(seconds: 5);
+    try {
+      final request = await client.getUrl(uri);
+      final response = await request.close();
+      if (response.statusCode < 200 || response.statusCode >= 300) return null;
+      const maxBytes = 5 * 1024 * 1024;
+      if (response.contentLength > maxBytes) return null;
+      final bytes = <int>[];
+      await for (final chunk in response) {
+        bytes.addAll(chunk);
+        if (bytes.length > maxBytes) return null;
+      }
+      return bytes.isEmpty ? null : Uint8List.fromList(bytes);
+    } catch (_) {
+      return null;
+    } finally {
+      client.close(force: true);
+    }
+  }
+
+  Future<String?> _writeDarwinAttachment(
+    Uint8List bytes,
+    String rawUrl,
+  ) async {
+    try {
+      final uri = Uri.tryParse(rawUrl);
+      final source = uri?.pathSegments.isNotEmpty == true
+          ? uri!.pathSegments.last.toLowerCase()
+          : '';
+      final extension = source.endsWith('.png')
+          ? '.png'
+          : source.endsWith('.gif')
+              ? '.gif'
+              : source.endsWith('.jpeg')
+                  ? '.jpeg'
+                  : '.jpg';
+      final file = File(
+        '${Directory.systemTemp.path}/examtree_push_${DateTime.now().microsecondsSinceEpoch}$extension',
+      );
+      await file.writeAsBytes(bytes, flush: true);
+      return file.path;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> _showForegroundNotification(RemoteMessage message) async {
     final notification = message.notification;
     if (notification == null) return;
-    const details = NotificationDetails(
-      android: AndroidNotificationDetails(
-        'examtree_push',
-        'ExamTree updates',
-        channelDescription: 'ExamTree test, learning and account updates.',
-        importance: Importance.high,
-        priority: Priority.high,
-      ),
-      iOS: DarwinNotificationDetails(),
-      macOS: DarwinNotificationDetails(),
+
+    final imageUrl = message.data['imageUrl']?.trim() ?? '';
+    final imageBytes =
+        imageUrl.isEmpty ? null : await _downloadNotificationImage(imageUrl);
+    String? darwinAttachmentPath;
+    if (defaultTargetPlatform == TargetPlatform.iOS && imageBytes != null) {
+      darwinAttachmentPath =
+          await _writeDarwinAttachment(imageBytes, imageUrl);
+    }
+
+    final androidDetails = AndroidNotificationDetails(
+      'examtree_push',
+      'ExamTree updates',
+      channelDescription: 'ExamTree test, learning and account updates.',
+      importance: Importance.high,
+      priority: Priority.high,
+      styleInformation: imageBytes == null
+          ? null
+          : BigPictureStyleInformation(
+              ByteArrayAndroidBitmap(imageBytes),
+              hideExpandedLargeIcon: true,
+              showBigPictureWhenCollapsed: true,
+            ),
+    );
+    final darwinDetails = DarwinNotificationDetails(
+      attachments: darwinAttachmentPath == null
+          ? null
+          : <DarwinNotificationAttachment>[
+              DarwinNotificationAttachment(darwinAttachmentPath),
+            ],
+    );
+    final details = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+      macOS: darwinDetails,
     );
     final campaignId = message.data['campaignId']?.trim() ?? '';
     final payload = campaignId.isEmpty
