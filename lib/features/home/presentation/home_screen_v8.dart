@@ -230,6 +230,7 @@ class HomeScreen extends ConsumerWidget {
                 : 'Exam Categories',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            subtitle: examCategoriesSetting.subtitle,
             iconName: examCategoriesSetting.iconName,
             iconUrl: examCategoriesSetting.iconUrl,
           ),
@@ -237,6 +238,8 @@ class HomeScreen extends ConsumerWidget {
           _ExamCategoriesGrid(
             families: homeConfig.featuredExamFamilies,
             overrides: homeConfig.itemOverrides,
+            layout: examCategoriesSetting.layout,
+            columns: examCategoriesSetting.columns,
             onOpen: () => context.go('/exams'),
           ),
           const SizedBox(height: 8),
@@ -252,6 +255,7 @@ class HomeScreen extends ConsumerWidget {
                 : 'Featured Test Series',
             action: 'See All',
             onAction: () => context.go('/exams'),
+            subtitle: featuredSeriesSetting.subtitle,
             iconName: featuredSeriesSetting.iconName,
             iconUrl: featuredSeriesSetting.iconUrl,
           ),
@@ -260,6 +264,8 @@ class HomeScreen extends ConsumerWidget {
             _ConfiguredSeriesRail(
               series: homeConfig.featuredTestSeries,
               overrides: homeConfig.itemOverrides,
+              layout: featuredSeriesSetting.layout,
+              columns: featuredSeriesSetting.columns,
               onOpen: (series) => context.push('/test-series?id=${Uri.encodeQueryComponent(series.id)}'),
             )
           else
@@ -300,6 +306,7 @@ class HomeScreen extends ConsumerWidget {
                 : 'Continue Learning',
             action: 'See All',
             onAction: () => context.go('/learn'),
+            subtitle: continueLearningSetting.subtitle,
             iconName: continueLearningSetting.iconName,
             iconUrl: continueLearningSetting.iconUrl,
           ),
@@ -326,6 +333,7 @@ class HomeScreen extends ConsumerWidget {
               title: recommendedLearningSetting.title.trim().isNotEmpty
                   ? recommendedLearningSetting.title
                   : 'Recommended Learning',
+              subtitle: recommendedLearningSetting.subtitle,
               iconName: recommendedLearningSetting.iconName,
               iconUrl: recommendedLearningSetting.iconUrl,
             )
@@ -336,6 +344,7 @@ class HomeScreen extends ConsumerWidget {
               title: currentAffairsSetting.title.trim().isNotEmpty
                   ? currentAffairsSetting.title
                   : 'Current Affairs',
+              subtitle: currentAffairsSetting.subtitle,
               iconName: currentAffairsSetting.iconName,
               iconUrl: currentAffairsSetting.iconUrl,
             )
@@ -349,6 +358,7 @@ class HomeScreen extends ConsumerWidget {
                       : "Today's Goal",
                   action: 'See All',
                   onAction: () => context.push('/profile'),
+                  subtitle: todayGoalSetting.subtitle,
                   iconName: todayGoalSetting.iconName,
                   iconUrl: todayGoalSetting.iconUrl,
                 ),
@@ -657,146 +667,270 @@ class _ConfiguredSeriesRail extends StatelessWidget {
     required this.series,
     required this.onOpen,
     this.overrides = const {},
+    this.layout = '',
+    this.columns = 0,
   });
 
   final List<MobileFeaturedTestSeries> series;
   final ValueChanged<MobileFeaturedTestSeries> onOpen;
   final Map<String, MobileHomeItemOverride> overrides;
+  final String layout;
+  final int columns;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 166,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        itemCount: series.where((item) => !(overrides[item.id]?.hidden ?? false)).length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
-        itemBuilder: (context, index) {
-          final visibleSeries = series
-              .where((value) => !(overrides[value.id]?.hidden ?? false))
-              .toList(growable: false);
-          final item = visibleSeries[index];
-          final override = overrides[item.id];
-          final displayName = override?.title.trim().isNotEmpty == true
-              ? override!.title
-              : item.name;
-          final displaySubtitle = override?.subtitle.trim().isNotEmpty == true
-              ? override!.subtitle
-              : item.examName;
-          final alternate = index.isOdd;
-          final foreground =
-              alternate ? const Color(0xFF152746) : Colors.white;
-          return SizedBox(
-            width: 286,
-            child: Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(22),
-              child: InkWell(
-                onTap: () => onOpen(item),
-                borderRadius: BorderRadius.circular(22),
-                child: Ink(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22),
-                    gradient: LinearGradient(
-                      colors: alternate
-                          ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
-                          : const [Color(0xFF04366B), Color(0xFF075A98)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+    final visibleSeries = series
+        .where((item) => !(overrides[item.id]?.hidden ?? false))
+        .toList(growable: false);
+    if (visibleSeries.isEmpty) return const SizedBox.shrink();
+
+    Widget card(int index, {bool compact = false, bool listMode = false}) {
+      final item = visibleSeries[index];
+      return _ConfiguredSeriesCard(
+        item: item,
+        override: overrides[item.id],
+        alternate: index.isOdd,
+        compact: compact,
+        listMode: listMode,
+        onTap: () => onOpen(item),
+      );
+    }
+
+    switch (layout.trim().toLowerCase()) {
+      case 'grid':
+        final requestedColumns = columns <= 0 ? 2 : columns.clamp(1, 2);
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final effectiveColumns =
+                constraints.maxWidth < 330 ? 1 : requestedColumns;
+            const gap = 8.0;
+            final width =
+                (constraints.maxWidth - gap * (effectiveColumns - 1)) /
+                    effectiveColumns;
+            return Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: [
+                for (var index = 0; index < visibleSeries.length; index++)
+                  SizedBox(
+                    width: width,
+                    height: effectiveColumns >= 2 ? 150 : 158,
+                    child: card(index, compact: effectiveColumns >= 2),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'TEST SERIES',
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: foreground.withValues(alpha: .76),
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: .7,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          if (override?.iconUrl.trim().isNotEmpty == true) ...[
-                            Image.network(
-                              override!.iconUrl,
-                              width: 24,
-                              height: 24,
-                              fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => Icon(
-                                _homeIconFromName(override.iconName),
-                                size: 24,
-                                color: foreground,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                          ] else if (override?.iconName.trim().isNotEmpty == true) ...[
-                            Icon(
-                              _homeIconFromName(override!.iconName),
-                              size: 24,
-                              color: foreground,
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                          Expanded(
-                            child: Text(
-                        displayName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.premiumHeading(
-                          Theme.of(context).textTheme.titleLarge,
-                        ).copyWith(color: foreground, height: 1.06),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        displaySubtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: foreground.withValues(alpha: .72),
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.layers_rounded,
-                            size: 17,
-                            color: foreground.withValues(alpha: .82),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            item.testCount == 1
-                                ? '1 test'
-                                : '${item.testCount} tests',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: foreground,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                          ),
-                          const Spacer(),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: foreground,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+              ],
+            );
+          },
+        );
+      case 'list':
+        return Column(
+          children: [
+            for (var index = 0; index < visibleSeries.length; index++) ...[
+              SizedBox(height: 112, child: card(index, listMode: true)),
+              if (index != visibleSeries.length - 1)
+                const SizedBox(height: 8),
+            ],
+          ],
+        );
+      default:
+        return SizedBox(
+          height: 166,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: visibleSeries.length,
+            separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+            itemBuilder: (context, index) => SizedBox(
+              width: 286,
+              child: card(index),
+            ),
+          ),
+        );
+    }
+  }
+}
+
+class _ConfiguredSeriesCard extends StatelessWidget {
+  const _ConfiguredSeriesCard({
+    required this.item,
+    required this.alternate,
+    required this.onTap,
+    this.override,
+    this.compact = false,
+    this.listMode = false,
+  });
+
+  final MobileFeaturedTestSeries item;
+  final MobileHomeItemOverride? override;
+  final bool alternate;
+  final VoidCallback onTap;
+  final bool compact;
+  final bool listMode;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final displayName = override?.title.trim().isNotEmpty == true
+        ? override!.title
+        : item.name;
+    final displaySubtitle = override?.subtitle.trim().isNotEmpty == true
+        ? override!.subtitle
+        : item.examName;
+    final badge = override?.badge.trim().isNotEmpty == true
+        ? override!.badge
+        : 'TEST SERIES';
+    final imageUrl = override?.imageUrl.trim() ?? '';
+    final hasImage = imageUrl.isNotEmpty;
+    final foreground =
+        hasImage || !alternate ? Colors.white : const Color(0xFF152746);
+    final decoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(compact ? 16 : 22),
+      gradient: hasImage
+          ? null
+          : LinearGradient(
+              colors: alternate
+                  ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
+                  : const [Color(0xFF04366B), Color(0xFF075A98)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+      color: hasImage ? const Color(0xFF04366B) : null,
+      border: Border.all(
+        color: alternate && !hasImage
+            ? const Color(0xFFE7C879).withValues(alpha: .42)
+            : Colors.white.withValues(alpha: .08),
+      ),
+    );
+
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          badge.toUpperCase(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: foreground.withValues(alpha: .78),
+            fontWeight: FontWeight.w900,
+            letterSpacing: .6,
+            fontSize: compact ? 8 : null,
+          ),
+        ),
+        SizedBox(height: compact ? 5 : 8),
+        Row(
+          children: [
+            if (override?.iconUrl.trim().isNotEmpty == true) ...[
+              Image.network(
+                override!.iconUrl,
+                width: compact ? 20 : 24,
+                height: compact ? 20 : 24,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Icon(
+                  _homeIconFromName(override!.iconName),
+                  size: compact ? 20 : 24,
+                  color: foreground,
+                ),
+              ),
+              const SizedBox(width: 7),
+            ] else if (override?.iconName.trim().isNotEmpty == true) ...[
+              Icon(
+                _homeIconFromName(override!.iconName),
+                size: compact ? 20 : 24,
+                color: foreground,
+              ),
+              const SizedBox(width: 7),
+            ],
+            Expanded(
+              child: Text(
+                displayName,
+                maxLines: compact ? 2 : 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.premiumHeading(
+                  compact ? theme.textTheme.titleSmall : theme.textTheme.titleLarge,
+                ).copyWith(color: foreground, height: 1.06),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        if (!compact)
+          Text(
+            displaySubtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: foreground.withValues(alpha: .72),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        const Spacer(),
+        Row(
+          children: [
+            Icon(
+              Icons.layers_rounded,
+              size: compact ? 14 : 17,
+              color: foreground.withValues(alpha: .82),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                item.testCount == 1 ? '1 test' : '${item.testCount} tests',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: foreground,
+                  fontWeight: FontWeight.w800,
+                  fontSize: compact ? 10 : null,
                 ),
               ),
             ),
-          );
-        },
+            Icon(Icons.arrow_forward_rounded,
+                color: foreground, size: compact ? 16 : 20),
+          ],
+        ),
+      ],
+    );
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: decoration.borderRadius as BorderRadius,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Ink(
+          decoration: decoration,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (hasImage)
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              if (hasImage)
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xE6032345), Color(0xB3054C80)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                  ),
+                ),
+              Padding(
+                padding: EdgeInsets.all(compact ? 11 : 16),
+                child: listMode
+                    ? Row(
+                        children: [
+                          Expanded(child: copy),
+                        ],
+                      )
+                    : copy,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1216,26 +1350,52 @@ IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded
   }
 }
 
+class _ExamCategoryPresentation {
+  const _ExamCategoryPresentation({
+    required this.label,
+    required this.subtitle,
+    required this.badge,
+    required this.icon,
+    required this.background,
+    required this.foreground,
+    required this.iconUrl,
+    required this.imageUrl,
+  });
+
+  final String label;
+  final String subtitle;
+  final String badge;
+  final IconData icon;
+  final Color background;
+  final Color foreground;
+  final String iconUrl;
+  final String imageUrl;
+}
+
 class _ExamCategoriesGrid extends StatelessWidget {
   const _ExamCategoriesGrid({
     required this.onOpen,
     this.families = const [],
     this.overrides = const {},
+    this.layout = '',
+    this.columns = 0,
   });
 
   final VoidCallback onOpen;
   final List<MobileFeaturedExamFamily> families;
   final Map<String, MobileHomeItemOverride> overrides;
+  final String layout;
+  final int columns;
 
   static const _items = [
-    ('Punjab Govt.', Icons.location_on_rounded, Color(0xFFFFEFEF), Color(0xFFF04452), ''),
-    ('SSC', Icons.workspace_premium_rounded, Color(0xFFEAF8F2), Color(0xFF11966F), ''),
-    ('Banking', Icons.account_balance_rounded, Color(0xFFECF4FF), Color(0xFF1672E8), ''),
-    ('Railway', Icons.train_rounded, Color(0xFFF3EEFF), Color(0xFF7248E8), ''),
-    ('Teaching', Icons.school_rounded, Color(0xFFFFF5E8), Color(0xFFF28A19), ''),
-    ('Defence', Icons.shield_rounded, Color(0xFFEAF8F2), Color(0xFF159D73), ''),
-    ('State PCS', Icons.apartment_rounded, Color(0xFFFFEEEE), Color(0xFFF04452), ''),
-    ('Other Exams', Icons.grid_view_rounded, Color(0xFFF1F4F8), Color(0xFF718096), ''),
+    _ExamCategoryPresentation(label: 'Punjab Govt.', subtitle: '', badge: '', icon: Icons.location_on_rounded, background: Color(0xFFFFEFEF), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'SSC', subtitle: '', badge: '', icon: Icons.workspace_premium_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF11966F), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Banking', subtitle: '', badge: '', icon: Icons.account_balance_rounded, background: Color(0xFFECF4FF), foreground: Color(0xFF1672E8), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Railway', subtitle: '', badge: '', icon: Icons.train_rounded, background: Color(0xFFF3EEFF), foreground: Color(0xFF7248E8), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Teaching', subtitle: '', badge: '', icon: Icons.school_rounded, background: Color(0xFFFFF5E8), foreground: Color(0xFFF28A19), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Defence', subtitle: '', badge: '', icon: Icons.shield_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF159D73), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'State PCS', subtitle: '', badge: '', icon: Icons.apartment_rounded, background: Color(0xFFFFEEEE), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Other Exams', subtitle: '', badge: '', icon: Icons.grid_view_rounded, background: Color(0xFFF1F4F8), foreground: Color(0xFF718096), iconUrl: '', imageUrl: ''),
   ];
 
   static (String, IconData, Color, Color) _visual(
@@ -1280,30 +1440,56 @@ class _ExamCategoriesGrid extends StatelessWidget {
         ? _items
         : families
             .where((family) => !(overrides[family.id]?.hidden ?? false))
-            .take(8)
+            .take(12)
             .map((family) {
               final base = _visual(family);
               final override = overrides[family.id];
-              return (
-                override?.title.trim().isNotEmpty == true
+              return _ExamCategoryPresentation(
+                label: override?.title.trim().isNotEmpty == true
                     ? override!.title
                     : base.$1,
-                override?.iconName.trim().isNotEmpty == true
+                subtitle: override?.subtitle ?? '',
+                badge: override?.badge ?? '',
+                icon: override?.iconName.trim().isNotEmpty == true
                     ? _homeIconFromName(override!.iconName, fallback: base.$2)
                     : base.$2,
-                base.$3,
-                base.$4,
-                override?.iconUrl ?? '',
+                background: base.$3,
+                foreground: base.$4,
+                iconUrl: override?.iconUrl ?? '',
+                imageUrl: override?.imageUrl ?? '',
               );
             })
             .toList(growable: false);
+
+    if (layout.trim().toLowerCase() == 'horizontal') {
+      return SizedBox(
+        height: 126,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          itemCount: items.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 6),
+          itemBuilder: (context, index) => SizedBox(
+            width: 102,
+            child: _ExamCategoryTile(
+              item: items[index],
+              onTap: onOpen,
+              showDetails: false,
+            ),
+          ),
+        ),
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = 4.0;
-        // Approved Home layout: keep four exam-category cards per row on
-        // normal phone widths. Only collapse on exceptionally narrow surfaces.
-        final columns = constraints.maxWidth < 260 ? 2 : 4;
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
+        final requestedColumns = columns <= 0 ? 4 : columns.clamp(2, 4);
+        final effectiveColumns =
+            constraints.maxWidth < 260 ? 2 : requestedColumns;
+        final width =
+            (constraints.maxWidth - gap * (effectiveColumns - 1)) /
+                effectiveColumns;
         return Wrap(
           spacing: gap,
           runSpacing: gap,
@@ -1312,12 +1498,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                 (item) => SizedBox(
                   width: width,
                   child: _ExamCategoryTile(
-                    label: item.$1,
-                    icon: item.$2,
-                    iconUrl: item.$5,
-                    background: item.$3,
-                    foreground: item.$4,
+                    item: item,
                     onTap: onOpen,
+                    showDetails: effectiveColumns <= 2,
                   ),
                 ),
               )
@@ -1330,44 +1513,55 @@ class _ExamCategoriesGrid extends StatelessWidget {
 
 class _ExamCategoryTile extends StatelessWidget {
   const _ExamCategoryTile({
-    required this.label,
-    required this.icon,
-    this.iconUrl = '',
-    required this.background,
-    required this.foreground,
+    required this.item,
     required this.onTap,
+    required this.showDetails,
   });
 
-  final String label;
-  final IconData icon;
-  final String iconUrl;
-  final Color background;
-  final Color foreground;
+  final _ExamCategoryPresentation item;
   final VoidCallback onTap;
+  final bool showDetails;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final radius = BorderRadius.circular(18);
+    final visual = item.imageUrl.trim().isNotEmpty
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              item.imageUrl,
+              width: 34,
+              height: 34,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) =>
+                  Icon(item.icon, color: item.foreground, size: 30),
+            ),
+          )
+        : item.iconUrl.trim().isNotEmpty
+            ? Image.network(
+                item.iconUrl,
+                width: 30,
+                height: 30,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) =>
+                    Icon(item.icon, color: item.foreground, size: 30),
+              )
+            : Icon(item.icon, color: item.foreground, size: 30);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: background,
+        color: item.background,
         borderRadius: radius,
         border: Border.all(
-          color: foreground.withValues(alpha: .20),
+          color: item.foreground.withValues(alpha: .20),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: foreground.withValues(alpha: .10),
+            color: item.foreground.withValues(alpha: .10),
             blurRadius: 13,
             offset: const Offset(0, 5),
-          ),
-          BoxShadow(
-            color: const Color(0xFF10264A).withValues(alpha: .035),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -1378,24 +1572,34 @@ class _ExamCategoryTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: radius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 11),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (iconUrl.trim().isNotEmpty)
-                  Image.network(
-                    iconUrl,
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        Icon(icon, color: foreground, size: 30),
-                  )
-                else
-                  Icon(icon, color: foreground, size: 30),
-                const SizedBox(height: 9),
+                if (item.badge.trim().isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: .74),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      item.badge,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: item.foreground,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ),
+                visual,
+                const SizedBox(height: 8),
                 Text(
-                  label,
+                  item.label,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -1405,6 +1609,19 @@ class _ExamCategoryTile extends StatelessWidget {
                     letterSpacing: -.05,
                   ),
                 ),
+                if (showDetails && item.subtitle.trim().isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    item.subtitle,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: const Color(0xFF718096),
+                      fontSize: 9,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -2637,11 +2854,13 @@ class _SectionTitle extends StatelessWidget {
     required this.title,
     required this.action,
     required this.onAction,
+    this.subtitle = '',
     this.iconName = '',
     this.iconUrl = '',
   });
 
   final String title;
+  final String subtitle;
   final String action;
   final VoidCallback onAction;
   final String iconName;
@@ -2649,16 +2868,14 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final titleText = Text(
       title,
       style: AppTypography.premiumHeading(
-        Theme.of(context).textTheme.titleLarge,
-      ).copyWith(
-        color: const Color(0xFF10264A),
-      ),
+        theme.textTheme.titleLarge,
+      ).copyWith(color: const Color(0xFF10264A)),
     );
     final titleWidget = Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
         if (iconUrl.trim().isNotEmpty)
           Image.network(
@@ -2680,7 +2897,25 @@ class _SectionTitle extends StatelessWidget {
           ),
         if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
           const SizedBox(width: 7),
-        Flexible(child: titleText),
+        Expanded(child: titleText),
+      ],
+    );
+    final heading = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        titleWidget,
+        if (subtitle.trim().isNotEmpty) ...[
+          const SizedBox(height: 2),
+          Text(
+            subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: const Color(0xFF718096),
+              height: 1.3,
+            ),
+          ),
+        ],
       ],
     );
     final actionWidget = TextButton(
@@ -2699,19 +2934,18 @@ class _SectionTitle extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          titleWidget,
+          heading,
           const SizedBox(height: 2),
-          Align(
-            alignment: Alignment.centerRight,
-            child: actionWidget,
-          ),
+          Align(alignment: Alignment.centerRight, child: actionWidget),
         ],
       );
     }
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: titleWidget),
+        Expanded(child: heading),
+        const SizedBox(width: 8),
         actionWidget,
       ],
     );
