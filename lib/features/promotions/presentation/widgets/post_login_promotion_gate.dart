@@ -59,6 +59,18 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
 
   Future<void> _showCampaign(PromotionCampaign campaign) async {
     if (!mounted) return;
+    final imageUrl = campaign.imageUrl?.trim();
+    if (imageUrl?.isNotEmpty ?? false) {
+      try {
+        await precacheImage(
+          NetworkImage(imageUrl!),
+          context,
+        ).timeout(const Duration(seconds: 4));
+      } catch (_) {
+        // A slow or broken creative must never block the promotion flow.
+      }
+      if (!mounted) return;
+    }
     setState(() => _modalOpen = true);
     final exposureStore = ref.read(promotionExposureStoreProvider);
     final analytics = ref.read(mobileAnalyticsClientProvider);
