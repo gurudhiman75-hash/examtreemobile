@@ -282,6 +282,48 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const AccountSettingsScreen(),
       ),
       GoRoute(
+        path: '/profile/progress',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.progress,
+        ),
+      ),
+      GoRoute(
+        path: '/profile/downloads',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.downloads,
+        ),
+      ),
+      GoRoute(
+        path: '/profile/bookmarks',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.bookmarks,
+        ),
+      ),
+      GoRoute(
+        path: '/profile/history',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.history,
+        ),
+      ),
+      GoRoute(
+        path: '/profile/offers',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.offers,
+        ),
+      ),
+      GoRoute(
+        path: '/profile/help',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSectionScreen(
+          section: ProfileSection.help,
+        ),
+      ),
+      GoRoute(
         path: '/my-exams',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const MyExamsScreen(),
