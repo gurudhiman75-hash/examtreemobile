@@ -63,6 +63,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
     final exposureStore = ref.read(promotionExposureStoreProvider);
     final analytics = ref.read(mobileAnalyticsClientProvider);
     await exposureStore.recordImpression(campaign);
+    if (!mounted) return;
     unawaited(
       analytics.track(
         'promotion_impression',
@@ -100,7 +101,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                         height: 170,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -155,7 +156,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                   if (campaign.isDismissible) ...[
                     const SizedBox(height: AppSpacing.xs),
                     TextButton(
-                      key: Key('post-login-promotion-dismiss-' + campaign.id),
+                      key: Key('post-login-promotion-dismiss-${campaign.id}'),
                       onPressed: () => Navigator.of(sheetContext).pop(),
                       child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
                     ),
@@ -174,7 +175,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                     shape: const CircleBorder(),
                     child: IconButton(
                       tooltip: 'Close promotion',
-                      key: Key('post-login-promotion-close-' + campaign.id),
+                      key: Key('post-login-promotion-close-${campaign.id}'),
                       onPressed: () async {
                         unawaited(
                           analytics.track(
