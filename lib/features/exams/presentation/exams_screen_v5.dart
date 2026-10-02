@@ -503,7 +503,11 @@ class _CategoryGrid extends StatelessWidget {
         const columns = 3;
         final tileWidth =
             (constraints.maxWidth - gap * (columns - 1)) / columns;
-        final tileHeight = textScale > 1.35 ? 124.0 : 108.0;
+        final tileHeight = textScale > 1.75
+            ? 136.0
+            : textScale > 1.35
+                ? 126.0
+                : 108.0;
 
         return Wrap(
           key: const Key('tests-category-grid'),

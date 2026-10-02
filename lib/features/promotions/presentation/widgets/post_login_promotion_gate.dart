@@ -81,12 +81,87 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
         final imageUrl = campaign.imageUrl?.trim();
         final hasImage = imageUrl?.isNotEmpty ?? false;
 
+        Future<void> openAction() async {
+          if (!campaign.hasAction) return;
+          unawaited(
+            analytics.track(
+              'promotion_click',
+              entityType: 'promotion',
+              entityId: campaign.id,
+              placement: 'post_login',
+            ),
+          );
+          Navigator.of(dialogContext).pop();
+          final external = campaign.externalUrl?.trim();
+          if (external != null && isSafePromotionExternalUrl(external)) {
+            await launchUrl(
+              Uri.parse(external),
+              mode: LaunchMode.externalApplication,
+            );
+            return;
+          }
+          final deepLink = campaign.deepLink;
+          if (isSafePromotionDeepLink(deepLink) && mounted) {
+            context.push(deepLink!);
+          }
+        }
+
+        Widget fallbackCard() => Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    campaign.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.3,
+                      height: 1.15,
+                    ),
+                  ),
+                  if (campaign.subtitle.trim().isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      campaign.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                  if (campaign.hasAction) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    SizedBox(
+                      height: 50,
+                      child: FilledButton.icon(
+                        key: Key(
+                          'post-login-promotion-action-${campaign.id}',
+                        ),
+                        onPressed: openAction,
+                        iconAlignment: IconAlignment.end,
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: Text(campaign.ctaLabel!),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+
         return Dialog(
           insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 28),
           backgroundColor: Colors.transparent,
           elevation: 0,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 390),
+            constraints: BoxConstraints(
+              maxWidth: 390,
+              maxHeight: MediaQuery.sizeOf(dialogContext).height * .76,
+            ),
             child: Material(
               color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
@@ -94,99 +169,19 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
               elevation: 18,
               child: Stack(
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (hasImage)
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Image.network(
-                            imageUrl!,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                          ),
-                        ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          AppSpacing.lg,
-                          hasImage ? AppSpacing.md : AppSpacing.xl,
-                          AppSpacing.lg,
-                          AppSpacing.lg,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              campaign.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.3,
-                                height: 1.15,
-                              ),
-                            ),
-                            if (campaign.subtitle.trim().isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.xs),
-                              Text(
-                                campaign.subtitle,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                  height: 1.35,
-                                ),
-                              ),
-                            ],
-                            if (campaign.hasAction) ...[
-                              const SizedBox(height: AppSpacing.md),
-                              SizedBox(
-                                height: 50,
-                                child: FilledButton.icon(
-                                  key: Key(
-                                    'post-login-promotion-action-${campaign.id}',
-                                  ),
-                                  onPressed: () async {
-                                    unawaited(
-                                      analytics.track(
-                                        'promotion_click',
-                                        entityType: 'promotion',
-                                        entityId: campaign.id,
-                                        placement: 'post_login',
-                                      ),
-                                    );
-                                    Navigator.of(dialogContext).pop();
-                                    final external =
-                                        campaign.externalUrl?.trim();
-                                    if (external != null &&
-                                        isSafePromotionExternalUrl(external)) {
-                                      await launchUrl(
-                                        Uri.parse(external),
-                                        mode: LaunchMode.externalApplication,
-                                      );
-                                      return;
-                                    }
-                                    final deepLink = campaign.deepLink;
-                                    if (isSafePromotionDeepLink(deepLink) &&
-                                        mounted) {
-                                      context.push(deepLink!);
-                                    }
-                                  },
-                                  iconAlignment: IconAlignment.end,
-                                  icon:
-                                      const Icon(Icons.arrow_forward_rounded),
-                                  label: Text(campaign.ctaLabel!),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
+                  if (hasImage)
+                    InkWell(
+                      key: Key('post-login-promotion-creative-${campaign.id}'),
+                      onTap: campaign.hasAction ? openAction : null,
+                      child: Image.network(
+                        imageUrl!,
+                        width: double.infinity,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, _, _) => fallbackCard(),
                       ),
-                    ],
-                  ),
+                    )
+                  else
+                    fallbackCard(),
                   if (campaign.isDismissible)
                     Positioned(
                       top: 10,
