@@ -14,16 +14,16 @@ class MobileCustomHomeSectionView extends StatelessWidget {
   final MobileCustomHomeSection section;
 
   Future<void> _open(BuildContext context, MobileHomeCard card) async {
+    final value = card.destinationValue.trim();
     switch (card.destinationType) {
       case 'exam':
-        if (card.destinationValue.trim().isNotEmpty) {
-          context.push('/exam-details', extra: card.destinationValue.trim());
+        if (value.isNotEmpty) {
+          context.push('/exam-details?id=${Uri.encodeQueryComponent(value)}');
         } else {
           context.go('/exams');
         }
         return;
       case 'test_series':
-        final value = card.destinationValue.trim();
         if (value.isNotEmpty) {
           context.push('/test-series?id=${Uri.encodeQueryComponent(value)}');
         } else {
@@ -31,17 +31,15 @@ class MobileCustomHomeSectionView extends StatelessWidget {
         }
         return;
       case 'learn':
-        final value = card.destinationValue.trim();
         context.go(value.startsWith('/') ? value : '/learn');
         return;
       case 'page':
-        final value = card.destinationValue.trim();
         if (value.isNotEmpty) {
           context.push('/page/${Uri.encodeComponent(value)}');
         }
         return;
       case 'url':
-        final uri = Uri.tryParse(card.destinationValue.trim());
+        final uri = Uri.tryParse(value);
         if (uri != null && (uri.scheme == 'https' || uri.scheme == 'http')) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         }
@@ -55,6 +53,13 @@ class MobileCustomHomeSectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     final cards = section.cards.where((card) => card.isActive).toList();
     if (!section.isVisible || cards.isEmpty) return const SizedBox.shrink();
+
+    final gap = switch (section.gap) {
+      'compact' => 6.0,
+      'relaxed' => 14.0,
+      _ => 10.0,
+    };
+    final columns = section.columns.clamp(1, 4).toInt();
 
     final header = Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -87,6 +92,7 @@ class MobileCustomHomeSectionView extends StatelessWidget {
               section.subtitle,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    height: 1.35,
                   ),
             ),
           ],
@@ -97,25 +103,41 @@ class MobileCustomHomeSectionView extends StatelessWidget {
     Widget body;
     switch (section.layout) {
       case 'grid':
-        body = GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: 1.55,
-          children: [
-            for (final card in cards)
-              _CustomCard(card: card, onTap: () => _open(context, card)),
-          ],
+        body = LayoutBuilder(
+          builder: (context, constraints) {
+            final unit =
+                (constraints.maxWidth - gap * (columns - 1)) / columns;
+            return Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: [
+                for (final card in cards)
+                  SizedBox(
+                    width: unit * card.span.clamp(1, columns).toInt() +
+                        gap * (card.span.clamp(1, columns).toInt() - 1),
+                    child: _CustomCard(
+                      card: card,
+                      sectionStyle: section.style,
+                      compactGrid: columns >= 3 && card.span == 1,
+                      onTap: () => _open(context, card),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
         break;
       case 'list':
         body = Column(
           children: [
-            for (final card in cards) ...[
-              _CustomCard(card: card, onTap: () => _open(context, card)),
-              const SizedBox(height: 8),
+            for (var index = 0; index < cards.length; index++) ...[
+              _CustomCard(
+                card: cards[index],
+                sectionStyle: section.style,
+                listMode: true,
+                onTap: () => _open(context, cards[index]),
+              ),
+              if (index != cards.length - 1) SizedBox(height: gap),
             ],
           ],
         );
@@ -123,21 +145,24 @@ class MobileCustomHomeSectionView extends StatelessWidget {
       case 'banner':
         body = _CustomCard(
           card: cards.first,
+          sectionStyle: section.style,
+          bannerMode: true,
           onTap: () => _open(context, cards.first),
-          banner: true,
         );
         break;
       default:
+        final compact = section.style == 'compact';
         body = SizedBox(
-          height: 148,
+          height: compact ? 142 : 178,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: cards.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
+            separatorBuilder: (_, __) => SizedBox(width: gap),
             itemBuilder: (context, index) => SizedBox(
-              width: 255,
+              width: compact ? 176 : 220,
               child: _CustomCard(
                 card: cards[index],
+                sectionStyle: section.style,
                 onTap: () => _open(context, cards[index]),
               ),
             ),
@@ -158,123 +183,149 @@ class MobileCustomHomeSectionView extends StatelessWidget {
 class _CustomCard extends StatelessWidget {
   const _CustomCard({
     required this.card,
+    required this.sectionStyle,
     required this.onTap,
-    this.banner = false,
+    this.listMode = false,
+    this.bannerMode = false,
+    this.compactGrid = false,
   });
 
   final MobileHomeCard card;
+  final String sectionStyle;
   final VoidCallback onTap;
-  final bool banner;
+  final bool listMode;
+  final bool bannerMode;
+  final bool compactGrid;
 
   @override
   Widget build(BuildContext context) {
+    final overrideStyle = card.style.trim().isEmpty ? 'default' : card.style;
+    final style = overrideStyle == 'default' ? sectionStyle : overrideStyle;
+    final compact = style == 'compact' || compactGrid;
+    final minimal = style == 'minimal';
+    final imageLed = style == 'image' || style == 'featured';
     final hasAction = card.destinationType != 'none';
+    final imageUrl = card.imageUrl.trim();
+    final hasExplicitIcon =
+        card.iconUrl.trim().isNotEmpty || card.iconName.trim().isNotEmpty;
+
+    Widget visual;
+    if (imageUrl.isNotEmpty && (imageLed || bannerMode || !hasExplicitIcon)) {
+      visual = ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(
+          imageUrl,
+          height: bannerMode ? 150 : compact ? 58 : 84,
+          width: bannerMode ? double.infinity : listMode ? 72 : double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _ConfigIcon(
+            iconName: card.iconName.isEmpty ? 'grid' : card.iconName,
+            iconUrl: card.iconUrl,
+            size: compact ? 30 : 42,
+          ),
+        ),
+      );
+    } else {
+      visual = _ConfigIcon(
+        iconName: card.iconName.isEmpty ? 'grid' : card.iconName,
+        iconUrl: card.iconUrl,
+        size: compact ? 30 : 42,
+      );
+    }
+
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (card.badge.trim().isNotEmpty && !compact)
+          Container(
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF4FF),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              card.badge,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: const Color(0xFF0B5D96),
+                    fontWeight: FontWeight.w800,
+                  ),
+            ),
+          ),
+        Text(
+          card.title,
+          maxLines: compact ? 2 : 3,
+          overflow: TextOverflow.ellipsis,
+          style: (compact
+                  ? Theme.of(context).textTheme.titleSmall
+                  : Theme.of(context).textTheme.titleMedium)
+              ?.copyWith(
+            color: const Color(0xFF10264A),
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        if (card.subtitle.trim().isNotEmpty && !minimal && !compactGrid) ...[
+          const SizedBox(height: 4),
+          Text(
+            card.subtitle,
+            maxLines: compact ? 2 : 3,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: const Color(0xFF718096),
+                  height: 1.35,
+                ),
+          ),
+        ],
+        if (card.ctaLabel.trim().isNotEmpty && !compact && !minimal) ...[
+          const SizedBox(height: 8),
+          Text(
+            card.ctaLabel,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: const Color(0xFF0B5D96),
+                  fontWeight: FontWeight.w900,
+                ),
+          ),
+        ],
+      ],
+    );
+
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
+      color: style == 'featured' ? const Color(0xFFFFFBF0) : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(compact ? 14 : 18),
+        side: BorderSide(
+          color: style == 'featured'
+              ? const Color(0xFFE8C970)
+              : const Color(0xFFE3E9F1),
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: hasAction ? onTap : null,
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE5EAF0)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF10264A).withValues(alpha: .05),
-                blurRadius: 12,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              if (card.imageUrl.trim().isNotEmpty)
-                SizedBox(
-                  width: banner ? 110 : 82,
-                  height: double.infinity,
-                  child: Image.network(
-                    card.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                  ),
+        child: Padding(
+          padding: EdgeInsets.all(compact ? 9 : 12),
+          child: listMode
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 72,
+                      child: Align(alignment: Alignment.topLeft, child: visual),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: copy),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(alignment: Alignment.centerLeft, child: visual),
+                    SizedBox(height: compact ? 7 : 10),
+                    copy,
+                  ],
                 ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          _ConfigIcon(
-                            iconName: card.iconName,
-                            iconUrl: card.iconUrl,
-                            size: 22,
-                          ),
-                          if (card.iconName.isNotEmpty ||
-                              card.iconUrl.isNotEmpty)
-                            const SizedBox(width: 7),
-                          Expanded(
-                            child: Text(
-                              card.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                          if (card.badge.trim().isNotEmpty)
-                            Container(
-                              margin: const EdgeInsets.only(left: 6),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 7,
-                                vertical: 3,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFEAF1FF),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                card.badge,
-                                style: const TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFF1D5BBF),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      if (card.subtitle.trim().isNotEmpty) ...[
-                        const SizedBox(height: 5),
-                        Text(
-                          card.subtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                      if (card.ctaLabel.trim().isNotEmpty) ...[
-                        const SizedBox(height: 7),
-                        Text(
-                          card.ctaLabel,
-                          style: const TextStyle(
-                            color: Color(0xFF0B5FB3),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -304,7 +355,7 @@ class _ConfigIcon extends StatelessWidget {
       );
     }
     if (iconName.trim().isEmpty) return const SizedBox.shrink();
-    return Icon(_icon(iconName), size: size);
+    return Icon(_icon(iconName), size: size, color: const Color(0xFF0B5D96));
   }
 
   IconData _icon(String value) {
