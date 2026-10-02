@@ -14,12 +14,14 @@ class MobilePlannedContentSection extends ConsumerWidget {
     super.key,
     required this.slotKey,
     this.title = 'Featured for you',
+    this.subtitle = '',
     this.iconName = '',
     this.iconUrl = '',
   });
 
   final String slotKey;
   final String title;
+  final String subtitle;
   final String iconName;
   final String iconUrl;
 
@@ -111,6 +113,16 @@ class MobilePlannedContentSection extends ConsumerWidget {
             ),
           ],
         ),
+        if (subtitle.trim().isNotEmpty) ...[
+          const SizedBox(height: 3),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: const Color(0xFF718096),
+              height: 1.35,
+            ),
+          ),
+        ],
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
           height: 112,
