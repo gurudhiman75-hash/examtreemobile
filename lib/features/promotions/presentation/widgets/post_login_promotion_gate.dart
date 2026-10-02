@@ -25,7 +25,7 @@ class PostLoginPromotionGate extends ConsumerStatefulWidget {
 
 class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate> {
   String? _scheduledCampaignId;
-  bool _sheetOpen = false;
+  bool _modalOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
     );
 
     campaignsAsync.whenData((campaigns) {
-      if (_sheetOpen) return;
+      if (_modalOpen) return;
       final registry = ref.read(promotionSessionRegistryProvider);
       PromotionCampaign? next;
       for (final campaign in campaigns) {
@@ -46,7 +46,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
       if (next == null || _scheduledCampaignId == next.id) return;
       _scheduledCampaignId = next.id;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || _sheetOpen) return;
+        if (!mounted || _modalOpen) return;
         final latestRegistry = ref.read(promotionSessionRegistryProvider);
         if (!latestRegistry.shouldPresentPostLogin(next!)) return;
         latestRegistry.markPostLoginCampaignPresented(next.id);
@@ -59,7 +59,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
 
   Future<void> _showCampaign(PromotionCampaign campaign) async {
     if (!mounted) return;
-    setState(() => _sheetOpen = true);
+    setState(() => _modalOpen = true);
     final exposureStore = ref.read(promotionExposureStoreProvider);
     final analytics = ref.read(mobileAnalyticsClientProvider);
     await exposureStore.recordImpression(campaign);
@@ -72,136 +72,162 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
         placement: 'post_login',
       ),
     );
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
-      showDragHandle: false,
-      isDismissible: campaign.isDismissible,
-      enableDrag: campaign.isDismissible,
-      isScrollControlled: true,
-      builder: (sheetContext) => SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.xs,
-            AppSpacing.lg,
-            AppSpacing.lg + MediaQuery.viewInsetsOf(sheetContext).bottom,
-          ),
-          child: Stack(
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+      barrierDismissible: campaign.isDismissible,
+      barrierColor: Colors.black.withValues(alpha: .58),
+      builder: (dialogContext) {
+        final theme = Theme.of(dialogContext);
+        final imageUrl = campaign.imageUrl?.trim();
+        final hasImage = imageUrl?.isNotEmpty ?? false;
+
+        return Dialog(
+          insetPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 28),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 390),
+            child: Material(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(24),
+              clipBehavior: Clip.antiAlias,
+              elevation: 18,
+              child: Stack(
                 children: [
-                  if ((campaign.imageUrl?.trim().isNotEmpty ?? false)) ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(18),
-                      child: Image.network(
-                        campaign.imageUrl!,
-                        height: 170,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (hasImage)
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Image.network(
+                            imageUrl!,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                          ),
+                        ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          AppSpacing.lg,
+                          hasImage ? AppSpacing.md : AppSpacing.xl,
+                          AppSpacing.lg,
+                          AppSpacing.lg,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              campaign.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.3,
+                                height: 1.15,
+                              ),
+                            ),
+                            if (campaign.subtitle.trim().isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                campaign.subtitle,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
+                            if (campaign.hasAction) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              SizedBox(
+                                height: 50,
+                                child: FilledButton.icon(
+                                  key: Key(
+                                    'post-login-promotion-action-${campaign.id}',
+                                  ),
+                                  onPressed: () async {
+                                    unawaited(
+                                      analytics.track(
+                                        'promotion_click',
+                                        entityType: 'promotion',
+                                        entityId: campaign.id,
+                                        placement: 'post_login',
+                                      ),
+                                    );
+                                    Navigator.of(dialogContext).pop();
+                                    final external =
+                                        campaign.externalUrl?.trim();
+                                    if (external != null &&
+                                        isSafePromotionExternalUrl(external)) {
+                                      await launchUrl(
+                                        Uri.parse(external),
+                                        mode: LaunchMode.externalApplication,
+                                      );
+                                      return;
+                                    }
+                                    final deepLink = campaign.deepLink;
+                                    if (isSafePromotionDeepLink(deepLink) &&
+                                        mounted) {
+                                      context.push(deepLink!);
+                                    }
+                                  },
+                                  iconAlignment: IconAlignment.end,
+                                  icon:
+                                      const Icon(Icons.arrow_forward_rounded),
+                                  label: Text(campaign.ctaLabel!),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (campaign.isDismissible)
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: Material(
+                        color: Colors.white.withValues(alpha: .94),
+                        elevation: 2,
+                        shape: const CircleBorder(),
+                        child: IconButton(
+                          tooltip: 'Close promotion',
+                          key: Key(
+                            'post-login-promotion-close-${campaign.id}',
+                          ),
+                          onPressed: () async {
+                            unawaited(
+                              analytics.track(
+                                'promotion_dismiss',
+                                entityType: 'promotion',
+                                entityId: campaign.id,
+                                placement: 'post_login',
+                              ),
+                            );
+                            await exposureStore.dismiss(campaign.id);
+                            if (dialogContext.mounted) {
+                              Navigator.of(dialogContext).pop();
+                            }
+                          },
+                          icon: const Icon(Icons.close_rounded),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-                  ],
-                  Text(
-                campaign.title,
-                style: Theme.of(sheetContext).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.35,
-                    ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                campaign.subtitle,
-                style: Theme.of(sheetContext).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(sheetContext).colorScheme.onSurfaceVariant,
-                      height: 1.45,
-                    ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              if (campaign.hasAction)
-                FilledButton.icon(
-                  key: Key('post-login-promotion-action-${campaign.id}'),
-                  onPressed: () async {
-                    unawaited(
-                      analytics.track(
-                        'promotion_click',
-                        entityType: 'promotion',
-                        entityId: campaign.id,
-                        placement: 'post_login',
-                      ),
-                    );
-                    Navigator.of(sheetContext).pop();
-                    final external = campaign.externalUrl?.trim();
-                    if (external != null &&
-                        isSafePromotionExternalUrl(external)) {
-                      await launchUrl(
-                        Uri.parse(external),
-                        mode: LaunchMode.externalApplication,
-                      );
-                      return;
-                    }
-                    final deepLink = campaign.deepLink;
-                    if (isSafePromotionDeepLink(deepLink) && mounted) {
-                      context.push(deepLink!);
-                    }
-                  },
-                  iconAlignment: IconAlignment.end,
-                  icon: const Icon(Icons.arrow_forward_rounded),
-                  label: Text(campaign.ctaLabel!),
-                ),
-                  if (campaign.isDismissible) ...[
-                    const SizedBox(height: AppSpacing.xs),
-                    TextButton(
-                      key: Key('post-login-promotion-dismiss-${campaign.id}'),
-                      onPressed: () => Navigator.of(sheetContext).pop(),
-                      child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
-                    ),
-                  ],
                 ],
               ),
-              if (campaign.isDismissible)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Material(
-                    color: Theme.of(sheetContext)
-                        .colorScheme
-                        .surface
-                        .withValues(alpha: .92),
-                    shape: const CircleBorder(),
-                    child: IconButton(
-                      tooltip: 'Close promotion',
-                      key: Key('post-login-promotion-close-${campaign.id}'),
-                      onPressed: () async {
-                        unawaited(
-                          analytics.track(
-                            'promotion_dismiss',
-                            entityType: 'promotion',
-                            entityId: campaign.id,
-                            placement: 'post_login',
-                          ),
-                        );
-                        await exposureStore.dismiss(campaign.id);
-                        if (sheetContext.mounted) {
-                          Navigator.of(sheetContext).pop();
-                        }
-                      },
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-                  ),
-                ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
     if (!mounted) return;
     setState(() {
-      _sheetOpen = false;
+      _modalOpen = false;
       _scheduledCampaignId = null;
     });
   }
