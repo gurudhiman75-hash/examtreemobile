@@ -1563,6 +1563,11 @@ class _ExamCategoryTile extends StatelessWidget {
             blurRadius: 13,
             offset: const Offset(0, 5),
           ),
+          BoxShadow(
+            color: const Color(0xFF10264A).withValues(alpha: .035),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Material(
@@ -1572,7 +1577,7 @@ class _ExamCategoryTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: radius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 11),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 13),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -1597,7 +1602,7 @@ class _ExamCategoryTile extends StatelessWidget {
                     ),
                   ),
                 visual,
-                const SizedBox(height: 8),
+                const SizedBox(height: 9),
                 Text(
                   item.label,
                   textAlign: TextAlign.center,
@@ -2866,15 +2871,80 @@ class _SectionTitle extends StatelessWidget {
   final String iconName;
   final String iconUrl;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _legacyHeader(BuildContext context) {
     final titleText = Text(
       title,
       style: AppTypography.premiumHeading(
-        theme.textTheme.titleLarge,
-      ).copyWith(color: const Color(0xFF10264A)),
+        Theme.of(context).textTheme.titleLarge,
+      ).copyWith(
+        color: const Color(0xFF10264A),
+      ),
     );
+    final titleWidget = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (iconUrl.trim().isNotEmpty)
+          Image.network(
+            iconUrl,
+            width: 22,
+            height: 22,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
+              _homeIconFromName(iconName),
+              size: 22,
+              color: const Color(0xFF10264A),
+            ),
+          )
+        else if (iconName.trim().isNotEmpty)
+          Icon(
+            _homeIconFromName(iconName),
+            size: 22,
+            color: const Color(0xFF10264A),
+          ),
+        if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
+          const SizedBox(width: 7),
+        Flexible(child: titleText),
+      ],
+    );
+    final actionWidget = TextButton(
+      onPressed: onAction,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+      ),
+      child: Text(action),
+    );
+    final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
+
+    if (largeText) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleWidget,
+          const SizedBox(height: 2),
+          Align(
+            alignment: Alignment.centerRight,
+            child: actionWidget,
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(child: titleWidget),
+        actionWidget,
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (subtitle.trim().isEmpty) return _legacyHeader(context);
+
+    final theme = Theme.of(context);
     final titleWidget = Row(
       children: [
         if (iconUrl.trim().isNotEmpty)
@@ -2897,25 +2967,14 @@ class _SectionTitle extends StatelessWidget {
           ),
         if (iconName.trim().isNotEmpty || iconUrl.trim().isNotEmpty)
           const SizedBox(width: 7),
-        Expanded(child: titleText),
-      ],
-    );
-    final heading = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        titleWidget,
-        if (subtitle.trim().isNotEmpty) ...[
-          const SizedBox(height: 2),
-          Text(
-            subtitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF718096),
-              height: 1.3,
-            ),
+        Expanded(
+          child: Text(
+            title,
+            style: AppTypography.premiumHeading(
+              theme.textTheme.titleLarge,
+            ).copyWith(color: const Color(0xFF10264A)),
           ),
-        ],
+        ),
       ],
     );
     final actionWidget = TextButton(
@@ -2928,8 +2987,23 @@ class _SectionTitle extends StatelessWidget {
       ),
       child: Text(action),
     );
+    final heading = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        titleWidget,
+        const SizedBox(height: 2),
+        Text(
+          subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: const Color(0xFF718096),
+            height: 1.3,
+          ),
+        ),
+      ],
+    );
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
-
     if (largeText) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2940,7 +3014,6 @@ class _SectionTitle extends StatelessWidget {
         ],
       );
     }
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
