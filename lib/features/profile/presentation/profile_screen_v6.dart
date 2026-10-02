@@ -390,11 +390,11 @@ class _MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _line),
+        side: const BorderSide(color: _line),
       ),
       child: Column(
         children: [
@@ -597,12 +597,11 @@ class _HistoryView extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         for (final point in history)
-          Container(
-            margin: const EdgeInsets.only(bottom: 9),
-            decoration: BoxDecoration(
-              color: Colors.white,
+          Material(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(17),
-              border: Border.all(color: _line),
+              side: const BorderSide(color: _line),
             ),
             child: ListTile(
               onTap: () => context.push('/review', extra: point.attemptId),
