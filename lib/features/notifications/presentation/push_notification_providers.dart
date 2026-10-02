@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/providers/mobile_analytics_provider.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../routes/app_router.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
@@ -10,6 +11,7 @@ final pushNotificationRegistrationServiceProvider =
     Provider<PushNotificationRegistrationService>((ref) {
   final service = PushNotificationRegistrationService(
     apiClient: ref.watch(apiClientProvider),
+    analyticsClient: ref.watch(mobileAnalyticsClientProvider),
     onOpenDestination: (destinationType, destinationValue) {
       final router = ref.read(goRouterProvider);
       switch (destinationType) {
@@ -23,7 +25,13 @@ final pushNotificationRegistrationServiceProvider =
           }
           return;
         case 'test_series':
-          router.go('/exams');
+          if (destinationValue.isNotEmpty) {
+            router.push(
+              '/test-series?id=${Uri.encodeQueryComponent(destinationValue)}',
+            );
+          } else {
+            router.go('/exams');
+          }
           return;
         case 'learn':
           if (destinationValue.startsWith('/')) {
