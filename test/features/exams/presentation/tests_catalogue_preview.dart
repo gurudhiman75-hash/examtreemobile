@@ -225,7 +225,7 @@ void main() {
     WidgetTester tester, {
     required Widget child,
     ExamCatalogSnapshot? catalog,
-    List<Override> overrides = const [],
+    Exam? details,
   }) async {
     await configurePhone(tester);
     await tester.pumpWidget(
@@ -233,7 +233,10 @@ void main() {
         overrides: [
           if (catalog != null)
             examCatalogProvider.overrideWith((ref) async => catalog),
-          ...overrides,
+          if (details != null)
+            examDetailsProvider.overrideWith((ref, id) async => details),
+          if (details != null)
+            completedAttemptCountProvider.overrideWith((ref, id) async => 1),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -335,10 +338,7 @@ void main() {
     await pump(
       tester,
       child: const ExamDetailsScreen(examId: 'details-1'),
-      overrides: [
-        examDetailsProvider.overrideWith((ref, id) async => details),
-        completedAttemptCountProvider.overrideWith((ref, id) async => 1),
-      ],
+      details: details,
     );
 
     await expectLater(
