@@ -92,8 +92,17 @@ class PromotionPlacementView extends ConsumerWidget {
               placement: placementKey,
             ),
           ),
-          onDismiss: (campaign) =>
-              unawaited(exposureStore.dismiss(campaign.id)),
+          onDismiss: (campaign) {
+            unawaited(exposureStore.dismiss(campaign.id));
+            unawaited(
+              analytics.track(
+                'promotion_dismiss',
+                entityType: 'promotion',
+                entityId: campaign.id,
+                placement: placementKey,
+              ),
+            );
+          },
         );
       },
     );

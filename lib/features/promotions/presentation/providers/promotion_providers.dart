@@ -61,8 +61,10 @@ class ApiMobilePromotionSource {
         if (destinationType == 'exam' && destinationValue.isNotEmpty) {
           deepLink =
               '/exam-details?id=${Uri.encodeQueryComponent(destinationValue)}';
-        } else if (destinationType == 'test_series') {
-          deepLink = '/store?section=tests';
+        } else if (destinationType == 'test_series' &&
+            destinationValue.isNotEmpty) {
+          deepLink =
+              '/test-series?id=${Uri.encodeQueryComponent(destinationValue)}';
         } else if (destinationType == 'learn') {
           deepLink =
               destinationValue.startsWith('/') ? destinationValue : '/learn';
@@ -97,7 +99,11 @@ class ApiMobilePromotionSource {
             title: title,
             subtitle: subtitle,
             placements: <PromotionPlacement>{placement},
-            ctaLabel: deepLink == null && externalUrl == null ? null : 'Explore',
+            ctaLabel: deepLink == null && externalUrl == null
+                ? null
+                : (map['ctaLabel']?.toString().trim().isNotEmpty == true
+                    ? map['ctaLabel'].toString().trim()
+                    : 'Explore'),
             deepLink: deepLink,
             externalUrl: externalUrl,
             imageUrl: map['imageUrl']?.toString(),
