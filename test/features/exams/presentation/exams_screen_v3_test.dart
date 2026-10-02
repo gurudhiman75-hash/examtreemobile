@@ -1,42 +1,94 @@
-import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/features/exams/domain/exam_catalog.dart';
 import 'package:examtree/features/exams/presentation/exams_screen.dart';
-import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
+import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final now = DateTime(2026, 8, 18, 12);
-
-  Exam exam({
-    required String id,
-    required String title,
-    required String category,
-    String status = 'published',
-    String difficulty = 'Medium',
+  ExamCatalogSnapshot snapshot({
+    bool empty = false,
   }) {
-    return Exam(
-      id: id,
-      title: title,
-      description: '$title preparation paper',
-      durationInSeconds: 3600,
-      totalQuestions: 100,
-      totalMarks: 100,
-      maxAttempts: 5,
-      negativeMarking: 0.25,
-      difficulty: difficulty,
-      status: status,
-      category: category,
-      createdAt: now.subtract(const Duration(days: 2)),
-      updatedAt: now,
+    if (empty) {
+      return const ExamCatalogSnapshot(
+        categories: [],
+        exams: [],
+        series: [],
+      );
+    }
+    return const ExamCatalogSnapshot(
+      categories: [
+        ExamCatalogCategory(
+          code: 'ssc',
+          name: 'SSC',
+          description: 'Staff Selection Commission examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 12,
+        ),
+        ExamCatalogCategory(
+          code: 'railway',
+          name: 'Railway',
+          description: 'Railway recruitment examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 8,
+        ),
+        ExamCatalogCategory(
+          code: 'banking',
+          name: 'Banking',
+          description: 'Banking examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 7,
+        ),
+      ],
+      exams: [
+        ExamCatalogExam(
+          code: 'ssc-cgl',
+          familyCode: 'ssc',
+          familyName: 'SSC',
+          name: 'SSC CGL',
+          description: 'Combined Graduate Level Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 12,
+          primarySeriesId: 'series-cgl',
+        ),
+        ExamCatalogExam(
+          code: 'rrb-ntpc',
+          familyCode: 'railway',
+          familyName: 'Railway',
+          name: 'RRB NTPC',
+          description: 'Railway NTPC Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 8,
+          primarySeriesId: 'series-rrb',
+        ),
+        ExamCatalogExam(
+          code: 'ibps-po',
+          familyCode: 'banking',
+          familyName: 'Banking',
+          name: 'IBPS PO',
+          description: 'Probationary Officer Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 7,
+          primarySeriesId: 'series-ibps',
+        ),
+      ],
+      series: [],
     );
   }
 
-  Future<void> pumpCatalogue(
+  Future<void> pumpCategories(
     WidgetTester tester, {
-    required List<Exam> available,
-    List<Exam> inProgress = const [],
+    required ExamCatalogSnapshot catalog,
     double textScale = 1,
   }) async {
     tester.view
@@ -48,8 +100,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          availableExamsProvider.overrideWith((ref) async => available),
-          inProgressExamsProvider.overrideWith((ref) async => inProgress),
+          examCatalogProvider.overrideWith((ref) async => catalog),
         ],
         child: MaterialApp(
           theme: AppTheme.lightTheme,
@@ -67,80 +118,60 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
   }
 
-  testWidgets('catalogue prioritizes search and compact resume rail', (tester) async {
-    await pumpCatalogue(
-      tester,
-      available: [
-        exam(id: 'ssc-1', title: 'SSC CGL Mock 1', category: 'SSC'),
-        exam(id: 'rail-1', title: 'Railway NTPC Mock', category: 'Railways'),
-      ],
-      inProgress: [
-        exam(id: 'active-1', title: 'Quant Speed Sectional', category: 'SSC'),
-      ],
-    );
+  testWidgets('exams tab presents master categories before individual exams',
+      (tester) async {
+    await pumpCategories(tester, catalog: snapshot());
 
-    expect(find.text('Find your next test'), findsOneWidget);
-    expect(find.byKey(const Key('tests-search')), findsOneWidget);
-    expect(find.text('Continue Tests'), findsOneWidget);
-    expect(find.byKey(const Key('tests-resume-rail')), findsOneWidget);
-    expect(find.text('Quant Speed Sectional'), findsOneWidget);
-    expect(find.text('Available tests'), findsOneWidget);
+    expect(find.text('Choose your exam path'), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-catalogue')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
+    expect(find.text('SSC'), findsOneWidget);
+    expect(find.text('Railway'), findsOneWidget);
+    expect(find.text('Banking'), findsOneWidget);
+    expect(find.text('SSC CGL'), findsNothing);
   });
 
-  testWidgets('search filters visible catalogue without changing source data', (tester) async {
-    await pumpCatalogue(
-      tester,
-      available: [
-        exam(id: 'ssc-1', title: 'SSC CGL Mock 1', category: 'SSC'),
-        exam(id: 'rail-1', title: 'Railway NTPC Mock', category: 'Railways'),
-      ],
-    );
+  testWidgets('category search filters only master categories', (tester) async {
+    await pumpCategories(tester, catalog: snapshot());
 
-    await tester.enterText(find.byKey(const Key('tests-search')), 'railway');
+    await tester.enterText(
+      find.byKey(const Key('exam-category-search')),
+      'rail',
+    );
     await tester.pump();
 
-    expect(find.text('Railway NTPC Mock'), findsOneWidget);
-    expect(find.text('SSC CGL Mock 1'), findsNothing);
-    expect(find.text('1 of 2 shown.'), findsOneWidget);
-    expect(find.byKey(const Key('tests-reset')), findsOneWidget);
+    expect(find.text('Railway'), findsOneWidget);
+    expect(find.text('SSC'), findsNothing);
   });
 
-  testWidgets('empty catalogue remains truthful', (tester) async {
-    await pumpCatalogue(tester, available: const []);
+  testWidgets('empty category catalogue remains truthful', (tester) async {
+    await pumpCategories(tester, catalog: snapshot(empty: true));
 
-    expect(find.text('No tests available yet'), findsOneWidget);
-    expect(find.text('Available'), findsOneWidget);
-    expect(find.text('Free'), findsWidgets);
-    expect(find.text('0'), findsNWidgets(3));
+    expect(find.text('No exam categories are published yet.'), findsOneWidget);
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('recommended for you'), findsNothing);
   });
 
-  testWidgets('catalogue remains usable at 200 percent text scaling', (tester) async {
-    await pumpCatalogue(
+  testWidgets('category catalogue remains usable at 200 percent text scaling',
+      (tester) async {
+    await pumpCategories(
       tester,
-      available: [
-        exam(
-          id: 'long-1',
-          title: 'SSC Combined Graduate Level Full Length Practice Mock',
-          category: 'SSC',
-        ),
-      ],
-      inProgress: [
-        exam(
-          id: 'active-1',
-          title: 'Quantitative Aptitude Full Length Sectional Test',
-          category: 'SSC',
-        ),
-      ],
+      catalog: snapshot(),
       textScale: 2,
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.byKey(const Key('tests-search')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
+  });
+
+  test('canonical category mapping keeps exams under their family code', () {
+    final catalog = snapshot();
+    final ssc = catalog.examsForCategory('ssc');
+    expect(ssc.map((exam) => exam.name), contains('SSC CGL'));
+    expect(ssc.map((exam) => exam.name), isNot(contains('IBPS PO')));
+    expect(catalog.findExam('ssc-cgl')?.familyName, 'SSC');
   });
 }

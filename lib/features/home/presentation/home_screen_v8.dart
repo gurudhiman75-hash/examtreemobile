@@ -240,7 +240,9 @@ class HomeScreen extends ConsumerWidget {
             overrides: homeConfig.itemOverrides,
             layout: examCategoriesSetting.layout,
             columns: examCategoriesSetting.columns,
-            onOpen: () => context.go('/exams'),
+            onOpen: (family) => context.push(
+              '/exam-category?family=' + Uri.encodeQueryComponent(family),
+            ),
           ),
           const SizedBox(height: 8),
         ],
@@ -1353,6 +1355,7 @@ IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded
 class _ExamCategoryPresentation {
   const _ExamCategoryPresentation({
     required this.label,
+    required this.routeFamily,
     required this.subtitle,
     required this.badge,
     required this.icon,
@@ -1363,6 +1366,7 @@ class _ExamCategoryPresentation {
   });
 
   final String label;
+  final String routeFamily;
   final String subtitle;
   final String badge;
   final IconData icon;
@@ -1381,27 +1385,27 @@ class _ExamCategoriesGrid extends StatelessWidget {
     this.columns = 0,
   });
 
-  final VoidCallback onOpen;
+  final ValueChanged<String> onOpen;
   final List<MobileFeaturedExamFamily> families;
   final Map<String, MobileHomeItemOverride> overrides;
   final String layout;
   final int columns;
 
   static const _items = [
-    _ExamCategoryPresentation(label: 'Punjab Govt.', subtitle: '', badge: '', icon: Icons.location_on_rounded, background: Color(0xFFFFEFEF), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'SSC', subtitle: '', badge: '', icon: Icons.workspace_premium_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF11966F), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Banking', subtitle: '', badge: '', icon: Icons.account_balance_rounded, background: Color(0xFFECF4FF), foreground: Color(0xFF1672E8), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Railway', subtitle: '', badge: '', icon: Icons.train_rounded, background: Color(0xFFF3EEFF), foreground: Color(0xFF7248E8), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Teaching', subtitle: '', badge: '', icon: Icons.school_rounded, background: Color(0xFFFFF5E8), foreground: Color(0xFFF28A19), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Defence', subtitle: '', badge: '', icon: Icons.shield_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF159D73), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'State PCS', subtitle: '', badge: '', icon: Icons.apartment_rounded, background: Color(0xFFFFEEEE), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Other Exams', subtitle: '', badge: '', icon: Icons.grid_view_rounded, background: Color(0xFFF1F4F8), foreground: Color(0xFF718096), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Punjab Govt.', routeFamily: 'Punjab State', subtitle: '', badge: '', icon: Icons.location_on_rounded, background: Color(0xFFFFEFEF), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'SSC', routeFamily: 'SSC', subtitle: '', badge: '', icon: Icons.workspace_premium_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF11966F), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Banking', routeFamily: 'Banking', subtitle: '', badge: '', icon: Icons.account_balance_rounded, background: Color(0xFFECF4FF), foreground: Color(0xFF1672E8), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Railway', routeFamily: 'Railway', subtitle: '', badge: '', icon: Icons.train_rounded, background: Color(0xFFF3EEFF), foreground: Color(0xFF7248E8), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Teaching', routeFamily: 'Teaching', subtitle: '', badge: '', icon: Icons.school_rounded, background: Color(0xFFFFF5E8), foreground: Color(0xFFF28A19), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Defence', routeFamily: 'Defence', subtitle: '', badge: '', icon: Icons.shield_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF159D73), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'State PCS', routeFamily: 'State PCS', subtitle: '', badge: '', icon: Icons.apartment_rounded, background: Color(0xFFFFEEEE), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
+    _ExamCategoryPresentation(label: 'Other Exams', routeFamily: 'Other Exams', subtitle: '', badge: '', icon: Icons.grid_view_rounded, background: Color(0xFFF1F4F8), foreground: Color(0xFF718096), iconUrl: '', imageUrl: ''),
   ];
 
   static (String, IconData, Color, Color) _visual(
     MobileFeaturedExamFamily family,
   ) {
-    final key = '${family.code} ${family.name}'.toLowerCase();
+    final key = (family.code + ' ' + family.name).toLowerCase();
     if (key.contains('punjab')) {
       return (family.name, Icons.location_on_rounded,
           const Color(0xFFFFEFEF), const Color(0xFFF04452));
@@ -1448,6 +1452,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                 label: override?.title.trim().isNotEmpty == true
                     ? override!.title
                     : base.$1,
+                routeFamily: family.code.trim().isNotEmpty
+                    ? family.code
+                    : family.name,
                 subtitle: override?.subtitle ?? '',
                 badge: override?.badge ?? '',
                 icon: override?.iconName.trim().isNotEmpty == true
@@ -1473,7 +1480,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
             width: 102,
             child: _ExamCategoryTile(
               item: items[index],
-              onTap: onOpen,
+              onTap: () => onOpen(items[index].routeFamily),
               showDetails: false,
             ),
           ),
@@ -1499,7 +1506,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
                   width: width,
                   child: _ExamCategoryTile(
                     item: item,
-                    onTap: onOpen,
+                    onTap: () => onOpen(item.routeFamily),
                     showDetails: effectiveColumns <= 2,
                   ),
                 ),

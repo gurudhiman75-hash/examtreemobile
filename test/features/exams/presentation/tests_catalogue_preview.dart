@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/features/exams/domain/exam_catalog.dart';
 import 'package:examtree/features/exams/presentation/exam_details_screen.dart';
 import 'package:examtree/features/exams/presentation/exams_screen.dart';
+import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   var fontsLoaded = false;
   const phoneSize = Size(390, 844);
-  final now = DateTime(2026, 8, 18, 12);
+  final now = DateTime(2026, 10, 2, 12);
 
   Future<void> loadFont(String family, String path) async {
     final bytes = await File(path).readAsBytes();
@@ -36,32 +38,6 @@ void main() {
     fontsLoaded = true;
   }
 
-  Exam exam({
-    required String id,
-    required String title,
-    required String category,
-    String status = 'published',
-    String difficulty = 'Medium',
-    String? description,
-    int maxAttempts = 5,
-  }) {
-    return Exam(
-      id: id,
-      title: title,
-      description: description ?? '$title preparation paper',
-      durationInSeconds: 3600,
-      totalQuestions: 100,
-      totalMarks: 200,
-      maxAttempts: maxAttempts,
-      negativeMarking: 0.5,
-      difficulty: difficulty,
-      status: status,
-      category: category,
-      createdAt: now.subtract(const Duration(days: 2)),
-      updatedAt: now,
-    );
-  }
-
   ThemeData previewTheme() {
     final baseTheme = AppTheme.lightTheme;
     final pinnedTextTheme = baseTheme.textTheme.apply(fontFamily: 'Roboto');
@@ -71,9 +47,6 @@ void main() {
         titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(
           fontFamily: 'Roboto',
         ),
-      ),
-      chipTheme: baseTheme.chipTheme.copyWith(
-        labelStyle: pinnedTextTheme.labelMedium,
       ),
     );
   }
@@ -87,17 +60,183 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  Future<void> pumpCatalogue(
+  final snapshot = ExamCatalogSnapshot(
+    categories: const [
+      ExamCatalogCategory(
+        code: 'ssc',
+        name: 'SSC',
+        description: 'Staff Selection Commission examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 68,
+      ),
+      ExamCatalogCategory(
+        code: 'banking',
+        name: 'Banking',
+        description: 'IBPS, SBI and other banking examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 42,
+      ),
+      ExamCatalogCategory(
+        code: 'insurance',
+        name: 'Insurance',
+        description: 'Insurance sector examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 18,
+      ),
+      ExamCatalogCategory(
+        code: 'punjab',
+        name: 'Punjab State',
+        description: 'Punjab government recruitment examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 35,
+      ),
+      ExamCatalogCategory(
+        code: 'railway',
+        name: 'Railway',
+        description: 'Railway recruitment examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 29,
+      ),
+      ExamCatalogCategory(
+        code: 'teaching',
+        name: 'Teaching',
+        description: 'Teaching eligibility and recruitment examinations',
+        iconUrl: '',
+        colorHex: '#2563eb',
+        testCount: 16,
+      ),
+    ],
+    exams: const [
+      ExamCatalogExam(
+        code: 'ssc-cgl',
+        familyCode: 'ssc',
+        familyName: 'SSC',
+        name: 'SSC CGL',
+        description: 'Combined Graduate Level Examination',
+        iconUrl: '',
+        languages: ['en', 'hi'],
+        seriesCount: 2,
+        testCount: 24,
+        primarySeriesId: null,
+      ),
+      ExamCatalogExam(
+        code: 'ssc-chsl',
+        familyCode: 'ssc',
+        familyName: 'SSC',
+        name: 'SSC CHSL',
+        description: 'Combined Higher Secondary Level Examination',
+        iconUrl: '',
+        languages: ['en', 'hi'],
+        seriesCount: 1,
+        testCount: 18,
+        primarySeriesId: 'series-chsl',
+      ),
+      ExamCatalogExam(
+        code: 'ssc-cpo',
+        familyCode: 'ssc',
+        familyName: 'SSC',
+        name: 'SSC CPO',
+        description: 'Central Police Organisation Examination',
+        iconUrl: '',
+        languages: ['en', 'hi'],
+        seriesCount: 1,
+        testCount: 14,
+        primarySeriesId: 'series-cpo',
+      ),
+      ExamCatalogExam(
+        code: 'ssc-mts',
+        familyCode: 'ssc',
+        familyName: 'SSC',
+        name: 'SSC MTS',
+        description: 'Multi Tasking Staff Examination',
+        iconUrl: '',
+        languages: ['en', 'hi'],
+        seriesCount: 1,
+        testCount: 12,
+        primarySeriesId: 'series-mts',
+      ),
+      ExamCatalogExam(
+        code: 'ibps-po',
+        familyCode: 'banking',
+        familyName: 'Banking',
+        name: 'IBPS PO',
+        description: 'Probationary Officer Examination',
+        iconUrl: '',
+        languages: ['en', 'hi'],
+        seriesCount: 1,
+        testCount: 20,
+        primarySeriesId: 'series-ibps',
+      ),
+      ExamCatalogExam(
+        code: 'psssb-clerk',
+        familyCode: 'punjab',
+        familyName: 'Punjab State',
+        name: 'PSSSB Clerk',
+        description: 'Punjab Subordinate Services Selection Board Clerk',
+        iconUrl: '',
+        languages: ['en', 'pa'],
+        seriesCount: 1,
+        testCount: 15,
+        primarySeriesId: 'series-psssb',
+      ),
+    ],
+    series: const [
+      ExamSeriesSummary(
+        id: 'series-cgl-1',
+        code: 'ssc-cgl-complete',
+        name: 'SSC CGL Complete Test Series',
+        description: 'Full mocks, sectional tests and exam-focused practice.',
+        examCode: 'ssc-cgl',
+        examName: 'SSC CGL',
+        examFamilyCode: 'ssc',
+        examFamilyName: 'SSC',
+        testCount: 16,
+        liveTestCount: 16,
+        fullLengthTestCount: 10,
+        durationSeconds: 57600,
+        questionCount: 1600,
+        attemptCount: 1200,
+      ),
+      ExamSeriesSummary(
+        id: 'series-cgl-2',
+        code: 'ssc-cgl-pyq',
+        name: 'SSC CGL Previous Year Papers',
+        description: 'Recent papers arranged for timed practice.',
+        examCode: 'ssc-cgl',
+        examName: 'SSC CGL',
+        examFamilyCode: 'ssc',
+        examFamilyName: 'SSC',
+        testCount: 8,
+        liveTestCount: 8,
+        fullLengthTestCount: 8,
+        durationSeconds: 28800,
+        questionCount: 800,
+        attemptCount: 900,
+      ),
+    ],
+  );
+
+  Future<void> pump(
     WidgetTester tester, {
-    required List<Exam> available,
-    required List<Exam> inProgress,
+    required Widget child,
+    ExamCatalogSnapshot? catalog,
+    Exam? details,
   }) async {
     await configurePhone(tester);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          availableExamsProvider.overrideWith((ref) async => available),
-          inProgressExamsProvider.overrideWith((ref) async => inProgress),
+          if (catalog != null)
+            examCatalogProvider.overrideWith((ref) async => catalog),
+          if (details != null)
+            examDetailsProvider.overrideWith((ref, id) async => details),
+          if (details != null)
+            completedAttemptCountProvider.overrideWith((ref, id) async => 1),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -108,154 +247,102 @@ void main() {
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Tests')),
-              body: const ExamsScreen(),
-            ),
+            child: child,
           ),
         ),
       ),
     );
     await tester.pump();
-    await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
   }
 
-  Future<void> pumpDetails(WidgetTester tester) async {
-    await configurePhone(tester);
-    final details = exam(
-      id: 'details-1',
-      title: 'SSC CGL Full Length Mock 1',
-      category: 'SSC',
-      description:
-          'A full-length practice paper built around the current SSC CGL pattern.',
-      maxAttempts: 3,
-    );
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          examDetailsProvider.overrideWith((ref, id) async => details),
-          completedAttemptCountProvider.overrideWith((ref, id) async => 1),
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: previewTheme(),
-          home: const MediaQuery(
-            data: MediaQueryData(
-              size: phoneSize,
-              devicePixelRatio: 1,
-              disableAnimations: true,
-            ),
-            child: ExamDetailsScreen(examId: 'details-1'),
-          ),
-        ),
+  testWidgets('render approved exam categories', (tester) async {
+    await pump(
+      tester,
+      catalog: snapshot,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Exams')),
+        body: const ExamsScreen(),
       ),
     );
-    await tester.pump();
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 200));
-  }
-
-  testWidgets('render populated Tests catalogue', (tester) async {
-    await pumpCatalogue(
-      tester,
-      inProgress: [
-        exam(
-          id: 'active-1',
-          title: 'SSC CGL full-length mock',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'active-2',
-          title: 'Quant sectional speed test',
-          category: 'SSC',
-        ),
-      ],
-      available: [
-        exam(
-          id: 'available-1',
-          title: 'Reasoning mixed practice',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'available-2',
-          title: 'Railway NTPC mock',
-          category: 'Railways',
-        ),
-        exam(
-          id: 'available-3',
-          title: 'Banking prelims mock',
-          category: 'Banking',
-          status: 'paid',
-          difficulty: 'Hard',
-        ),
-      ],
-    );
 
     await expectLater(
-      find.byType(Scaffold),
-      matchesGoldenFile('previews/tests_populated_390x844.png'),
+      find.byType(Scaffold).first,
+      matchesGoldenFile('previews/tests_categories_390x844.png'),
     );
   });
 
-  testWidgets('render lower Tests catalogue', (tester) async {
-    await pumpCatalogue(
+  testWidgets('render SSC exam list', (tester) async {
+    await pump(
       tester,
-      inProgress: [
-        exam(
-          id: 'active-1',
-          title: 'SSC CGL full-length mock',
-          category: 'SSC',
-        ),
-      ],
-      available: [
-        exam(
-          id: 'available-1',
-          title: 'Reasoning mixed practice',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'available-2',
-          title: 'Railway NTPC mock',
-          category: 'Railways',
-        ),
-        exam(
-          id: 'available-3',
-          title: 'Banking prelims mock',
-          category: 'Banking',
-          status: 'paid',
-          difficulty: 'Hard',
-        ),
-      ],
+      catalog: snapshot,
+      child: const ExamCategoryScreen(categoryCode: 'ssc'),
     );
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -480));
-    await tester.pump(const Duration(milliseconds: 300));
-
     await expectLater(
-      find.byType(Scaffold),
-      matchesGoldenFile('previews/tests_lower_390x844.png'),
+      find.byType(Scaffold).first,
+      matchesGoldenFile('previews/tests_ssc_list_390x844.png'),
     );
   });
 
-  testWidgets('render empty Tests catalogue', (tester) async {
-    await pumpCatalogue(
+  testWidgets('render SSC CGL series list', (tester) async {
+    await pump(
       tester,
-      inProgress: const [],
-      available: const [],
+      catalog: snapshot,
+      child: const ExamSeriesScreen(examCode: 'ssc-cgl'),
     );
 
     await expectLater(
-      find.byType(Scaffold),
+      find.byType(Scaffold).first,
+      matchesGoldenFile('previews/tests_ssc_cgl_series_390x844.png'),
+    );
+  });
+
+  testWidgets('render empty exam categories', (tester) async {
+    await pump(
+      tester,
+      catalog: const ExamCatalogSnapshot(
+        categories: [],
+        exams: [],
+        series: [],
+      ),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Exams')),
+        body: const ExamsScreen(),
+      ),
+    );
+
+    await expectLater(
+      find.byType(Scaffold).first,
       matchesGoldenFile('previews/tests_empty_390x844.png'),
     );
   });
 
   testWidgets('render refreshed Exam Details', (tester) async {
-    await pumpDetails(tester);
+    final details = Exam(
+      id: 'details-1',
+      title: 'SSC CGL Full Length Mock 1',
+      description:
+          'A full-length practice paper built around the current SSC CGL pattern.',
+      durationInSeconds: 3600,
+      totalQuestions: 100,
+      totalMarks: 200,
+      maxAttempts: 3,
+      negativeMarking: 0.5,
+      difficulty: 'Medium',
+      status: 'published',
+      category: 'SSC',
+      createdAt: now.subtract(const Duration(days: 2)),
+      updatedAt: now,
+    );
+    await pump(
+      tester,
+      child: const ExamDetailsScreen(examId: 'details-1'),
+      details: details,
+    );
 
     await expectLater(
-      find.byType(Scaffold),
+      find.byType(Scaffold).first,
       matchesGoldenFile('previews/tests_details_390x844.png'),
     );
   });
