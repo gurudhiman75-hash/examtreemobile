@@ -26,14 +26,27 @@ class CanonicalTestAttemptScreen extends ConsumerWidget {
   const CanonicalTestAttemptScreen({
     super.key,
     required this.examId,
+    this.seriesId,
   });
 
   final String examId;
+  final String? seriesId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questionsAsync = ref.watch(examQuestionsProvider(examId));
-    final examAsync = ref.watch(examDetailsProvider(examId));
+    final normalizedSeriesId = seriesId?.trim();
+    final hasSeriesContext =
+        normalizedSeriesId != null && normalizedSeriesId.isNotEmpty;
+    final accessKey = (
+      examId: examId,
+      seriesId: hasSeriesContext ? normalizedSeriesId : null,
+    );
+    final questionsAsync = hasSeriesContext
+        ? ref.watch(contextualExamQuestionsProvider(accessKey))
+        : ref.watch(examQuestionsProvider(examId));
+    final examAsync = hasSeriesContext
+        ? ref.watch(contextualExamDetailsProvider(accessKey))
+        : ref.watch(examDetailsProvider(examId));
 
     return Scaffold(
       body: questionsAsync.when(
@@ -49,6 +62,7 @@ class CanonicalTestAttemptScreen extends ConsumerWidget {
             data: (exam) => _CanonicalAttemptBody(
               exam: exam,
               questions: questions,
+              seriesId: hasSeriesContext ? normalizedSeriesId : null,
             ),
           );
         },
@@ -81,10 +95,12 @@ class _CanonicalAttemptBody extends ConsumerStatefulWidget {
   const _CanonicalAttemptBody({
     required this.exam,
     required this.questions,
+    this.seriesId,
   });
 
   final Exam exam;
   final List<model.Question> questions;
+  final String? seriesId;
 
   @override
   ConsumerState<_CanonicalAttemptBody> createState() =>
@@ -256,7 +272,10 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       }
       final session = await ref
           .read(attemptSessionRepositoryProvider)
-          .startOrResume(testId: widget.exam.id);
+          .startOrResume(
+            testId: widget.exam.id,
+            seriesId: widget.seriesId,
+          );
       if (!mounted) return;
       if (session.id.isEmpty) {
         throw const AttemptSessionRepositoryException(
