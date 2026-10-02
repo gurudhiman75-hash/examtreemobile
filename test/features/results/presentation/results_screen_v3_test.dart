@@ -1,5 +1,7 @@
 import 'package:examtree/core/models/result_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/features/promotions/domain/promotion_campaign.dart';
+import 'package:examtree/features/promotions/presentation/providers/promotion_providers.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:examtree/features/results/presentation/results_screen.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +68,7 @@ void main() {
   Future<void> pumpResults(
     WidgetTester tester, {
     required List<Result> results,
+    List<PromotionCampaign> promotions = const <PromotionCampaign>[],
     double textScale = 1,
   }) async {
     tester.view
@@ -78,6 +81,8 @@ void main() {
       ProviderScope(
         overrides: [
           userResultsProvider.overrideWith((ref) async => results),
+          promotionsForPlacementProvider(PromotionPlacement.results)
+              .overrideWith((ref) async => promotions),
         ],
         child: MaterialApp(
           theme: AppTheme.lightTheme,
@@ -196,6 +201,24 @@ void main() {
     expect(find.byKey(const Key('results-performance-snapshot')), findsNothing);
     expect(find.textContaining('rank'), findsNothing);
     expect(find.textContaining('percentile'), findsNothing);
+  });
+
+  testWidgets('empty results still render configured Results promotion', (tester) async {
+    await pumpResults(
+      tester,
+      results: const [],
+      promotions: const [
+        PromotionCampaign(
+          id: 'results-promo',
+          title: 'Try a new mock test',
+          subtitle: 'Build your first result from a fresh practice set.',
+          placements: {PromotionPlacement.results},
+        ),
+      ],
+    );
+
+    expect(find.text('No completed attempts yet'), findsOneWidget);
+    expect(find.text('Try a new mock test'), findsOneWidget);
   });
 
   testWidgets('results remain usable at 200 percent text scaling', (tester) async {
