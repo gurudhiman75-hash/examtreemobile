@@ -112,6 +112,7 @@ class ApiMobilePromotionSource {
             examIds: list('examIds'),
             isDismissible: map['isDismissible'] == true,
             frequencyCapPerDay: cap != null && cap > 0 ? cap : null,
+            repeatOnEveryOpen: map['repeatOnEveryOpen'] == true,
           ),
         );
       }
@@ -248,6 +249,11 @@ final promotionsForPlacementProvider = FutureProvider.family<
   final exposureStore = ref.watch(promotionExposureStoreProvider);
   final visible = <PromotionCampaign>[];
   for (final campaign in selected) {
+    if (campaign.repeatOnEveryOpen &&
+        placement == PromotionPlacement.postLogin) {
+      visible.add(campaign);
+      continue;
+    }
     if (await exposureStore.isEligible(campaign, now: now)) {
       visible.add(campaign);
     }
