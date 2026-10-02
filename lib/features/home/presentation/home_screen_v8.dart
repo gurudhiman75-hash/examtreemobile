@@ -1452,9 +1452,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                 label: override?.title.trim().isNotEmpty == true
                     ? override!.title
                     : base.$1,
-                routeFamily: family.name.trim().isNotEmpty
-                    ? family.name
-                    : family.code,
+                routeFamily: family.code.trim().isNotEmpty
+                    ? family.code
+                    : family.name,
                 subtitle: override?.subtitle ?? '',
                 badge: override?.badge ?? '',
                 icon: override?.iconName.trim().isNotEmpty == true
