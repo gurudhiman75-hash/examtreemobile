@@ -194,8 +194,17 @@ class HomeScreen extends ConsumerWidget {
                   placement: 'home',
                 ),
               ),
-              onDismiss: (campaign) =>
-                  unawaited(promotionExposureStore.dismiss(campaign.id)),
+              onDismiss: (campaign) {
+                unawaited(promotionExposureStore.dismiss(campaign.id));
+                unawaited(
+                  mobileAnalytics.track(
+                    'promotion_dismiss',
+                    entityType: 'promotion',
+                    entityId: campaign.id,
+                    placement: 'home',
+                  ),
+                );
+              },
             ),
           ],
           const SizedBox(height: 12),
