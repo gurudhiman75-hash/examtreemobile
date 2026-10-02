@@ -147,6 +147,20 @@ void main() {
     expect(selected.map((item) => item.id), ['targeted-login']);
   });
 
+
+  test('parses repeat-on-every-open campaign flag', () {
+    final campaign = PromotionCampaign.tryParse({
+      'id': 'repeat-1',
+      'title': 'Repeat popup',
+      'subtitle': 'Show on every app open',
+      'placements': ['post_login'],
+      'repeatOnEveryOpen': true,
+    });
+
+    expect(campaign, isNotNull);
+    expect(campaign!.repeatOnEveryOpen, isTrue);
+  });
+
   test('invalid JSON safely resolves to no campaigns', () {
     expect(parsePromotionCampaigns('{not-json'), isEmpty);
     expect(parsePromotionCampaigns('{}'), isEmpty);
