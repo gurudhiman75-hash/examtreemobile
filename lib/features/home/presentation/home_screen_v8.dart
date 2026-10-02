@@ -1445,18 +1445,18 @@ class _ExamCategoriesGrid extends StatelessWidget {
               final base = _visual(family);
               final override = overrides[family.id];
               return _ExamCategoryPresentation(
-                label: itemOverride?.title.trim().isNotEmpty == true
-                    ? itemOverride!.title
+                label: override?.title.trim().isNotEmpty == true
+                    ? override!.title
                     : base.$1,
-                subtitle: itemOverride?.subtitle ?? '',
-                badge: itemOverride?.badge ?? '',
-                icon: itemOverride?.iconName.trim().isNotEmpty == true
-                    ? _homeIconFromName(itemOverride!.iconName, fallback: base.$2)
+                subtitle: override?.subtitle ?? '',
+                badge: override?.badge ?? '',
+                icon: override?.iconName.trim().isNotEmpty == true
+                    ? _homeIconFromName(override!.iconName, fallback: base.$2)
                     : base.$2,
                 background: base.$3,
                 foreground: base.$4,
-                iconUrl: itemOverride?.iconUrl ?? '',
-                imageUrl: itemOverride?.imageUrl ?? '',
+                iconUrl: override?.iconUrl ?? '',
+                imageUrl: override?.imageUrl ?? '',
               );
             })
             .toList(growable: false);
