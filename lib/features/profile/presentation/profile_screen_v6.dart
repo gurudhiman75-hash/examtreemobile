@@ -597,36 +597,39 @@ class _HistoryView extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         for (final point in history)
-          Material(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(17),
-              side: const BorderSide(color: _line),
-            ),
-            child: ListTile(
-              onTap: () => context.push('/review', extra: point.attemptId),
-              leading: const _IconBubble(
-                Icons.assignment_turned_in_rounded,
-                Color(0xFF2563EB),
-                Color(0xFFEAF2FF),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 9),
+            child: Material(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(17),
+                side: const BorderSide(color: _line),
               ),
-              title: Text(
-                point.testName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: Text(
-                point.accuracy.round().toString() + '% accuracy',
-                style: const TextStyle(color: Color(0xFF718096), fontSize: 12),
-              ),
-              trailing: Text(
-                point.percentageScore.round().toString() + '%',
-                style: const TextStyle(fontWeight: FontWeight.w900, color: _navy),
+              clipBehavior: Clip.antiAlias,
+              child: ListTile(
+                onTap: () => context.push('/review', extra: point.attemptId),
+                leading: const _IconBubble(
+                  Icons.assignment_turned_in_rounded,
+                  Color(0xFF2563EB),
+                  Color(0xFFEAF2FF),
+                ),
+                title: Text(
+                  point.testName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                subtitle: Text(
+                  point.accuracy.round().toString() + '% accuracy',
+                  style: const TextStyle(color: Color(0xFF718096), fontSize: 12),
+                ),
+                trailing: Text(
+                  point.percentageScore.round().toString() + '%',
+                  style: const TextStyle(fontWeight: FontWeight.w900, color: _navy),
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }
