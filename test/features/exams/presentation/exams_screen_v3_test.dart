@@ -1,40 +1,94 @@
-import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
+import 'package:examtree/features/exams/domain/exam_catalog.dart';
 import 'package:examtree/features/exams/presentation/exams_screen.dart';
-import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
+import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final now = DateTime(2026, 8, 18, 12);
-
-  Exam exam({
-    required String id,
-    required String title,
-    required String category,
-    String status = 'published',
+  ExamCatalogSnapshot snapshot({
+    bool empty = false,
   }) {
-    return Exam(
-      id: id,
-      title: title,
-      description: title + ' preparation paper',
-      durationInSeconds: 3600,
-      totalQuestions: 100,
-      totalMarks: 100,
-      maxAttempts: 5,
-      negativeMarking: 0.25,
-      difficulty: 'Medium',
-      status: status,
-      category: category,
-      createdAt: now.subtract(const Duration(days: 2)),
-      updatedAt: now,
+    if (empty) {
+      return const ExamCatalogSnapshot(
+        categories: [],
+        exams: [],
+        series: [],
+      );
+    }
+    return const ExamCatalogSnapshot(
+      categories: [
+        ExamCatalogCategory(
+          code: 'ssc',
+          name: 'SSC',
+          description: 'Staff Selection Commission examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 12,
+        ),
+        ExamCatalogCategory(
+          code: 'railway',
+          name: 'Railway',
+          description: 'Railway recruitment examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 8,
+        ),
+        ExamCatalogCategory(
+          code: 'banking',
+          name: 'Banking',
+          description: 'Banking examinations',
+          iconUrl: '',
+          colorHex: '#2563eb',
+          testCount: 7,
+        ),
+      ],
+      exams: [
+        ExamCatalogExam(
+          code: 'ssc-cgl',
+          familyCode: 'ssc',
+          familyName: 'SSC',
+          name: 'SSC CGL',
+          description: 'Combined Graduate Level Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 12,
+          primarySeriesId: 'series-cgl',
+        ),
+        ExamCatalogExam(
+          code: 'rrb-ntpc',
+          familyCode: 'railway',
+          familyName: 'Railway',
+          name: 'RRB NTPC',
+          description: 'Railway NTPC Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 8,
+          primarySeriesId: 'series-rrb',
+        ),
+        ExamCatalogExam(
+          code: 'ibps-po',
+          familyCode: 'banking',
+          familyName: 'Banking',
+          name: 'IBPS PO',
+          description: 'Probationary Officer Examination',
+          iconUrl: '',
+          languages: ['en', 'hi'],
+          seriesCount: 1,
+          testCount: 7,
+          primarySeriesId: 'series-ibps',
+        ),
+      ],
+      series: [],
     );
   }
 
   Future<void> pumpCategories(
     WidgetTester tester, {
-    required List<Exam> available,
+    required ExamCatalogSnapshot catalog,
     double textScale = 1,
   }) async {
     tester.view
@@ -46,7 +100,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          availableExamsProvider.overrideWith((ref) async => available),
+          examCatalogProvider.overrideWith((ref) async => catalog),
         ],
         child: MaterialApp(
           theme: AppTheme.lightTheme,
@@ -67,15 +121,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
   }
 
-  testWidgets('exams tab presents master categories before individual exams', (tester) async {
-    await pumpCategories(
-      tester,
-      available: [
-        exam(id: 'ssc-1', title: 'SSC CGL', category: 'SSC CGL'),
-        exam(id: 'rail-1', title: 'RRB NTPC', category: 'Railways'),
-        exam(id: 'bank-1', title: 'IBPS PO', category: 'Banking'),
-      ],
-    );
+  testWidgets('exams tab presents master categories before individual exams',
+      (tester) async {
+    await pumpCategories(tester, catalog: snapshot());
 
     expect(find.text('Choose your exam path'), findsOneWidget);
     expect(find.byKey(const Key('exam-category-catalogue')), findsOneWidget);
@@ -87,13 +135,7 @@ void main() {
   });
 
   testWidgets('category search filters only master categories', (tester) async {
-    await pumpCategories(
-      tester,
-      available: [
-        exam(id: 'ssc-1', title: 'SSC CGL', category: 'SSC'),
-        exam(id: 'rail-1', title: 'RRB NTPC', category: 'Railways'),
-      ],
-    );
+    await pumpCategories(tester, catalog: snapshot());
 
     await tester.enterText(
       find.byKey(const Key('exam-category-search')),
@@ -106,20 +148,18 @@ void main() {
   });
 
   testWidgets('empty category catalogue remains truthful', (tester) async {
-    await pumpCategories(tester, available: const []);
+    await pumpCategories(tester, catalog: snapshot(empty: true));
 
     expect(find.text('No exam categories are published yet.'), findsOneWidget);
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('recommended for you'), findsNothing);
   });
 
-  testWidgets('category catalogue remains usable at 200 percent text scaling', (tester) async {
+  testWidgets('category catalogue remains usable at 200 percent text scaling',
+      (tester) async {
     await pumpCategories(
       tester,
-      available: [
-        exam(id: 'ssc-1', title: 'SSC Combined Graduate Level', category: 'SSC'),
-        exam(id: 'punjab-1', title: 'PSSSB Clerk', category: 'Punjab'),
-      ],
+      catalog: snapshot(),
       textScale: 2,
     );
 
@@ -127,24 +167,11 @@ void main() {
     expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
   });
 
-  testWidgets('family mapping keeps exam names out of master category level', (tester) async {
-    expect(
-      familyForExam(
-        exam(id: 'cgl', title: 'SSC CGL', category: 'SSC CGL'),
-      ),
-      ExamFamily.ssc,
-    );
-    expect(
-      familyForExam(
-        exam(id: 'psssb', title: 'PSSSB Clerk', category: 'Punjab Government'),
-      ),
-      ExamFamily.punjab,
-    );
-    expect(
-      familyForExam(
-        exam(id: 'lic', title: 'LIC AAO', category: 'Insurance'),
-      ),
-      ExamFamily.insurance,
-    );
+  test('canonical category mapping keeps exams under their family code', () {
+    final catalog = snapshot();
+    final ssc = catalog.examsForCategory('ssc');
+    expect(ssc.map((exam) => exam.name), contains('SSC CGL'));
+    expect(ssc.map((exam) => exam.name), isNot(contains('IBPS PO')));
+    expect(catalog.findExam('ssc-cgl')?.familyName, 'SSC');
   });
 }
