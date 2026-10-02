@@ -6,23 +6,25 @@ import '../../domain/exam_catalog.dart';
 
 final examCatalogProvider = FutureProvider<ExamCatalogSnapshot>((ref) async {
   final client = ref.watch(apiClientProvider);
-  final responses = await Future.wait([
-    client.dio.get<List<dynamic>>('/categories'),
-    client.dio.get<List<dynamic>>('/subcategories'),
-    client.dio.get<Map<String, dynamic>>('/test-series'),
-  ]);
+  final categoriesResponse =
+      await client.dio.get<List<dynamic>>('/categories');
+  final subcategoriesResponse =
+      await client.dio.get<List<dynamic>>('/subcategories');
+  final seriesResponse =
+      await client.dio.get<Map<String, dynamic>>('/test-series');
 
-  final categories = (responses[0].data ?? const <dynamic>[])
+  final categories = (categoriesResponse.data ?? const <dynamic>[])
       .whereType<Map>()
       .map((item) => CategoryDto.fromJson(Map<String, dynamic>.from(item)))
       .toList(growable: false);
 
-  final subcategories = (responses[1].data ?? const <dynamic>[])
+  final subcategories =
+      (subcategoriesResponse.data ?? const <dynamic>[])
       .whereType<Map>()
       .map((item) => SubcategoryDto.fromJson(Map<String, dynamic>.from(item)))
       .toList(growable: false);
 
-  final rawSeries = responses[2].data?['series'];
+  final rawSeries = seriesResponse.data?['series'];
   final series = rawSeries is List
       ? rawSeries
           .whereType<Map>()
