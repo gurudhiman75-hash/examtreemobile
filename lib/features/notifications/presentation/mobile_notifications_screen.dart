@@ -16,6 +16,7 @@ class MobileNotificationItem {
     required this.destinationValue,
     required this.sentAt,
     required this.openedAt,
+    required this.readAt,
   });
 
   final String campaignId;
@@ -26,8 +27,9 @@ class MobileNotificationItem {
   final String destinationValue;
   final DateTime? sentAt;
   final DateTime? openedAt;
+  final DateTime? readAt;
 
-  bool get isUnread => openedAt == null;
+  bool get isUnread => readAt == null;
 
   factory MobileNotificationItem.fromJson(Map<String, dynamic> json) {
     DateTime? parseDate(Object? value) {
@@ -44,6 +46,7 @@ class MobileNotificationItem {
       destinationValue: json['destinationValue']?.toString() ?? '',
       sentAt: parseDate(json['sentAt']),
       openedAt: parseDate(json['openedAt']),
+      readAt: parseDate(json['readAt']) ?? parseDate(json['openedAt']),
     );
   }
 }
@@ -69,6 +72,27 @@ final mobileNotificationInboxProvider =
 
 class MobileNotificationsScreen extends ConsumerWidget {
   const MobileNotificationsScreen({super.key});
+
+  Future<void> _markAllRead(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(apiClientProvider).dio.post<void>(
+            'mobile/notifications/read-all',
+          );
+      ref.invalidate(mobileNotificationInboxProvider);
+      await ref.read(mobileNotificationInboxProvider.future);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('All notifications marked as read.')),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to mark notifications as read.')),
+        );
+      }
+    }
+  }
 
   Future<void> _open(
     BuildContext context,
@@ -149,6 +173,8 @@ class MobileNotificationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(mobileNotificationInboxProvider);
+    final unreadCount =
+        notifications.value?.where((item) => item.isUnread).length ?? 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -159,6 +185,16 @@ class MobileNotificationsScreen extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
+        actions: [
+          if (unreadCount > 0)
+            TextButton(
+              onPressed: () => _markAllRead(context, ref),
+              child: const Text(
+                'Mark all read',
+                style: TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+        ],
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: Divider(height: 1, color: Color(0xFFE8EDF3)),
