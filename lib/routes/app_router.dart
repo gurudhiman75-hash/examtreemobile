@@ -427,10 +427,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/exam-category',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final family = familyFromRoute(
-            state.uri.queryParameters['family'] ?? '',
-          );
-          return ExamCategoryScreen(family: family);
+          final categoryCode =
+              state.uri.queryParameters['family']?.trim() ??
+                  state.uri.queryParameters['id']?.trim() ??
+                  '';
+          if (categoryCode.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Exam category unavailable',
+              message:
+                  'No exam category was supplied. Choose a category from the Exams page.',
+            );
+          }
+          return ExamCategoryScreen(categoryCode: categoryCode);
+        },
+      ),
+      GoRoute(
+        path: '/exam-series',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final examCode =
+              state.uri.queryParameters['exam']?.trim() ??
+                  state.uri.queryParameters['id']?.trim() ??
+                  '';
+          if (examCode.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Exam unavailable',
+              message:
+                  'No exam was supplied. Choose an exam from its category.',
+            );
+          }
+          return ExamSeriesScreen(examCode: examCode);
         },
       ),
       GoRoute(
