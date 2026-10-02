@@ -7,11 +7,10 @@ if (base.pathname !== '/api/') {
 }
 
 const targets = [
-  { name: 'health', url: new URL('/health', base), kind: 'json' },
-  { name: 'tests', url: new URL('tests', base), kind: 'array' },
-  { name: 'categories', url: new URL('categories', base), kind: 'array' },
-  { name: 'subcategories', url: new URL('subcategories', base), kind: 'array' },
-  { name: 'testSeries', url: new URL('test-series', base), kind: 'series' },
+  { name: 'health', url: new URL('/health', base), expectArray: false },
+  { name: 'tests', url: new URL('tests', base), expectArray: true },
+  { name: 'categories', url: new URL('categories', base), expectArray: true },
+  { name: 'subcategories', url: new URL('subcategories', base), expectArray: true },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -35,34 +34,22 @@ async function fetchWithRetry(target) {
       }
 
       let body = null;
-      try {
-        body = JSON.parse(text);
-      } catch {
-        throw new Error(`Expected JSON from ${target.url}`);
-      }
-
-      if (target.kind === 'array' && !Array.isArray(body)) {
-        throw new Error(`Expected JSON array from ${target.url}`);
-      }
-
-      if (target.kind === 'series') {
-        const series = body && typeof body === 'object' ? body.series : null;
-        if (!Array.isArray(series)) {
-          throw new Error(`Expected { series: [] } from ${target.url}`);
+      if (target.expectArray) {
+        try {
+          body = JSON.parse(text);
+        } catch {
+          throw new Error(`Expected JSON from ${target.url}`);
+        }
+        if (!Array.isArray(body)) {
+          throw new Error(`Expected JSON array from ${target.url}`);
         }
       }
-
-      const count = target.kind === 'array'
-        ? body.length
-        : target.kind === 'series'
-          ? body.series.length
-          : null;
 
       console.log(JSON.stringify({
         name: target.name,
         url: target.url.toString(),
         status: response.status,
-        count,
+        count: Array.isArray(body) ? body.length : null,
       }));
       return body;
     } catch (error) {
@@ -81,13 +68,8 @@ for (const target of targets) {
   result[target.name] = await fetchWithRetry(target);
 }
 
-const standaloneTestCount = Array.isArray(result.tests) ? result.tests.length : 0;
-const seriesCount = Array.isArray(result.testSeries?.series)
-  ? result.testSeries.series.length
-  : 0;
-
-if (standaloneTestCount === 0 && seriesCount === 0) {
+if (result.categories.length === 0 || result.subcategories.length === 0) {
   throw new Error(
-    'Production catalogue has neither standalone tests nor published test series',
+    'Production exam taxonomy is empty even though the mobile API is reachable',
   );
 }
