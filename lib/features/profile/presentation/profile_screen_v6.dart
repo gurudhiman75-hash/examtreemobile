@@ -28,7 +28,7 @@ class ProfileScreen extends ConsumerWidget {
         ? rawName
         : (email.isNotEmpty ? email.split('@').first : 'Student');
     final contact = email.isNotEmpty ? email : phone;
-    final initial = name.isEmpty ? 'S' : name.characters.first.toUpperCase();
+    final initial = name.isEmpty ? 'S' : name[0].toUpperCase();
 
     return RefreshIndicator(
       onRefresh: () async {
