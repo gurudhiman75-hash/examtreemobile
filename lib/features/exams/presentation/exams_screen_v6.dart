@@ -231,7 +231,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
         ),
         const SizedBox(height: 12),
         if (visible.isEmpty)
-          const _NoCategoryMatch()
+          exams.isEmpty ? const _EmptyCatalogue() : const _NoCategoryMatch()
         else
           LayoutBuilder(
             builder: (context, constraints) {
@@ -966,6 +966,36 @@ class _CategoryLoading extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _EmptyCatalogue extends StatelessWidget {
+  const _EmptyCatalogue();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 36),
+      child: Column(
+        children: [
+          Icon(Icons.event_busy_outlined, size: 42, color: Color(0xFF94A3B8)),
+          SizedBox(height: 10),
+          Text(
+            'No exam categories are published yet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _ink,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            'Pull down to check again.',
+            style: TextStyle(color: Color(0xFF64748B)),
+          ),
+        ],
+      ),
     );
   }
 }
