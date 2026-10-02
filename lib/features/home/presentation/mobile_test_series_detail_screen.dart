@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/providers/repository_providers.dart';
-import '../../../core/theme/app_spacing.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
