@@ -9,6 +9,8 @@ class MobileHeroSlide {
     required this.ctaLabel,
     required this.destinationType,
     required this.destinationValue,
+    required this.span,
+    required this.style,
     required this.isActive,
     required this.sortOrder,
   });
@@ -22,6 +24,8 @@ class MobileHeroSlide {
   final String ctaLabel;
   final String destinationType;
   final String destinationValue;
+  final int span;
+  final String style;
   final bool isActive;
   final int sortOrder;
 
@@ -36,6 +40,8 @@ class MobileHeroSlide {
       ctaLabel: json['ctaLabel']?.toString() ?? '',
       destinationType: json['destinationType']?.toString() ?? 'none',
       destinationValue: json['destinationValue']?.toString() ?? '',
+      span: (int.tryParse(json['span']?.toString() ?? '') ?? 1).clamp(1, 4),
+      style: json['style']?.toString() ?? 'default',
       isActive: json['isActive'] != false,
       sortOrder: int.tryParse(json['sortOrder']?.toString() ?? '') ?? 0,
     );
@@ -95,6 +101,7 @@ class MobileHomeSectionSetting {
     this.iconName = '',
     this.iconUrl = '',
     this.layout = '',
+    this.columns = 0,
     this.isVisible = true,
   });
 
@@ -103,6 +110,7 @@ class MobileHomeSectionSetting {
   final String iconName;
   final String iconUrl;
   final String layout;
+  final int columns;
   final bool isVisible;
 
   factory MobileHomeSectionSetting.fromJson(Map<String, dynamic> json) {
@@ -112,6 +120,7 @@ class MobileHomeSectionSetting {
       iconName: json['iconName']?.toString() ?? '',
       iconUrl: json['iconUrl']?.toString() ?? '',
       layout: json['layout']?.toString() ?? '',
+      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 0).clamp(0, 4),
       isVisible: json['isVisible'] != false,
     );
   }
@@ -204,6 +213,9 @@ class MobileCustomHomeSection {
     required this.iconName,
     required this.iconUrl,
     required this.layout,
+    required this.columns,
+    required this.gap,
+    required this.style,
     required this.isVisible,
     required this.sortOrder,
     required this.cards,
@@ -215,6 +227,9 @@ class MobileCustomHomeSection {
   final String iconName;
   final String iconUrl;
   final String layout;
+  final int columns;
+  final String gap;
+  final String style;
   final bool isVisible;
   final int sortOrder;
   final List<MobileHomeCard> cards;
@@ -235,6 +250,9 @@ class MobileCustomHomeSection {
       iconName: json['iconName']?.toString() ?? '',
       iconUrl: json['iconUrl']?.toString() ?? '',
       layout: json['layout']?.toString() ?? 'horizontal',
+      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 2).clamp(1, 4),
+      gap: json['gap']?.toString() ?? 'normal',
+      style: json['style']?.toString() ?? 'default',
       isVisible: json['isVisible'] != false,
       sortOrder: int.tryParse(json['sortOrder']?.toString() ?? '') ?? 0,
       cards: cards,
