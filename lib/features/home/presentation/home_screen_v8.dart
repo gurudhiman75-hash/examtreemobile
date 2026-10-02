@@ -20,6 +20,7 @@ import '../../content_planning/presentation/mobile_content_planning_providers.da
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
+import '../../notifications/presentation/mobile_notifications_screen.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
 import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/providers/promotion_providers.dart';
@@ -54,7 +55,8 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(mobileHomeConfigurationProvider)
       ..invalidate(promotionsForPlacementProvider(PromotionPlacement.home))
       ..invalidate(mobileContentPlanProvider('home_learn'))
-      ..invalidate(mobileContentPlanProvider('home_current_affairs'));
+      ..invalidate(mobileContentPlanProvider('home_current_affairs'))
+      ..invalidate(mobileNotificationInboxProvider);
 
     Future<void> settle(Future<Object?> request) async {
       try {
@@ -86,6 +88,14 @@ class HomeScreen extends ConsumerWidget {
     );
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
     final user = ref.watch(authStateChangesProvider).value;
+    final notificationUnreadCount = user == null
+        ? 0
+        : (ref
+                .watch(mobileNotificationInboxProvider)
+                .value
+                ?.where((item) => item.isUnread)
+                .length ??
+            0);
     final currentTime = now?.call() ?? DateTime.now();
     final mobileAnalytics = ref.read(mobileAnalyticsClientProvider);
     final promotionExposureStore = ref.read(promotionExposureStoreProvider);
@@ -389,6 +399,7 @@ class HomeScreen extends ConsumerWidget {
                     photoUrl: user?.photoURL,
                     onSearch: () => context.go('/exams'),
                     onNotifications: () => context.push('/notifications'),
+                    notificationUnreadCount: notificationUnreadCount,
                     onProfile: () => context.push('/profile'),
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -2046,6 +2057,7 @@ class _HomeHeader extends StatelessWidget {
     required this.photoUrl,
     required this.onSearch,
     required this.onNotifications,
+    required this.notificationUnreadCount,
     required this.onProfile,
   });
 
@@ -2055,6 +2067,7 @@ class _HomeHeader extends StatelessWidget {
   final String? photoUrl;
   final VoidCallback onSearch;
   final VoidCallback onNotifications;
+  final int notificationUnreadCount;
   final VoidCallback onProfile;
 
   @override
@@ -2100,7 +2113,10 @@ class _HomeHeader extends StatelessWidget {
           onTap: onSearch,
         ),
         const SizedBox(width: 2),
-        _NotificationButton(onTap: onNotifications),
+        _NotificationButton(
+          onTap: onNotifications,
+          unreadCount: notificationUnreadCount,
+        ),
         const SizedBox(width: 7),
         Semantics(
           button: true,
@@ -2237,33 +2253,58 @@ class _ExamtreeMarkPainter extends CustomPainter {
 }
 
 class _NotificationButton extends StatelessWidget {
-  const _NotificationButton({required this.onTap});
+  const _NotificationButton({
+    required this.onTap,
+    required this.unreadCount,
+  });
 
   final VoidCallback onTap;
+  final int unreadCount;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        _HeaderButton(
-          icon: Icons.notifications_none_rounded,
-          tooltip: 'Notifications',
-          onTap: onTap,
-        ),
-        Positioned(
-          right: 7,
-          top: 7,
-          child: Container(
-            width: 7,
-            height: 7,
-            decoration: const BoxDecoration(
-              color: Color(0xFFF04452),
-              shape: BoxShape.circle,
-            ),
+    final badgeLabel = unreadCount > 99 ? '99+' : '$unreadCount';
+    return Semantics(
+      button: true,
+      label: unreadCount > 0
+          ? 'Notifications, $unreadCount unread'
+          : 'Notifications, no unread updates',
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          _HeaderButton(
+            icon: Icons.notifications_none_rounded,
+            tooltip: unreadCount > 0
+                ? 'Notifications ($unreadCount unread)'
+                : 'Notifications',
+            onTap: onTap,
           ),
-        ),
-      ],
+          if (unreadCount > 0)
+            Positioned(
+              right: 1,
+              top: 1,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 17, minHeight: 17),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF04452),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white, width: 1.5),
+                ),
+                child: Text(
+                  badgeLabel,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        height: 1,
+                      ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
