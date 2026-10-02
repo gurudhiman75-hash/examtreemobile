@@ -72,17 +72,32 @@ class ApiExamRepository implements ExamRepository {
   }
 
   @override
-  Future<Exam> getExamDetails(String examId) async {
+  Future<Exam> getExamDetails(String examId, {String? seriesId}) async {
     return _request(() async {
-      final response = await _dio.get<Map<String, dynamic>>('/tests/$examId');
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/tests/$examId',
+        queryParameters: {
+          if (seriesId != null && seriesId.trim().isNotEmpty)
+            'seriesId': seriesId.trim(),
+        },
+      );
       return _toExam(TestDto.fromJson(response.data ?? {}));
     });
   }
 
   @override
-  Future<List<Question>> getExamQuestions(String examId) async {
+  Future<List<Question>> getExamQuestions(
+    String examId, {
+    String? seriesId,
+  }) async {
     return _request(() async {
-      final response = await _dio.get<Map<String, dynamic>>('/tests/$examId');
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/tests/$examId',
+        queryParameters: {
+          if (seriesId != null && seriesId.trim().isNotEmpty)
+            'seriesId': seriesId.trim(),
+        },
+      );
       return TestDto.fromJson(response.data ?? {}).toQuestions();
     });
   }
