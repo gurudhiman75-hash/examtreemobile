@@ -25,7 +25,7 @@ class PostLoginPromotionGate extends ConsumerStatefulWidget {
 
 class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate> {
   String? _scheduledCampaignId;
-  bool _sheetOpen = false;
+  bool _modalOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
     );
 
     campaignsAsync.whenData((campaigns) {
-      if (_sheetOpen) return;
+      if (_modalOpen) return;
       final registry = ref.read(promotionSessionRegistryProvider);
       PromotionCampaign? next;
       for (final campaign in campaigns) {
@@ -46,7 +46,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
       if (next == null || _scheduledCampaignId == next.id) return;
       _scheduledCampaignId = next.id;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted || _sheetOpen) return;
+        if (!mounted || _modalOpen) return;
         final latestRegistry = ref.read(promotionSessionRegistryProvider);
         if (!latestRegistry.shouldPresentPostLogin(next!)) return;
         latestRegistry.markPostLoginCampaignPresented(next.id);
@@ -59,7 +59,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
 
   Future<void> _showCampaign(PromotionCampaign campaign) async {
     if (!mounted) return;
-    setState(() => _sheetOpen = true);
+    setState(() => _modalOpen = true);
     final exposureStore = ref.read(promotionExposureStoreProvider);
     final analytics = ref.read(mobileAnalyticsClientProvider);
     await exposureStore.recordImpression(campaign);
@@ -227,7 +227,7 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
     );
     if (!mounted) return;
     setState(() {
-      _sheetOpen = false;
+      _modalOpen = false;
       _scheduledCampaignId = null;
     });
   }
