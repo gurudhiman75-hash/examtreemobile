@@ -13,7 +13,10 @@ void main() {
       'sectionSettings': {
         'exam_categories': {
           'title': 'Top Exams',
+          'subtitle': 'Choose your exam',
           'iconName': 'star',
+          'layout': 'grid',
+          'columns': 3,
           'isVisible': true,
         },
       },
@@ -28,6 +31,9 @@ void main() {
           'id': 'custom_quick_links',
           'title': 'Quick Links',
           'layout': 'grid',
+          'columns': 3,
+          'gap': 'compact',
+          'style': 'featured',
           'isVisible': true,
           'cards': [
             {
@@ -35,6 +41,8 @@ void main() {
               'title': 'Current Affairs',
               'destinationType': 'learn',
               'destinationValue': '/learn',
+              'span': 2,
+              'style': 'compact',
               'isActive': true,
               'sortOrder': 1,
             },
@@ -46,7 +54,15 @@ void main() {
     expect(config.sectionOrder, contains('custom_quick_links'));
     expect(config.customSections.single.title, 'Quick Links');
     expect(config.customSections.single.cards.single.title, 'Current Affairs');
+    expect(config.customSections.single.columns, 3);
+    expect(config.customSections.single.gap, 'compact');
+    expect(config.customSections.single.style, 'featured');
+    expect(config.customSections.single.cards.single.span, 2);
+    expect(config.customSections.single.cards.single.style, 'compact');
     expect(config.settingFor('exam_categories').title, 'Top Exams');
+    expect(config.settingFor('exam_categories').subtitle, 'Choose your exam');
+    expect(config.settingFor('exam_categories').layout, 'grid');
+    expect(config.settingFor('exam_categories').columns, 3);
     expect(config.overrideFor('family-1').title, 'Punjab Exams');
   });
 
