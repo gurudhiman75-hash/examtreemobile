@@ -48,7 +48,7 @@ void main() {
     return Exam(
       id: id,
       title: title,
-      description: description ?? '$title preparation paper',
+      description: description ?? title + ' preparation paper',
       durationInSeconds: 3600,
       totalQuestions: 100,
       totalMarks: 200,
@@ -72,9 +72,6 @@ void main() {
           fontFamily: 'Roboto',
         ),
       ),
-      chipTheme: baseTheme.chipTheme.copyWith(
-        labelStyle: pinnedTextTheme.labelMedium,
-      ),
     );
   }
 
@@ -87,17 +84,47 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  Future<void> pumpCatalogue(
+  Future<void> pumpCategories(
     WidgetTester tester, {
     required List<Exam> available,
-    required List<Exam> inProgress,
   }) async {
     await configurePhone(tester);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           availableExamsProvider.overrideWith((ref) async => available),
-          inProgressExamsProvider.overrideWith((ref) async => inProgress),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
+          home: const MediaQuery(
+            data: MediaQueryData(
+              size: phoneSize,
+              devicePixelRatio: 1,
+              disableAnimations: true,
+            ),
+            child: Scaffold(
+              appBar: AppBar(title: Text('Exams')),
+              body: ExamsScreen(),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+
+  Future<void> pumpFamily(
+    WidgetTester tester, {
+    required List<Exam> available,
+    required ExamFamily family,
+  }) async {
+    await configurePhone(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          availableExamsProvider.overrideWith((ref) async => available),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -108,15 +135,11 @@ void main() {
               devicePixelRatio: 1,
               disableAnimations: true,
             ),
-            child: Scaffold(
-              appBar: AppBar(title: const Text('Tests')),
-              body: const ExamsScreen(),
-            ),
+            child: ExamCategoryScreen(family: family),
           ),
         ),
       ),
     );
-    await tester.pump();
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
   }
@@ -152,98 +175,43 @@ void main() {
       ),
     );
     await tester.pump();
-    await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
   }
 
-  testWidgets('render populated Tests catalogue', (tester) async {
-    await pumpCatalogue(
+  final catalogue = <Exam>[
+    exam(id: 'ssc-1', title: 'SSC CGL', category: 'SSC'),
+    exam(id: 'ssc-2', title: 'SSC CHSL', category: 'SSC'),
+    exam(id: 'ssc-3', title: 'SSC CPO', category: 'SSC', status: 'paid'),
+    exam(id: 'rail-1', title: 'RRB NTPC', category: 'Railways'),
+    exam(id: 'bank-1', title: 'IBPS PO', category: 'Banking', status: 'paid'),
+    exam(id: 'punjab-1', title: 'PSSSB Clerk', category: 'Punjab Government'),
+    exam(id: 'insurance-1', title: 'LIC AAO', category: 'Insurance'),
+  ];
+
+  testWidgets('render approved exam categories', (tester) async {
+    await pumpCategories(tester, available: catalogue);
+
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/tests_categories_390x844.png'),
+    );
+  });
+
+  testWidgets('render SSC exam list', (tester) async {
+    await pumpFamily(
       tester,
-      inProgress: [
-        exam(
-          id: 'active-1',
-          title: 'SSC CGL full-length mock',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'active-2',
-          title: 'Quant sectional speed test',
-          category: 'SSC',
-        ),
-      ],
-      available: [
-        exam(
-          id: 'available-1',
-          title: 'Reasoning mixed practice',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'available-2',
-          title: 'Railway NTPC mock',
-          category: 'Railways',
-        ),
-        exam(
-          id: 'available-3',
-          title: 'Banking prelims mock',
-          category: 'Banking',
-          status: 'paid',
-          difficulty: 'Hard',
-        ),
-      ],
+      available: catalogue,
+      family: ExamFamily.ssc,
     );
 
     await expectLater(
       find.byType(Scaffold),
-      matchesGoldenFile('previews/tests_populated_390x844.png'),
+      matchesGoldenFile('previews/tests_ssc_list_390x844.png'),
     );
   });
 
-  testWidgets('render lower Tests catalogue', (tester) async {
-    await pumpCatalogue(
-      tester,
-      inProgress: [
-        exam(
-          id: 'active-1',
-          title: 'SSC CGL full-length mock',
-          category: 'SSC',
-        ),
-      ],
-      available: [
-        exam(
-          id: 'available-1',
-          title: 'Reasoning mixed practice',
-          category: 'SSC',
-        ),
-        exam(
-          id: 'available-2',
-          title: 'Railway NTPC mock',
-          category: 'Railways',
-        ),
-        exam(
-          id: 'available-3',
-          title: 'Banking prelims mock',
-          category: 'Banking',
-          status: 'paid',
-          difficulty: 'Hard',
-        ),
-      ],
-    );
-
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -480));
-    await tester.pump(const Duration(milliseconds: 300));
-
-    await expectLater(
-      find.byType(Scaffold),
-      matchesGoldenFile('previews/tests_lower_390x844.png'),
-    );
-  });
-
-  testWidgets('render empty Tests catalogue', (tester) async {
-    await pumpCatalogue(
-      tester,
-      inProgress: const [],
-      available: const [],
-    );
+  testWidgets('render empty exam categories', (tester) async {
+    await pumpCategories(tester, available: const []);
 
     await expectLater(
       find.byType(Scaffold),
