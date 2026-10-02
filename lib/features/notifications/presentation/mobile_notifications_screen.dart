@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/providers/mobile_analytics_provider.dart';
 import '../../../core/providers/repository_providers.dart';
 
 class MobileNotificationItem {
@@ -78,6 +79,15 @@ class MobileNotificationsScreen extends ConsumerWidget {
       await ref.read(apiClientProvider).dio.post<void>(
             'mobile/notifications/${item.campaignId}/open',
           );
+      await ref.read(mobileAnalyticsClientProvider).track(
+            'notification_open',
+            entityType: 'notification',
+            entityId: item.campaignId,
+            placement: 'inbox',
+            metadata: <String, Object?>{
+              'destinationType': item.destinationType,
+            },
+          );
       ref.invalidate(mobileNotificationInboxProvider);
     } catch (_) {
       // Opening the destination remains useful even if read telemetry fails.
@@ -94,7 +104,13 @@ class MobileNotificationsScreen extends ConsumerWidget {
         }
         return;
       case 'test_series':
-        context.go('/exams');
+        if (item.destinationValue.isNotEmpty) {
+          context.push(
+            '/test-series?id=${Uri.encodeQueryComponent(item.destinationValue)}',
+          );
+        } else {
+          context.go('/exams');
+        }
         return;
       case 'learn':
         if (item.destinationValue.startsWith('/')) {
@@ -249,21 +265,44 @@ class MobileNotificationsScreen extends ConsumerWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              color: item.isUnread
-                                  ? const Color(0xFFFFF4D6)
-                                  : const Color(0xFFF1F5F9),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.notifications_outlined,
-                              color: item.isUnread
-                                  ? const Color(0xFF0B3A6F)
-                                  : const Color(0xFF64748B),
-                            ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: item.imageUrl.trim().isNotEmpty
+                                ? Image.network(
+                                    item.imageUrl,
+                                    width: 52,
+                                    height: 52,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      width: 42,
+                                      height: 42,
+                                      color: item.isUnread
+                                          ? const Color(0xFFFFF4D6)
+                                          : const Color(0xFFF1F5F9),
+                                      child: Icon(
+                                        Icons.notifications_outlined,
+                                        color: item.isUnread
+                                            ? const Color(0xFF0B3A6F)
+                                            : const Color(0xFF64748B),
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    width: 42,
+                                    height: 42,
+                                    decoration: BoxDecoration(
+                                      color: item.isUnread
+                                          ? const Color(0xFFFFF4D6)
+                                          : const Color(0xFFF1F5F9),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.notifications_outlined,
+                                      color: item.isUnread
+                                          ? const Color(0xFF0B3A6F)
+                                          : const Color(0xFF64748B),
+                                    ),
+                                  ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
