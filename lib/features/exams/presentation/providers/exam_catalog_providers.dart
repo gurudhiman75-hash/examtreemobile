@@ -10,8 +10,16 @@ final examCatalogProvider = FutureProvider<ExamCatalogSnapshot>((ref) async {
       await client.dio.get<List<dynamic>>('/categories');
   final subcategoriesResponse =
       await client.dio.get<List<dynamic>>('/subcategories');
-  final seriesResponse =
-      await client.dio.get<Map<String, dynamic>>('/test-series');
+  Map<String, dynamic>? seriesBody;
+  try {
+    final seriesResponse =
+        await client.dio.get<Map<String, dynamic>>('/test-series');
+    seriesBody = seriesResponse.data;
+  } catch (_) {
+    // Exam families and exams remain useful even if series discovery is
+    // temporarily unavailable. Series counts recover on the next refresh.
+    seriesBody = null;
+  }
 
   final categories = (categoriesResponse.data ?? const <dynamic>[])
       .whereType<Map>()
@@ -24,7 +32,7 @@ final examCatalogProvider = FutureProvider<ExamCatalogSnapshot>((ref) async {
       .map((item) => SubcategoryDto.fromJson(Map<String, dynamic>.from(item)))
       .toList(growable: false);
 
-  final rawSeries = seriesResponse.data?['series'];
+  final rawSeries = seriesBody?['series'];
   final series = rawSeries is List
       ? rawSeries
           .whereType<Map>()
