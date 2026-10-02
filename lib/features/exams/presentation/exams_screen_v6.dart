@@ -2,108 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/models/exam_model.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
-import 'providers/exam_providers.dart';
+import '../domain/exam_catalog.dart';
+import 'providers/exam_catalog_providers.dart';
 
 const _ink = Color(0xFF10264A);
 const _navy = Color(0xFF062D5C);
 const _blue = Color(0xFF0B5D96);
 const _page = Color(0xFFF8FAFD);
 const _line = Color(0xFFE3E9F1);
-
-enum ExamFamily {
-  ssc('SSC'),
-  banking('Banking'),
-  insurance('Insurance'),
-  punjab('Punjab State'),
-  railway('Railway'),
-  teaching('Teaching'),
-  defence('Defence'),
-  statePcs('State PCS'),
-  other('Other Exams');
-
-  const ExamFamily(this.label);
-  final String label;
-}
-
-ExamFamily familyForExam(Exam exam) {
-  final source = <String>[
-    exam.category,
-    exam.title,
-    ...exam.tags,
-  ].join(' ').toLowerCase();
-
-  if (source.contains('ssc')) return ExamFamily.ssc;
-  if (source.contains('insurance') ||
-      source.contains('lic ') ||
-      source.contains('lic-') ||
-      source.contains('niacl') ||
-      source.contains('uiic')) {
-    return ExamFamily.insurance;
-  }
-  if (source.contains('bank') ||
-      source.contains('ibps') ||
-      source.contains('sbi ') ||
-      source.contains('rbi ')) {
-    return ExamFamily.banking;
-  }
-  if (source.contains('punjab') ||
-      source.contains('psssb') ||
-      source.contains('puda') ||
-      source.contains('ppsc')) {
-    return ExamFamily.punjab;
-  }
-  if (source.contains('rail') || source.contains('rrb')) {
-    return ExamFamily.railway;
-  }
-  if (source.contains('teach') ||
-      source.contains('teacher') ||
-      source.contains('ctet') ||
-      source.contains(' tet')) {
-    return ExamFamily.teaching;
-  }
-  if (source.contains('defence') ||
-      source.contains('defense') ||
-      source.contains('army') ||
-      source.contains('navy') ||
-      source.contains('air force') ||
-      source.contains('afcat') ||
-      source.contains('nda') ||
-      source.contains('cds')) {
-    return ExamFamily.defence;
-  }
-  if (source.contains('pcs') || source.contains('state civil')) {
-    return ExamFamily.statePcs;
-  }
-  return ExamFamily.other;
-}
-
-ExamFamily familyFromRoute(String value) {
-  final normalized = value.trim().toLowerCase();
-  for (final family in ExamFamily.values) {
-    if (family.name.toLowerCase() == normalized ||
-        family.label.toLowerCase() == normalized) {
-      return family;
-    }
-  }
-
-  if (normalized.contains('ssc')) return ExamFamily.ssc;
-  if (normalized.contains('insurance') || normalized.contains('lic')) {
-    return ExamFamily.insurance;
-  }
-  if (normalized.contains('bank')) return ExamFamily.banking;
-  if (normalized.contains('punjab')) return ExamFamily.punjab;
-  if (normalized.contains('rail')) return ExamFamily.railway;
-  if (normalized.contains('teach')) return ExamFamily.teaching;
-  if (normalized.contains('defen')) return ExamFamily.defence;
-  if (normalized.contains('pcs') || normalized.contains('state')) {
-    return ExamFamily.statePcs;
-  }
-  return ExamFamily.other;
-}
+const _muted = Color(0xFF718096);
 
 class ExamsScreen extends ConsumerStatefulWidget {
   const ExamsScreen({super.key});
@@ -122,143 +31,47 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
     super.dispose();
   }
 
+  Future<void> _refresh() async {
+    ref.invalidate(examCatalogProvider);
+    try {
+      await ref.read(examCatalogProvider.future);
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
-    final examsAsync = ref.watch(availableExamsProvider);
-
+    final catalog = ref.watch(examCatalogProvider);
     return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(availableExamsProvider);
-          await ref.read(availableExamsProvider.future);
-        },
-        child: examsAsync.when(
-          loading: () => const _CategoryLoading(),
-          error: (error, stackTrace) => ListView(
+      child: catalog.when(
+        loading: () => const _CategoryLoading(),
+        error: (error, stack) => RefreshIndicator(
+          onRefresh: _refresh,
+          child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(AppSpacing.md),
             children: [
               NetworkFailureView(
                 error: error,
                 fallbackTitle: 'Unable to load exam categories',
-                onRetry: () => ref.invalidate(availableExamsProvider),
+                onRetry: () => ref.invalidate(examCatalogProvider),
               ),
             ],
           ),
-          data: (exams) => _categoryCatalogue(context, exams),
         ),
-      ),
-    );
-  }
-
-  Widget _categoryCatalogue(BuildContext context, List<Exam> exams) {
-    final counts = <ExamFamily, int>{};
-    final freeCounts = <ExamFamily, int>{};
-    for (final exam in exams) {
-      final family = familyForExam(exam);
-      counts[family] = (counts[family] ?? 0) + 1;
-      if (exam.status.trim().toLowerCase() != 'paid') {
-        freeCounts[family] = (freeCounts[family] ?? 0) + 1;
-      }
-    }
-
-    final preferred = <ExamFamily>[
-      ExamFamily.ssc,
-      ExamFamily.banking,
-      ExamFamily.insurance,
-      ExamFamily.punjab,
-      ExamFamily.railway,
-      ExamFamily.teaching,
-      ExamFamily.defence,
-      ExamFamily.statePcs,
-      ExamFamily.other,
-    ];
-    var visible = preferred.where((family) => (counts[family] ?? 0) > 0).toList();
-    final query = _query.trim().toLowerCase();
-    if (query.isNotEmpty) {
-      visible = visible
-          .where((family) => family.label.toLowerCase().contains(query))
-          .toList();
-    }
-
-    return ListView(
-      key: const Key('exam-category-catalogue'),
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 112),
-      children: [
-        _CategoryHero(
-          totalExams: exams.length,
-          categoryCount: counts.keys.length,
-        ),
-        const SizedBox(height: 16),
-        SearchBar(
-          key: const Key('exam-category-search'),
-          controller: _searchController,
-          hintText: 'Search exam categories',
-          leading: const Icon(Icons.search_rounded),
-          elevation: const WidgetStatePropertyAll(0),
-          backgroundColor: const WidgetStatePropertyAll(Colors.white),
-          side: const WidgetStatePropertyAll(BorderSide(color: _line)),
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
-          ),
-          trailing: [
-            if (_query.isNotEmpty)
-              IconButton(
-                onPressed: () {
-                  _searchController.clear();
-                  setState(() => _query = '');
-                },
-                icon: const Icon(Icons.close_rounded),
-              ),
-          ],
-          onChanged: (value) => setState(() => _query = value),
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          'Exam Categories',
-          style: TextStyle(
-            color: _ink,
-            fontSize: 21,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -.3,
-          ),
-        ),
-        const SizedBox(height: 3),
-        const Text(
-          'Choose a category to see its exams and test series.',
-          style: TextStyle(color: Color(0xFF718096), fontSize: 13),
-        ),
-        const SizedBox(height: 12),
-        if (visible.isEmpty)
-          exams.isEmpty ? const _EmptyCatalogue() : const _NoCategoryMatch()
-        else
-          LayoutBuilder(
-            builder: (context, constraints) {
-              const gap = 10.0;
-              final width = (constraints.maxWidth - gap) / 2;
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: [
-                  for (final family in visible)
-                    SizedBox(
-                      width: width,
-                      child: _CategoryCard(
-                        family: family,
-                        count: counts[family] ?? 0,
-                        freeCount: freeCounts[family] ?? 0,
-                        onTap: () => context.push(
-                          '/exam-category?family=' +
-                              Uri.encodeQueryComponent(family.name),
-                        ),
-                      ),
-                    ),
-                ],
-              );
+        data: (snapshot) => RefreshIndicator(
+          onRefresh: _refresh,
+          child: _CategoryCatalogue(
+            snapshot: snapshot,
+            searchController: _searchController,
+            query: _query,
+            onQueryChanged: (value) => setState(() => _query = value),
+            onClearSearch: () {
+              _searchController.clear();
+              setState(() => _query = '');
             },
           ),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -266,13 +79,14 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
 class ExamCategoryScreen extends ConsumerStatefulWidget {
   const ExamCategoryScreen({
     super.key,
-    required this.family,
+    required this.categoryCode,
   });
 
-  final ExamFamily family;
+  final String categoryCode;
 
   @override
-  ConsumerState<ExamCategoryScreen> createState() => _ExamCategoryScreenState();
+  ConsumerState<ExamCategoryScreen> createState() =>
+      _ExamCategoryScreenState();
 }
 
 class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
@@ -287,55 +101,43 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final examsAsync = ref.watch(availableExamsProvider);
+    final catalog = ref.watch(examCatalogProvider);
     return Scaffold(
       backgroundColor: _page,
-      appBar: AppBar(
-        title: Text(widget.family.label),
-        backgroundColor: Colors.white,
-        foregroundColor: _ink,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, color: _line),
-        ),
-      ),
+      appBar: _appBar('Exams'),
       body: SafeArea(
         top: false,
-        child: examsAsync.when(
+        child: catalog.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => NetworkFailureView(
+          error: (error, stack) => NetworkFailureView(
             error: error,
-            fallbackTitle: 'Unable to load ' + widget.family.label + ' exams',
-            onRetry: () => ref.invalidate(availableExamsProvider),
+            fallbackTitle: 'Unable to load exams',
+            onRetry: () => ref.invalidate(examCatalogProvider),
           ),
-          data: (allExams) {
-            final familyExams = allExams
-                .where((exam) => familyForExam(exam) == widget.family)
-                .toList()
-              ..sort(
-                (left, right) =>
-                    left.title.toLowerCase().compareTo(right.title.toLowerCase()),
-              );
+          data: (snapshot) {
+            final category = snapshot.findCategory(widget.categoryCode);
+            if (category == null) return const _MissingCategory();
 
-            final q = _query.trim().toLowerCase();
-            final filtered = q.isEmpty
-                ? familyExams
-                : familyExams.where((exam) {
+            final exams = snapshot.examsForCategory(category.code);
+            final normalized = _query.trim().toLowerCase();
+            final filtered = normalized.isEmpty
+                ? exams
+                : exams.where((exam) {
                     final searchable = <String>[
-                      exam.title,
+                      exam.name,
                       exam.description,
-                      exam.category,
-                      ...exam.tags,
+                      exam.familyName,
+                      ...exam.languages,
                     ].join(' ').toLowerCase();
-                    return searchable.contains(q);
-                  }).toList();
+                    return searchable.contains(normalized);
+                  }).toList(growable: false);
 
             return RefreshIndicator(
               onRefresh: () async {
-                ref.invalidate(availableExamsProvider);
-                await ref.read(availableExamsProvider.future);
+                ref.invalidate(examCatalogProvider);
+                try {
+                  await ref.read(examCatalogProvider.future);
+                } catch (_) {}
               },
               child: ListView(
                 key: const Key('exam-category-list'),
@@ -343,17 +145,13 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 32),
                 children: [
                   _FamilyHeader(
-                    family: widget.family,
-                    count: familyExams.length,
-                    freeCount: familyExams
-                        .where((exam) =>
-                            exam.status.trim().toLowerCase() != 'paid')
-                        .length,
+                    category: category,
+                    examCount: exams.length,
                   ),
                   const SizedBox(height: 14),
                   SearchBar(
                     controller: _searchController,
-                    hintText: 'Search ' + widget.family.label + ' exams',
+                    hintText: 'Search ' + category.name + ' exams',
                     leading: const Icon(Icons.search_rounded),
                     elevation: const WidgetStatePropertyAll(0),
                     backgroundColor:
@@ -366,11 +164,22 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                         borderRadius: BorderRadius.circular(17),
                       ),
                     ),
+                    trailing: [
+                      if (_query.isNotEmpty)
+                        IconButton(
+                          tooltip: 'Clear search',
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _query = '');
+                          },
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                    ],
                     onChanged: (value) => setState(() => _query = value),
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    widget.family.label + ' Exams',
+                    category.name + ' Exams',
                     style: const TextStyle(
                       color: _ink,
                       fontSize: 20,
@@ -380,16 +189,12 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                   const SizedBox(height: 4),
                   Text(
                     filtered.length.toString() +
-                        (filtered.length == 1 ? ' exam' : ' exams') +
-                        ' available',
-                    style: const TextStyle(
-                      color: Color(0xFF718096),
-                      fontSize: 13,
-                    ),
+                        (filtered.length == 1 ? ' exam available' : ' exams available'),
+                    style: const TextStyle(color: _muted, fontSize: 13),
                   ),
                   const SizedBox(height: 10),
-                  if (familyExams.isEmpty)
-                    _EmptyFamily(family: widget.family)
+                  if (exams.isEmpty)
+                    _EmptyFamily(categoryName: category.name)
                   else if (filtered.isEmpty)
                     const _NoExamMatch()
                   else
@@ -397,7 +202,8 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                       _ExamListCard(
                         exam: exam,
                         onTap: () => context.push(
-                          '/exam-details?id=' + Uri.encodeQueryComponent(exam.id),
+                          '/exam-series?exam=' +
+                              Uri.encodeQueryComponent(exam.code),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -412,14 +218,221 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
   }
 }
 
+class ExamSeriesScreen extends ConsumerWidget {
+  const ExamSeriesScreen({
+    super.key,
+    required this.examCode,
+  });
+
+  final String examCode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(examCatalogProvider);
+    return Scaffold(
+      backgroundColor: _page,
+      appBar: _appBar('Test Series'),
+      body: SafeArea(
+        top: false,
+        child: catalog.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => NetworkFailureView(
+            error: error,
+            fallbackTitle: 'Unable to load test series',
+            onRetry: () => ref.invalidate(examCatalogProvider),
+          ),
+          data: (snapshot) {
+            final exam = snapshot.findExam(examCode);
+            if (exam == null) return const _MissingExam();
+            final series = snapshot.seriesForExam(exam.code);
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(examCatalogProvider);
+                try {
+                  await ref.read(examCatalogProvider.future);
+                } catch (_) {}
+              },
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 32),
+                children: [
+                  _ExamHero(exam: exam, series: series),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Available Test Series',
+                    style: TextStyle(
+                      color: _ink,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    series.isEmpty
+                        ? 'No active test series yet'
+                        : series.length.toString() +
+                            (series.length == 1
+                                ? ' series available'
+                                : ' series available'),
+                    style: const TextStyle(color: _muted, fontSize: 13),
+                  ),
+                  const SizedBox(height: 10),
+                  if (series.isEmpty)
+                    const _EmptySeries()
+                  else
+                    for (final item in series) ...[
+                      _SeriesCard(
+                        series: item,
+                        onTap: () => context.push(
+                          '/test-series?id=' +
+                              Uri.encodeQueryComponent(item.id),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+PreferredSizeWidget _appBar(String title) {
+  return AppBar(
+    title: Text(title),
+    backgroundColor: Colors.white,
+    foregroundColor: _ink,
+    surfaceTintColor: Colors.transparent,
+    elevation: 0,
+    bottom: const PreferredSize(
+      preferredSize: Size.fromHeight(1),
+      child: Divider(height: 1, color: _line),
+    ),
+  );
+}
+
+class _CategoryCatalogue extends StatelessWidget {
+  const _CategoryCatalogue({
+    required this.snapshot,
+    required this.searchController,
+    required this.query,
+    required this.onQueryChanged,
+    required this.onClearSearch,
+  });
+
+  final ExamCatalogSnapshot snapshot;
+  final TextEditingController searchController;
+  final String query;
+  final ValueChanged<String> onQueryChanged;
+  final VoidCallback onClearSearch;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalized = query.trim().toLowerCase();
+    final visible = normalized.isEmpty
+        ? snapshot.categories
+        : snapshot.categories.where((category) {
+            return category.name.toLowerCase().contains(normalized) ||
+                category.description.toLowerCase().contains(normalized);
+          }).toList(growable: false);
+
+    return ListView(
+      key: const Key('exam-category-catalogue'),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 112),
+      children: [
+        _CategoryHero(
+          totalExams: snapshot.exams.length,
+          categoryCount: snapshot.categories.length,
+          seriesCount: snapshot.series.length,
+        ),
+        const SizedBox(height: 16),
+        SearchBar(
+          key: const Key('exam-category-search'),
+          controller: searchController,
+          hintText: 'Search exam categories',
+          leading: const Icon(Icons.search_rounded),
+          elevation: const WidgetStatePropertyAll(0),
+          backgroundColor: const WidgetStatePropertyAll(Colors.white),
+          side: const WidgetStatePropertyAll(BorderSide(color: _line)),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+          ),
+          trailing: [
+            if (query.isNotEmpty)
+              IconButton(
+                tooltip: 'Clear search',
+                onPressed: onClearSearch,
+                icon: const Icon(Icons.close_rounded),
+              ),
+          ],
+          onChanged: onQueryChanged,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Exam Categories',
+          style: TextStyle(
+            color: _ink,
+            fontSize: 21,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -.3,
+          ),
+        ),
+        const SizedBox(height: 3),
+        const Text(
+          'Choose a category to find the exam you are preparing for.',
+          style: TextStyle(color: _muted, fontSize: 13),
+        ),
+        const SizedBox(height: 12),
+        if (visible.isEmpty)
+          snapshot.categories.isEmpty
+              ? const _EmptyCatalogue()
+              : const _NoCategoryMatch()
+        else
+          LayoutBuilder(
+            builder: (context, constraints) {
+              const gap = 10.0;
+              final width = (constraints.maxWidth - gap) / 2;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (final category in visible)
+                    SizedBox(
+                      width: width,
+                      child: _CategoryCard(
+                        category: category,
+                        examCount:
+                            snapshot.examsForCategory(category.code).length,
+                        onTap: () => context.push(
+                          '/exam-category?family=' +
+                              Uri.encodeQueryComponent(category.code),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+      ],
+    );
+  }
+}
+
 class _CategoryHero extends StatelessWidget {
   const _CategoryHero({
     required this.totalExams,
     required this.categoryCount,
+    required this.seriesCount,
   });
 
   final int totalExams;
   final int categoryCount;
+  final int seriesCount;
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +478,7 @@ class _CategoryHero extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           const Text(
-            'Find mock tests, previous papers and practice for the exam you are targeting.',
+            'Open a category, choose your exam and continue to its test series.',
             style: TextStyle(color: Color(0xFFD8E6F5), height: 1.4),
           ),
           const SizedBox(height: 14),
@@ -478,8 +491,12 @@ class _CategoryHero extends StatelessWidget {
                 text: categoryCount.toString() + ' categories',
               ),
               _HeroPill(
-                icon: Icons.assignment_outlined,
+                icon: Icons.school_outlined,
                 text: totalExams.toString() + ' exams',
+              ),
+              _HeroPill(
+                icon: Icons.library_books_outlined,
+                text: seriesCount.toString() + ' series',
               ),
             ],
           ),
@@ -491,6 +508,7 @@ class _CategoryHero extends StatelessWidget {
 
 class _HeroPill extends StatelessWidget {
   const _HeroPill({required this.icon, required this.text});
+
   final IconData icon;
   final String text;
 
@@ -523,20 +541,18 @@ class _HeroPill extends StatelessWidget {
 
 class _CategoryCard extends StatelessWidget {
   const _CategoryCard({
-    required this.family,
-    required this.count,
-    required this.freeCount,
+    required this.category,
+    required this.examCount,
     required this.onTap,
   });
 
-  final ExamFamily family;
-  final int count;
-  final int freeCount;
+  final ExamCatalogCategory category;
+  final int examCount;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final visual = _familyVisual(family);
+    final visual = _visualFor(category.name);
     return Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -553,14 +569,12 @@ class _CategoryCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: visual.$2,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Icon(visual.$1, color: visual.$3, size: 25),
+                  _OfficialIcon(
+                    imageUrl: category.iconUrl,
+                    fallbackIcon: visual.$1,
+                    background: visual.$2,
+                    foreground: visual.$3,
+                    size: 46,
                   ),
                   const Spacer(),
                   const Icon(
@@ -572,7 +586,7 @@ class _CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 13),
               Text(
-                family.label,
+                category.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -584,17 +598,18 @@ class _CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                count.toString() + (count == 1 ? ' exam' : ' exams'),
+                examCount.toString() +
+                    (examCount == 1 ? ' exam' : ' exams'),
                 style: const TextStyle(
                   color: Color(0xFF6F7E92),
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              if (freeCount > 0) ...[
+              if (category.testCount > 0) ...[
                 const SizedBox(height: 5),
                 Text(
-                  freeCount.toString() + ' free to start',
+                  category.testCount.toString() + ' live tests',
                   style: const TextStyle(
                     color: Color(0xFF11966F),
                     fontSize: 11,
@@ -612,18 +627,16 @@ class _CategoryCard extends StatelessWidget {
 
 class _FamilyHeader extends StatelessWidget {
   const _FamilyHeader({
-    required this.family,
-    required this.count,
-    required this.freeCount,
+    required this.category,
+    required this.examCount,
   });
 
-  final ExamFamily family;
-  final int count;
-  final int freeCount;
+  final ExamCatalogCategory category;
+  final int examCount;
 
   @override
   Widget build(BuildContext context) {
-    final visual = _familyVisual(family);
+    final visual = _visualFor(category.name);
     return Container(
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
@@ -636,14 +649,12 @@ class _FamilyHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 58,
-            height: 58,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(visual.$1, color: visual.$3, size: 30),
+          _OfficialIcon(
+            imageUrl: category.iconUrl,
+            fallbackIcon: visual.$1,
+            background: Colors.white,
+            foreground: visual.$3,
+            size: 60,
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -651,7 +662,7 @@ class _FamilyHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  family.label,
+                  category.name,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 21,
@@ -660,11 +671,11 @@ class _FamilyHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  count.toString() +
-                      (count == 1 ? ' exam' : ' exams') +
-                      (freeCount > 0
-                          ? ' • ' + freeCount.toString() + ' free'
-                          : ''),
+                  examCount.toString() +
+                      (examCount == 1 ? ' exam' : ' exams') +
+                      ' • ' +
+                      category.testCount.toString() +
+                      ' live tests',
                   style: const TextStyle(
                     color: Color(0xFFD8E6F5),
                     fontWeight: FontWeight.w600,
@@ -685,13 +696,13 @@ class _ExamListCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final Exam exam;
+  final ExamCatalogExam exam;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final paid = exam.status.trim().toLowerCase() == 'paid';
-    final acronym = _acronym(exam.title);
+    final visual = _visualFor(exam.familyName);
+    final languageLabel = _languageLabel(exam.languages);
     return Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -706,27 +717,12 @@ class _ExamListCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 54,
-                height: 54,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: paid
-                      ? const Color(0xFFF3EEFF)
-                      : const Color(0xFFEAF4FF),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  acronym,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: paid
-                        ? const Color(0xFF6D4BC3)
-                        : const Color(0xFF176CC0),
-                    fontSize: acronym.length > 3 ? 11 : 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+              _OfficialIcon(
+                imageUrl: exam.iconUrl,
+                fallbackIcon: Icons.workspace_premium_rounded,
+                background: visual.$2,
+                foreground: visual.$3,
+                size: 56,
               ),
               const SizedBox(width: 13),
               Expanded(
@@ -734,52 +730,75 @@ class _ExamListCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      exam.title,
+                      exam.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: _ink,
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.w900,
-                        height: 1.22,
+                        height: 1.2,
                       ),
                     ),
-                    if (exam.description.trim().isNotEmpty) ...[
+                    if (exam.description.isNotEmpty) ...[
                       const SizedBox(height: 5),
                       Text(
-                        exam.description.trim(),
+                        exam.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          color: Color(0xFF718096),
+                          color: _muted,
                           fontSize: 12,
                           height: 1.35,
                         ),
                       ),
                     ],
-                    const SizedBox(height: 9),
+                    const SizedBox(height: 10),
                     Wrap(
                       spacing: 7,
                       runSpacing: 6,
                       children: [
                         _MetaChip(
-                          Icons.help_outline_rounded,
-                          exam.totalQuestions.toString() + ' questions',
+                          Icons.library_books_outlined,
+                          exam.seriesCount.toString() + ' series',
                         ),
                         _MetaChip(
-                          Icons.timer_outlined,
-                          (exam.durationInSeconds ~/ 60).toString() + ' min',
+                          Icons.assignment_outlined,
+                          exam.testCount.toString() + ' tests',
                         ),
-                        _StatusChip(paid: paid),
+                        if (languageLabel.isNotEmpty)
+                          _MetaChip(
+                            Icons.translate_rounded,
+                            languageLabel,
+                          ),
                       ],
+                    ),
+                    const SizedBox(height: 11),
+                    FilledButton.icon(
+                      onPressed: onTap,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: _navy,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 38),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 9,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 17,
+                      ),
+                      label: const Text(
+                        'View Test Series',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 6),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Color(0xFF94A3B8),
               ),
             ],
           ),
@@ -789,8 +808,263 @@ class _ExamListCard extends StatelessWidget {
   }
 }
 
+class _ExamHero extends StatelessWidget {
+  const _ExamHero({
+    required this.exam,
+    required this.series,
+  });
+
+  final ExamCatalogExam exam;
+  final List<ExamSeriesSummary> series;
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = _visualFor(exam.familyName);
+    final liveTests =
+        series.fold<int>(0, (sum, item) => sum + item.liveTestCount);
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [_navy, _blue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _OfficialIcon(
+            imageUrl: exam.iconUrl,
+            fallbackIcon: Icons.workspace_premium_rounded,
+            background: Colors.white,
+            foreground: visual.$3,
+            size: 64,
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  exam.familyName.toUpperCase(),
+                  style: const TextStyle(
+                    color: Color(0xFFFFD36B),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .7,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  exam.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    height: 1.15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  series.length.toString() +
+                      ' test series • ' +
+                      liveTests.toString() +
+                      ' live tests',
+                  style: const TextStyle(
+                    color: Color(0xFFD8E6F5),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SeriesCard extends StatelessWidget {
+  const _SeriesCard({
+    required this.series,
+    required this.onTap,
+  });
+
+  final ExamSeriesSummary series;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final averageMinutes = series.liveTestCount == 0
+        ? 0
+        : (series.durationSeconds / series.liveTestCount / 60).round();
+
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(19),
+        side: const BorderSide(color: _line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _OfficialIcon(
+                    imageUrl: '',
+                    fallbackIcon: Icons.fact_check_rounded,
+                    background: Color(0xFFEAF4FF),
+                    foreground: Color(0xFF176CC0),
+                    size: 48,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          series.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: _ink,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            height: 1.2,
+                          ),
+                        ),
+                        if (series.description.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            series.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: _muted,
+                              fontSize: 12,
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 11),
+              Wrap(
+                spacing: 7,
+                runSpacing: 6,
+                children: [
+                  _MetaChip(
+                    Icons.assignment_outlined,
+                    series.liveTestCount.toString() + ' tests',
+                  ),
+                  if (series.fullLengthTestCount > 0)
+                    _MetaChip(
+                      Icons.description_outlined,
+                      series.fullLengthTestCount.toString() + ' full mocks',
+                    ),
+                  if (averageMinutes > 0)
+                    _MetaChip(
+                      Icons.timer_outlined,
+                      '~' + averageMinutes.toString() + ' min/test',
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: onTap,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: _navy,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(43),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                  child: const Text(
+                    'View Series',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OfficialIcon extends StatelessWidget {
+  const _OfficialIcon({
+    required this.imageUrl,
+    required this.fallbackIcon,
+    required this.background,
+    required this.foreground,
+    required this.size,
+  });
+
+  final String imageUrl;
+  final IconData fallbackIcon;
+  final Color background;
+  final Color foreground;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget fallback() => Container(
+          width: size,
+          height: size,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(size * .3),
+          ),
+          child: Icon(
+            fallbackIcon,
+            color: foreground,
+            size: size * .5,
+          ),
+        );
+
+    final url = imageUrl.trim();
+    if (url.isEmpty || url.toLowerCase().endsWith('.svg')) {
+      return fallback();
+    }
+
+    return Container(
+      width: size,
+      height: size,
+      padding: EdgeInsets.all(size * .10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(size * .3),
+        border: Border.all(color: const Color(0xFFE8EDF4)),
+      ),
+      child: Image.network(
+        url,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => fallback(),
+      ),
+    );
+  }
+}
+
 class _MetaChip extends StatelessWidget {
   const _MetaChip(this.icon, this.text);
+
   final IconData icon;
   final String text;
 
@@ -821,99 +1095,94 @@ class _MetaChip extends StatelessWidget {
   }
 }
 
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.paid});
-  final bool paid;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        color: paid
-            ? AppColors.tertiaryContainer
-            : AppColors.mintContainer,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        paid ? 'PREMIUM' : 'FREE',
-        style: TextStyle(
-          color: paid
-              ? AppColors.onTertiaryContainer
-              : AppColors.onMintContainer,
-          fontSize: 9,
-          fontWeight: FontWeight.w900,
-          letterSpacing: .3,
-        ),
-      ),
+(IconData, Color, Color) _visualFor(String value) {
+  final key = value.toLowerCase();
+  if (key.contains('ssc')) {
+    return (
+      Icons.workspace_premium_rounded,
+      const Color(0xFFEAF8F2),
+      const Color(0xFF11966F),
     );
   }
+  if (key.contains('bank')) {
+    return (
+      Icons.account_balance_rounded,
+      const Color(0xFFECF4FF),
+      const Color(0xFF1672E8),
+    );
+  }
+  if (key.contains('insurance')) {
+    return (
+      Icons.health_and_safety_rounded,
+      const Color(0xFFFFF4E8),
+      const Color(0xFFD97706),
+    );
+  }
+  if (key.contains('punjab')) {
+    return (
+      Icons.location_on_rounded,
+      const Color(0xFFFFEFEF),
+      const Color(0xFFF04452),
+    );
+  }
+  if (key.contains('rail')) {
+    return (
+      Icons.train_rounded,
+      const Color(0xFFF3EEFF),
+      const Color(0xFF7248E8),
+    );
+  }
+  if (key.contains('teach')) {
+    return (
+      Icons.school_rounded,
+      const Color(0xFFFFF5E8),
+      const Color(0xFFF28A19),
+    );
+  }
+  if (key.contains('defen')) {
+    return (
+      Icons.shield_rounded,
+      const Color(0xFFEAF8F2),
+      const Color(0xFF159D73),
+    );
+  }
+  if (key.contains('pcs') || key.contains('state')) {
+    return (
+      Icons.apartment_rounded,
+      const Color(0xFFFFEEEE),
+      const Color(0xFFF04452),
+    );
+  }
+  return (
+    Icons.grid_view_rounded,
+    const Color(0xFFF1F4F8),
+    const Color(0xFF718096),
+  );
 }
 
-(IconData, Color, Color) _familyVisual(ExamFamily family) {
-  return switch (family) {
-    ExamFamily.ssc => (
-        Icons.workspace_premium_rounded,
-        const Color(0xFFEAF8F2),
-        const Color(0xFF11966F),
-      ),
-    ExamFamily.banking => (
-        Icons.account_balance_rounded,
-        const Color(0xFFECF4FF),
-        const Color(0xFF1672E8),
-      ),
-    ExamFamily.insurance => (
-        Icons.health_and_safety_rounded,
-        const Color(0xFFFFF4E8),
-        const Color(0xFFD97706),
-      ),
-    ExamFamily.punjab => (
-        Icons.location_on_rounded,
-        const Color(0xFFFFEFEF),
-        const Color(0xFFF04452),
-      ),
-    ExamFamily.railway => (
-        Icons.train_rounded,
-        const Color(0xFFF3EEFF),
-        const Color(0xFF7248E8),
-      ),
-    ExamFamily.teaching => (
-        Icons.school_rounded,
-        const Color(0xFFFFF5E8),
-        const Color(0xFFF28A19),
-      ),
-    ExamFamily.defence => (
-        Icons.shield_rounded,
-        const Color(0xFFEAF8F2),
-        const Color(0xFF159D73),
-      ),
-    ExamFamily.statePcs => (
-        Icons.apartment_rounded,
-        const Color(0xFFFFEEEE),
-        const Color(0xFFF04452),
-      ),
-    ExamFamily.other => (
-        Icons.grid_view_rounded,
-        const Color(0xFFF1F4F8),
-        const Color(0xFF718096),
-      ),
-  };
-}
+String _languageLabel(List<String> languages) {
+  if (languages.isEmpty) return '';
+  final normalized = languages
+      .map((item) => item.trim().toLowerCase())
+      .where((item) => item.isNotEmpty)
+      .toSet();
 
-String _acronym(String value) {
-  final words = value
-      .trim()
-      .split(RegExp(r'\s+'))
-      .where((word) => word.isNotEmpty)
-      .toList();
-  if (words.isEmpty) return 'EX';
-  final initials = words
-      .take(4)
-      .map((word) => word.characters.first.toUpperCase())
-      .join();
-  if (initials.length >= 2) return initials;
-  final clean = value.replaceAll(RegExp(r'[^A-Za-z0-9]'), '').toUpperCase();
-  return clean.length <= 4 ? clean : clean.substring(0, 4);
+  final labels = <String>[];
+  if (normalized.contains('en') || normalized.contains('english')) {
+    labels.add('EN');
+  }
+  if (normalized.contains('hi') || normalized.contains('hindi')) {
+    labels.add('HI');
+  }
+  if (normalized.contains('pa') ||
+      normalized.contains('pb') ||
+      normalized.contains('punjabi')) {
+    labels.add('PA');
+  }
+  if (labels.isEmpty) {
+    labels.addAll(normalized.take(3).map((item) => item.toUpperCase()));
+  }
+  return labels.join(' • ');
 }
 
 class _CategoryLoading extends StatelessWidget {
@@ -975,27 +1244,10 @@ class _EmptyCatalogue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 36),
-      child: Column(
-        children: [
-          Icon(Icons.event_busy_outlined, size: 42, color: Color(0xFF94A3B8)),
-          SizedBox(height: 10),
-          Text(
-            'No exam categories are published yet.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: _ink,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'Pull down to check again.',
-            style: TextStyle(color: Color(0xFF64748B)),
-          ),
-        ],
-      ),
+    return const _CentredMessage(
+      icon: Icons.event_busy_outlined,
+      title: 'No exam categories are published yet.',
+      body: 'Pull down to check again.',
     );
   }
 }
@@ -1005,19 +1257,10 @@ class _NoCategoryMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 36),
-      child: Column(
-        children: [
-          Icon(Icons.search_off_rounded, size: 42, color: Color(0xFF94A3B8)),
-          SizedBox(height: 10),
-          Text(
-            'No exam category matches your search.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF64748B)),
-          ),
-        ],
-      ),
+    return const _CentredMessage(
+      icon: Icons.search_off_rounded,
+      title: 'No exam category matches your search.',
+      body: 'Try another exam family or clear the search.',
     );
   }
 }
@@ -1027,50 +1270,100 @@ class _NoExamMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 36),
-      child: Column(
-        children: [
-          Icon(Icons.search_off_rounded, size: 42, color: Color(0xFF94A3B8)),
-          SizedBox(height: 10),
-          Text(
-            'No exams match this search.',
-            style: TextStyle(color: Color(0xFF64748B)),
-          ),
-        ],
-      ),
+    return const _CentredMessage(
+      icon: Icons.search_off_rounded,
+      title: 'No exams match this search.',
+      body: 'Try a shorter exam name or clear the search.',
+    );
+  }
+}
+
+class _MissingCategory extends StatelessWidget {
+  const _MissingCategory();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _CentredMessage(
+      icon: Icons.folder_off_outlined,
+      title: 'Exam category unavailable',
+      body: 'Open the category again from the Exams page.',
+    );
+  }
+}
+
+class _MissingExam extends StatelessWidget {
+  const _MissingExam();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _CentredMessage(
+      icon: Icons.school_outlined,
+      title: 'Exam unavailable',
+      body: 'Open the exam again from its category.',
     );
   }
 }
 
 class _EmptyFamily extends StatelessWidget {
-  const _EmptyFamily({required this.family});
-  final ExamFamily family;
+  const _EmptyFamily({required this.categoryName});
+
+  final String categoryName;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _line),
-      ),
+    return _CentredMessage(
+      icon: Icons.event_busy_outlined,
+      title: 'No ' + categoryName + ' exams are published yet.',
+      body: 'New exams will appear here automatically when published.',
+    );
+  }
+}
+
+class _EmptySeries extends StatelessWidget {
+  const _EmptySeries();
+
+  @override
+  Widget build(BuildContext context) {
+    return const _CentredMessage(
+      icon: Icons.library_books_outlined,
+      title: 'No test series available yet',
+      body: 'Published test series for this exam will appear here automatically.',
+    );
+  }
+}
+
+class _CentredMessage extends StatelessWidget {
+  const _CentredMessage({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 34, horizontal: 18),
       child: Column(
         children: [
-          const Icon(
-            Icons.event_busy_outlined,
-            size: 40,
-            color: Color(0xFF94A3B8),
-          ),
+          Icon(icon, size: 42, color: const Color(0xFF94A3B8)),
           const SizedBox(height: 10),
           Text(
-            'No ' + family.label + ' exams are published yet.',
+            title,
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: _ink,
               fontWeight: FontWeight.w800,
             ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            body,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Color(0xFF64748B)),
           ),
         ],
       ),
