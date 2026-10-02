@@ -7,10 +7,11 @@ if (base.pathname !== '/api/') {
 }
 
 const targets = [
-  { name: 'health', url: new URL('/health', base), expectArray: false },
-  { name: 'tests', url: new URL('tests', base), expectArray: true, requireNonEmpty: true },
-  { name: 'categories', url: new URL('categories', base), expectArray: true },
-  { name: 'subcategories', url: new URL('subcategories', base), expectArray: true },
+  { name: 'health', url: new URL('/health', base), kind: 'json' },
+  { name: 'tests', url: new URL('tests', base), kind: 'array' },
+  { name: 'categories', url: new URL('categories', base), kind: 'array' },
+  { name: 'subcategories', url: new URL('subcategories', base), kind: 'array' },
+  { name: 'testSeries', url: new URL('test-series', base), kind: 'series' },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -34,27 +35,36 @@ async function fetchWithRetry(target) {
       }
 
       let body = null;
-      if (target.expectArray) {
-        try {
-          body = JSON.parse(text);
-        } catch {
-          throw new Error(`Expected JSON from ${target.url}`);
-        }
-        if (!Array.isArray(body)) {
-          throw new Error(`Expected JSON array from ${target.url}`);
-        }
-        if (target.requireNonEmpty && body.length === 0) {
-          throw new Error(`Expected non-empty array from ${target.url}`);
+      try {
+        body = JSON.parse(text);
+      } catch {
+        throw new Error(`Expected JSON from ${target.url}`);
+      }
+
+      if (target.kind === 'array' && !Array.isArray(body)) {
+        throw new Error(`Expected JSON array from ${target.url}`);
+      }
+
+      if (target.kind === 'series') {
+        const series = body && typeof body === 'object' ? body.series : null;
+        if (!Array.isArray(series)) {
+          throw new Error(`Expected { series: [] } from ${target.url}`);
         }
       }
+
+      const count = target.kind === 'array'
+        ? body.length
+        : target.kind === 'series'
+          ? body.series.length
+          : null;
 
       console.log(JSON.stringify({
         name: target.name,
         url: target.url.toString(),
         status: response.status,
-        count: Array.isArray(body) ? body.length : null,
+        count,
       }));
-      return;
+      return body;
     } catch (error) {
       lastError = error;
       console.error(`${target.name} attempt ${attempt}/5 failed: ${error}`);
@@ -66,6 +76,18 @@ async function fetchWithRetry(target) {
   throw lastError;
 }
 
+const result = {};
 for (const target of targets) {
-  await fetchWithRetry(target);
+  result[target.name] = await fetchWithRetry(target);
+}
+
+const standaloneTestCount = Array.isArray(result.tests) ? result.tests.length : 0;
+const seriesCount = Array.isArray(result.testSeries?.series)
+  ? result.testSeries.series.length
+  : 0;
+
+if (standaloneTestCount === 0 && seriesCount === 0) {
+  throw new Error(
+    'Production catalogue has neither standalone tests nor published test series',
+  );
 }
