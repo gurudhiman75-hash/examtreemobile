@@ -424,6 +424,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/exam-category',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final family = familyFromRoute(
+            state.uri.queryParameters['family'] ?? '',
+          );
+          return ExamCategoryScreen(family: family);
+        },
+      ),
+      GoRoute(
         path: '/exam-details',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
