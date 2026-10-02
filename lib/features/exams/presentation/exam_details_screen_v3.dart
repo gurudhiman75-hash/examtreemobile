@@ -10,24 +10,44 @@ import '../../results/presentation/providers/result_providers.dart';
 import 'providers/exam_providers.dart';
 
 class ExamDetailsScreen extends ConsumerWidget {
-  const ExamDetailsScreen({super.key, required this.examId});
+  const ExamDetailsScreen({
+    super.key,
+    required this.examId,
+    this.seriesId,
+  });
 
   final String examId;
+  final String? seriesId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final examAsync = ref.watch(examDetailsProvider(examId));
+    final normalizedSeriesId = seriesId?.trim();
+    final hasSeriesContext =
+        normalizedSeriesId != null && normalizedSeriesId.isNotEmpty;
+    final accessKey = (
+      examId: examId,
+      seriesId: hasSeriesContext ? normalizedSeriesId : null,
+    );
+    final examAsync = hasSeriesContext
+        ? ref.watch(contextualExamDetailsProvider(accessKey))
+        : ref.watch(examDetailsProvider(examId));
     final completedAttemptsAsync = ref.watch(
       completedAttemptCountProvider(examId),
     );
 
     Future<void> refresh() async {
-      ref
-        ..invalidate(examDetailsProvider(examId))
-        ..invalidate(completedAttemptCountProvider(examId));
+      if (hasSeriesContext) {
+        ref.invalidate(contextualExamDetailsProvider(accessKey));
+      } else {
+        ref.invalidate(examDetailsProvider(examId));
+      }
+      ref.invalidate(completedAttemptCountProvider(examId));
       try {
         await Future.wait([
-          ref.read(examDetailsProvider(examId).future),
+          if (hasSeriesContext)
+            ref.read(contextualExamDetailsProvider(accessKey).future)
+          else
+            ref.read(examDetailsProvider(examId).future),
           ref.read(completedAttemptCountProvider(examId).future),
         ]);
       } catch (_) {
@@ -89,7 +109,13 @@ class ExamDetailsScreen extends ConsumerWidget {
             exam: exam,
             completedAttemptsAsync: completedAttemptsAsync,
             attemptLimitReached: attemptLimitReached,
-            onStart: () => context.push('/test-attempt', extra: examId),
+            onStart: () => context.push(
+              hasSeriesContext
+                  ? '/test-attempt?seriesId=' +
+                      Uri.encodeQueryComponent(normalizedSeriesId)
+                  : '/test-attempt',
+              extra: examId,
+            ),
           ),
         );
       },
