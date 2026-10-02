@@ -626,6 +626,7 @@ class _HistoryView extends StatelessWidget {
               ),
             ),
           ),
+        ),
       ],
     );
   }
