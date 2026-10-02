@@ -48,6 +48,7 @@ class PromotionCampaign {
     this.examIds = const <String>[],
     this.isDismissible = false,
     this.frequencyCapPerDay,
+    this.repeatOnEveryOpen = false,
   });
 
   final String id;
@@ -65,6 +66,7 @@ class PromotionCampaign {
   final List<String> examIds;
   final bool isDismissible;
   final int? frequencyCapPerDay;
+  final bool repeatOnEveryOpen;
 
   bool get hasAction =>
       (ctaLabel?.trim().isNotEmpty ?? false) &&
@@ -161,6 +163,7 @@ class PromotionCampaign {
       frequencyCapPerDay: frequencyCapPerDay != null && frequencyCapPerDay > 0
           ? frequencyCapPerDay
           : null,
+      repeatOnEveryOpen: map['repeatOnEveryOpen'] == true,
     );
   }
 }
