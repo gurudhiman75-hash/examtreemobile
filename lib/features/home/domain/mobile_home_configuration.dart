@@ -9,8 +9,6 @@ class MobileHeroSlide {
     required this.ctaLabel,
     required this.destinationType,
     required this.destinationValue,
-    required this.span,
-    required this.style,
     required this.isActive,
     required this.sortOrder,
   });
@@ -24,8 +22,6 @@ class MobileHeroSlide {
   final String ctaLabel;
   final String destinationType;
   final String destinationValue;
-  final int span;
-  final String style;
   final bool isActive;
   final int sortOrder;
 
@@ -40,8 +36,6 @@ class MobileHeroSlide {
       ctaLabel: json['ctaLabel']?.toString() ?? '',
       destinationType: json['destinationType']?.toString() ?? 'none',
       destinationValue: json['destinationValue']?.toString() ?? '',
-      span: (int.tryParse(json['span']?.toString() ?? '') ?? 1).clamp(1, 4),
-      style: json['style']?.toString() ?? 'default',
       isActive: json['isActive'] != false,
       sortOrder: int.tryParse(json['sortOrder']?.toString() ?? '') ?? 0,
     );
@@ -120,7 +114,7 @@ class MobileHomeSectionSetting {
       iconName: json['iconName']?.toString() ?? '',
       iconUrl: json['iconUrl']?.toString() ?? '',
       layout: json['layout']?.toString() ?? '',
-      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 0).clamp(0, 4),
+      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 0).clamp(0, 4).toInt(),
       isVisible: json['isVisible'] != false,
     );
   }
@@ -170,6 +164,8 @@ class MobileHomeCard {
     required this.ctaLabel,
     required this.destinationType,
     required this.destinationValue,
+    required this.span,
+    required this.style,
     required this.isActive,
     required this.sortOrder,
   });
@@ -184,6 +180,8 @@ class MobileHomeCard {
   final String ctaLabel;
   final String destinationType;
   final String destinationValue;
+  final int span;
+  final String style;
   final bool isActive;
   final int sortOrder;
 
@@ -199,6 +197,8 @@ class MobileHomeCard {
       ctaLabel: json['ctaLabel']?.toString() ?? '',
       destinationType: json['destinationType']?.toString() ?? 'none',
       destinationValue: json['destinationValue']?.toString() ?? '',
+      span: (int.tryParse(json['span']?.toString() ?? '') ?? 1).clamp(1, 4).toInt(),
+      style: json['style']?.toString() ?? 'default',
       isActive: json['isActive'] != false,
       sortOrder: int.tryParse(json['sortOrder']?.toString() ?? '') ?? 0,
     );
@@ -250,7 +250,7 @@ class MobileCustomHomeSection {
       iconName: json['iconName']?.toString() ?? '',
       iconUrl: json['iconUrl']?.toString() ?? '',
       layout: json['layout']?.toString() ?? 'horizontal',
-      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 2).clamp(1, 4),
+      columns: (int.tryParse(json['columns']?.toString() ?? '') ?? 2).clamp(1, 4).toInt(),
       gap: json['gap']?.toString() ?? 'normal',
       style: json['style']?.toString() ?? 'default',
       isVisible: json['isVisible'] != false,
