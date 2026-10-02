@@ -257,9 +257,9 @@ void main() {
     await pump(
       tester,
       catalog: snapshot,
-      child: const Scaffold(
-        appBar: AppBar(title: Text('Exams')),
-        body: ExamsScreen(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Exams')),
+        body: const ExamsScreen(),
       ),
     );
 
@@ -303,9 +303,9 @@ void main() {
         exams: [],
         series: [],
       ),
-      child: const Scaffold(
-        appBar: AppBar(title: Text('Exams')),
-        body: ExamsScreen(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Exams')),
+        body: const ExamsScreen(),
       ),
     );
 
