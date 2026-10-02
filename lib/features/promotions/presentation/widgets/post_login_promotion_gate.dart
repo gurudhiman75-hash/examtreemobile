@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/providers/mobile_analytics_provider.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/promotion_campaign.dart';
 import '../providers/promotion_providers.dart';
@@ -58,7 +61,16 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
     if (!mounted) return;
     setState(() => _sheetOpen = true);
     final exposureStore = ref.read(promotionExposureStoreProvider);
+    final analytics = ref.read(mobileAnalyticsClientProvider);
     await exposureStore.recordImpression(campaign);
+    unawaited(
+      analytics.track(
+        'promotion_impression',
+        entityType: 'promotion',
+        entityId: campaign.id,
+        placement: 'post_login',
+      ),
+    );
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: false,
@@ -113,6 +125,14 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                 FilledButton.icon(
                   key: Key('post-login-promotion-action-${campaign.id}'),
                   onPressed: () async {
+                    unawaited(
+                      analytics.track(
+                        'promotion_click',
+                        entityType: 'promotion',
+                        entityId: campaign.id,
+                        placement: 'post_login',
+                      ),
+                    );
                     Navigator.of(sheetContext).pop();
                     final external = campaign.externalUrl?.trim();
                     if (external != null &&
@@ -132,12 +152,14 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                   icon: const Icon(Icons.arrow_forward_rounded),
                   label: Text(campaign.ctaLabel!),
                 ),
-                  const SizedBox(height: AppSpacing.xs),
-                  TextButton(
-                    key: Key('post-login-promotion-dismiss-' + campaign.id),
-                    onPressed: () => Navigator.of(sheetContext).pop(),
-                    child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
-                  ),
+                  if (campaign.isDismissible) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    TextButton(
+                      key: Key('post-login-promotion-dismiss-' + campaign.id),
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                      child: Text(campaign.hasAction ? 'Not now' : 'Got it'),
+                    ),
+                  ],
                 ],
               ),
               if (campaign.isDismissible)
@@ -154,6 +176,14 @@ class _PostLoginPromotionGateState extends ConsumerState<PostLoginPromotionGate>
                       tooltip: 'Close promotion',
                       key: Key('post-login-promotion-close-' + campaign.id),
                       onPressed: () async {
+                        unawaited(
+                          analytics.track(
+                            'promotion_dismiss',
+                            entityType: 'promotion',
+                            entityId: campaign.id,
+                            placement: 'post_login',
+                          ),
+                        );
                         await exposureStore.dismiss(campaign.id);
                         if (sheetContext.mounted) {
                           Navigator.of(sheetContext).pop();
