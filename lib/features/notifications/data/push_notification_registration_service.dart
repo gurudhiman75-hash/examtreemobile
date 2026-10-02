@@ -6,21 +6,25 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../../core/analytics/mobile_analytics_client.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/observability/crash_reporting.dart';
 
 class PushNotificationRegistrationService {
   PushNotificationRegistrationService({
     required ApiClient apiClient,
+    MobileAnalyticsClient? analyticsClient,
     this.onOpenDestination,
     FirebaseMessaging? messaging,
     FlutterLocalNotificationsPlugin? localNotifications,
   })  : _apiClient = apiClient,
+        _analyticsClient = analyticsClient,
         _messaging = messaging ?? FirebaseMessaging.instance,
         _localNotifications =
             localNotifications ?? FlutterLocalNotificationsPlugin();
 
   final ApiClient _apiClient;
+  final MobileAnalyticsClient? _analyticsClient;
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _localNotifications;
   final void Function(String destinationType, String destinationValue)?
@@ -96,12 +100,15 @@ class PushNotificationRegistrationService {
                 data['destinationType']?.toString().trim() ?? 'none';
             final destinationValue =
                 data['destinationValue']?.toString().trim() ?? '';
+            final isTest =
+                data['isTest']?.toString().trim().toLowerCase() == 'true';
             if (campaignId.isNotEmpty) {
               unawaited(
                 _recordOpenByCampaignId(
                   campaignId,
                   destinationType: destinationType,
                   destinationValue: destinationValue,
+                  isTest: isTest,
                 ),
               );
             }
@@ -138,6 +145,7 @@ class PushNotificationRegistrationService {
                 message.data['destinationType']?.trim() ?? 'none',
             'destinationValue':
                 message.data['destinationValue']?.trim() ?? '',
+            'isTest': message.data['isTest']?.trim() ?? 'false',
           });
     await _localNotifications.show(
       id: message.messageId?.hashCode ?? DateTime.now().millisecondsSinceEpoch,
@@ -179,6 +187,7 @@ class PushNotificationRegistrationService {
       campaignId,
       destinationType: message.data['destinationType']?.trim() ?? 'none',
       destinationValue: message.data['destinationValue']?.trim() ?? '',
+      isTest: message.data['isTest']?.trim().toLowerCase() == 'true',
     );
   }
 
@@ -186,6 +195,7 @@ class PushNotificationRegistrationService {
     String campaignId, {
     String destinationType = 'none',
     String destinationValue = '',
+    bool isTest = false,
   }) async {
     final now = DateTime.now();
     final previous = _recentNotificationOpens[campaignId];
@@ -200,9 +210,20 @@ class PushNotificationRegistrationService {
     // Navigation is the learner-visible action and must never wait on telemetry.
     onOpenDestination?.call(destinationType, destinationValue);
 
+    if (isTest) return;
+
     try {
       await _apiClient.dio.post<void>(
         'mobile/notifications/$campaignId/open',
+      );
+      await _analyticsClient?.track(
+        'notification_open',
+        entityType: 'notification',
+        entityId: campaignId,
+        placement: 'push',
+        metadata: <String, Object?>{
+          'destinationType': destinationType,
+        },
       );
     } catch (_) {
       // Open telemetry is best-effort and never blocks notification routing.
