@@ -59,7 +59,7 @@ class MobileCustomHomeSectionView extends StatelessWidget {
       'relaxed' => 14.0,
       _ => 10.0,
     };
-    final columns = section.columns.clamp(1, 4);
+    final columns = section.columns.clamp(1, 4).toInt();
 
     final header = Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -113,8 +113,8 @@ class MobileCustomHomeSectionView extends StatelessWidget {
               children: [
                 for (final card in cards)
                   SizedBox(
-                    width: unit * card.span.clamp(1, columns) +
-                        gap * (card.span.clamp(1, columns) - 1),
+                    width: unit * card.span.clamp(1, columns).toInt() +
+                        gap * (card.span.clamp(1, columns).toInt() - 1),
                     child: _CustomCard(
                       card: card,
                       sectionStyle: section.style,
