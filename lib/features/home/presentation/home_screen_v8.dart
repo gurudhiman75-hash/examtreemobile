@@ -87,10 +87,15 @@ class HomeScreen extends ConsumerWidget {
       promotionsForPlacementProvider(PromotionPlacement.home),
     );
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
-    final notificationsAsync = ref.watch(mobileNotificationInboxProvider);
-    final notificationUnreadCount =
-        notificationsAsync.value?.where((item) => item.isUnread).length ?? 0;
     final user = ref.watch(authStateChangesProvider).value;
+    final notificationUnreadCount = user == null
+        ? 0
+        : (ref
+                .watch(mobileNotificationInboxProvider)
+                .value
+                ?.where((item) => item.isUnread)
+                .length ??
+            0);
     final currentTime = now?.call() ?? DateTime.now();
     final mobileAnalytics = ref.read(mobileAnalyticsClientProvider);
     final promotionExposureStore = ref.read(promotionExposureStoreProvider);
