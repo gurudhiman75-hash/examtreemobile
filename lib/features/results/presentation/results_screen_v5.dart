@@ -105,9 +105,14 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
             ),
             sliver: SliverList.list(
               children: [
-                if (results.isEmpty)
-                  _EmptyResults(onExplore: () => context.go('/exams'))
-                else ...[
+                if (results.isEmpty) ...[
+                  _EmptyResults(onExplore: () => context.go('/exams')),
+                  const SizedBox(height: AppSpacing.md),
+                  const PromotionPlacementView(
+                    placement: PromotionPlacement.results,
+                    compact: true,
+                  ),
+                ] else ...[
                   _PerformanceHero(
                     key: const Key('results-performance-snapshot'),
                     summary: summary,
