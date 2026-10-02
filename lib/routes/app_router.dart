@@ -420,7 +420,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   'No test identifier was supplied. Open the test again from the exam catalogue.',
             );
           }
-          return CanonicalTestAttemptScreen(examId: examId);
+          final seriesId = state.uri.queryParameters['seriesId']?.trim();
+          return CanonicalTestAttemptScreen(
+            examId: examId,
+            seriesId: seriesId == null || seriesId.isEmpty ? null : seriesId,
+          );
         },
       ),
       GoRoute(
@@ -471,7 +475,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   'No exam identifier was supplied. Choose an exam from the catalogue.',
             );
           }
-          return ExamDetailsScreen(examId: examId);
+          final seriesId = state.uri.queryParameters['seriesId']?.trim();
+          return ExamDetailsScreen(
+            examId: examId,
+            seriesId: seriesId == null || seriesId.isEmpty ? null : seriesId,
+          );
         },
       ),
       GoRoute(

@@ -7,6 +7,7 @@ import 'package:examtree/features/exams/presentation/exam_details_screen.dart';
 import 'package:examtree/features/exams/presentation/exams_screen.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
+import 'package:examtree/features/home/presentation/mobile_test_series_detail_screen.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,6 +60,79 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
   }
+
+  final seriesDetail = <String, dynamic>{
+    'series': <String, dynamic>{
+      'id': 'series-cgl-1',
+      'name': 'SSC CGL Complete Test Series',
+      'description':
+          'Full-length mocks and structured practice for SSC CGL preparation.',
+      'examName': 'SSC CGL',
+      'examFamilyName': 'SSC',
+      'progressionMode': 'sequential',
+    },
+    'eligibility': <String, dynamic>{
+      'available': true,
+      'progressPercent': 25,
+      'completedCount': 1,
+      'requiredCount': 4,
+      'totalCount': 4,
+      'nextTestId': 'test-2',
+      'members': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'testId': 'test-1',
+          'title': 'SSC CGL Full Length Mock 1',
+          'description': 'Tier I full-length practice paper',
+          'questionCount': 100,
+          'durationSeconds': 3600,
+          'totalMarks': 200,
+          'isRequired': true,
+          'completed': true,
+          'unlocked': true,
+          'attemptCount': 1,
+          'bestScore': 148,
+        },
+        <String, dynamic>{
+          'testId': 'test-2',
+          'title': 'SSC CGL Full Length Mock 2',
+          'description': 'Balanced practice across all major sections',
+          'questionCount': 100,
+          'durationSeconds': 3600,
+          'totalMarks': 200,
+          'isRequired': true,
+          'completed': false,
+          'unlocked': true,
+          'attemptCount': 0,
+        },
+        <String, dynamic>{
+          'testId': 'test-3',
+          'title': 'SSC CGL Full Length Mock 3',
+          'description': 'Advanced mixed-difficulty practice',
+          'questionCount': 100,
+          'durationSeconds': 3600,
+          'totalMarks': 200,
+          'isRequired': true,
+          'completed': false,
+          'unlocked': false,
+          'lockReason': 'Complete the previous required test to unlock this one.',
+          'attemptCount': 0,
+        },
+        <String, dynamic>{
+          'testId': 'test-4',
+          'title': 'SSC CGL Final Revision Mock',
+          'description': 'Final timed revision before exam day',
+          'questionCount': 100,
+          'durationSeconds': 3600,
+          'totalMarks': 200,
+          'isRequired': true,
+          'completed': false,
+          'unlocked': false,
+          'lockReason': 'Complete the previous required test to unlock this one.',
+          'attemptCount': 0,
+        },
+      ],
+    },
+  };
 
   final snapshot = ExamCatalogSnapshot(
     categories: const [
@@ -226,6 +300,7 @@ void main() {
     required Widget child,
     ExamCatalogSnapshot? catalog,
     Exam? details,
+    Map<String, dynamic>? seriesDetailBody,
   }) async {
     await configurePhone(tester);
     await tester.pumpWidget(
@@ -237,6 +312,10 @@ void main() {
             examDetailsProvider.overrideWith((ref, id) async => details),
           if (details != null)
             completedAttemptCountProvider.overrideWith((ref, id) async => 1),
+          if (seriesDetailBody != null)
+            mobileTestSeriesDetailProvider.overrideWith(
+              (ref, id) async => seriesDetailBody,
+            ),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -315,6 +394,21 @@ void main() {
     await expectLater(
       find.byType(Scaffold).first,
       matchesGoldenFile('previews/tests_empty_390x844.png'),
+    );
+  });
+
+  testWidgets('render premium test series detail', (tester) async {
+    await pump(
+      tester,
+      seriesDetailBody: seriesDetail,
+      child: const MobileTestSeriesDetailScreen(
+        seriesId: 'series-cgl-1',
+      ),
+    );
+
+    await expectLater(
+      find.byType(Scaffold).first,
+      matchesGoldenFile('previews/tests_series_detail_390x844.png'),
     );
   });
 

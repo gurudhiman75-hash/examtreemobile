@@ -29,3 +29,22 @@ final examQuestionsProvider = FutureProvider.family<List<Question>, String>((ref
       .map((question) => localizeQuestion(question, language))
       .toList(growable: false);
 });
+
+typedef ExamAccessKey = ({String examId, String? seriesId});
+
+final contextualExamDetailsProvider =
+    FutureProvider.family<Exam, ExamAccessKey>((ref, key) async {
+  final repository = ref.watch(examRepositoryProvider);
+  return repository.getExamDetails(key.examId, seriesId: key.seriesId);
+});
+
+final contextualExamQuestionsProvider =
+    FutureProvider.family<List<Question>, ExamAccessKey>((ref, key) async {
+  final repository = ref.watch(examRepositoryProvider);
+  final language = await ref.watch(questionLanguageProvider.future);
+  final questions =
+      await repository.getExamQuestions(key.examId, seriesId: key.seriesId);
+  return questions
+      .map((question) => localizeQuestion(question, language))
+      .toList(growable: false);
+});

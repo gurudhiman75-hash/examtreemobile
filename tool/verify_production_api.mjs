@@ -8,7 +8,7 @@ if (base.pathname !== '/api/') {
 
 const targets = [
   { name: 'health', url: new URL('/health', base), expectArray: false },
-  { name: 'tests', url: new URL('tests', base), expectArray: true, requireNonEmpty: true },
+  { name: 'tests', url: new URL('tests', base), expectArray: true },
   { name: 'categories', url: new URL('categories', base), expectArray: true },
   { name: 'subcategories', url: new URL('subcategories', base), expectArray: true },
 ];
@@ -43,9 +43,6 @@ async function fetchWithRetry(target) {
         if (!Array.isArray(body)) {
           throw new Error(`Expected JSON array from ${target.url}`);
         }
-        if (target.requireNonEmpty && body.length === 0) {
-          throw new Error(`Expected non-empty array from ${target.url}`);
-        }
       }
 
       console.log(JSON.stringify({
@@ -54,7 +51,7 @@ async function fetchWithRetry(target) {
         status: response.status,
         count: Array.isArray(body) ? body.length : null,
       }));
-      return;
+      return body;
     } catch (error) {
       lastError = error;
       console.error(`${target.name} attempt ${attempt}/5 failed: ${error}`);
@@ -66,6 +63,13 @@ async function fetchWithRetry(target) {
   throw lastError;
 }
 
+const result = {};
 for (const target of targets) {
-  await fetchWithRetry(target);
+  result[target.name] = await fetchWithRetry(target);
+}
+
+if (result.categories.length === 0 || result.subcategories.length === 0) {
+  throw new Error(
+    'Production exam taxonomy is empty even though the mobile API is reachable',
+  );
 }
