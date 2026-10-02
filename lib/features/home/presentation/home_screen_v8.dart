@@ -688,7 +688,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
       final item = visibleSeries[index];
       return _ConfiguredSeriesCard(
         item: item,
-        override: overrides[item.id],
+        itemOverride: overrides[item.id],
         alternate: index.isOdd,
         compact: compact,
         listMode: listMode,
@@ -698,7 +698,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
 
     switch (layout.trim().toLowerCase()) {
       case 'grid':
-        final requestedColumns = columns <= 0 ? 2 : columns.clamp(1, 2);
+        final requestedColumns = columns <= 0 ? 2 : columns.clamp(1, 2).toInt();
         return LayoutBuilder(
           builder: (context, constraints) {
             final effectiveColumns =
@@ -754,13 +754,13 @@ class _ConfiguredSeriesCard extends StatelessWidget {
     required this.item,
     required this.alternate,
     required this.onTap,
-    this.override,
+    this.itemOverride,
     this.compact = false,
     this.listMode = false,
   });
 
   final MobileFeaturedTestSeries item;
-  final MobileHomeItemOverride? override;
+  final MobileHomeItemOverride? itemOverride;
   final bool alternate;
   final VoidCallback onTap;
   final bool compact;
@@ -769,16 +769,16 @@ class _ConfiguredSeriesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final displayName = override?.title.trim().isNotEmpty == true
-        ? override!.title
+    final displayName = itemOverride?.title.trim().isNotEmpty == true
+        ? itemOverride!.title
         : item.name;
-    final displaySubtitle = override?.subtitle.trim().isNotEmpty == true
-        ? override!.subtitle
+    final displaySubtitle = itemOverride?.subtitle.trim().isNotEmpty == true
+        ? itemOverride!.subtitle
         : item.examName;
-    final badge = override?.badge.trim().isNotEmpty == true
-        ? override!.badge
+    final badge = itemOverride?.badge.trim().isNotEmpty == true
+        ? itemOverride!.badge
         : 'TEST SERIES';
-    final imageUrl = override?.imageUrl.trim() ?? '';
+    final imageUrl = itemOverride?.imageUrl.trim() ?? '';
     final hasImage = imageUrl.isNotEmpty;
     final foreground =
         hasImage || !alternate ? Colors.white : const Color(0xFF152746);
@@ -819,22 +819,22 @@ class _ConfiguredSeriesCard extends StatelessWidget {
         SizedBox(height: compact ? 5 : 8),
         Row(
           children: [
-            if (override?.iconUrl.trim().isNotEmpty == true) ...[
+            if (itemOverride?.iconUrl.trim().isNotEmpty == true) ...[
               Image.network(
-                override!.iconUrl,
+                itemOverride!.iconUrl,
                 width: compact ? 20 : 24,
                 height: compact ? 20 : 24,
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) => Icon(
-                  _homeIconFromName(override!.iconName),
+                  _homeIconFromName(itemOverride!.iconName),
                   size: compact ? 20 : 24,
                   color: foreground,
                 ),
               ),
               const SizedBox(width: 7),
-            ] else if (override?.iconName.trim().isNotEmpty == true) ...[
+            ] else if (itemOverride?.iconName.trim().isNotEmpty == true) ...[
               Icon(
-                _homeIconFromName(override!.iconName),
+                _homeIconFromName(itemOverride!.iconName),
                 size: compact ? 20 : 24,
                 color: foreground,
               ),
@@ -1445,18 +1445,18 @@ class _ExamCategoriesGrid extends StatelessWidget {
               final base = _visual(family);
               final override = overrides[family.id];
               return _ExamCategoryPresentation(
-                label: override?.title.trim().isNotEmpty == true
-                    ? override!.title
+                label: itemOverride?.title.trim().isNotEmpty == true
+                    ? itemOverride!.title
                     : base.$1,
-                subtitle: override?.subtitle ?? '',
-                badge: override?.badge ?? '',
-                icon: override?.iconName.trim().isNotEmpty == true
-                    ? _homeIconFromName(override!.iconName, fallback: base.$2)
+                subtitle: itemOverride?.subtitle ?? '',
+                badge: itemOverride?.badge ?? '',
+                icon: itemOverride?.iconName.trim().isNotEmpty == true
+                    ? _homeIconFromName(itemOverride!.iconName, fallback: base.$2)
                     : base.$2,
                 background: base.$3,
                 foreground: base.$4,
-                iconUrl: override?.iconUrl ?? '',
-                imageUrl: override?.imageUrl ?? '',
+                iconUrl: itemOverride?.iconUrl ?? '',
+                imageUrl: itemOverride?.imageUrl ?? '',
               );
             })
             .toList(growable: false);
@@ -1484,7 +1484,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = 4.0;
-        final requestedColumns = columns <= 0 ? 4 : columns.clamp(2, 4);
+        final requestedColumns = columns <= 0 ? 4 : columns.clamp(2, 4).toInt();
         final effectiveColumns =
             constraints.maxWidth < 260 ? 2 : requestedColumns;
         final width =
