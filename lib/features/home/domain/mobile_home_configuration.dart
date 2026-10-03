@@ -69,6 +69,9 @@ class MobileFeaturedTestSeries {
     required this.name,
     required this.examName,
     required this.testCount,
+    this.questionCount = 0,
+    this.durationSeconds = 0,
+    this.totalMarks = 0,
   });
 
   final String id;
@@ -76,6 +79,9 @@ class MobileFeaturedTestSeries {
   final String name;
   final String examName;
   final int testCount;
+  final int questionCount;
+  final int durationSeconds;
+  final double totalMarks;
 
   factory MobileFeaturedTestSeries.fromJson(Map<String, dynamic> json) {
     return MobileFeaturedTestSeries(
@@ -84,6 +90,13 @@ class MobileFeaturedTestSeries {
       name: json['name']?.toString() ?? '',
       examName: json['examName']?.toString() ?? '',
       testCount: int.tryParse(json['testCount']?.toString() ?? '') ?? 0,
+      questionCount:
+          int.tryParse(json['questionCount']?.toString() ?? '') ?? 0,
+      durationSeconds:
+          int.tryParse(json['durationSeconds']?.toString() ?? '') ?? 0,
+      totalMarks: json['totalMarks'] is num
+          ? (json['totalMarks'] as num).toDouble()
+          : double.tryParse(json['totalMarks']?.toString() ?? '') ?? 0,
     );
   }
 }
