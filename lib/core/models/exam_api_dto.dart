@@ -216,6 +216,7 @@ class TestDto {
     this.priceCents,
     this.kind,
     this.topicName,
+    this.iconUrl,
     this.marksPerQuestion,
     this.negativeMarks,
     this.languages = const [],
@@ -233,6 +234,7 @@ class TestDto {
   final int? priceCents;
   final String? kind;
   final String? topicName;
+  final String? iconUrl;
   final int duration;
   final int totalQuestions;
   final int attempts;
@@ -256,6 +258,7 @@ class TestDto {
         priceCents: json['priceCents'] == null ? null : _int(json['priceCents']),
         kind: _nullableString(json['kind']),
         topicName: _nullableString(json['topicName']),
+        iconUrl: _nullableString(json['iconUrl']),
         duration: _int(json['duration']),
         totalQuestions: _int(json['totalQuestions']),
         attempts: _int(json['attempts']),

@@ -918,11 +918,11 @@ class _SeriesCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const _OfficialIcon(
-                    imageUrl: '',
+                  _OfficialIcon(
+                    imageUrl: series.iconUrl,
                     fallbackIcon: Icons.fact_check_rounded,
-                    background: Color(0xFFEAF4FF),
-                    foreground: Color(0xFF176CC0),
+                    background: const Color(0xFFEAF4FF),
+                    foreground: const Color(0xFF176CC0),
                     size: 48,
                   ),
                   const SizedBox(width: 12),
