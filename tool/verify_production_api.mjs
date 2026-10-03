@@ -82,6 +82,26 @@ if (result.categories.length === 0 || result.subcategories.length === 0) {
   );
 }
 
+console.log(JSON.stringify({
+  diagnostic: 'live-catalog',
+  categories: result.categories.slice(0, 25).map((item) => ({
+    id: item?.id ?? null,
+    name: item?.name ?? null,
+  })),
+  subcategories: result.subcategories.slice(0, 50).map((item) => ({
+    id: item?.id ?? null,
+    categoryId: item?.categoryId ?? null,
+    name: item?.name ?? null,
+  })),
+  testSeries: result.testSeries.slice(0, 25).map((item) => ({
+    id: item?.id ?? null,
+    code: item?.code ?? null,
+    examCode: item?.examCode ?? null,
+    name: item?.name ?? null,
+    learnerVisibility: item?.learnerVisibility ?? null,
+  })),
+}));
+
 if (result.testSeries.length === 0 && result.tests.length === 0) {
   throw new Error(
     'Production catalogue has neither learner-visible test series nor standalone tests',
