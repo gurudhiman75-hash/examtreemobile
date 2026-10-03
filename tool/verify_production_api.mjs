@@ -7,10 +7,11 @@ if (base.pathname !== '/api/') {
 }
 
 const targets = [
-  { name: 'health', url: new URL('/health', base), expectArray: false },
-  { name: 'tests', url: new URL('tests', base), expectArray: true },
-  { name: 'categories', url: new URL('categories', base), expectArray: true },
-  { name: 'subcategories', url: new URL('subcategories', base), expectArray: true },
+  { name: 'health', url: new URL('/health', base), shape: 'none' },
+  { name: 'tests', url: new URL('tests', base), shape: 'array' },
+  { name: 'categories', url: new URL('categories', base), shape: 'array' },
+  { name: 'subcategories', url: new URL('subcategories', base), shape: 'array' },
+  { name: 'testSeries', url: new URL('test-series', base), shape: 'series' },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -24,6 +25,7 @@ async function fetchWithRetry(target) {
       const response = await fetch(target.url, {
         headers: {
           accept: 'application/json',
+          'cache-control': 'no-cache',
           'x-examtree-device': 'github-production-preflight',
         },
         signal: controller.signal,
@@ -34,14 +36,20 @@ async function fetchWithRetry(target) {
       }
 
       let body = null;
-      if (target.expectArray) {
+      let items = null;
+      if (target.shape !== 'none') {
         try {
           body = JSON.parse(text);
         } catch {
           throw new Error(`Expected JSON from ${target.url}`);
         }
-        if (!Array.isArray(body)) {
-          throw new Error(`Expected JSON array from ${target.url}`);
+        items = target.shape === 'array' ? body : body?.series;
+        if (!Array.isArray(items)) {
+          throw new Error(
+            target.shape === 'array'
+              ? `Expected JSON array from ${target.url}`
+              : `Expected JSON object with series[] from ${target.url}`,
+          );
         }
       }
 
@@ -49,9 +57,9 @@ async function fetchWithRetry(target) {
         name: target.name,
         url: target.url.toString(),
         status: response.status,
-        count: Array.isArray(body) ? body.length : null,
+        count: Array.isArray(items) ? items.length : null,
       }));
-      return body;
+      return items;
     } catch (error) {
       lastError = error;
       console.error(`${target.name} attempt ${attempt}/5 failed: ${error}`);
@@ -71,5 +79,11 @@ for (const target of targets) {
 if (result.categories.length === 0 || result.subcategories.length === 0) {
   throw new Error(
     'Production exam taxonomy is empty even though the mobile API is reachable',
+  );
+}
+
+if (result.testSeries.length === 0 && result.tests.length === 0) {
+  throw new Error(
+    'Production catalogue has neither learner-visible test series nor standalone tests',
   );
 }
