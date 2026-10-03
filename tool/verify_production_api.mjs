@@ -12,6 +12,7 @@ const targets = [
   { name: 'categories', url: new URL('categories', base), shape: 'array' },
   { name: 'subcategories', url: new URL('subcategories', base), shape: 'array' },
   { name: 'testSeries', url: new URL('test-series', base), shape: 'series' },
+  { name: 'homeConfig', url: new URL('mobile/home-config', base), shape: 'object' },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -43,13 +44,21 @@ async function fetchWithRetry(target) {
         } catch {
           throw new Error(`Expected JSON from ${target.url}`);
         }
-        items = target.shape === 'array' ? body : body?.series;
-        if (!Array.isArray(items)) {
-          throw new Error(
-            target.shape === 'array'
-              ? `Expected JSON array from ${target.url}`
-              : `Expected JSON object with series[] from ${target.url}`,
-          );
+        if (target.shape === 'array') {
+          items = body;
+          if (!Array.isArray(items)) {
+            throw new Error(`Expected JSON array from ${target.url}`);
+          }
+        } else if (target.shape === 'series') {
+          items = body?.series;
+          if (!Array.isArray(items)) {
+            throw new Error(`Expected JSON object with series[] from ${target.url}`);
+          }
+        } else if (target.shape === 'object') {
+          if (!body || typeof body !== 'object' || Array.isArray(body)) {
+            throw new Error(`Expected JSON object from ${target.url}`);
+          }
+          items = body;
         }
       }
 
@@ -59,7 +68,7 @@ async function fetchWithRetry(target) {
         status: response.status,
         count: Array.isArray(items) ? items.length : null,
       }));
-      return items;
+      return target.shape === 'object' ? body : items;
     } catch (error) {
       lastError = error;
       console.error(`${target.name} attempt ${attempt}/5 failed: ${error}`);
@@ -100,6 +109,11 @@ console.log(JSON.stringify({
     name: item?.name ?? null,
     learnerVisibility: item?.learnerVisibility ?? null,
   })),
+  homeConfig: {
+    featuredExamFamilyIds: result.homeConfig?.configuration?.featuredExamFamilyIds ?? [],
+    featuredTestSeriesIds: result.homeConfig?.configuration?.featuredTestSeriesIds ?? [],
+    itemOverrides: result.homeConfig?.configuration?.itemOverrides ?? {},
+  },
 }));
 
 if (result.testSeries.length === 0 && result.tests.length === 0) {
