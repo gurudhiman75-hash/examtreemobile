@@ -1312,19 +1312,25 @@ class _SeriesTestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final stateLabel = member.completed
         ? 'Completed'
-        : member.unlocked
-            ? 'Ready'
-            : 'Locked';
+        : member.requiresPurchase
+            ? 'Premium'
+            : member.unlocked
+                ? 'Ready'
+                : 'Locked';
     final stateColor = member.completed
         ? const Color(0xFF11966F)
-        : member.unlocked
-            ? const Color(0xFF176CC0)
-            : const Color(0xFF718096);
+        : member.requiresPurchase
+            ? const Color(0xFFD97706)
+            : member.unlocked
+                ? const Color(0xFF176CC0)
+                : const Color(0xFF718096);
     final stateTint = member.completed
         ? const Color(0xFFEAF8F2)
-        : member.unlocked
-            ? const Color(0xFFEAF4FF)
-            : const Color(0xFFF1F4F8);
+        : member.requiresPurchase
+            ? const Color(0xFFFFF4D6)
+            : member.unlocked
+                ? const Color(0xFFEAF4FF)
+                : const Color(0xFFF1F4F8);
 
     return Material(
       color: Colors.white,
@@ -1354,19 +1360,25 @@ class _SeriesTestCard extends StatelessWidget {
                         color: stateColor,
                         size: 23,
                       )
-                    : member.unlocked
-                        ? Text(
-                            index.toString().padLeft(2, '0'),
-                            style: TextStyle(
-                              color: stateColor,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          )
-                        : Icon(
-                            Icons.lock_outline_rounded,
+                    : member.requiresPurchase
+                        ? Icon(
+                            Icons.lock_rounded,
                             color: stateColor,
                             size: 22,
-                          ),
+                          )
+                        : member.unlocked
+                            ? Text(
+                                index.toString().padLeft(2, '0'),
+                                style: TextStyle(
+                                  color: stateColor,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              )
+                            : Icon(
+                                Icons.lock_outline_rounded,
+                                color: stateColor,
+                                size: 22,
+                              ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -1477,9 +1489,11 @@ class _SeriesTestCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            member.completed
-                                ? 'Open test again'
-                                : 'View instructions',
+                            member.requiresPurchase
+                                ? 'View Plans & Unlock'
+                                : member.completed
+                                    ? 'Open test again'
+                                    : 'View instructions',
                             style: const TextStyle(
                               color: Color(0xFF0B5D96),
                               fontSize: 12,
@@ -1672,12 +1686,14 @@ class _SeriesBottomBar extends StatelessWidget {
     required this.vm,
     required this.nextMember,
     required this.onContinue,
+    required this.onPurchase,
     required this.onReviewTests,
   });
 
   final _SeriesViewModel vm;
   final _SeriesMember? nextMember;
   final VoidCallback? onContinue;
+  final VoidCallback? onPurchase;
   final VoidCallback onReviewTests;
 
   @override
@@ -1687,6 +1703,9 @@ class _SeriesBottomBar extends StatelessWidget {
     final member = nextMember;
     final allCompleted =
         vm.totalCount > 0 && vm.completedCount >= vm.totalCount;
+    final purchaseRequired = vm.commerce.accessRequired;
+    final plan =
+        vm.commerce.plans.isEmpty ? null : vm.commerce.plans.first;
 
     return SafeArea(
       top: false,
@@ -1713,11 +1732,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    allCompleted
-                        ? 'Series progress'
-                        : member == null
-                            ? 'Series status'
-                            : 'Up next',
+                    purchaseRequired
+                        ? 'Unlock premium tests'
+                        : allCompleted
+                            ? 'Series progress'
+                            : member == null
+                                ? 'Series status'
+                                : 'Up next',
                     style: const TextStyle(
                       color: Color(0xFFAFC5DC),
                       fontSize: 10,
@@ -1726,12 +1747,20 @@ class _SeriesBottomBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    allCompleted
-                        ? 'All tests completed'
-                        : member?.title ??
-                            (vm.availabilityReason.isEmpty
-                                ? 'No test is available yet'
-                                : vm.availabilityReason),
+                    purchaseRequired
+                        ? plan == null
+                            ? 'Premium access required'
+                            : 'From ' +
+                                _formatSeriesPrice(
+                                  plan.salePriceMinor,
+                                  plan.currency,
+                                )
+                        : allCompleted
+                            ? 'All tests completed'
+                            : member?.title ??
+                                (vm.availabilityReason.isEmpty
+                                    ? 'No test is available yet'
+                                    : vm.availabilityReason),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -1745,11 +1774,13 @@ class _SeriesBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             FilledButton(
-              onPressed: allCompleted
-                  ? onReviewTests
-                  : vm.available
-                      ? onContinue
-                      : null,
+              onPressed: purchaseRequired
+                  ? onPurchase
+                  : allCompleted
+                      ? onReviewTests
+                      : vm.available
+                          ? onContinue
+                          : null,
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFF1687E0),
                 foregroundColor: Colors.white,
@@ -1760,11 +1791,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                allCompleted
-                    ? 'Review Tests'
-                    : member?.completed == true
-                        ? 'Open Test'
-                        : 'Continue',
+                purchaseRequired
+                    ? 'View Plans'
+                    : allCompleted
+                        ? 'Review Tests'
+                        : member?.completed == true
+                            ? 'Open Test'
+                            : 'Continue',
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -1775,6 +1808,21 @@ class _SeriesBottomBar extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatSeriesPrice(int minor, String currency) {
+  final whole = minor ~/ 100;
+  final remainder = minor % 100;
+  final amount = remainder == 0
+      ? whole.toString()
+      : whole.toString() + '.' + remainder.toString().padLeft(2, '0');
+  return switch (currency.trim().toUpperCase()) {
+    'INR' => '₹' + amount,
+    'USD' => '\u0024' + amount,
+    'GBP' => '£' + amount,
+    'EUR' => '€' + amount,
+    _ => currency.toUpperCase() + ' ' + amount,
+  };
 }
 
 String _formatMarks(double value) {
