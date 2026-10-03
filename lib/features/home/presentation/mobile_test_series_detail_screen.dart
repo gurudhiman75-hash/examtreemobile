@@ -278,6 +278,7 @@ class _SeriesViewModel {
     required this.examName,
     required this.examFamilyName,
     required this.description,
+    required this.iconUrl,
     required this.learnerVisibility,
     required this.learnerMessage,
     required this.progressionMode,
@@ -297,6 +298,7 @@ class _SeriesViewModel {
   final String examName;
   final String examFamilyName;
   final String description;
+  final String iconUrl;
   final String learnerVisibility;
   final String learnerMessage;
   final String progressionMode;
@@ -384,6 +386,7 @@ class _SeriesViewModel {
       examName: _text(series['examName'], fallback: 'Exam'),
       examFamilyName: _text(series['examFamilyName']),
       description: _text(series['description']),
+      iconUrl: _text(series['iconUrl']),
       learnerVisibility: _text(series['learnerVisibility'], fallback: 'live'),
       learnerMessage: _text(series['learnerMessage']),
       progressionMode: _text(
@@ -530,6 +533,10 @@ class _SeriesHero extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (vm.iconUrl.isNotEmpty) ...[
+                _SeriesNetworkIcon(url: vm.iconUrl),
+                const SizedBox(height: 12),
+              ],
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -616,6 +623,35 @@ class _SeriesHero extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SeriesNetworkIcon extends StatelessWidget {
+  const _SeriesNetworkIcon({required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 58,
+      height: 58,
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: Colors.white.withValues(alpha: .55)),
+      ),
+      child: Image.network(
+        url,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const Icon(
+          Icons.fact_check_rounded,
+          color: Color(0xFF0B5D96),
+          size: 30,
+        ),
       ),
     );
   }
