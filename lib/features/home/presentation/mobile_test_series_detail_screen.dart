@@ -1247,19 +1247,25 @@ class _SeriesTestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final stateLabel = member.completed
         ? 'Completed'
-        : member.unlocked
-            ? 'Ready'
-            : 'Locked';
+        : member.requiresPurchase
+            ? 'Premium'
+            : member.unlocked
+                ? 'Ready'
+                : 'Locked';
     final stateColor = member.completed
         ? const Color(0xFF11966F)
-        : member.unlocked
-            ? const Color(0xFF176CC0)
-            : const Color(0xFF718096);
+        : member.requiresPurchase
+            ? const Color(0xFFD97706)
+            : member.unlocked
+                ? const Color(0xFF176CC0)
+                : const Color(0xFF718096);
     final stateTint = member.completed
         ? const Color(0xFFEAF8F2)
-        : member.unlocked
-            ? const Color(0xFFEAF4FF)
-            : const Color(0xFFF1F4F8);
+        : member.requiresPurchase
+            ? const Color(0xFFFFF4D6)
+            : member.unlocked
+                ? const Color(0xFFEAF4FF)
+                : const Color(0xFFF1F4F8);
 
     return Material(
       color: Colors.white,
@@ -1289,19 +1295,25 @@ class _SeriesTestCard extends StatelessWidget {
                         color: stateColor,
                         size: 23,
                       )
-                    : member.unlocked
-                        ? Text(
-                            index.toString().padLeft(2, '0'),
-                            style: TextStyle(
-                              color: stateColor,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          )
-                        : Icon(
-                            Icons.lock_outline_rounded,
+                    : member.requiresPurchase
+                        ? Icon(
+                            Icons.lock_rounded,
                             color: stateColor,
                             size: 22,
-                          ),
+                          )
+                        : member.unlocked
+                            ? Text(
+                                index.toString().padLeft(2, '0'),
+                                style: TextStyle(
+                                  color: stateColor,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              )
+                            : Icon(
+                                Icons.lock_outline_rounded,
+                                color: stateColor,
+                                size: 22,
+                              ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -1412,9 +1424,11 @@ class _SeriesTestCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            member.completed
-                                ? 'Open test again'
-                                : 'View instructions',
+                            member.requiresPurchase
+                                ? 'View Plans & Unlock'
+                                : member.completed
+                                    ? 'Open test again'
+                                    : 'View instructions',
                             style: const TextStyle(
                               color: Color(0xFF0B5D96),
                               fontSize: 12,
@@ -1607,12 +1621,14 @@ class _SeriesBottomBar extends StatelessWidget {
     required this.vm,
     required this.nextMember,
     required this.onContinue,
+    required this.onPurchase,
     required this.onReviewTests,
   });
 
   final _SeriesViewModel vm;
   final _SeriesMember? nextMember;
   final VoidCallback? onContinue;
+  final VoidCallback? onPurchase;
   final VoidCallback onReviewTests;
 
   @override
@@ -1622,6 +1638,9 @@ class _SeriesBottomBar extends StatelessWidget {
     final member = nextMember;
     final allCompleted =
         vm.totalCount > 0 && vm.completedCount >= vm.totalCount;
+    final purchaseRequired = vm.commerce.accessRequired;
+    final plan =
+        vm.commerce.plans.isEmpty ? null : vm.commerce.plans.first;
 
     return SafeArea(
       top: false,
@@ -1648,11 +1667,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    allCompleted
-                        ? 'Series progress'
-                        : member == null
-                            ? 'Series status'
-                            : 'Up next',
+                    purchaseRequired
+                        ? 'Unlock full series'
+                        : allCompleted
+                            ? 'Series progress'
+                            : member == null
+                                ? 'Series status'
+                                : 'Up next',
                     style: const TextStyle(
                       color: Color(0xFFAFC5DC),
                       fontSize: 10,
@@ -1661,12 +1682,20 @@ class _SeriesBottomBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    allCompleted
-                        ? 'All tests completed'
-                        : member?.title ??
-                            (vm.availabilityReason.isEmpty
-                                ? 'No test is available yet'
-                                : vm.availabilityReason),
+                    purchaseRequired
+                        ? plan == null
+                            ? 'Premium access required'
+                            : 'From ' +
+                                _formatSeriesPrice(
+                                  plan.salePriceMinor,
+                                  plan.currency,
+                                )
+                        : allCompleted
+                            ? 'All tests completed'
+                            : member?.title ??
+                                (vm.availabilityReason.isEmpty
+                                    ? 'No test is available yet'
+                                    : vm.availabilityReason),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -1680,11 +1709,13 @@ class _SeriesBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             FilledButton(
-              onPressed: allCompleted
-                  ? onReviewTests
-                  : vm.available
-                      ? onContinue
-                      : null,
+              onPressed: purchaseRequired
+                  ? onPurchase
+                  : allCompleted
+                      ? onReviewTests
+                      : vm.available
+                          ? onContinue
+                          : null,
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFF1687E0),
                 foregroundColor: Colors.white,
@@ -1695,11 +1726,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                allCompleted
-                    ? 'Review Tests'
-                    : member?.completed == true
-                        ? 'Open Test'
-                        : 'Continue',
+                purchaseRequired
+                    ? 'View Plans'
+                    : allCompleted
+                        ? 'Review Tests'
+                        : member?.completed == true
+                            ? 'Open Test'
+                            : 'Continue',
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -1710,6 +1743,161 @@ class _SeriesBottomBar extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatSeriesPrice(int minor, String currency) {
+  final whole = minor ~/ 100;
+  final remainder = minor % 100;
+  final amount = remainder == 0
+      ? whole.toString()
+      : whole.toString() + '.' + remainder.toString().padLeft(2, '0');
+  return switch (currency.trim().toUpperCase()) {
+    'INR' => '₹' + amount,
+    'USD' => r'
+  if (value == value.roundToDouble()) {
+    return value.toInt().toString();
+  }
+  return value.toStringAsFixed(1);
+}
+
+class _SeriesError extends StatelessWidget {
+  const _SeriesError({required this.onRetry});
+
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F4F8),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Icon(
+                Icons.cloud_off_outlined,
+                size: 28,
+                color: Color(0xFF718096),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Text(
+              'Test series could not be loaded.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF10264A),
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'Check your connection and try again.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Color(0xFF718096)),
+            ),
+            const SizedBox(height: 14),
+            FilledButton(
+              onPressed: onRetry,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptySeries extends StatelessWidget {
+  const _EmptySeries();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 32,
+        horizontal: 18,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(19),
+        border: Border.all(color: const Color(0xFFE4E9F1)),
+      ),
+      child: const Column(
+        children: [
+          Icon(
+            Icons.event_busy_outlined,
+            size: 38,
+            color: Color(0xFF94A3B8),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'No tests are currently available in this series.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0xFF10264A),
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SeriesLoadingScaffold extends StatelessWidget {
+  const _SeriesLoadingScaffold();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFD),
+      appBar: _appBar(),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 32),
+        children: [
+          Container(
+            height: 218,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE4EAF2),
+              borderRadius: BorderRadius.circular(24),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 9,
+            runSpacing: 9,
+            children: List.generate(
+              4,
+              (_) => Container(
+                width: (MediaQuery.sizeOf(context).width - 33) / 2,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: const Color(0xFFE4E9F1),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+ + amount,
+    'GBP' => '£' + amount,
+    'EUR' => '€' + amount,
+    _ => currency.toUpperCase() + ' ' + amount,
+  };
 }
 
 String _formatMarks(double value) {
