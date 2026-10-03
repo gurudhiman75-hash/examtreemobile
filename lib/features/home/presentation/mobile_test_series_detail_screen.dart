@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/providers/repository_providers.dart';
+import '../../store/domain/series_purchase.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -39,11 +40,142 @@ class _MobileTestSeriesDetailScreenState
     } catch (_) {}
   }
 
-  void _openTest(_SeriesMember member) {
+  void _openTest(_SeriesMember member, _SeriesViewModel vm) {
+    if (member.requiresPurchase) {
+      _showPurchaseSheet(member, vm);
+      return;
+    }
     context.push(
       '/exam-details?seriesId=' +
           Uri.encodeQueryComponent(widget.seriesId),
       extra: member.testId,
+    );
+  }
+
+  Future<void> _showPurchaseSheet(
+    _SeriesMember member,
+    _SeriesViewModel vm,
+  ) async {
+    final freeMember = vm.firstFreeOpenMember;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 6, 20, 22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF4D6),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.lock_rounded,
+                  color: Color(0xFFD97706),
+                  size: 28,
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'This Test is Locked',
+                style: TextStyle(
+                  color: Color(0xFF10264A),
+                  fontSize: 21,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                member.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF718096),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (vm.commerce.freeTestCount > 0)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF8F2),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Text(
+                    vm.commerce.freeTestCount.toString() +
+                        (vm.commerce.freeTestCount == 1
+                            ? ' free test is available in this series.'
+                            : ' free tests are available in this series.'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFF087653),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              if (vm.commerce.freeTestCount > 0)
+                const SizedBox(height: 12),
+              if (freeMember != null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      _openTest(freeMember, vm);
+                    },
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: const Text(
+                      'Try Free Test',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: vm.commerce.plans.isEmpty
+                      ? null
+                      : () {
+                          Navigator.of(sheetContext).pop();
+                          context.push(
+                            '/series-plans?seriesId=' +
+                                Uri.encodeQueryComponent(widget.seriesId),
+                          );
+                        },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0B5D96),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text(
+                    'View Plans & Unlock',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(),
+                child: const Text('Maybe Later'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -90,7 +222,7 @@ class _MobileTestSeriesDetailScreenState
                   _SeriesTab.overview => _OverviewTab(vm: vm),
                   _SeriesTab.tests => _TestsTab(
                       vm: vm,
-                      onOpenTest: _openTest,
+                      onOpenTest: (member) => _openTest(member, vm),
                     ),
                   _SeriesTab.pattern => _PatternTab(vm: vm),
                 },
@@ -102,7 +234,13 @@ class _MobileTestSeriesDetailScreenState
             nextMember: nextMember,
             onContinue: nextMember == null
                 ? null
-                : () => _openTest(nextMember),
+                : () => _openTest(nextMember, vm),
+            onPurchase: vm.commerce.plans.isEmpty
+                ? null
+                : () => context.push(
+                      '/series-plans?seriesId=' +
+                          Uri.encodeQueryComponent(widget.seriesId),
+                    ),
             onReviewTests: () =>
                 setState(() => _selectedTab = _SeriesTab.tests),
           ),
@@ -150,6 +288,7 @@ class _SeriesViewModel {
     required this.nextTestId,
     required this.available,
     required this.availabilityReason,
+    required this.commerce,
     required this.members,
   });
 
@@ -168,6 +307,7 @@ class _SeriesViewModel {
   final String? nextTestId;
   final bool available;
   final String availabilityReason;
+  final SeriesCommerceState commerce;
   final List<_SeriesMember> members;
 
   int get totalQuestions =>
@@ -181,18 +321,34 @@ class _SeriesViewModel {
 
   bool get comingSoon => learnerVisibility == 'coming_soon';
 
+  _SeriesMember? get firstFreeOpenMember {
+    for (final member in members) {
+      if (member.unlocked &&
+          !member.paidAccessRequired &&
+          !member.completed) {
+        return member;
+      }
+    }
+    for (final member in members) {
+      if (member.unlocked && !member.paidAccessRequired) {
+        return member;
+      }
+    }
+    return null;
+  }
+
   _SeriesMember? get nextMember {
     final requested = nextTestId?.trim() ?? '';
     if (requested.isNotEmpty) {
       for (final member in members) {
-        if (member.testId == requested && member.unlocked) return member;
+        if (member.testId == requested && member.canOpen) return member;
       }
     }
     for (final member in members) {
-      if (member.unlocked && !member.completed) return member;
+      if (member.canOpen && !member.completed) return member;
     }
     for (final member in members) {
-      if (member.unlocked) return member;
+      if (member.canOpen) return member;
     }
     return null;
   }
@@ -241,6 +397,7 @@ class _SeriesViewModel {
       nextTestId: _nullableText(eligibility['nextTestId']),
       available: eligibility['available'] != false,
       availabilityReason: _text(eligibility['availabilityReason']),
+      commerce: SeriesCommerceState.fromBody(body),
       members: members,
     );
   }
@@ -260,6 +417,8 @@ class _SeriesMember {
     required this.attemptCount,
     required this.bestScore,
     required this.lockReason,
+    required this.paidAccessRequired,
+    required this.entitled,
   });
 
   final String testId;
@@ -274,6 +433,11 @@ class _SeriesMember {
   final int attemptCount;
   final double? bestScore;
   final String lockReason;
+  final bool paidAccessRequired;
+  final bool entitled;
+
+  bool get requiresPurchase => paidAccessRequired && !entitled;
+  bool get canOpen => unlocked && !requiresPurchase;
 
   int get durationMinutes =>
       durationSeconds <= 0 ? 0 : (durationSeconds / 60).ceil();
@@ -300,6 +464,8 @@ class _SeriesMember {
       attemptCount: number(json['attemptCount']),
       bestScore: decimal(json['bestScore']),
       lockReason: _text(json['lockReason']),
+      paidAccessRequired: json['paidAccessRequired'] == true,
+      entitled: json['entitled'] == true,
     );
   }
 }
@@ -1146,19 +1312,25 @@ class _SeriesTestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final stateLabel = member.completed
         ? 'Completed'
-        : member.unlocked
-            ? 'Ready'
-            : 'Locked';
+        : member.requiresPurchase
+            ? 'Premium'
+            : member.unlocked
+                ? 'Ready'
+                : 'Locked';
     final stateColor = member.completed
         ? const Color(0xFF11966F)
-        : member.unlocked
-            ? const Color(0xFF176CC0)
-            : const Color(0xFF718096);
+        : member.requiresPurchase
+            ? const Color(0xFFD97706)
+            : member.unlocked
+                ? const Color(0xFF176CC0)
+                : const Color(0xFF718096);
     final stateTint = member.completed
         ? const Color(0xFFEAF8F2)
-        : member.unlocked
-            ? const Color(0xFFEAF4FF)
-            : const Color(0xFFF1F4F8);
+        : member.requiresPurchase
+            ? const Color(0xFFFFF4D6)
+            : member.unlocked
+                ? const Color(0xFFEAF4FF)
+                : const Color(0xFFF1F4F8);
 
     return Material(
       color: Colors.white,
@@ -1188,19 +1360,25 @@ class _SeriesTestCard extends StatelessWidget {
                         color: stateColor,
                         size: 23,
                       )
-                    : member.unlocked
-                        ? Text(
-                            index.toString().padLeft(2, '0'),
-                            style: TextStyle(
-                              color: stateColor,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          )
-                        : Icon(
-                            Icons.lock_outline_rounded,
+                    : member.requiresPurchase
+                        ? Icon(
+                            Icons.lock_rounded,
                             color: stateColor,
                             size: 22,
-                          ),
+                          )
+                        : member.unlocked
+                            ? Text(
+                                index.toString().padLeft(2, '0'),
+                                style: TextStyle(
+                                  color: stateColor,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              )
+                            : Icon(
+                                Icons.lock_outline_rounded,
+                                color: stateColor,
+                                size: 22,
+                              ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -1311,9 +1489,11 @@ class _SeriesTestCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            member.completed
-                                ? 'Open test again'
-                                : 'View instructions',
+                            member.requiresPurchase
+                                ? 'View Plans & Unlock'
+                                : member.completed
+                                    ? 'Open test again'
+                                    : 'View instructions',
                             style: const TextStyle(
                               color: Color(0xFF0B5D96),
                               fontSize: 12,
@@ -1506,12 +1686,14 @@ class _SeriesBottomBar extends StatelessWidget {
     required this.vm,
     required this.nextMember,
     required this.onContinue,
+    required this.onPurchase,
     required this.onReviewTests,
   });
 
   final _SeriesViewModel vm;
   final _SeriesMember? nextMember;
   final VoidCallback? onContinue;
+  final VoidCallback? onPurchase;
   final VoidCallback onReviewTests;
 
   @override
@@ -1521,6 +1703,9 @@ class _SeriesBottomBar extends StatelessWidget {
     final member = nextMember;
     final allCompleted =
         vm.totalCount > 0 && vm.completedCount >= vm.totalCount;
+    final purchaseRequired = vm.commerce.accessRequired;
+    final plan =
+        vm.commerce.plans.isEmpty ? null : vm.commerce.plans.first;
 
     return SafeArea(
       top: false,
@@ -1547,11 +1732,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    allCompleted
-                        ? 'Series progress'
-                        : member == null
-                            ? 'Series status'
-                            : 'Up next',
+                    purchaseRequired
+                        ? 'Unlock premium tests'
+                        : allCompleted
+                            ? 'Series progress'
+                            : member == null
+                                ? 'Series status'
+                                : 'Up next',
                     style: const TextStyle(
                       color: Color(0xFFAFC5DC),
                       fontSize: 10,
@@ -1560,12 +1747,20 @@ class _SeriesBottomBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    allCompleted
-                        ? 'All tests completed'
-                        : member?.title ??
-                            (vm.availabilityReason.isEmpty
-                                ? 'No test is available yet'
-                                : vm.availabilityReason),
+                    purchaseRequired
+                        ? plan == null
+                            ? 'Premium access required'
+                            : 'From ' +
+                                _formatSeriesPrice(
+                                  plan.salePriceMinor,
+                                  plan.currency,
+                                )
+                        : allCompleted
+                            ? 'All tests completed'
+                            : member?.title ??
+                                (vm.availabilityReason.isEmpty
+                                    ? 'No test is available yet'
+                                    : vm.availabilityReason),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -1579,11 +1774,13 @@ class _SeriesBottomBar extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             FilledButton(
-              onPressed: allCompleted
-                  ? onReviewTests
-                  : vm.available
-                      ? onContinue
-                      : null,
+              onPressed: purchaseRequired
+                  ? onPurchase
+                  : allCompleted
+                      ? onReviewTests
+                      : vm.available
+                          ? onContinue
+                          : null,
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFF1687E0),
                 foregroundColor: Colors.white,
@@ -1594,11 +1791,13 @@ class _SeriesBottomBar extends StatelessWidget {
                 ),
               ),
               child: Text(
-                allCompleted
-                    ? 'Review Tests'
-                    : member?.completed == true
-                        ? 'Open Test'
-                        : 'Continue',
+                purchaseRequired
+                    ? 'View Plans'
+                    : allCompleted
+                        ? 'Review Tests'
+                        : member?.completed == true
+                            ? 'Open Test'
+                            : 'Continue',
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -1609,6 +1808,21 @@ class _SeriesBottomBar extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatSeriesPrice(int minor, String currency) {
+  final whole = minor ~/ 100;
+  final remainder = minor % 100;
+  final amount = remainder == 0
+      ? whole.toString()
+      : whole.toString() + '.' + remainder.toString().padLeft(2, '0');
+  return switch (currency.trim().toUpperCase()) {
+    'INR' => '₹' + amount,
+    'USD' => '\u0024' + amount,
+    'GBP' => '£' + amount,
+    'EUR' => '€' + amount,
+    _ => currency.toUpperCase() + ' ' + amount,
+  };
 }
 
 String _formatMarks(double value) {
