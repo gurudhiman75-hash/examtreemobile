@@ -140,6 +140,8 @@ class _SeriesViewModel {
     required this.examName,
     required this.examFamilyName,
     required this.description,
+    required this.learnerVisibility,
+    required this.learnerMessage,
     required this.progressionMode,
     required this.progressPercent,
     required this.completedCount,
@@ -156,6 +158,8 @@ class _SeriesViewModel {
   final String examName;
   final String examFamilyName;
   final String description;
+  final String learnerVisibility;
+  final String learnerMessage;
   final String progressionMode;
   final int progressPercent;
   final int completedCount;
@@ -174,6 +178,8 @@ class _SeriesViewModel {
 
   double get totalMarks =>
       members.fold(0, (sum, member) => sum + member.totalMarks);
+
+  bool get comingSoon => learnerVisibility == 'coming_soon';
 
   _SeriesMember? get nextMember {
     final requested = nextTestId?.trim() ?? '';
@@ -222,6 +228,8 @@ class _SeriesViewModel {
       examName: _text(series['examName'], fallback: 'Exam'),
       examFamilyName: _text(series['examFamilyName']),
       description: _text(series['description']),
+      learnerVisibility: _text(series['learnerVisibility'], fallback: 'live'),
+      learnerMessage: _text(series['learnerMessage']),
       progressionMode: _text(
         series['progressionMode'],
         fallback: 'open',
@@ -313,9 +321,11 @@ class _SeriesHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = vm.description.isEmpty
-        ? 'Structured mock-test practice for ' + vm.examName + '.'
-        : vm.description;
+    final subtitle = vm.comingSoon && vm.learnerMessage.isNotEmpty
+        ? vm.learnerMessage
+        : vm.description.isEmpty
+            ? 'Structured mock-test practice for ' + vm.examName + '.'
+            : vm.description;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 17, 18, 17),
@@ -364,10 +374,16 @@ class _SeriesHero extends StatelessWidget {
                     background: const Color(0x22FFD36B),
                   ),
                   _HeroChip(
-                    label: vm.available ? 'ACTIVE' : 'UNAVAILABLE',
-                    foreground: vm.available
-                        ? const Color(0xFFB7F7D6)
-                        : const Color(0xFFFFC7C7),
+                    label: vm.comingSoon
+                        ? 'COMING SOON'
+                        : vm.available
+                            ? 'ACTIVE'
+                            : 'UNAVAILABLE',
+                    foreground: vm.comingSoon
+                        ? const Color(0xFFFFD36B)
+                        : vm.available
+                            ? const Color(0xFFB7F7D6)
+                            : const Color(0xFFFFC7C7),
                     background: Colors.white.withValues(alpha: .10),
                   ),
                 ],
@@ -395,7 +411,9 @@ class _SeriesHero extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      vm.progressPercent.toString() + '% complete',
+                      vm.comingSoon
+                          ? 'Content in preparation'
+                          : vm.progressPercent.toString() + '% complete',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -403,10 +421,12 @@ class _SeriesHero extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    vm.completedCount.toString() +
-                        '/' +
-                        vm.totalCount.toString() +
-                        ' tests',
+                    vm.comingSoon
+                        ? 'No questions yet'
+                        : vm.completedCount.toString() +
+                            '/' +
+                            vm.totalCount.toString() +
+                            ' tests',
                     style: const TextStyle(
                       color: Color(0xFFD6E3F1),
                       fontWeight: FontWeight.w700,
@@ -420,7 +440,7 @@ class _SeriesHero extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
                 child: LinearProgressIndicator(
                   minHeight: 8,
-                  value: vm.progressPercent / 100,
+                  value: vm.comingSoon ? 0 : vm.progressPercent / 100,
                   backgroundColor: Colors.white.withValues(alpha: .16),
                   valueColor: const AlwaysStoppedAnimation(
                     Color(0xFFFFD36B),
@@ -789,7 +809,11 @@ class _TestsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (vm.members.isEmpty) {
-      return const _EmptySeries();
+      return _EmptySeries(
+        message: vm.comingSoon && vm.learnerMessage.isNotEmpty
+            ? vm.learnerMessage
+            : 'No tests are currently available in this series.',
+      );
     }
 
     return Column(
@@ -821,7 +845,11 @@ class _PatternTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (vm.members.isEmpty) {
-      return const _EmptySeries();
+      return _EmptySeries(
+        message: vm.comingSoon && vm.learnerMessage.isNotEmpty
+            ? vm.learnerMessage
+            : 'No test pattern is available yet.',
+      );
     }
 
     final totalMinutes = (vm.totalDurationSeconds / 60).round();
@@ -1645,7 +1673,9 @@ class _SeriesError extends StatelessWidget {
 }
 
 class _EmptySeries extends StatelessWidget {
-  const _EmptySeries();
+  const _EmptySeries({required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -1659,18 +1689,18 @@ class _EmptySeries extends StatelessWidget {
         borderRadius: BorderRadius.circular(19),
         border: Border.all(color: const Color(0xFFE4E9F1)),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.event_busy_outlined,
             size: 38,
             color: Color(0xFF94A3B8),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
-            'No tests are currently available in this series.',
+            message,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF10264A),
               fontWeight: FontWeight.w800,
             ),
