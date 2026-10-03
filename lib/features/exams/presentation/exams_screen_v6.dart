@@ -941,6 +941,25 @@ class _SeriesCard extends StatelessWidget {
                             height: 1.2,
                           ),
                         ),
+                        if (series.comingSoon) ...[
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF4E8),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: const Text(
+                              'COMING SOON',
+                              style: TextStyle(
+                                color: Color(0xFFD97706),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: .5,
+                              ),
+                            ),
+                          ),
+                        ],
                         if (series.description.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(
@@ -965,8 +984,12 @@ class _SeriesCard extends StatelessWidget {
                 runSpacing: 6,
                 children: [
                   _MetaChip(
-                    Icons.assignment_outlined,
-                    series.liveTestCount.toString() + ' tests',
+                    series.comingSoon
+                        ? Icons.schedule_rounded
+                        : Icons.assignment_outlined,
+                    series.comingSoon
+                        ? 'No questions yet'
+                        : series.liveTestCount.toString() + ' tests',
                   ),
                   if (series.fullLengthTestCount > 0)
                     _MetaChip(
@@ -993,9 +1016,9 @@ class _SeriesCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(13),
                     ),
                   ),
-                  child: const Text(
-                    'View Series',
-                    style: TextStyle(fontWeight: FontWeight.w900),
+                  child: Text(
+                    series.comingSoon ? 'View Details' : 'View Series',
+                    style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
