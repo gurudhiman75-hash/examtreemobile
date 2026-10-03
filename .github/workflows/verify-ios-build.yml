@@ -1,0 +1,52 @@
+name: Verify iOS build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build unsigned iOS simulator app
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pinned Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+
+      - name: Report Apple toolchain
+        run: |
+          xcodebuild -version
+          flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Validate iOS metadata and entitlement files
+        run: |
+          plutil -lint ios/Runner/Info.plist
+          if [ -f ios/Runner/Runner.entitlements ]; then
+            plutil -lint ios/Runner/Runner.entitlements
+          fi
+
+      - name: Build iOS simulator app
+        run: flutter build ios --simulator --debug
+
+      - name: Verify built Runner app
+        run: |
+          test -d build/ios/iphonesimulator/Runner.app
+          test -f build/ios/iphonesimulator/Runner.app/Info.plist
+          plutil -lint build/ios/iphonesimulator/Runner.app/Info.plist
