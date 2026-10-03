@@ -33,6 +33,9 @@ import '../features/profile/presentation/profile_screen.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
+import '../features/store/presentation/series_plans_screen.dart';
+import '../features/store/presentation/series_checkout_screen.dart';
+import '../features/store/presentation/payment_success_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -310,6 +313,58 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             );
           }
           return MobileTestSeriesDetailScreen(seriesId: seriesId);
+        },
+      ),
+      GoRoute(
+        path: '/series-plans',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Plans unavailable',
+              message: 'No test-series identifier was supplied.',
+            );
+          }
+          return SeriesPlansScreen(seriesId: seriesId);
+        },
+      ),
+      GoRoute(
+        path: '/series-checkout',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          final productId = state.uri.queryParameters['productId']?.trim() ?? '';
+          if (seriesId.isEmpty || productId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Checkout unavailable',
+              message: 'The selected test series or plan is missing.',
+            );
+          }
+          return SeriesCheckoutScreen(
+            seriesId: seriesId,
+            productId: productId,
+            couponCode: state.uri.queryParameters['coupon'],
+          );
+        },
+      ),
+      GoRoute(
+        path: '/payment-success',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Payment status unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return PaymentSuccessScreen(
+            seriesId: seriesId,
+            orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
+            orderNumber:
+                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+          );
         },
       ),
       GoRoute(
