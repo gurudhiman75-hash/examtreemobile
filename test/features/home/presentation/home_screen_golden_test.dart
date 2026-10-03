@@ -6,6 +6,8 @@ import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/models/result_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
+import 'package:examtree/features/exams/domain/exam_catalog.dart';
+import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
 import 'package:examtree/features/home/presentation/home_screen.dart';
 import 'package:examtree/features/profile/presentation/providers/analytics_providers.dart';
@@ -65,6 +67,102 @@ void main() {
       category: category,
       createdAt: updated.subtract(const Duration(days: 2)),
       updatedAt: updated,
+    );
+  }
+
+  ExamCatalogSnapshot catalogSnapshot(List<Exam> available) {
+    const categories = <ExamCatalogCategory>[
+      ExamCatalogCategory(
+        code: 'Punjab State',
+        name: 'Punjab Govt.',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'SSC',
+        name: 'SSC',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'Banking',
+        name: 'Banking',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'Railway',
+        name: 'Railway',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'Teaching',
+        name: 'Teaching',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'Defence',
+        name: 'Defence',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'State PCS',
+        name: 'State PCS',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+      ExamCatalogCategory(
+        code: 'Other Exams',
+        name: 'Other Exams',
+        description: '',
+        iconUrl: '',
+        colorHex: '',
+        testCount: 0,
+      ),
+    ];
+
+    final series = <ExamSeriesSummary>[
+      for (final item in available)
+        ExamSeriesSummary(
+          id: 'series-' + item.id,
+          code: 'series-' + item.id,
+          name: item.title,
+          description: item.description,
+          examCode: item.id,
+          examName: item.category + ' · ' + item.difficulty,
+          examFamilyCode: item.category,
+          examFamilyName: item.category,
+          testCount: 1,
+          liveTestCount: 1,
+          fullLengthTestCount: 1,
+          durationSeconds: item.durationInSeconds,
+          questionCount: item.totalQuestions,
+          attemptCount: 0,
+          totalMarks: item.totalMarks,
+        ),
+    ];
+
+    return ExamCatalogSnapshot(
+      categories: categories,
+      exams: const <ExamCatalogExam>[],
+      series: series,
     );
   }
 
@@ -131,6 +229,9 @@ void main() {
           userAnalyticsProvider.overrideWith((ref) async => analyticsValue),
           inProgressExamsProvider.overrideWith((ref) async => active),
           availableExamsProvider.overrideWith((ref) async => available),
+          examCatalogProvider.overrideWith(
+            (ref) async => catalogSnapshot(available),
+          ),
           userResultsProvider.overrideWith((ref) async => results),
         ],
         child: MaterialApp(
