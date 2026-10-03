@@ -913,6 +913,14 @@ class _ConfiguredSeriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (itemOverride == null && !compact && !listMode) {
+      return _DefaultCanonicalSeriesCard(
+        item: item,
+        alternate: alternate,
+        onTap: onTap,
+      );
+    }
+
     final theme = Theme.of(context);
     final displayName = itemOverride?.title.trim().isNotEmpty == true
         ? itemOverride!.title
@@ -1123,6 +1131,184 @@ class _ConfiguredSeriesCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _DefaultCanonicalSeriesCard extends StatelessWidget {
+  const _DefaultCanonicalSeriesCard({
+    required this.item,
+    required this.alternate,
+    required this.onTap,
+  });
+
+  final MobileFeaturedTestSeries item;
+  final bool alternate;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final durationMinutes = (item.durationSeconds / 60).round();
+    final marks = _formatSeriesMarks(item.totalMarks);
+    final foreground = alternate ? const Color(0xFF152746) : Colors.white;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(22),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            gradient: LinearGradient(
+              colors: alternate
+                  ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
+                  : const [Color(0xFF04366B), Color(0xFF075A98)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            border: Border.all(
+              color: alternate
+                  ? const Color(0xFFE7C879).withValues(alpha: .42)
+                  : Colors.white.withValues(alpha: .08),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F2745).withValues(alpha: 0.13),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                right: -6,
+                top: 23,
+                child: Icon(
+                  _seriesArtworkIconFromText(item.name + ' ' + item.examName),
+                  size: 96,
+                  color: alternate
+                      ? const Color(0xFFB48220).withValues(alpha: .12)
+                      : Colors.white.withValues(alpha: .10),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(17, 16, 15, 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: alternate
+                              ? const Color(0xFF8C6A2A).withValues(alpha: .50)
+                              : Colors.white.withValues(alpha: .45),
+                        ),
+                      ),
+                      child: Text(
+                        'TEST SERIES',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: alternate
+                              ? const Color(0xFF72531B)
+                              : Colors.white.withValues(alpha: .88),
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: .7,
+                          fontSize: 9,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: 208,
+                      child: Text(
+                        item.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.premiumHeading(
+                          theme.textTheme.titleLarge,
+                        ).copyWith(
+                          color: foreground,
+                          height: 1.06,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.examName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: foreground.withValues(alpha: .74),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _SeriesMetric(
+                            icon: Icons.quiz_outlined,
+                            value: item.questionCount.toString(),
+                            label: 'Questions',
+                            light: alternate,
+                          ),
+                        ),
+                        Expanded(
+                          child: _SeriesMetric(
+                            icon: Icons.schedule_rounded,
+                            value: durationMinutes.toString() + ' min',
+                            label: 'Duration',
+                            light: alternate,
+                          ),
+                        ),
+                        Expanded(
+                          child: _SeriesMetric(
+                            icon: Icons.emoji_events_outlined,
+                            value: marks,
+                            label: 'Marks',
+                            light: alternate,
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 19,
+                          backgroundColor: alternate
+                              ? const Color(0xFF10264A)
+                              : Colors.white.withValues(alpha: 0.16),
+                          child: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.white,
+                            size: 17,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+IconData _seriesArtworkIconFromText(String value) {
+  final haystack = value.toLowerCase();
+  if (haystack.contains('police') || haystack.contains('defence')) {
+    return Icons.shield_rounded;
+  }
+  if (haystack.contains('bank')) return Icons.account_balance_rounded;
+  if (haystack.contains('rail')) return Icons.train_rounded;
+  if (haystack.contains('teacher') || haystack.contains('teaching')) {
+    return Icons.school_rounded;
+  }
+  return Icons.workspace_premium_rounded;
 }
 
 String _formatSeriesMarks(double value) {
