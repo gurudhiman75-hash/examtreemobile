@@ -562,6 +562,9 @@ List<MobileFeaturedTestSeries> _resolveCanonicalHomeSeries({
           examName: series.examName,
           testCount:
               series.comingSoon ? series.testCount : series.liveTestCount,
+          questionCount: series.questionCount,
+          durationSeconds: series.durationSeconds,
+          totalMarks: series.totalMarks,
         ),
       )
       .toList(growable: false);
@@ -875,14 +878,14 @@ class _ConfiguredSeriesRail extends StatelessWidget {
         );
       default:
         return SizedBox(
-          height: 166,
+          height: 196,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemCount: visibleSeries.length,
             separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
             itemBuilder: (context, index) => SizedBox(
-              width: 286,
+              width: 300,
               child: card(index),
             ),
           ),
@@ -1006,30 +1009,74 @@ class _ConfiguredSeriesCard extends StatelessWidget {
             ),
           ),
         const Spacer(),
-        Row(
-          children: [
-            Icon(
-              Icons.layers_rounded,
-              size: compact ? 14 : 17,
-              color: foreground.withValues(alpha: .82),
-            ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Text(
-                item.testCount == 1 ? '1 test' : '${item.testCount} tests',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w800,
-                  fontSize: compact ? 10 : null,
+        if (compact)
+          Row(
+            children: [
+              Icon(
+                Icons.layers_rounded,
+                size: 14,
+                color: foreground.withValues(alpha: .82),
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Text(
+                  item.testCount == 1 ? '1 test' : '${item.testCount} tests',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 10,
+                  ),
                 ),
               ),
-            ),
-            Icon(Icons.arrow_forward_rounded,
-                color: foreground, size: compact ? 16 : 20),
-          ],
-        ),
+              Icon(
+                Icons.arrow_forward_rounded,
+                color: foreground,
+                size: 16,
+              ),
+            ],
+          )
+        else
+          Row(
+            children: [
+              Expanded(
+                child: _SeriesMetric(
+                  icon: Icons.quiz_outlined,
+                  value: '${item.questionCount}',
+                  label: 'Questions',
+                  light: alternate && !hasImage,
+                ),
+              ),
+              Expanded(
+                child: _SeriesMetric(
+                  icon: Icons.schedule_rounded,
+                  value: '${(item.durationSeconds / 60).round()} min',
+                  label: 'Duration',
+                  light: alternate && !hasImage,
+                ),
+              ),
+              Expanded(
+                child: _SeriesMetric(
+                  icon: Icons.emoji_events_outlined,
+                  value: _formatSeriesMarks(item.totalMarks),
+                  label: 'Marks',
+                  light: alternate && !hasImage,
+                ),
+              ),
+              CircleAvatar(
+                radius: 19,
+                backgroundColor: alternate && !hasImage
+                    ? const Color(0xFF10264A)
+                    : Colors.white.withValues(alpha: 0.16),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.white,
+                  size: 17,
+                ),
+              ),
+            ],
+          ),
       ],
     );
 
@@ -1076,6 +1123,11 @@ class _ConfiguredSeriesCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatSeriesMarks(double value) {
+  if (value == value.roundToDouble()) return value.toInt().toString();
+  return value.toStringAsFixed(1);
 }
 
 class _HomePromoFallback extends StatelessWidget {
