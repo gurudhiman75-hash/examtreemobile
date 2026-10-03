@@ -133,14 +133,6 @@ class HomeScreen extends ConsumerWidget {
       results: results,
       availableTests: prioritizedAvailable,
     );
-    final hiddenIds = <String>{
-      ...active.map((item) => item.id),
-      if (actionState.action?.exam != null) actionState.action!.exam!.id,
-    };
-    final recommendations = prioritizedAvailable
-        .where((exam) => !hiddenIds.contains(exam.id))
-        .take(6)
-        .toList(growable: false);
     final campaigns = campaignsAsync.value ?? const <PromotionCampaign>[];
     final homeConfig =
         homeConfigAsync.value ?? MobileHomeConfiguration.fallback;
@@ -280,6 +272,7 @@ class HomeScreen extends ConsumerWidget {
             data: (_) => homeExamFamilies.isEmpty
                 ? _EmptyRecommendations(
                     catalogueEmpty: true,
+                    emptyText: 'No exam categories are published right now.',
                     onBrowse: () => context.go('/exams'),
                   )
                 : _ExamCategoriesGrid(
@@ -3750,10 +3743,12 @@ class _EmptyRecommendations extends StatelessWidget {
   const _EmptyRecommendations({
     required this.catalogueEmpty,
     required this.onBrowse,
+    this.emptyText,
   });
 
   final bool catalogueEmpty;
   final VoidCallback onBrowse;
+  final String? emptyText;
 
   @override
   Widget build(BuildContext context) {
@@ -3776,7 +3771,7 @@ class _EmptyRecommendations extends StatelessWidget {
           Expanded(
             child: Text(
               catalogueEmpty
-                  ? 'No tests are published right now.'
+                  ? (emptyText ?? 'No tests are published right now.')
                   : 'You are caught up on current recommendations.',
             ),
           ),
