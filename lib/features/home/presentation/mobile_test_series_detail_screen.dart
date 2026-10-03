@@ -56,6 +56,7 @@ class _MobileTestSeriesDetailScreenState
     _SeriesMember member,
     _SeriesViewModel vm,
   ) async {
+    final freeMember = vm.firstFreeOpenMember;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -123,6 +124,26 @@ class _MobileTestSeriesDetailScreenState
                 ),
               if (vm.commerce.freeTestCount > 0)
                 const SizedBox(height: 12),
+              if (freeMember != null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      _openTest(freeMember, vm);
+                    },
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: const Text(
+                      'Try Free Test',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -293,6 +314,22 @@ class _SeriesViewModel {
 
   double get totalMarks =>
       members.fold(0, (sum, member) => sum + member.totalMarks);
+
+  _SeriesMember? get firstFreeOpenMember {
+    for (final member in members) {
+      if (member.unlocked &&
+          !member.paidAccessRequired &&
+          !member.completed) {
+        return member;
+      }
+    }
+    for (final member in members) {
+      if (member.unlocked && !member.paidAccessRequired) {
+        return member;
+      }
+    }
+    return null;
+  }
 
   _SeriesMember? get nextMember {
     final requested = nextTestId?.trim() ?? '';
