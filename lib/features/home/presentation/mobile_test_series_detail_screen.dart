@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/providers/repository_providers.dart';
+import '../../store/domain/series_purchase.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -39,11 +40,142 @@ class _MobileTestSeriesDetailScreenState
     } catch (_) {}
   }
 
-  void _openTest(_SeriesMember member) {
+  void _openTest(_SeriesMember member, _SeriesViewModel vm) {
+    if (member.requiresPurchase) {
+      _showPurchaseSheet(member, vm);
+      return;
+    }
     context.push(
       '/exam-details?seriesId=' +
           Uri.encodeQueryComponent(widget.seriesId),
       extra: member.testId,
+    );
+  }
+
+  Future<void> _showPurchaseSheet(
+    _SeriesMember member,
+    _SeriesViewModel vm,
+  ) async {
+    final freeMember = vm.firstFreeOpenMember;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: Colors.white,
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 6, 20, 22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF4D6),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.lock_rounded,
+                  color: Color(0xFFD97706),
+                  size: 28,
+                ),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'This Test is Locked',
+                style: TextStyle(
+                  color: Color(0xFF10264A),
+                  fontSize: 21,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                member.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF718096),
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (vm.commerce.freeTestCount > 0)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF8F2),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Text(
+                    vm.commerce.freeTestCount.toString() +
+                        (vm.commerce.freeTestCount == 1
+                            ? ' free test is available in this series.'
+                            : ' free tests are available in this series.'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFF087653),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              if (vm.commerce.freeTestCount > 0)
+                const SizedBox(height: 12),
+              if (freeMember != null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      _openTest(freeMember, vm);
+                    },
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: const Text(
+                      'Try Free Test',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: vm.commerce.plans.isEmpty
+                      ? null
+                      : () {
+                          Navigator.of(sheetContext).pop();
+                          context.push(
+                            '/series-plans?seriesId=' +
+                                Uri.encodeQueryComponent(widget.seriesId),
+                          );
+                        },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF0B5D96),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text(
+                    'View Plans & Unlock',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(),
+                child: const Text('Maybe Later'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -90,7 +222,7 @@ class _MobileTestSeriesDetailScreenState
                   _SeriesTab.overview => _OverviewTab(vm: vm),
                   _SeriesTab.tests => _TestsTab(
                       vm: vm,
-                      onOpenTest: _openTest,
+                      onOpenTest: (member) => _openTest(member, vm),
                     ),
                   _SeriesTab.pattern => _PatternTab(vm: vm),
                 },
@@ -102,7 +234,13 @@ class _MobileTestSeriesDetailScreenState
             nextMember: nextMember,
             onContinue: nextMember == null
                 ? null
-                : () => _openTest(nextMember),
+                : () => _openTest(nextMember, vm),
+            onPurchase: vm.commerce.plans.isEmpty
+                ? null
+                : () => context.push(
+                      '/series-plans?seriesId=' +
+                          Uri.encodeQueryComponent(widget.seriesId),
+                    ),
             onReviewTests: () =>
                 setState(() => _selectedTab = _SeriesTab.tests),
           ),
