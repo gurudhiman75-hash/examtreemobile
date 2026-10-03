@@ -288,6 +288,7 @@ class _SeriesViewModel {
     required this.nextTestId,
     required this.available,
     required this.availabilityReason,
+    required this.commerce,
     required this.members,
   });
 
@@ -306,6 +307,7 @@ class _SeriesViewModel {
   final String? nextTestId;
   final bool available;
   final String availabilityReason;
+  final SeriesCommerceState commerce;
   final List<_SeriesMember> members;
 
   int get totalQuestions =>
@@ -319,18 +321,34 @@ class _SeriesViewModel {
 
   bool get comingSoon => learnerVisibility == 'coming_soon';
 
+  _SeriesMember? get firstFreeOpenMember {
+    for (final member in members) {
+      if (member.unlocked &&
+          !member.paidAccessRequired &&
+          !member.completed) {
+        return member;
+      }
+    }
+    for (final member in members) {
+      if (member.unlocked && !member.paidAccessRequired) {
+        return member;
+      }
+    }
+    return null;
+  }
+
   _SeriesMember? get nextMember {
     final requested = nextTestId?.trim() ?? '';
     if (requested.isNotEmpty) {
       for (final member in members) {
-        if (member.testId == requested && member.unlocked) return member;
+        if (member.testId == requested && member.canOpen) return member;
       }
     }
     for (final member in members) {
-      if (member.unlocked && !member.completed) return member;
+      if (member.canOpen && !member.completed) return member;
     }
     for (final member in members) {
-      if (member.unlocked) return member;
+      if (member.canOpen) return member;
     }
     return null;
   }
@@ -379,6 +397,7 @@ class _SeriesViewModel {
       nextTestId: _nullableText(eligibility['nextTestId']),
       available: eligibility['available'] != false,
       availabilityReason: _text(eligibility['availabilityReason']),
+      commerce: SeriesCommerceState.fromBody(body),
       members: members,
     );
   }
@@ -398,6 +417,8 @@ class _SeriesMember {
     required this.attemptCount,
     required this.bestScore,
     required this.lockReason,
+    required this.paidAccessRequired,
+    required this.entitled,
   });
 
   final String testId;
@@ -412,6 +433,11 @@ class _SeriesMember {
   final int attemptCount;
   final double? bestScore;
   final String lockReason;
+  final bool paidAccessRequired;
+  final bool entitled;
+
+  bool get requiresPurchase => paidAccessRequired && !entitled;
+  bool get canOpen => unlocked && !requiresPurchase;
 
   int get durationMinutes =>
       durationSeconds <= 0 ? 0 : (durationSeconds / 60).ceil();
@@ -438,6 +464,8 @@ class _SeriesMember {
       attemptCount: number(json['attemptCount']),
       bestScore: decimal(json['bestScore']),
       lockReason: _text(json['lockReason']),
+      paidAccessRequired: json['paidAccessRequired'] == true,
+      entitled: json['entitled'] == true,
     );
   }
 }
