@@ -58,8 +58,8 @@ class ExamSeriesSummary {
     required this.durationSeconds,
     required this.questionCount,
     required this.attemptCount,
-    required this.learnerVisibility,
-    required this.learnerMessage,
+    this.learnerVisibility = 'live',
+    this.learnerMessage = '',
   });
 
   final String id;
