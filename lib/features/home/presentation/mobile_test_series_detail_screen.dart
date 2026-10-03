@@ -1668,7 +1668,7 @@ class _SeriesBottomBar extends StatelessWidget {
                 children: [
                   Text(
                     purchaseRequired
-                        ? 'Unlock full series'
+                        ? 'Unlock premium tests'
                         : allCompleted
                             ? 'Series progress'
                             : member == null
