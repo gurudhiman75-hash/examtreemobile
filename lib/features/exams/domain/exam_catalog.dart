@@ -58,6 +58,7 @@ class ExamSeriesSummary {
     required this.durationSeconds,
     required this.questionCount,
     required this.attemptCount,
+    this.totalMarks = 0,
     this.iconUrl = '',
     this.learnerVisibility = 'live',
     this.learnerMessage = '',
@@ -77,6 +78,7 @@ class ExamSeriesSummary {
   final int durationSeconds;
   final int questionCount;
   final int attemptCount;
+  final double totalMarks;
   final String iconUrl;
   final String learnerVisibility;
   final String learnerMessage;
@@ -102,6 +104,9 @@ class ExamSeriesSummary {
       durationSeconds: number(json['durationSeconds']),
       questionCount: number(json['questionCount']),
       attemptCount: number(json['attemptCount']),
+      totalMarks: json['totalMarks'] is num
+          ? (json['totalMarks'] as num).toDouble()
+          : double.tryParse(json['totalMarks']?.toString() ?? '') ?? 0,
       iconUrl: json['iconUrl']?.toString().trim() ?? '',
       learnerVisibility: json['learnerVisibility']?.toString().trim().isNotEmpty == true
           ? json['learnerVisibility'].toString().trim()
