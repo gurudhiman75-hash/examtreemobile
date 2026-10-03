@@ -58,6 +58,8 @@ class ExamSeriesSummary {
     required this.durationSeconds,
     required this.questionCount,
     required this.attemptCount,
+    required this.learnerVisibility,
+    required this.learnerMessage,
   });
 
   final String id;
@@ -74,6 +76,10 @@ class ExamSeriesSummary {
   final int durationSeconds;
   final int questionCount;
   final int attemptCount;
+  final String learnerVisibility;
+  final String learnerMessage;
+
+  bool get comingSoon => learnerVisibility == 'coming_soon';
 
   factory ExamSeriesSummary.fromJson(Map<String, dynamic> json) {
     int number(Object? value) =>
@@ -94,6 +100,10 @@ class ExamSeriesSummary {
       durationSeconds: number(json['durationSeconds']),
       questionCount: number(json['questionCount']),
       attemptCount: number(json['attemptCount']),
+      learnerVisibility: json['learnerVisibility']?.toString().trim().isNotEmpty == true
+          ? json['learnerVisibility'].toString().trim()
+          : 'live',
+      learnerMessage: json['learnerMessage']?.toString().trim() ?? '',
     );
   }
 }
