@@ -500,14 +500,7 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
       .where((code) => code.isNotEmpty)
       .toList(growable: false);
 
-  final sourceCodes = orderedCodes.isNotEmpty
-      ? orderedCodes
-      : catalog.categories
-          .map((category) => category.code.trim().toLowerCase())
-          .where((code) => code.isNotEmpty)
-          .toList(growable: false);
-
-  return sourceCodes
+  final resolvedConfigured = orderedCodes
       .map((code) {
         final category = byCode[code];
         if (category == null) return null;
@@ -521,6 +514,20 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
         );
       })
       .whereType<MobileFeaturedExamFamily>()
+      .toList(growable: false);
+
+  if (resolvedConfigured.isNotEmpty) {
+    return resolvedConfigured.take(12).toList(growable: false);
+  }
+
+  return catalog.categories
+      .map(
+        (category) => MobileFeaturedExamFamily(
+          id: category.code,
+          code: category.code,
+          name: category.name,
+        ),
+      )
       .take(12)
       .toList(growable: false);
 }
@@ -539,11 +546,13 @@ List<MobileFeaturedTestSeries> _resolveCanonicalHomeSeries({
       .where((id) => id.isNotEmpty)
       .toList(growable: false);
 
-  final source = configuredIds.isNotEmpty
-      ? configuredIds
-          .map((id) => byId[id])
-          .whereType<ExamSeriesSummary>()
-          .toList(growable: false)
+  final resolvedConfigured = configuredIds
+      .map((id) => byId[id])
+      .whereType<ExamSeriesSummary>()
+      .toList(growable: false);
+
+  final source = resolvedConfigured.isNotEmpty
+      ? resolvedConfigured
       : catalog.series.take(8).toList(growable: false);
 
   return source
