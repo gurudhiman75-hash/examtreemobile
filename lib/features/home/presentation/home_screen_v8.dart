@@ -19,6 +19,8 @@ import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../content_planning/presentation/mobile_content_planning_providers.dart';
 import '../../content_planning/presentation/widgets/mobile_planned_content_section.dart';
 import '../../exam_preferences/presentation/providers/exam_preferences_providers.dart';
+import '../../exams/domain/exam_catalog.dart';
+import '../../exams/presentation/providers/exam_catalog_providers.dart';
 import '../../exams/presentation/providers/exam_providers.dart';
 import '../../notifications/presentation/mobile_notifications_screen.dart';
 import '../../profile/presentation/providers/analytics_providers.dart';
@@ -52,6 +54,7 @@ class HomeScreen extends ConsumerWidget {
       ..invalidate(userResultsProvider)
       ..invalidate(dailyCompanionSnapshotProvider)
       ..invalidate(homeV8SelectedExamCodesProvider)
+      ..invalidate(examCatalogProvider)
       ..invalidate(mobileHomeConfigurationProvider)
       ..invalidate(promotionsForPlacementProvider(PromotionPlacement.home))
       ..invalidate(mobileContentPlanProvider('home_learn'))
@@ -72,6 +75,7 @@ class HomeScreen extends ConsumerWidget {
       settle(ref.read(availableExamsProvider.future)),
       settle(ref.read(userResultsProvider.future)),
       settle(ref.read(dailyCompanionSnapshotProvider.future)),
+      settle(ref.read(examCatalogProvider.future)),
     ]);
   }
 
@@ -87,6 +91,7 @@ class HomeScreen extends ConsumerWidget {
       promotionsForPlacementProvider(PromotionPlacement.home),
     );
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
+    final canonicalCatalogAsync = ref.watch(examCatalogProvider);
     final user = ref.watch(authStateChangesProvider).value;
     final notificationUnreadCount = user == null
         ? 0
@@ -139,6 +144,15 @@ class HomeScreen extends ConsumerWidget {
     final campaigns = campaignsAsync.value ?? const <PromotionCampaign>[];
     final homeConfig =
         homeConfigAsync.value ?? MobileHomeConfiguration.fallback;
+    final canonicalCatalog = canonicalCatalogAsync.value;
+    final homeExamFamilies = _resolveCanonicalHomeFamilies(
+      configuration: homeConfig,
+      catalog: canonicalCatalog,
+    );
+    final homeFeaturedSeries = _resolveCanonicalHomeSeries(
+      configuration: homeConfig,
+      catalog: canonicalCatalog,
+    );
     final examCategoriesSetting = homeConfig.settingFor('exam_categories');
     final featuredSeriesSetting = homeConfig.settingFor('featured_test_series');
     final continueLearningSetting = homeConfig.settingFor('continue_learning');
@@ -235,14 +249,49 @@ class HomeScreen extends ConsumerWidget {
             iconUrl: examCategoriesSetting.iconUrl,
           ),
           const SizedBox(height: 3),
-          _ExamCategoriesGrid(
-            families: homeConfig.featuredExamFamilies,
-            overrides: homeConfig.itemOverrides,
-            layout: examCategoriesSetting.layout,
-            columns: examCategoriesSetting.columns,
-            onOpen: (family) => context.push(
-              '/exam-category?family=' + Uri.encodeQueryComponent(family),
-            ),
+          canonicalCatalogAsync.when(
+            loading: () => homeExamFamilies.isEmpty
+                ? const _LoadingCard(height: 196)
+                : _ExamCategoriesGrid(
+                    families: homeExamFamilies,
+                    overrides: homeConfig.itemOverrides,
+                    layout: examCategoriesSetting.layout,
+                    columns: examCategoriesSetting.columns,
+                    onOpen: (family) => context.push(
+                      '/exam-category?family=' +
+                          Uri.encodeQueryComponent(family),
+                    ),
+                  ),
+            error: (error, stack) => homeExamFamilies.isEmpty
+                ? _ErrorCard(
+                    title: 'Exam categories could not be loaded',
+                    onRetry: () => ref.invalidate(examCatalogProvider),
+                  )
+                : _ExamCategoriesGrid(
+                    families: homeExamFamilies,
+                    overrides: homeConfig.itemOverrides,
+                    layout: examCategoriesSetting.layout,
+                    columns: examCategoriesSetting.columns,
+                    onOpen: (family) => context.push(
+                      '/exam-category?family=' +
+                          Uri.encodeQueryComponent(family),
+                    ),
+                  ),
+            data: (_) => homeExamFamilies.isEmpty
+                ? _EmptyRecommendations(
+                    catalogueEmpty: true,
+                    onBrowse: () => context.go('/exams'),
+                  )
+                : _ExamCategoriesGrid(
+                    families: homeExamFamilies,
+                    overrides: homeConfig.itemOverrides,
+                    layout: examCategoriesSetting.layout,
+                    columns: examCategoriesSetting.columns,
+                    onOpen: (family) => context.push(
+                      '/exam-category?family=' +
+                          Uri.encodeQueryComponent(family),
+                    ),
+                  ),
           ),
           const SizedBox(height: 8),
         ],
@@ -262,39 +311,50 @@ class HomeScreen extends ConsumerWidget {
             iconUrl: featuredSeriesSetting.iconUrl,
           ),
           const SizedBox(height: 6),
-          if (homeConfig.featuredTestSeries.isNotEmpty)
-            _ConfiguredSeriesRail(
-              series: homeConfig.featuredTestSeries,
-              overrides: homeConfig.itemOverrides,
-              layout: featuredSeriesSetting.layout,
-              columns: featuredSeriesSetting.columns,
-              onOpen: (series) => context.push('/test-series?id=${Uri.encodeQueryComponent(series.id)}'),
-            )
-          else
-            availableAsync.when(
-              loading: () => const _LoadingCard(height: 194),
-              error: (error, stack) => _ErrorCard(
-                title: 'Test series could not be loaded',
-                onRetry: () => ref.invalidate(availableExamsProvider),
-              ),
-              data: (tests) {
-                final featured = recommendations.isNotEmpty
-                    ? recommendations.take(4).toList(growable: false)
-                    : prioritizedAvailable.take(4).toList(growable: false);
-                return featured.isEmpty
-                    ? _EmptyRecommendations(
-                        catalogueEmpty: tests.isEmpty,
-                        onBrowse: () => context.go('/exams'),
-                      )
-                    : _FeaturedSeriesRail(
-                        exams: featured,
-                        onOpen: (exam) => context.push(
-                          '/exam-details',
-                          extra: exam.id,
-                        ),
-                      );
-              },
-            ),
+          canonicalCatalogAsync.when(
+            loading: () => homeFeaturedSeries.isEmpty
+                ? const _LoadingCard(height: 194)
+                : _ConfiguredSeriesRail(
+                    series: homeFeaturedSeries,
+                    overrides: homeConfig.itemOverrides,
+                    layout: featuredSeriesSetting.layout,
+                    columns: featuredSeriesSetting.columns,
+                    onOpen: (series) => context.push(
+                      '/test-series?id=' +
+                          Uri.encodeQueryComponent(series.id),
+                    ),
+                  ),
+            error: (error, stack) => homeFeaturedSeries.isEmpty
+                ? _ErrorCard(
+                    title: 'Test series could not be loaded',
+                    onRetry: () => ref.invalidate(examCatalogProvider),
+                  )
+                : _ConfiguredSeriesRail(
+                    series: homeFeaturedSeries,
+                    overrides: homeConfig.itemOverrides,
+                    layout: featuredSeriesSetting.layout,
+                    columns: featuredSeriesSetting.columns,
+                    onOpen: (series) => context.push(
+                      '/test-series?id=' +
+                          Uri.encodeQueryComponent(series.id),
+                    ),
+                  ),
+            data: (_) => homeFeaturedSeries.isEmpty
+                ? _EmptyRecommendations(
+                    catalogueEmpty: true,
+                    onBrowse: () => context.go('/exams'),
+                  )
+                : _ConfiguredSeriesRail(
+                    series: homeFeaturedSeries,
+                    overrides: homeConfig.itemOverrides,
+                    layout: featuredSeriesSetting.layout,
+                    columns: featuredSeriesSetting.columns,
+                    onOpen: (series) => context.push(
+                      '/test-series?id=' +
+                          Uri.encodeQueryComponent(series.id),
+                    ),
+                  ),
+          ),
           const SizedBox(height: 16),
         ],
       )
@@ -426,6 +486,86 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+
+List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
+  required MobileHomeConfiguration configuration,
+  required ExamCatalogSnapshot? catalog,
+}) {
+  if (catalog == null) return const <MobileFeaturedExamFamily>[];
+
+  final byCode = <String, ExamCatalogCategory>{
+    for (final category in catalog.categories)
+      category.code.trim().toLowerCase(): category,
+  };
+  final configuredByCode = <String, MobileFeaturedExamFamily>{
+    for (final family in configuration.featuredExamFamilies)
+      family.code.trim().toLowerCase(): family,
+  };
+
+  final orderedCodes = configuration.featuredExamFamilies
+      .map((family) => family.code.trim().toLowerCase())
+      .where((code) => code.isNotEmpty)
+      .toList(growable: false);
+
+  final sourceCodes = orderedCodes.isNotEmpty
+      ? orderedCodes
+      : catalog.categories
+          .map((category) => category.code.trim().toLowerCase())
+          .where((code) => code.isNotEmpty)
+          .toList(growable: false);
+
+  return sourceCodes
+      .map((code) {
+        final category = byCode[code];
+        if (category == null) return null;
+        final configured = configuredByCode[code];
+        return MobileFeaturedExamFamily(
+          id: configured?.id.trim().isNotEmpty == true
+              ? configured!.id
+              : category.code,
+          code: category.code,
+          name: category.name,
+        );
+      })
+      .whereType<MobileFeaturedExamFamily>()
+      .take(12)
+      .toList(growable: false);
+}
+
+List<MobileFeaturedTestSeries> _resolveCanonicalHomeSeries({
+  required MobileHomeConfiguration configuration,
+  required ExamCatalogSnapshot? catalog,
+}) {
+  if (catalog == null) return const <MobileFeaturedTestSeries>[];
+
+  final byId = <String, ExamSeriesSummary>{
+    for (final series in catalog.series) series.id: series,
+  };
+  final configuredIds = configuration.featuredTestSeriesIds
+      .map((id) => id.trim())
+      .where((id) => id.isNotEmpty)
+      .toList(growable: false);
+
+  final source = configuredIds.isNotEmpty
+      ? configuredIds
+          .map((id) => byId[id])
+          .whereType<ExamSeriesSummary>()
+          .toList(growable: false)
+      : catalog.series.take(8).toList(growable: false);
+
+  return source
+      .map(
+        (series) => MobileFeaturedTestSeries(
+          id: series.id,
+          code: series.code,
+          name: series.name,
+          examName: series.examName,
+          testCount:
+              series.comingSoon ? series.testCount : series.liveTestCount,
+        ),
+      )
+      .toList(growable: false);
+}
 
 class _ConfiguredHeroCarousel extends StatefulWidget {
   const _ConfiguredHeroCarousel({
@@ -1391,17 +1531,6 @@ class _ExamCategoriesGrid extends StatelessWidget {
   final String layout;
   final int columns;
 
-  static const _items = [
-    _ExamCategoryPresentation(label: 'Punjab Govt.', routeFamily: 'Punjab State', subtitle: '', badge: '', icon: Icons.location_on_rounded, background: Color(0xFFFFEFEF), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'SSC', routeFamily: 'SSC', subtitle: '', badge: '', icon: Icons.workspace_premium_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF11966F), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Banking', routeFamily: 'Banking', subtitle: '', badge: '', icon: Icons.account_balance_rounded, background: Color(0xFFECF4FF), foreground: Color(0xFF1672E8), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Railway', routeFamily: 'Railway', subtitle: '', badge: '', icon: Icons.train_rounded, background: Color(0xFFF3EEFF), foreground: Color(0xFF7248E8), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Teaching', routeFamily: 'Teaching', subtitle: '', badge: '', icon: Icons.school_rounded, background: Color(0xFFFFF5E8), foreground: Color(0xFFF28A19), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Defence', routeFamily: 'Defence', subtitle: '', badge: '', icon: Icons.shield_rounded, background: Color(0xFFEAF8F2), foreground: Color(0xFF159D73), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'State PCS', routeFamily: 'State PCS', subtitle: '', badge: '', icon: Icons.apartment_rounded, background: Color(0xFFFFEEEE), foreground: Color(0xFFF04452), iconUrl: '', imageUrl: ''),
-    _ExamCategoryPresentation(label: 'Other Exams', routeFamily: 'Other Exams', subtitle: '', badge: '', icon: Icons.grid_view_rounded, background: Color(0xFFF1F4F8), foreground: Color(0xFF718096), iconUrl: '', imageUrl: ''),
-  ];
-
   static (String, IconData, Color, Color) _visual(
     MobileFeaturedExamFamily family,
   ) {
@@ -1440,9 +1569,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = families.isEmpty
-        ? _items
-        : families
+    final items = families
             .where((family) => !(overrides[family.id]?.hidden ?? false))
             .take(12)
             .map((family) {
