@@ -411,6 +411,7 @@ class _SeriesMember {
     required this.testId,
     required this.title,
     required this.description,
+    required this.iconUrl,
     required this.questionCount,
     required this.durationSeconds,
     required this.totalMarks,
@@ -427,6 +428,7 @@ class _SeriesMember {
   final String testId;
   final String title;
   final String description;
+  final String iconUrl;
   final int questionCount;
   final int durationSeconds;
   final double totalMarks;
@@ -458,6 +460,7 @@ class _SeriesMember {
       testId: _text(json['testId']),
       title: _text(json['title'], fallback: 'Untitled test'),
       description: _text(json['description']),
+      iconUrl: _text(json['iconUrl']),
       questionCount: number(json['questionCount']),
       durationSeconds: number(json['durationSeconds']),
       totalMarks: decimal(json['totalMarks']) ?? 0,
@@ -1386,35 +1389,53 @@ class _SeriesTestCard extends StatelessWidget {
                 width: 45,
                 height: 45,
                 alignment: Alignment.center,
+                padding: member.iconUrl.isNotEmpty
+                    ? const EdgeInsets.all(5)
+                    : EdgeInsets.zero,
                 decoration: BoxDecoration(
-                  color: stateTint,
+                  color: member.iconUrl.isNotEmpty ? Colors.white : stateTint,
                   borderRadius: BorderRadius.circular(14),
+                  border: member.iconUrl.isNotEmpty
+                      ? Border.all(color: const Color(0xFFE4E9F1))
+                      : null,
                 ),
-                child: member.completed
-                    ? Icon(
-                        Icons.check_circle_rounded,
-                        color: stateColor,
-                        size: 23,
-                      )
-                    : member.requiresPurchase
-                        ? Icon(
-                            Icons.lock_rounded,
+                child: member.iconUrl.isNotEmpty
+                    ? Image.network(
+                        member.iconUrl,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) => Text(
+                          index.toString().padLeft(2, '0'),
+                          style: TextStyle(
                             color: stateColor,
-                            size: 22,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      )
+                    : member.completed
+                        ? Icon(
+                            Icons.check_circle_rounded,
+                            color: stateColor,
+                            size: 23,
                           )
-                        : member.unlocked
-                            ? Text(
-                                index.toString().padLeft(2, '0'),
-                                style: TextStyle(
-                                  color: stateColor,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              )
-                            : Icon(
-                                Icons.lock_outline_rounded,
+                        : member.requiresPurchase
+                            ? Icon(
+                                Icons.lock_rounded,
                                 color: stateColor,
                                 size: 22,
-                              ),
+                              )
+                            : member.unlocked
+                                ? Text(
+                                    index.toString().padLeft(2, '0'),
+                                    style: TextStyle(
+                                      color: stateColor,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.lock_outline_rounded,
+                                    color: stateColor,
+                                    size: 22,
+                                  ),
               ),
               const SizedBox(width: 12),
               Expanded(
