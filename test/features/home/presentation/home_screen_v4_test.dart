@@ -5,6 +5,8 @@ import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/auth/presentation/providers/auth_providers.dart';
 import 'package:examtree/features/companion/domain/daily_companion.dart';
 import 'package:examtree/features/companion/presentation/providers/daily_companion_providers.dart';
+import 'package:examtree/features/exams/domain/exam_catalog.dart';
+import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:examtree/features/exams/presentation/providers/exam_providers.dart';
 import 'package:examtree/features/home/presentation/home_screen.dart';
 import 'package:examtree/features/profile/presentation/providers/analytics_providers.dart';
@@ -114,6 +116,13 @@ void main() {
         userAnalyticsProvider.overrideWith((ref) async => analytics()),
         inProgressExamsProvider.overrideWith((ref) async => active),
         availableExamsProvider.overrideWith((ref) async => available),
+        examCatalogProvider.overrideWith(
+          (ref) async => const ExamCatalogSnapshot(
+            categories: <ExamCatalogCategory>[],
+            exams: <ExamCatalogExam>[],
+            series: <ExamSeriesSummary>[],
+          ),
+        ),
         userResultsProvider.overrideWith((ref) async => results),
         dailyCompanionSnapshotProvider.overrideWith(
           (ref) async => companionSnapshot(dueCount: dueRevisionCount),
@@ -126,6 +135,7 @@ void main() {
       container.read(userAnalyticsProvider.future),
       container.read(inProgressExamsProvider.future),
       container.read(availableExamsProvider.future),
+      container.read(examCatalogProvider.future),
       container.read(userResultsProvider.future),
       container.read(dailyCompanionSnapshotProvider.future),
     ]);
