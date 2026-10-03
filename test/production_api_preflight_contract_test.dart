@@ -14,8 +14,11 @@ void main() {
     expect(script, contains("new URL('tests', base)"));
     expect(script, contains("new URL('categories', base)"));
     expect(script, contains("new URL('subcategories', base)"));
+    expect(script, contains("new URL('test-series', base)"));
+    expect(script, contains("body?.series"));
     expect(script, contains('result.categories.length === 0'));
     expect(script, contains('result.subcategories.length === 0'));
+    expect(script, contains('result.testSeries.length === 0'));
     expect(workflow, contains('Verify Production API'));
     expect(
       workflow,
