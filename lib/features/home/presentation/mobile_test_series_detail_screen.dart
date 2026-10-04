@@ -294,6 +294,7 @@ class _SeriesViewModel {
     required this.availabilityReason,
     required this.commerce,
     required this.members,
+    required this.reviews,
   });
 
   final String seriesId;
@@ -314,6 +315,7 @@ class _SeriesViewModel {
   final String availabilityReason;
   final SeriesCommerceState commerce;
   final List<_SeriesMember> members;
+  final List<_SeriesReview> reviews;
 
   int get totalQuestions =>
       members.fold(0, (sum, member) => sum + member.questionCount);
@@ -380,6 +382,19 @@ class _SeriesViewModel {
             .toList(growable: false)
         : const <_SeriesMember>[];
 
+    final rawReviews = body['reviews'];
+    final reviews = rawReviews is List
+        ? rawReviews
+            .whereType<Map>()
+            .map(
+              (item) => _SeriesReview.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .where((item) => item.text.isNotEmpty)
+            .toList(growable: false)
+        : const <_SeriesReview>[];
+
     int number(Object? value) =>
         value is num ? value.toInt() : int.tryParse('$value') ?? 0;
 
@@ -405,6 +420,48 @@ class _SeriesViewModel {
       availabilityReason: _text(eligibility['availabilityReason']),
       commerce: SeriesCommerceState.fromBody(body),
       members: members,
+      reviews: reviews,
+    );
+  }
+}
+
+class _SeriesReview {
+  const _SeriesReview({
+    required this.name,
+    required this.text,
+    required this.rating,
+  });
+
+  final String name;
+  final String text;
+  final int rating;
+
+  String get initials {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList(growable: false);
+    if (parts.isEmpty) return 'ST';
+    if (parts.length == 1) {
+      return parts.first.substring(0, 1).toUpperCase();
+    }
+    return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
+        .toUpperCase();
+  }
+
+  factory _SeriesReview.fromJson(Map<String, dynamic> json) {
+    final rawRating = json['rating'];
+    final parsedRating = rawRating is num
+        ? rawRating.toInt()
+        : int.tryParse(rawRating?.toString() ?? '') ?? 0;
+    return _SeriesReview(
+      name: _text(
+        json['name'] ?? json['userName'] ?? json['author'],
+        fallback: 'Student',
+      ),
+      text: _text(json['text'] ?? json['review'] ?? json['comment']),
+      rating: parsedRating.clamp(0, 5),
     );
   }
 }
@@ -1218,57 +1275,78 @@ class _ReviewsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (vm.reviews.isEmpty) {
+      return const _EmptySeries(
+        message: 'Learner reviews will appear here when published reviews are available.',
+      );
+    }
+
+    final rated = vm.reviews.where((review) => review.rating > 0).toList();
+    final average = rated.isEmpty
+        ? null
+        : rated.fold<int>(0, (sum, review) => sum + review.rating) /
+            rated.length;
+
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(19),
-            border: Border.all(color: const Color(0xFFE4E9F1)),
-          ),
-          child: const Column(
-            children: [
-              Text('Student Reviews', style: TextStyle(color: Color(0xFF10264A), fontSize: 20, fontWeight: FontWeight.w900)),
-              SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('4.7', style: TextStyle(color: Color(0xFF081847), fontSize: 34, fontWeight: FontWeight.w900)),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('★★★★★', style: TextStyle(color: Color(0xFFF59E0B), letterSpacing: 2)),
-                      SizedBox(height: 2),
-                      Text('Learner feedback', style: TextStyle(color: Color(0xFF718096), fontSize: 12)),
-                    ],
+        if (average != null) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(19),
+              border: Border.all(color: const Color(0xFFE4E9F1)),
+            ),
+            child: Column(
+              children: [
+                const Text(
+                  'Student Reviews',
+                  style: TextStyle(
+                    color: Color(0xFF10264A),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  average.toStringAsFixed(1),
+                  style: const TextStyle(
+                    color: Color(0xFF081847),
+                    fontSize: 34,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  rated.length.toString() + ' rated review' +
+                      (rated.length == 1 ? '' : 's'),
+                  style: const TextStyle(
+                    color: Color(0xFF718096),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        const _ReviewCard(initials: 'AS', name: 'Amanpreet Singh', text: 'The mock structure is easy to follow and the detailed explanations help after every attempt.'),
-        const SizedBox(height: 10),
-        const _ReviewCard(initials: 'RS', name: 'Ritika Sharma', text: 'Good mix of full tests and focused practice. The progress view makes revision easier.'),
-        const SizedBox(height: 10),
-        const _ReviewCard(initials: 'GK', name: 'Gurkirat Kaur', text: 'Useful for exam preparation and quick practice across the available test groups.'),
+          const SizedBox(height: 12),
+        ],
+        for (var i = 0; i < vm.reviews.length; i++) ...[
+          _ReviewCard(review: vm.reviews[i]),
+          if (i != vm.reviews.length - 1) const SizedBox(height: 10),
+        ],
       ],
     );
   }
 }
 
 class _ReviewCard extends StatelessWidget {
-  const _ReviewCard({required this.initials, required this.name, required this.text});
-  final String initials;
-  final String name;
-  final String text;
+  const _ReviewCard({required this.review});
+  final _SeriesReview review;
 
   @override
   Widget build(BuildContext context) {
+    final stars = review.rating <= 0 ? null : '★' * review.rating;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -1283,18 +1361,43 @@ class _ReviewCard extends StatelessWidget {
           CircleAvatar(
             backgroundColor: const Color(0xFFEAF4FF),
             foregroundColor: const Color(0xFF176CC0),
-            child: Text(initials, style: const TextStyle(fontWeight: FontWeight.w900)),
+            child: Text(
+              review.initials,
+              style: const TextStyle(fontWeight: FontWeight.w900),
+            ),
           ),
           const SizedBox(width: 11),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900)),
-                const SizedBox(height: 2),
-                const Text('★★★★★', style: TextStyle(color: Color(0xFFF59E0B), fontSize: 12, letterSpacing: 1.5)),
+                Text(
+                  review.name,
+                  style: const TextStyle(
+                    color: Color(0xFF10264A),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                if (stars != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    stars,
+                    style: const TextStyle(
+                      color: Color(0xFFF59E0B),
+                      fontSize: 12,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 7),
-                Text(text, style: const TextStyle(color: Color(0xFF5F6F82), height: 1.45, fontSize: 12)),
+                Text(
+                  review.text,
+                  style: const TextStyle(
+                    color: Color(0xFF5F6F82),
+                    height: 1.45,
+                    fontSize: 12,
+                  ),
+                ),
               ],
             ),
           ),
