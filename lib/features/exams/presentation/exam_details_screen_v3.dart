@@ -3,13 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/exam_model.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../results/presentation/providers/result_providers.dart';
 import 'providers/exam_providers.dart';
 
-class ExamDetailsScreen extends ConsumerWidget {
+class ExamDetailsScreen extends ConsumerStatefulWidget {
   const ExamDetailsScreen({
     super.key,
     required this.examId,
@@ -20,101 +19,317 @@ class ExamDetailsScreen extends ConsumerWidget {
   final String? seriesId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final normalizedSeriesId = seriesId?.trim();
+  ConsumerState<ExamDetailsScreen> createState() => _ExamDetailsScreenState();
+}
+
+class _ExamDetailsScreenState extends ConsumerState<ExamDetailsScreen> {
+  String _language = 'English';
+  bool _confirmed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalizedSeriesId = widget.seriesId?.trim();
     final hasSeriesContext =
         normalizedSeriesId != null && normalizedSeriesId.isNotEmpty;
     final accessKey = (
-      examId: examId,
+      examId: widget.examId,
       seriesId: hasSeriesContext ? normalizedSeriesId : null,
     );
     final examAsync = hasSeriesContext
         ? ref.watch(contextualExamDetailsProvider(accessKey))
-        : ref.watch(examDetailsProvider(examId));
-    final completedAttemptsAsync = ref.watch(
-      completedAttemptCountProvider(examId),
-    );
+        : ref.watch(examDetailsProvider(widget.examId));
+    final completedAttemptsAsync =
+        ref.watch(completedAttemptCountProvider(widget.examId));
 
     Future<void> refresh() async {
       if (hasSeriesContext) {
         ref.invalidate(contextualExamDetailsProvider(accessKey));
       } else {
-        ref.invalidate(examDetailsProvider(examId));
+        ref.invalidate(examDetailsProvider(widget.examId));
       }
-      ref.invalidate(completedAttemptCountProvider(examId));
+      ref.invalidate(completedAttemptCountProvider(widget.examId));
       try {
         await Future.wait([
           if (hasSeriesContext)
             ref.read(contextualExamDetailsProvider(accessKey).future)
           else
-            ref.read(examDetailsProvider(examId).future),
-          ref.read(completedAttemptCountProvider(examId).future),
+            ref.read(examDetailsProvider(widget.examId).future),
+          ref.read(completedAttemptCountProvider(widget.examId).future),
         ]);
-      } catch (_) {
-        // Body modules keep independent recovery states.
-      }
+      } catch (_) {}
     }
 
     return examAsync.when(
-      loading: () => Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('Test details'),
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF10264A),
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-        body: const _DetailsLoadingState(),
+      loading: () => const Scaffold(
+        backgroundColor: Color(0xFFF8FBFF),
+        body: Center(child: CircularProgressIndicator()),
       ),
       error: (error, stackTrace) => Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('Test details'),
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF10264A),
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
+        backgroundColor: const Color(0xFFF8FBFF),
+        appBar: _appBar(),
         body: NetworkFailureView(
           error: error,
-          fallbackTitle: 'Unable to load these test details',
+          fallbackTitle: 'Unable to load test instructions',
           onRetry: refresh,
         ),
       ),
       data: (exam) {
-        final completedCount = completedAttemptsAsync.value;
+        final completed = completedAttemptsAsync.value;
         final attemptLimitReached = exam.maxAttempts < 99 &&
-            completedCount != null &&
-            completedCount >= exam.maxAttempts;
+            completed != null &&
+            completed >= exam.maxAttempts;
 
         return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-          title: const Text('Test details'),
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF10264A),
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-        ),
-          body: _ExamDetailsBody(
-            exam: exam,
-            completedAttemptsAsync: completedAttemptsAsync,
+          backgroundColor: const Color(0xFFF8FBFF),
+          appBar: _appBar(),
+          body: RefreshIndicator(
             onRefresh: refresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 116),
+              children: [
+                _Hero(exam: exam),
+                const SizedBox(height: 14),
+                _Stats(exam: exam),
+                const SizedBox(height: 16),
+                _Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Heading(
+                        icon: Icons.translate_rounded,
+                        title: 'Choose Language',
+                        iconColor: Color(0xFF1473E6),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'You can view questions, options and explanations in your preferred language.',
+                        style: TextStyle(
+                          color: Color(0xFF60759B),
+                          height: 1.35,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          for (final language in const ['English', 'हिंदी', 'ਪੰਜਾਬੀ']) ...[
+                            Expanded(
+                              child: _LanguageButton(
+                                label: language,
+                                selected: _language == language,
+                                onTap: () => setState(() => _language = language),
+                              ),
+                            ),
+                            if (language != 'ਪੰਜਾਬੀ') const SizedBox(width: 8),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Heading(
+                        icon: Icons.layers_rounded,
+                        title: 'Section Details',
+                        iconColor: Color(0xFF8B5CF6),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFDCE7F5)),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Column(
+                          children: [
+                            const _TableRow(
+                              values: ['Section', 'Questions', 'Marks', 'Time'],
+                              header: true,
+                            ),
+                            _TableRow(
+                              values: [
+                                exam.category.trim().isEmpty
+                                    ? 'Complete Test'
+                                    : exam.category,
+                                '${exam.totalQuestions}',
+                                _number(exam.totalMarks),
+                                '${exam.durationInSeconds ~/ 60} min',
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Section-wise breakup will follow the test configuration loaded by the exam engine.',
+                        style: TextStyle(
+                          color: Color(0xFF7A8DAE),
+                          fontSize: 12,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Heading(
+                        icon: Icons.info_rounded,
+                        title: 'Important Instructions',
+                        iconColor: Color(0xFFF59E0B),
+                      ),
+                      const SizedBox(height: 12),
+                      _Instruction(
+                        icon: Icons.schedule_rounded,
+                        text:
+                            'The test duration is ${exam.durationInSeconds ~/ 60} minutes.',
+                      ),
+                      _Instruction(
+                        icon: Icons.description_outlined,
+                        text:
+                            'The test consists of ${exam.totalQuestions} multiple choice questions.',
+                      ),
+                      _Instruction(
+                        icon: Icons.remove_circle_outline_rounded,
+                        iconColor: const Color(0xFFE11D48),
+                        text: exam.negativeMarking == 0
+                            ? 'There is no negative marking.'
+                            : 'There is negative marking of ${_number(exam.negativeMarking)} marks for each wrong answer.',
+                      ),
+                      const _Instruction(
+                        icon: Icons.swap_horiz_rounded,
+                        text:
+                            'You can navigate between questions within the test and change answers before final submission.',
+                      ),
+                      const _Instruction(
+                        icon: Icons.cloud_done_rounded,
+                        text:
+                            'Your progress is saved while you work. Keep an internet connection available for sync.',
+                      ),
+                      const _Instruction(
+                        icon: Icons.desktop_windows_outlined,
+                        text: 'The test will be conducted online on this app.',
+                      ),
+                      const _Instruction(
+                        icon: Icons.calculate_outlined,
+                        text: 'Calculator is not allowed unless the test explicitly enables it.',
+                      ),
+                      const _Instruction(
+                        icon: Icons.shield_outlined,
+                        text: 'The test will be auto-submitted when time is over.',
+                      ),
+                      const SizedBox(height: 10),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(14),
+                        onTap: attemptLimitReached
+                            ? null
+                            : () => setState(() => _confirmed = !_confirmed),
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEEF6FF),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Checkbox(
+                                value: _confirmed,
+                                onChanged: attemptLimitReached
+                                    ? null
+                                    : (value) => setState(
+                                          () => _confirmed = value ?? false,
+                                        ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'I have read and understood all the instructions.',
+                                      style: TextStyle(
+                                        color: Color(0xFF09205B),
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      'I am ready to start the test.',
+                                      style: TextStyle(
+                                        color: Color(0xFF60759B),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (attemptLimitReached) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          'Attempt limit reached',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-          bottomNavigationBar: _StartBar(
-            exam: exam,
-            completedAttemptsAsync: completedAttemptsAsync,
-            attemptLimitReached: attemptLimitReached,
-            onStart: () => context.push(
-              hasSeriesContext
-                  ? '/test-attempt?seriesId=' +
-                      Uri.encodeQueryComponent(normalizedSeriesId)
-                  : '/test-attempt',
-              extra: examId,
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+              color: const Color(0xFFF8FBFF),
+              child: SizedBox(
+                height: 58,
+                child: FilledButton(
+                  key: const Key('exam-details-start'),
+                  onPressed: !_confirmed || attemptLimitReached
+                      ? null
+                      : () => context.push(
+                            hasSeriesContext
+                                ? '/test-attempt?seriesId=' +
+                                    Uri.encodeQueryComponent(normalizedSeriesId)
+                                : '/test-attempt',
+                            extra: widget.examId,
+                          ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF073A6A),
+                    disabledBackgroundColor: const Color(0xFFB7C6D8),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Start Test'),
+                      SizedBox(width: 10),
+                      Icon(Icons.arrow_forward_rounded),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         );
@@ -123,191 +338,93 @@ class ExamDetailsScreen extends ConsumerWidget {
   }
 }
 
-class _ExamDetailsBody extends StatelessWidget {
-  const _ExamDetailsBody({
-    required this.exam,
-    required this.completedAttemptsAsync,
-    required this.onRefresh,
-  });
-
-  final Exam exam;
-  final AsyncValue<int> completedAttemptsAsync;
-  final Future<void> Function() onRefresh;
-
-  static const instructions = [
-    'Answers, review flags, position and remaining time are saved as you work.',
-    'Keep an internet connection available so your progress can sync.',
-    'A saved attempt can be resumed after signing in again on mobile or web.',
-    'Submit before time runs out and follow the rules shown with each question.',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          12,
-          AppSpacing.sm,
-          12,
-          AppSpacing.xxl,
+PreferredSizeWidget _appBar() => AppBar(
+      title: const Text(
+        'Test Instructions',
+        style: TextStyle(
+          color: Color(0xFF081847),
+          fontWeight: FontWeight.w900,
         ),
-        children: [
-          _TestSummaryHero(exam: exam),
-          const SizedBox(height: AppSpacing.xl),
-          const _SectionTitle(title: 'At a glance'),
-          const SizedBox(height: AppSpacing.sm),
-          _InfoGrid(
-            items: [
-              _InfoItem(
-                icon: Icons.timer_outlined,
-                label: 'Duration',
-                value: '${exam.durationInSeconds ~/ 60} min',
-                background: AppColors.skyContainer,
-                foreground: AppColors.onSkyContainer,
-              ),
-              _InfoItem(
-                icon: Icons.quiz_outlined,
-                label: 'Questions',
-                value: '${exam.totalQuestions}',
-                background: AppColors.primaryContainer,
-                foreground: AppColors.onPrimaryContainer,
-              ),
-              _InfoItem(
-                icon: Icons.grade_outlined,
-                label: 'Total marks',
-                value: _formatNumber(exam.totalMarks),
-                background: AppColors.mintContainer,
-                foreground: AppColors.onMintContainer,
-              ),
-              _InfoItem(
-                icon: Icons.remove_circle_outline_rounded,
-                label: 'Negative mark',
-                value: exam.negativeMarking == 0
-                    ? 'None'
-                    : '-${_formatNumber(exam.negativeMarking)}',
-                background: AppColors.amberContainer,
-                foreground: AppColors.onAmberContainer,
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          _AttemptStatusCard(
-            exam: exam,
-            completedAttemptsAsync: completedAttemptsAsync,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          const _SectionTitle(title: 'Before you start'),
-          const SizedBox(height: AppSpacing.md),
-          for (var index = 0; index < instructions.length; index++) ...[
-            _InstructionRow(
-              number: index + 1,
-              instruction: instructions[index],
-            ),
-            if (index != instructions.length - 1)
-              const SizedBox(height: AppSpacing.md),
-          ],
-          const SizedBox(height: AppSpacing.lg),
-          _ResumeNotice(),
-        ],
       ),
+      backgroundColor: const Color(0xFFF8FBFF),
+      foregroundColor: const Color(0xFF081847),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
     );
-  }
-}
 
-class _TestSummaryHero extends StatelessWidget {
-  const _TestSummaryHero({required this.exam});
-
+class _Hero extends StatelessWidget {
+  const _Hero({required this.exam});
   final Exam exam;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final access = exam.status.trim().toLowerCase() == 'paid'
-        ? 'Premium'
-        : 'Free';
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 15),
+      padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF031B3A),
-            Color(0xFF063A70),
-            Color(0xFF0B5D96),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          colors: [Color(0xFF052D61), Color(0xFF0B5D96)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: .13),
-            blurRadius: 22,
-            offset: const Offset(0, 9),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Stack(
         children: [
           Positioned(
-            right: -28,
-            top: -34,
-            child: Container(
-              width: 110,
-              height: 110,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: .07),
-              ),
+            right: -20,
+            top: -28,
+            child: Icon(
+              Icons.account_balance_rounded,
+              size: 145,
+              color: Colors.white.withValues(alpha: .10),
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: [
-                  _HeroLabel(
-                    label:
-                        exam.category.trim().isEmpty ? 'General' : exam.category,
-                    background: Colors.white.withValues(alpha: .11),
-                    foreground: Colors.white,
-                  ),
-                  _HeroLabel(
-                    label: access,
-                    background: const Color(0xFFFFD36B).withValues(alpha: .16),
-                    foreground: const Color(0xFFFFD36B),
-                  ),
-                  if (exam.difficulty.trim().isNotEmpty)
-                    _HeroLabel(
-                      label: exam.difficulty,
-                      background: Colors.white.withValues(alpha: .10),
-                      foreground: Colors.white.withValues(alpha: .88),
-                    ),
-                ],
+              Text(
+                exam.category.trim().isEmpty
+                    ? 'EXAMTREE MOCK TEST'
+                    : exam.category.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0xFFDCEBFF),
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2.2,
+                ),
               ),
-              const SizedBox(height: 13),
+              const SizedBox(height: 8),
               Text(
                 exam.title,
-                style: theme.textTheme.headlineSmall?.copyWith(
+                style: const TextStyle(
                   color: Colors.white,
+                  fontSize: 28,
+                  height: 1.08,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: -.45,
-                  height: 1.13,
                 ),
               ),
-              if (exam.description.trim().isNotEmpty) ...[
-                const SizedBox(height: 7),
-                Text(
-                  exam.description,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: .84),
-                    height: 1.42,
-                  ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDFFBEF),
+                  borderRadius: BorderRadius.circular(999),
                 ),
-              ],
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.description_rounded,
+                        size: 18, color: Color(0xFF087653)),
+                    SizedBox(width: 6),
+                    Text(
+                      'Full Mock Test',
+                      style: TextStyle(
+                        color: Color(0xFF087653),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
@@ -316,133 +433,104 @@ class _TestSummaryHero extends StatelessWidget {
   }
 }
 
-class _HeroLabel extends StatelessWidget {
-  const _HeroLabel({
-    required this.label,
-    required this.background,
-    required this.foreground,
-  });
-
-  final String label;
-  final Color background;
-  final Color foreground;
+class _Stats extends StatelessWidget {
+  const _Stats({required this.exam});
+  final Exam exam;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w900,
-            ),
-      ),
+    return Row(
+      children: [
+        _Stat(
+          icon: Icons.description_outlined,
+          value: '${exam.totalQuestions}',
+          label: 'Questions',
+          color: const Color(0xFF1473E6),
+          bg: const Color(0xFFEAF4FF),
+        ),
+        const SizedBox(width: 8),
+        _Stat(
+          icon: Icons.schedule_rounded,
+          value: '${exam.durationInSeconds ~/ 60}',
+          label: 'Minutes',
+          color: const Color(0xFFF59E0B),
+          bg: const Color(0xFFFFF5DF),
+        ),
+        const SizedBox(width: 8),
+        _Stat(
+          icon: Icons.bar_chart_rounded,
+          value: _number(exam.totalMarks),
+          label: 'Total Marks',
+          color: const Color(0xFF16A673),
+          bg: const Color(0xFFEAFBF5),
+        ),
+        const SizedBox(width: 8),
+        _Stat(
+          icon: Icons.remove_circle_outline_rounded,
+          value: _number(exam.negativeMarking),
+          label: 'Negative',
+          color: const Color(0xFFE11D48),
+          bg: const Color(0xFFFFEEF2),
+        ),
+      ],
     );
   }
 }
 
-class _InfoGrid extends StatelessWidget {
-  const _InfoGrid({required this.items});
-
-  final List<_InfoItem> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final scale = MediaQuery.textScalerOf(context).scale(1);
-        final columns = constraints.maxWidth >= 700 && scale <= 1.4 ? 4 : 2;
-        const gap = AppSpacing.sm;
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: [
-            for (final item in items)
-              SizedBox(width: width, child: _InfoTile(item: item)),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _InfoItem {
-  const _InfoItem({
+class _Stat extends StatelessWidget {
+  const _Stat({
     required this.icon,
-    required this.label,
     required this.value,
-    required this.background,
-    required this.foreground,
+    required this.label,
+    required this.color,
+    required this.bg,
   });
-
   final IconData icon;
-  final String label;
   final String value;
-  final Color background;
-  final Color foreground;
-}
-
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({required this.item});
-
-  final _InfoItem item;
+  final String label;
+  final Color color;
+  final Color bg;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Semantics(
-      label: '${item.label}: ${item.value}',
-      excludeSemantics: true,
+    return Expanded(
       child: Container(
-        constraints: const BoxConstraints(minHeight: 82),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFE3E9F1)),
-          boxShadow: _softShadow(),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: const Color(0xFFE6EDF7)),
         ),
-        child: Row(
+        child: Column(
           children: [
             Container(
               width: 38,
               height: 38,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: item.background,
-                borderRadius: BorderRadius.circular(13),
+                color: bg,
+                borderRadius: BorderRadius.circular(11),
               ),
-              child: Icon(item.icon, size: 19, color: item.foreground),
+              child: Icon(icon, color: color, size: 20),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.value,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxs),
-                  Text(
-                    item.label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 7),
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Color(0xFF081847),
+                fontWeight: FontWeight.w900,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Color(0xFF536B94),
+                fontSize: 11,
               ),
             ),
           ],
@@ -452,323 +540,178 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
-class _AttemptStatusCard extends StatelessWidget {
-  const _AttemptStatusCard({
-    required this.exam,
-    required this.completedAttemptsAsync,
-  });
-
-  final Exam exam;
-  final AsyncValue<int> completedAttemptsAsync;
+class _Card extends StatelessWidget {
+  const _Card({required this.child});
+  final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final limit = exam.maxAttempts >= 99 ? 'Unlimited' : '${exam.maxAttempts}';
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.mintContainer,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFFE4ECF6)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0B2D5B).withValues(alpha: .04),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: child,
+      );
+}
+
+class _Heading extends StatelessWidget {
+  const _Heading({
+    required this.icon,
+    required this.title,
+    required this.iconColor,
+  });
+  final IconData icon;
+  final String title;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) => Row(
         children: [
           Container(
             width: 42,
             height: 42,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.72),
-              borderRadius: BorderRadius.circular(14),
+              color: iconColor.withValues(alpha: .10),
+              borderRadius: BorderRadius.circular(13),
             ),
-            child: const Icon(
-              Icons.replay_rounded,
-              color: AppColors.onMintContainer,
-            ),
+            child: Icon(icon, color: iconColor),
           ),
-          const SizedBox(width: AppSpacing.md),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Attempts',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: AppColors.onMintContainer,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                completedAttemptsAsync.when(
-                  data: (count) => Text(
-                    '$count completed · $limit allowed',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onMintContainer,
-                    ),
-                  ),
-                  loading: () => Text(
-                    'Checking completed attempts…',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onMintContainer,
-                    ),
-                  ),
-                  error: (error, stackTrace) => Text(
-                    'Completed-attempt count is unavailable. The server still enforces the attempt limit.',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.onMintContainer,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-              ],
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF081847),
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
 }
 
-class _InstructionRow extends StatelessWidget {
-  const _InstructionRow({required this.number, required this.instruction});
-
-  final int number;
-  final String instruction;
+class _LanguageButton extends StatelessWidget {
+  const _LanguageButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 34,
-          height: 34,
+  Widget build(BuildContext context) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 54,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: const Color(0xFFEAF4FF),
+            color: selected ? const Color(0xFFF1F7FF) : Colors.white,
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selected
+                  ? const Color(0xFF1473E6)
+                  : const Color(0xFFD5E0EE),
+              width: selected ? 1.5 : 1,
+            ),
           ),
           child: Text(
-            '$number',
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: const Color(0xFF0B5D96),
-              fontWeight: FontWeight.w900,
+            label,
+            style: TextStyle(
+              color: const Color(0xFF081847),
+              fontWeight: FontWeight.w800,
+              fontSize: label == 'English' ? 15 : 18,
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.xs),
-            child: Text(
-              instruction,
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.42),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+      );
 }
 
-class _ResumeNotice extends StatelessWidget {
+class _TableRow extends StatelessWidget {
+  const _TableRow({required this.values, this.header = false});
+  final List<String> values;
+  final bool header;
+
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEAF4FF),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.cloud_done_rounded, color: Color(0xFF0B5D96)),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              'Already started? Opening this test continues your saved attempt instead of starting over.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.onPrimaryContainer,
-                height: 1.4,
+  Widget build(BuildContext context) => Container(
+        color: header ? const Color(0xFFF0F6FD) : Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+                values[0],
+                style: TextStyle(
+                  fontWeight: header ? FontWeight.w800 : FontWeight.w600,
+                  color: const Color(0xFF153162),
+                  fontSize: 12,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            for (final value in values.skip(1))
+              Expanded(
+                child: Text(
+                  value,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: header ? FontWeight.w800 : FontWeight.w600,
+                    color: const Color(0xFF153162),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
 }
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.3,
-          ),
-    );
-  }
-}
-
-class _StartBar extends StatelessWidget {
-  const _StartBar({
-    required this.exam,
-    required this.completedAttemptsAsync,
-    required this.attemptLimitReached,
-    required this.onStart,
+class _Instruction extends StatelessWidget {
+  const _Instruction({
+    required this.icon,
+    required this.text,
+    this.iconColor = const Color(0xFF4F6A95),
   });
-
-  final Exam exam;
-  final AsyncValue<int> completedAttemptsAsync;
-  final bool attemptLimitReached;
-  final VoidCallback onStart;
+  final IconData icon;
+  final String text;
+  final Color iconColor;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final completedCount = completedAttemptsAsync.value;
-    final limitLabel = exam.maxAttempts >= 99
-        ? 'Unlimited attempts'
-        : '${exam.maxAttempts} attempts max';
-    final progressLabel = completedCount == null
-        ? limitLabel
-        : '$completedCount completed · $limitLabel';
-
-    return Material(
-      color: scheme.surfaceContainerLowest,
-      elevation: 8,
-      shadowColor: scheme.shadow.withValues(alpha: 0.1),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.sm,
-            AppSpacing.md,
-            AppSpacing.md,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      attemptLimitReached
-                          ? 'Attempt limit reached'
-                          : progressLabel,
-                      maxLines: 2,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: attemptLimitReached
-                            ? scheme.error
-                            : scheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  if (!attemptLimitReached)
-                    const Icon(
-                      Icons.verified_rounded,
-                      size: 18,
-                      color: AppColors.secondary,
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              FilledButton.icon(
-                key: const Key('exam-details-start'),
-                onPressed: attemptLimitReached ? null : onStart,
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  backgroundColor: const Color(0xFF073A6A),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w900),
-                ),
-                icon: Icon(
-                  attemptLimitReached
-                      ? Icons.block_rounded
-                      : Icons.play_arrow_rounded,
-                ),
-                label: Text(
-                  attemptLimitReached
-                      ? 'Attempt limit reached'
-                      : 'Start or resume test',
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 11),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 21, color: iconColor),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Color(0xFF415B86),
+                  height: 1.35,
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DetailsLoadingState extends StatelessWidget {
-  const _DetailsLoadingState();
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    Widget block(double height, {double radius = 20}) => Container(
-          height: height,
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(radius),
-          ),
-        );
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      children: [
-        block(176, radius: 26),
-        const SizedBox(height: AppSpacing.xl),
-        block(24),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(child: block(86)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(child: block(86)),
+            ),
           ],
         ),
-        const SizedBox(height: AppSpacing.sm),
-        Row(
-          children: [
-            Expanded(child: block(86)),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(child: block(86)),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.xl),
-        block(180),
-      ],
-    );
-  }
+      );
 }
 
-List<BoxShadow> _softShadow() => [
-      BoxShadow(
-        color: AppColors.shadow.withValues(alpha: 0.045),
-        blurRadius: 18,
-        offset: const Offset(0, 6),
-      ),
-    ];
-
-String _formatNumber(double value) {
+String _number(double value) {
   if (value == value.roundToDouble()) return value.toInt().toString();
   return value
       .toStringAsFixed(2)
