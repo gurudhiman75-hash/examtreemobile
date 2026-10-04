@@ -37,10 +37,13 @@ class LearnLessonScreen extends ConsumerWidget {
 
     final resolvedLesson = lesson;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8FBFF),
       appBar: AppBar(
-        title: Text(subject.title),
-        backgroundColor: Colors.white,
+        title: const Text(
+          'Notes',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+        backgroundColor: const Color(0xFFF8FBFF),
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -57,6 +60,11 @@ class LearnLessonScreen extends ConsumerWidget {
           ),
           children: [
             const LearnLanguageSelector(),
+            const SizedBox(height: 10),
+            _LessonContextBar(
+              subject: subject.title,
+              lesson: resolvedLesson,
+            ),
             const SizedBox(height: 12),
             _LessonHeader(lesson: resolvedLesson),
             const SizedBox(height: 22),
@@ -94,6 +102,87 @@ class LearnLessonScreen extends ConsumerWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LessonContextBar extends StatelessWidget {
+  const _LessonContextBar({
+    required this.subject,
+    required this.lesson,
+  });
+
+  final String subject;
+  final LearnLesson lesson;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE4ECF6)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEEF5FF),
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: const Icon(
+              Icons.menu_book_rounded,
+              color: Color(0xFF176CC0),
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  subject,
+                  style: const TextStyle(
+                    color: Color(0xFF60759B),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  lesson.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF10264A),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF4D6),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              lesson.estimatedMinutes.toString() + ' min',
+              style: const TextStyle(
+                color: Color(0xFF8A5A00),
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -219,9 +308,17 @@ class _LessonSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE4ECF6)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
