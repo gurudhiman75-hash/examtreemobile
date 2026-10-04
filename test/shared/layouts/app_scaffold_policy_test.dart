@@ -56,8 +56,8 @@ void main() {
     );
   });
 
-  test('Daily Companion action appears only on Home when not already primary', () {
-    expect(shouldShowDailyAction(0), isTrue);
+  test('Daily Companion floating action stays off the primary shell', () {
+    expect(shouldShowDailyAction(0), isFalse);
     expect(shouldShowDailyAction(0, revisionIsPrimary: true), isFalse);
     expect(shouldShowDailyAction(1), isFalse);
     expect(shouldShowDailyAction(2), isFalse);
