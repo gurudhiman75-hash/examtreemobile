@@ -80,7 +80,16 @@ void main() {
     await pumpDetails(tester, textScale: 2);
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Choose Language'), findsOneWidget);
     expect(find.byKey(const Key('exam-details-start')), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Choose Language'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Choose Language'), findsOneWidget);
   });
 }
