@@ -682,7 +682,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
     final slides = widget.slides;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final height = textScale > 1.3
-        ? (224 * textScale).clamp(300, 375).toDouble()
+        ? (246 * textScale).clamp(320, 500).toDouble()
         : 218.0;
 
     return Column(
@@ -1426,7 +1426,7 @@ class _HomePromoFallback extends StatelessWidget {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
     final heroHeight = largeText
-        ? (246 * textScale).clamp(345, 435).toDouble()
+        ? (258 * textScale).clamp(360, 520).toDouble()
         : 218.0;
 
     return Container(
