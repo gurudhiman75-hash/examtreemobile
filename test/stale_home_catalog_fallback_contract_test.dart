@@ -7,13 +7,14 @@ void main() {
     final source =
         File('lib/features/home/presentation/home_screen_v8.dart').readAsStringSync();
 
-    expect(source, contains('final resolvedConfigured = orderedCodes'));
-    expect(source, contains('if (resolvedConfigured.isNotEmpty)'));
+    expect(source, contains('final resolved = <MobileFeaturedExamFamily>[]'));
+    expect(source, contains('for (final category in catalog.categories)'));
+    expect(source, contains('addCategory(category)'));
     expect(
       source,
-      contains('return catalog.categories'),
+      contains('resolved.take(8)'),
       reason:
-          'Stale exam-family selections must fall back to current backend categories.',
+          'Stale exam-family selections must be supplemented from current backend categories.',
     );
 
     expect(source, contains('final resolvedConfigured = configuredIds'));
