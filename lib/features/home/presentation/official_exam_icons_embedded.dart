@@ -13,10 +13,16 @@ String embeddedOfficialIconForFamily({
 }) {
   final key = (code + ' ' + name).toLowerCase();
   if (key.contains('punjab')) return embeddedOfficialExamIcons['punjab']!;
-  if (key.contains('ssc')) return embeddedOfficialExamIcons['ssc']!;
+  if (key.contains('ssc') || key.contains('staff selection')) {
+    return embeddedOfficialExamIcons['ssc']!;
+  }
   if (key.contains('rail')) return embeddedOfficialExamIcons['railway']!;
+  if (key.contains('rbi') || key.contains('reserve bank')) {
+    return embeddedOfficialExamIcons['rbi']!;
+  }
+  if (key.contains('sbi') || key.contains('state bank')) {
+    return embeddedOfficialExamIcons['sbi']!;
+  }
   if (key.contains('bank')) return embeddedOfficialExamIcons['banking']!;
-  if (key.contains('rbi')) return embeddedOfficialExamIcons['rbi']!;
-  if (key.contains('sbi')) return embeddedOfficialExamIcons['sbi']!;
   return '';
 }
