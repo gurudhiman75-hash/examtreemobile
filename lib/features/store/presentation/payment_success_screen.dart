@@ -164,7 +164,14 @@ class PaymentSuccessScreen extends StatelessWidget {
               height: 56,
               child: FilledButton(
                 onPressed: () => context.go(
-                  '/my-test-series?seriesId=' + Uri.encodeQueryComponent(seriesId),
+                  Uri(
+                    path: '/access-ready',
+                    queryParameters: {
+                      'seriesId': seriesId,
+                      'orderId': orderId,
+                      'orderNumber': orderNumber,
+                    },
+                  ).toString(),
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFF0A57E6),
@@ -177,7 +184,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Go to My Test Series',
+                      'Continue',
                       style:
                           TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
                     ),
