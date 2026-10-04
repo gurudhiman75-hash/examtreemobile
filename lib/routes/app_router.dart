@@ -36,6 +36,7 @@ import '../features/store/presentation/store_screen.dart';
 import '../features/store/presentation/series_plans_screen.dart';
 import '../features/store/presentation/series_checkout_screen.dart';
 import '../features/store/presentation/payment_success_screen.dart';
+import '../features/store/presentation/order_details_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -360,6 +361,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             );
           }
           return PaymentSuccessScreen(
+            seriesId: seriesId,
+            orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
+            orderNumber:
+                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: '/order-details',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Order details unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return OrderDetailsScreen(
             seriesId: seriesId,
             orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
             orderNumber:
