@@ -164,7 +164,7 @@ class PaymentSuccessScreen extends StatelessWidget {
               height: 56,
               child: FilledButton(
                 onPressed: () => context.go(
-                  '/test-series?id=' + Uri.encodeQueryComponent(seriesId),
+                  '/my-test-series?seriesId=' + Uri.encodeQueryComponent(seriesId),
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFF0A57E6),
