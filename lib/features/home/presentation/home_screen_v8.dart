@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 // ignore_for_file: unused_element, unused_element_parameter, unnecessary_underscores
 
@@ -1975,6 +1976,24 @@ class _ExamCategoriesGrid extends StatelessWidget {
   }
 }
 
+Uint8List? _decodeEmbeddedOfficialIcon(String value) {
+  if (value.isEmpty) return null;
+  try {
+    var normalized = value.replaceAll(RegExp(r'[^A-Za-z0-9+/=]'), '');
+    normalized = normalized.replaceAll('=', '');
+    final remainder = normalized.length % 4;
+    if (remainder != 0) {
+      normalized = normalized.padRight(
+        normalized.length + (4 - remainder),
+        '=',
+      );
+    }
+    return base64Decode(normalized);
+  } catch (_) {
+    return null;
+  }
+}
+
 class _ExamCategoryTile extends StatelessWidget {
   const _ExamCategoryTile({
     required this.item,
@@ -1990,9 +2009,10 @@ class _ExamCategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final radius = BorderRadius.circular(18);
-    final visual = item.embeddedIconBase64.isNotEmpty
+    final embeddedBytes = _decodeEmbeddedOfficialIcon(item.embeddedIconBase64);
+    final visual = embeddedBytes != null
         ? Image.memory(
-            base64Decode(item.embeddedIconBase64),
+            embeddedBytes,
             width: 44,
             height: 44,
             fit: BoxFit.contain,
