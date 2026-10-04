@@ -489,6 +489,36 @@ class HomeScreen extends ConsumerWidget {
 }
 
 
+String _homeFamilyLabel(MobileFeaturedExamFamily family) {
+  final key = (family.code + ' ' + family.name).toLowerCase();
+  if (key.contains('punjab')) return 'Punjab Govt.';
+  if (key.contains('ssc') || key.contains('staff selection')) return 'SSC';
+  if (key.contains('bank')) return 'Banking';
+  if (key.contains('rail')) return 'Railway';
+  if (key.contains('teach')) return 'Teaching';
+  if (key.contains('defen') || key.contains('army') || key.contains('navy')) {
+    return 'Defence';
+  }
+  if (key.contains('pcs') || key.contains('state civil')) return 'State PCS';
+  if (key.contains('other')) return 'Other Exams';
+  return family.name;
+}
+
+int _homeFamilyPriority(MobileFeaturedExamFamily family) {
+  final key = (family.code + ' ' + family.name).toLowerCase();
+  if (key.contains('punjab')) return 0;
+  if (key.contains('ssc') || key.contains('staff selection')) return 1;
+  if (key.contains('bank')) return 2;
+  if (key.contains('rail')) return 3;
+  if (key.contains('teach')) return 4;
+  if (key.contains('defen') || key.contains('army') || key.contains('navy')) {
+    return 5;
+  }
+  if (key.contains('pcs') || key.contains('state civil')) return 6;
+  if (key.contains('other')) return 7;
+  return 50;
+}
+
 List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
   required MobileHomeConfiguration configuration,
   required ExamCatalogSnapshot? catalog,
@@ -499,50 +529,45 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
     for (final category in catalog.categories)
       category.code.trim().toLowerCase(): category,
   };
-  final configuredByCode = <String, MobileFeaturedExamFamily>{
-    for (final family in configuration.featuredExamFamilies)
-      family.code.trim().toLowerCase(): family,
-  };
+  final resolved = <MobileFeaturedExamFamily>[];
+  final seen = <String>{};
 
-  final orderedCodes = configuration.featuredExamFamilies
-      .map((family) => family.code.trim().toLowerCase())
-      .where((code) => code.isNotEmpty)
-      .toList(growable: false);
-
-  final resolvedConfigured = orderedCodes
-      .map((code) {
-        final category = byCode[code];
-        if (category == null) return null;
-        final configured = configuredByCode[code];
-        return MobileFeaturedExamFamily(
-          id: configured?.id.trim().isNotEmpty == true
-              ? configured!.id
-              : category.code,
-          code: category.code,
-          name: category.name,
-          iconUrl: category.iconUrl,
-          colorHex: category.colorHex,
-        );
-      })
-      .whereType<MobileFeaturedExamFamily>()
-      .toList(growable: false);
-
-  if (resolvedConfigured.isNotEmpty) {
-    return resolvedConfigured.take(12).toList(growable: false);
+  void addCategory(ExamCatalogCategory category, {String? configuredId}) {
+    final code = category.code.trim();
+    final normalized = code.toLowerCase();
+    if (normalized.isEmpty || !seen.add(normalized)) return;
+    resolved.add(
+      MobileFeaturedExamFamily(
+        id: configuredId?.trim().isNotEmpty == true
+            ? configuredId!.trim()
+            : code,
+        code: code,
+        name: category.name,
+        iconUrl: category.iconUrl,
+        colorHex: category.colorHex,
+      ),
+    );
   }
 
-  return catalog.categories
-      .map(
-        (category) => MobileFeaturedExamFamily(
-          id: category.code,
-          code: category.code,
-          name: category.name,
-          iconUrl: category.iconUrl,
-          colorHex: category.colorHex,
-        ),
-      )
-      .take(12)
-      .toList(growable: false);
+  for (final configured in configuration.featuredExamFamilies) {
+    final category = byCode[configured.code.trim().toLowerCase()];
+    if (category != null) {
+      addCategory(category, configuredId: configured.id);
+    }
+  }
+
+  for (final category in catalog.categories) {
+    addCategory(category);
+  }
+
+  resolved.sort((left, right) {
+    final priority =
+        _homeFamilyPriority(left).compareTo(_homeFamilyPriority(right));
+    if (priority != 0) return priority;
+    return left.name.toLowerCase().compareTo(right.name.toLowerCase());
+  });
+
+  return resolved.take(8).toList(growable: false);
 }
 
 List<MobileFeaturedTestSeries> _resolveCanonicalHomeSeries({
@@ -1046,7 +1071,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
               Expanded(
                 child: _CompactSeriesMetric(
                   icon: Icons.description_outlined,
-                  value: item.testCount.toString(),
+                  value: item.testCount > 0 ? item.testCount.toString() : '—',
                   label: 'Tests',
                   foreground: foreground,
                 ),
@@ -1054,7 +1079,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
               Expanded(
                 child: _CompactSeriesMetric(
                   icon: Icons.schedule_rounded,
-                  value: (item.durationSeconds / 60).round().toString(),
+                  value: item.durationSeconds > 0
+                      ? (item.durationSeconds / 60).round().toString()
+                      : '—',
                   label: 'Mins',
                   foreground: foreground,
                 ),
@@ -1062,7 +1089,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
               Expanded(
                 child: _CompactSeriesMetric(
                   icon: Icons.emoji_events_outlined,
-                  value: _formatSeriesMarks(item.totalMarks),
+                  value: item.totalMarks > 0
+                      ? _formatSeriesMarks(item.totalMarks)
+                      : '—',
                   label: 'Marks',
                   foreground: foreground,
                 ),
@@ -1490,7 +1519,21 @@ class _HomePromoFallback extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
+                FractionallySizedBox(
+                  widthFactor: largeText ? .92 : .68,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Complete Test Series • Expert Guidance\nPrevious Papers • Bilingual Content',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.white.withValues(alpha: .88),
+                      height: 1.28,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
                 const Spacer(),
                 if (largeText)
                   Material(
@@ -1572,7 +1615,7 @@ class _HeroFeatureRow extends StatelessWidget {
         Expanded(
           child: _HeroFeature(
             icon: Icons.verified_user_outlined,
-            label: 'Focused\npractice',
+            label: 'Trusted\npreparation',
           ),
         ),
         _HeroFeatureDivider(),
@@ -1853,7 +1896,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
       return (family.name, Icons.location_on_rounded,
           const Color(0xFFFFEFEF), const Color(0xFFF04452));
     }
-    if (key.contains('ssc')) {
+    if (key.contains('ssc') || key.contains('staff selection')) {
       return (family.name, Icons.workspace_premium_rounded,
           const Color(0xFFEAF8F2), const Color(0xFF11966F));
     }
@@ -1901,7 +1944,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
               return _ExamCategoryPresentation(
                 label: override?.title.trim().isNotEmpty == true
                     ? override!.title
-                    : base.$1,
+                    : _homeFamilyLabel(family),
                 routeFamily: family.code.trim().isNotEmpty
                     ? family.code
                     : family.name,
@@ -2100,11 +2143,12 @@ class _ExamCategoryTile extends StatelessWidget {
                 Text(
                   item.label,
                   textAlign: TextAlign.center,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium?.copyWith(
+                  style: theme.textTheme.labelSmall?.copyWith(
                     color: const Color(0xFF10264A),
                     fontWeight: FontWeight.w900,
+                    fontSize: 10.5,
                     letterSpacing: -.05,
                   ),
                 ),
