@@ -648,8 +648,8 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
     final slides = widget.slides;
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final height = textScale > 1.3
-        ? (214 * textScale).clamp(285, 360).toDouble()
-        : 194.0;
+        ? (224 * textScale).clamp(300, 375).toDouble()
+        : 218.0;
 
     return Column(
       children: [
@@ -1386,8 +1386,8 @@ class _HomePromoFallback extends StatelessWidget {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
     final heroHeight = largeText
-        ? (238 * textScale).clamp(335, 425).toDouble()
-        : 194.0;
+        ? (246 * textScale).clamp(345, 435).toDouble()
+        : 218.0;
 
     return Container(
       height: heroHeight,
@@ -1888,9 +1888,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                     : base.$2,
                 background: base.$3,
                 foreground: base.$4,
-                iconUrl: override?.iconUrl.trim().isNotEmpty == true
-                    ? override!.iconUrl
-                    : family.iconUrl,
+                iconUrl: family.iconUrl.trim().isNotEmpty
+                    ? family.iconUrl
+                    : (override?.iconUrl ?? ''),
                 imageUrl: override?.imageUrl ?? '',
               );
             })
