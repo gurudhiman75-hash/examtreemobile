@@ -2002,8 +2002,8 @@ class _ExamCategoriesGrid extends StatelessWidget {
               .map(
                 (item) => SizedBox(
                   width: width,
-                  child: SizedBox(
-                    height: effectiveColumns >= 4 ? 116 : null,
+                  child: AspectRatio(
+                    aspectRatio: 1,
                     child: _ExamCategoryTile(
                       item: item,
                       onTap: () => onOpen(item.routeFamily),
