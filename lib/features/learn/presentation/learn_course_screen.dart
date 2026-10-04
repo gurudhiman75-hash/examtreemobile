@@ -59,7 +59,7 @@ class LearnCourseScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _CourseHero(subject: subject, copy: copy),
             const SizedBox(height: 14),
-            _CourseStats(subject: subject, copy: copy),
+            _CourseStats(subject: subject),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -210,11 +210,9 @@ class _CourseHero extends StatelessWidget {
 class _CourseStats extends StatelessWidget {
   const _CourseStats({
     required this.subject,
-    required this.copy,
   });
 
   final LearnSubject subject;
-  final LearnUiCopy copy;
 
   @override
   Widget build(BuildContext context) {
