@@ -511,6 +511,8 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
               : category.code,
           code: category.code,
           name: category.name,
+          iconUrl: category.iconUrl,
+          colorHex: category.colorHex,
         );
       })
       .whereType<MobileFeaturedExamFamily>()
@@ -526,6 +528,8 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
           id: category.code,
           code: category.code,
           name: category.name,
+          iconUrl: category.iconUrl,
+          colorHex: category.colorHex,
         ),
       )
       .take(12)
@@ -1829,7 +1833,9 @@ class _ExamCategoriesGrid extends StatelessWidget {
                     : base.$2,
                 background: base.$3,
                 foreground: base.$4,
-                iconUrl: override?.iconUrl ?? '',
+                iconUrl: override?.iconUrl.trim().isNotEmpty == true
+                    ? override!.iconUrl
+                    : family.iconUrl,
                 imageUrl: override?.imageUrl ?? '',
               );
             })
@@ -1857,7 +1863,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final gap = 4.0;
+        const gap = 8.0;
         final requestedColumns = columns <= 0 ? 4 : columns.clamp(2, 4).toInt();
         final effectiveColumns =
             constraints.maxWidth < 260 ? 2 : requestedColumns;
@@ -1871,10 +1877,13 @@ class _ExamCategoriesGrid extends StatelessWidget {
               .map(
                 (item) => SizedBox(
                   width: width,
-                  child: _ExamCategoryTile(
-                    item: item,
-                    onTap: () => onOpen(item.routeFamily),
-                    showDetails: effectiveColumns <= 2,
+                  child: SizedBox(
+                    height: effectiveColumns >= 4 ? 116 : null,
+                    child: _ExamCategoryTile(
+                      item: item,
+                      onTap: () => onOpen(item.routeFamily),
+                      showDetails: effectiveColumns <= 2,
+                    ),
                   ),
                 ),
               )
@@ -1905,8 +1914,8 @@ class _ExamCategoryTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
               item.imageUrl,
-              width: 34,
-              height: 34,
+              width: 40,
+              height: 40,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) =>
                   Icon(item.icon, color: item.foreground, size: 30),
@@ -1915,13 +1924,13 @@ class _ExamCategoryTile extends StatelessWidget {
         : item.iconUrl.trim().isNotEmpty
             ? Image.network(
                 item.iconUrl,
-                width: 30,
-                height: 30,
+                width: 42,
+                height: 42,
                 fit: BoxFit.contain,
                 errorBuilder: (_, __, ___) =>
-                    Icon(item.icon, color: item.foreground, size: 30),
+                    Icon(item.icon, color: item.foreground, size: 36),
               )
-            : Icon(item.icon, color: item.foreground, size: 30);
+            : Icon(item.icon, color: item.foreground, size: 36);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -1951,7 +1960,7 @@ class _ExamCategoryTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: radius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -1976,7 +1985,7 @@ class _ExamCategoryTile extends StatelessWidget {
                     ),
                   ),
                 visual,
-                const SizedBox(height: 9),
+                const SizedBox(height: 7),
                 Text(
                   item.label,
                   textAlign: TextAlign.center,
