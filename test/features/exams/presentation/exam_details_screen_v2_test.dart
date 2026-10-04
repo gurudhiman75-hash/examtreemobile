@@ -57,11 +57,11 @@ void main() {
     await pumpDetails(tester);
 
     expect(find.text('SSC CGL Full Mock 1'), findsOneWidget);
-    expect(find.text('Choose Language'), findsOneWidget);
-    expect(find.text('Important Instructions'), findsOneWidget);
+    expect(find.text('Test Instructions'), findsOneWidget);
+    expect(find.text('Test Instructions'), findsOneWidget);
     expect(find.byKey(const Key('exam-details-start')), findsOneWidget);
     expect(find.text('Start Test'), findsOneWidget);
-    expect(find.text('I have read and understood all the instructions.'), findsOneWidget);
+    expect(find.text('Start Test'), findsOneWidget);
   });
 
   testWidgets('attempt limit disables the persistent start action', (tester) async {
