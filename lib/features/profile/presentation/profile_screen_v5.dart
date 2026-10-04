@@ -50,7 +50,37 @@ class ProfileScreen extends ConsumerWidget {
           AppSpacing.xxl,
         ),
         children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'My Profile',
+                  style: TextStyle(
+                    color: Color(0xFF081847),
+                    fontSize: 25,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => context.push('/profile-settings'),
+                icon: const Icon(Icons.settings_outlined),
+                tooltip: 'Settings',
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
           _IdentityHero(name: name, contact: contact, initial: initial),
+          const SizedBox(height: AppSpacing.md),
+          _ProfileMenu(
+            onProgress: () => context.push('/profile-progress'),
+            onDownloads: () => context.push('/profile-downloads'),
+            onBookmarks: () => context.push('/profile-bookmarks'),
+            onHistory: () => context.push('/results'),
+            onCoupons: () => context.push('/profile-coupons'),
+            onEdit: () => context.push('/edit-profile'),
+            onHelp: () => context.push('/profile-help'),
+          ),
           const SizedBox(height: AppSpacing.lg),
           analyticsAsync.when(
             loading: () => const _ProfileLoadingState(),
@@ -255,6 +285,138 @@ class _IdentityHero extends StatelessWidget {
                 ],
               ),
       ),
+    );
+  }
+}
+
+class _ProfileMenu extends StatelessWidget {
+  const _ProfileMenu({
+    required this.onProgress,
+    required this.onDownloads,
+    required this.onBookmarks,
+    required this.onHistory,
+    required this.onCoupons,
+    required this.onEdit,
+    required this.onHelp,
+  });
+
+  final VoidCallback onProgress;
+  final VoidCallback onDownloads;
+  final VoidCallback onBookmarks;
+  final VoidCallback onHistory;
+  final VoidCallback onCoupons;
+  final VoidCallback onEdit;
+  final VoidCallback onHelp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: Color(0xFFE4E9F1)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          _ProfileMenuRow(
+            icon: Icons.insights_rounded,
+            title: 'My Progress',
+            subtitle: 'Accuracy, attempts and performance',
+            onTap: onProgress,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.download_rounded,
+            title: 'My Downloads',
+            subtitle: 'Offline learning resources',
+            onTap: onDownloads,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.bookmark_outline_rounded,
+            title: 'Bookmarks',
+            subtitle: 'Saved revision items',
+            onTap: onBookmarks,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.history_rounded,
+            title: 'Test History',
+            subtitle: 'Completed attempts and results',
+            onTap: onHistory,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.local_offer_outlined,
+            title: 'Coupons & Offers',
+            subtitle: 'Apply discounts during checkout',
+            onTap: onCoupons,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.edit_outlined,
+            title: 'Edit Profile',
+            subtitle: 'Update your learner name',
+            onTap: onEdit,
+          ),
+          const Divider(height: 1),
+          _ProfileMenuRow(
+            icon: Icons.support_agent_rounded,
+            title: 'Help & Support',
+            subtitle: 'Common questions and account help',
+            onTap: onHelp,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileMenuRow extends StatelessWidget {
+  const _ProfileMenuRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      minTileHeight: 66,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+      leading: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFEEF5FF),
+          borderRadius: BorderRadius.circular(13),
+        ),
+        child: Icon(icon, size: 20, color: const Color(0xFF176CC0)),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Color(0xFF10264A),
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(
+          color: Color(0xFF718096),
+          fontSize: 11,
+        ),
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
     );
   }
 }

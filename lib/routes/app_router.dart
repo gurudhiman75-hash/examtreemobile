@@ -30,12 +30,17 @@ import '../features/managed_pages/presentation/managed_mobile_page_screen.dart';
 import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
+import '../features/profile/presentation/profile_auxiliary_screens.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
 import '../features/store/presentation/series_plans_screen.dart';
 import '../features/store/presentation/series_checkout_screen.dart';
 import '../features/store/presentation/payment_success_screen.dart';
+import '../features/store/presentation/access_ready_screen.dart';
+import '../features/store/presentation/order_details_screen.dart';
+import '../features/store/presentation/my_test_series_screen.dart';
+import '../features/store/presentation/series_renewal_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -261,6 +266,41 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
+        path: '/profile-progress',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileProgressScreen(),
+      ),
+      GoRoute(
+        path: '/profile-settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile-help',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileHelpScreen(),
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile-downloads',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileDownloadsScreen(),
+      ),
+      GoRoute(
+        path: '/profile-bookmarks',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileBookmarksScreen(),
+      ),
+      GoRoute(
+        path: '/profile-coupons',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileCouponsScreen(),
+      ),
+      GoRoute(
         path: '/results',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => Scaffold(
@@ -349,6 +389,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/access-ready',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Access unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return AccessReadyScreen(
+            seriesId: seriesId,
+            orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
+            orderNumber:
+                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+          );
+        },
+      ),
+      GoRoute(
         path: '/payment-success',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
@@ -360,6 +419,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             );
           }
           return PaymentSuccessScreen(
+            seriesId: seriesId,
+            orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
+            orderNumber:
+                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: '/series-renew',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Renewal unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return SeriesRenewalScreen(seriesId: seriesId);
+        },
+      ),
+      GoRoute(
+        path: '/my-test-series',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MyTestSeriesScreen(
+          seriesId: state.uri.queryParameters['seriesId']?.trim(),
+        ),
+      ),
+      GoRoute(
+        path: '/order-details',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Order details unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return OrderDetailsScreen(
             seriesId: seriesId,
             orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
             orderNumber:

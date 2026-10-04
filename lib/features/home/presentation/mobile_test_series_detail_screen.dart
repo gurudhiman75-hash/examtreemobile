@@ -14,7 +14,7 @@ final mobileTestSeriesDetailProvider =
   return response.data ?? const <String, dynamic>{};
 });
 
-enum _SeriesTab { overview, tests, pattern }
+enum _SeriesTab { overview, tests, syllabus, pattern, reviews, faqs }
 
 class MobileTestSeriesDetailScreen extends ConsumerStatefulWidget {
   const MobileTestSeriesDetailScreen({
@@ -224,7 +224,10 @@ class _MobileTestSeriesDetailScreenState
                       vm: vm,
                       onOpenTest: (member) => _openTest(member, vm),
                     ),
+                  _SeriesTab.syllabus => _SyllabusTab(vm: vm),
                   _SeriesTab.pattern => _PatternTab(vm: vm),
+                  _SeriesTab.reviews => _ReviewsTab(vm: vm),
+                  _SeriesTab.faqs => _FaqsTab(vm: vm),
                 },
               ],
             ),
@@ -291,6 +294,7 @@ class _SeriesViewModel {
     required this.availabilityReason,
     required this.commerce,
     required this.members,
+    required this.reviews,
   });
 
   final String seriesId;
@@ -311,6 +315,7 @@ class _SeriesViewModel {
   final String availabilityReason;
   final SeriesCommerceState commerce;
   final List<_SeriesMember> members;
+  final List<_SeriesReview> reviews;
 
   int get totalQuestions =>
       members.fold(0, (sum, member) => sum + member.questionCount);
@@ -377,6 +382,19 @@ class _SeriesViewModel {
             .toList(growable: false)
         : const <_SeriesMember>[];
 
+    final rawReviews = body['reviews'];
+    final reviews = rawReviews is List
+        ? rawReviews
+            .whereType<Map>()
+            .map(
+              (item) => _SeriesReview.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .where((item) => item.text.isNotEmpty)
+            .toList(growable: false)
+        : const <_SeriesReview>[];
+
     int number(Object? value) =>
         value is num ? value.toInt() : int.tryParse('$value') ?? 0;
 
@@ -402,6 +420,48 @@ class _SeriesViewModel {
       availabilityReason: _text(eligibility['availabilityReason']),
       commerce: SeriesCommerceState.fromBody(body),
       members: members,
+      reviews: reviews,
+    );
+  }
+}
+
+class _SeriesReview {
+  const _SeriesReview({
+    required this.name,
+    required this.text,
+    required this.rating,
+  });
+
+  final String name;
+  final String text;
+  final int rating;
+
+  String get initials {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList(growable: false);
+    if (parts.isEmpty) return 'ST';
+    if (parts.length == 1) {
+      return parts.first.substring(0, 1).toUpperCase();
+    }
+    return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
+        .toUpperCase();
+  }
+
+  factory _SeriesReview.fromJson(Map<String, dynamic> json) {
+    final rawRating = json['rating'];
+    final parsedRating = rawRating is num
+        ? rawRating.toInt()
+        : int.tryParse(rawRating?.toString() ?? '') ?? 0;
+    return _SeriesReview(
+      name: _text(
+        json['name'] ?? json['userName'] ?? json['author'],
+        fallback: 'Student',
+      ),
+      text: _text(json['text'] ?? json['review'] ?? json['comment']),
+      rating: parsedRating.clamp(0, 5),
     );
   }
 }
@@ -842,30 +902,42 @@ class _SeriesTabs extends StatelessWidget {
         borderRadius: BorderRadius.circular(17),
         border: Border.all(color: const Color(0xFFE4E9F1)),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _TabButton(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _TabButton(
               label: 'Overview',
               selected: selected == _SeriesTab.overview,
               onTap: () => onChanged(_SeriesTab.overview),
             ),
-          ),
-          Expanded(
-            child: _TabButton(
-              label: 'Tests',
+            _TabButton(
+              label: 'Test List',
               selected: selected == _SeriesTab.tests,
               onTap: () => onChanged(_SeriesTab.tests),
             ),
-          ),
-          Expanded(
-            child: _TabButton(
-              label: 'Pattern',
+            _TabButton(
+              label: 'Syllabus',
+              selected: selected == _SeriesTab.syllabus,
+              onTap: () => onChanged(_SeriesTab.syllabus),
+            ),
+            _TabButton(
+              label: 'Exam Pattern',
               selected: selected == _SeriesTab.pattern,
               onTap: () => onChanged(_SeriesTab.pattern),
             ),
-          ),
-        ],
+            _TabButton(
+              label: 'Reviews',
+              selected: selected == _SeriesTab.reviews,
+              onTap: () => onChanged(_SeriesTab.reviews),
+            ),
+            _TabButton(
+              label: 'FAQs',
+              selected: selected == _SeriesTab.faqs,
+              onTap: () => onChanged(_SeriesTab.faqs),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -891,7 +963,7 @@ class _TabButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(13),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
           child: Text(
             label,
             textAlign: TextAlign.center,
@@ -1021,21 +1093,37 @@ class _TestsTab extends StatelessWidget {
       );
     }
 
+    final groups = _groupMembers(vm.members);
+    var runningIndex = 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ProgressCard(vm: vm),
         const SizedBox(height: 12),
-        for (var index = 0; index < vm.members.length; index++) ...[
-          _SeriesTestCard(
-            index: index + 1,
-            member: vm.members[index],
-            onOpen: vm.members[index].unlocked
-                ? () => onOpenTest(vm.members[index])
-                : null,
+        for (final entry in groups.entries) ...[
+          _TestGroupHeader(
+            title: entry.key,
+            count: entry.value.length,
+            subtitle: switch (entry.key) {
+              'Sectional Tests' => 'Subject-wise practice tests',
+              'Previous Year Papers' => 'Previous exam papers with review',
+              'Topic-wise Tests' => 'Focused practice on important topics',
+              _ => 'Latest pattern full syllabus tests',
+            },
           ),
-          if (index != vm.members.length - 1)
-            const SizedBox(height: 10),
+          const SizedBox(height: 8),
+          for (var localIndex = 0; localIndex < entry.value.length; localIndex++) ...[
+            _SeriesTestCard(
+              index: ++runningIndex,
+              member: entry.value[localIndex],
+              onOpen: entry.value[localIndex].unlocked
+                  ? () => onOpenTest(entry.value[localIndex])
+                  : null,
+            ),
+            if (localIndex != entry.value.length - 1)
+              const SizedBox(height: 8),
+          ],
+          const SizedBox(height: 14),
         ],
       ],
     );
@@ -1108,6 +1196,278 @@ class _PatternTab extends StatelessWidget {
       ],
     );
   }
+}
+
+
+class _SyllabusTab extends StatelessWidget {
+  const _SyllabusTab({required this.vm});
+  final _SeriesViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = _groupMembers(vm.members);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionCard(
+          title: 'Syllabus',
+          icon: Icons.menu_book_rounded,
+          child: Text(
+            'Complete topic-wise preparation coverage for ' + vm.examName + '. Test groups below are derived from the published series catalogue.',
+            style: const TextStyle(color: Color(0xFF5F6F82), height: 1.45),
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (groups.isEmpty)
+          const _EmptySeries(message: 'Syllabus will appear as tests are published.')
+        else
+          for (final entry in groups.entries) ...[
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: const Color(0xFFE4E9F1)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFEEF2),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: const Icon(Icons.fact_check_outlined, color: Color(0xFFE64B67)),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(entry.key, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900)),
+                        const SizedBox(height: 3),
+                        Text(
+                          entry.value.length.toString() + ' published tests · ' +
+                              entry.value.fold<int>(0, (sum, m) => sum + m.questionCount).toString() +
+                              ' questions',
+                          style: const TextStyle(color: Color(0xFF718096), fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF60759B)),
+                ],
+              ),
+            ),
+          ],
+      ],
+    );
+  }
+}
+
+class _ReviewsTab extends StatelessWidget {
+  const _ReviewsTab({required this.vm});
+  final _SeriesViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    if (vm.reviews.isEmpty) {
+      return const _EmptySeries(
+        message: 'Learner reviews will appear here when published reviews are available.',
+      );
+    }
+
+    final rated = vm.reviews.where((review) => review.rating > 0).toList();
+    final average = rated.isEmpty
+        ? null
+        : rated.fold<int>(0, (sum, review) => sum + review.rating) /
+            rated.length;
+
+    return Column(
+      children: [
+        if (average != null) ...[
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(19),
+              border: Border.all(color: const Color(0xFFE4E9F1)),
+            ),
+            child: Column(
+              children: [
+                const Text(
+                  'Student Reviews',
+                  style: TextStyle(
+                    color: Color(0xFF10264A),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  average.toStringAsFixed(1),
+                  style: const TextStyle(
+                    color: Color(0xFF081847),
+                    fontSize: 34,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  rated.length.toString() + ' rated review' +
+                      (rated.length == 1 ? '' : 's'),
+                  style: const TextStyle(
+                    color: Color(0xFF718096),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        for (var i = 0; i < vm.reviews.length; i++) ...[
+          _ReviewCard(review: vm.reviews[i]),
+          if (i != vm.reviews.length - 1) const SizedBox(height: 10),
+        ],
+      ],
+    );
+  }
+}
+
+class _ReviewCard extends StatelessWidget {
+  const _ReviewCard({required this.review});
+  final _SeriesReview review;
+
+  @override
+  Widget build(BuildContext context) {
+    final stars = review.rating <= 0 ? null : List.filled(review.rating, '★').join();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFE4E9F1)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: const Color(0xFFEAF4FF),
+            foregroundColor: const Color(0xFF176CC0),
+            child: Text(
+              review.initials,
+              style: const TextStyle(fontWeight: FontWeight.w900),
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  review.name,
+                  style: const TextStyle(
+                    color: Color(0xFF10264A),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                if (stars != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    stars,
+                    style: const TextStyle(
+                      color: Color(0xFFF59E0B),
+                      fontSize: 12,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 7),
+                Text(
+                  review.text,
+                  style: const TextStyle(
+                    color: Color(0xFF5F6F82),
+                    height: 1.45,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FaqsTab extends StatelessWidget {
+  const _FaqsTab({required this.vm});
+  final _SeriesViewModel vm;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = <MapEntry<String, String>>[
+      MapEntry(
+        'What is included in this test series?',
+        vm.totalCount.toString() + ' published tests with ' + vm.totalQuestions.toString() + ' total questions, subject to the live catalogue and your access plan.',
+      ),
+      const MapEntry('Are explanations available?', 'Completed attempts can be reviewed with the explanation and analysis supported by the test.'),
+      const MapEntry('Can I attempt a test multiple times?', 'Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.'),
+      const MapEntry('Can I change the question language?', 'Supported languages are shown before starting the test. Availability depends on the published question content.'),
+      const MapEntry('What happens when my access expires?', 'You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.'),
+      const MapEntry('Where can I see my previous attempts?', 'Use My Test Series, Profile or Results to revisit completed attempts and performance information.'),
+    ];
+    return Column(
+      children: [
+        for (var i = 0; i < items.length; i++) ...[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE4E9F1)),
+            ),
+            child: ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 14),
+              childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              iconColor: const Color(0xFF176CC0),
+              collapsedIconColor: const Color(0xFF60759B),
+              title: Text(items[i].key, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w800, fontSize: 13)),
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(items[i].value, style: const TextStyle(color: Color(0xFF5F6F82), height: 1.45, fontSize: 12)),
+                ),
+              ],
+            ),
+          ),
+          if (i != items.length - 1) const SizedBox(height: 9),
+        ],
+      ],
+    );
+  }
+}
+
+Map<String, List<_SeriesMember>> _groupMembers(List<_SeriesMember> members) {
+  final result = <String, List<_SeriesMember>>{};
+  for (final member in members) {
+    final title = member.title.toLowerCase();
+    final group = title.contains('section')
+        ? 'Sectional Tests'
+        : title.contains('previous') || title.contains('pyq')
+            ? 'Previous Year Papers'
+            : title.contains('topic') || title.contains('chapter')
+                ? 'Topic-wise Tests'
+                : 'Full Length Mock Tests';
+    result.putIfAbsent(group, () => <_SeriesMember>[]).add(member);
+  }
+  return result;
 }
 
 class _SectionCard extends StatelessWidget {
@@ -1325,6 +1685,75 @@ class _ProgressCard extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF64748B),
                     fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TestGroupHeader extends StatelessWidget {
+  const _TestGroupHeader({
+    required this.title,
+    required this.count,
+    required this.subtitle,
+  });
+
+  final String title;
+  final int count;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final isPrevious = title == 'Previous Year Papers';
+    final isTopic = title == 'Topic-wise Tests';
+    final tint = isPrevious
+        ? const Color(0xFFEAFBF3)
+        : isTopic
+            ? const Color(0xFFFFF6DE)
+            : title == 'Sectional Tests'
+                ? const Color(0xFFFFEEF2)
+                : const Color(0xFFEAF4FF);
+    final icon = isPrevious
+        ? Icons.auto_stories_rounded
+        : isTopic
+            ? Icons.track_changes_rounded
+            : title == 'Sectional Tests'
+                ? Icons.view_list_rounded
+                : Icons.description_rounded;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+      decoration: BoxDecoration(
+        color: tint,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF176CC0), size: 23),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title + ' (' + count.toString() + ')',
+                  style: const TextStyle(
+                    color: Color(0xFF10264A),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: Color(0xFF60759B),
+                    fontSize: 11,
                   ),
                 ),
               ],

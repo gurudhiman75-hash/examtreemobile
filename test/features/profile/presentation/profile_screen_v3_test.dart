@@ -100,6 +100,15 @@ void main() {
     await pumpProfile(tester, analytics: populatedAnalytics());
 
     expect(find.text('Your profile'), findsOneWidget);
+    expect(find.text('My Progress'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Performance'),
+      420,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
     expect(find.text('Performance'), findsOneWidget);
     expect(find.text('74%'), findsOneWidget);
     expect(find.text('82%'), findsOneWidget);
@@ -115,6 +124,13 @@ void main() {
       tester,
       analytics: PerformanceAnalytics.empty('student-1'),
     );
+
+    await tester.scrollUntilVisible(
+      find.text('Your performance starts with your first test'),
+      420,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
 
     expect(
       find.text('Your performance starts with your first test'),
@@ -134,6 +150,14 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+
+    await tester.scrollUntilVisible(
+      find.text('Performance'),
+      420,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
     expect(find.text('Performance'), findsOneWidget);
 
     await tester.scrollUntilVisible(

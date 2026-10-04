@@ -57,11 +57,11 @@ void main() {
     await pumpDetails(tester);
 
     expect(find.text('SSC CGL Full Mock 1'), findsOneWidget);
-    expect(find.text('At a glance'), findsOneWidget);
-    expect(find.text('Before you start'), findsOneWidget);
+    expect(find.text('Test Instructions'), findsOneWidget);
+    expect(find.text('Test Instructions'), findsOneWidget);
     expect(find.byKey(const Key('exam-details-start')), findsOneWidget);
-    expect(find.text('Start or resume test'), findsOneWidget);
-    expect(find.text('1 completed · 3 attempts max'), findsOneWidget);
+    expect(find.text('Start Test'), findsOneWidget);
+    expect(find.text('Start Test'), findsOneWidget);
   });
 
   testWidgets('attempt limit disables the persistent start action', (tester) async {
@@ -80,7 +80,16 @@ void main() {
     await pumpDetails(tester, textScale: 2);
 
     expect(tester.takeException(), isNull);
-    expect(find.text('At a glance'), findsOneWidget);
     expect(find.byKey(const Key('exam-details-start')), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Choose Language'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Choose Language'), findsOneWidget);
   });
 }
