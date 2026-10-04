@@ -320,12 +320,16 @@ class _ExamDetailsScreenState extends ConsumerState<ExamDetailsScreen> {
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Start Test'),
-                      SizedBox(width: 10),
-                      Icon(Icons.arrow_forward_rounded),
+                      Text(attemptLimitReached ? 'Attempt limit reached' : 'Start Test'),
+                      const SizedBox(width: 10),
+                      Icon(
+                        attemptLimitReached
+                            ? Icons.block_rounded
+                            : Icons.arrow_forward_rounded,
+                      ),
                     ],
                   ),
                 ),
