@@ -47,7 +47,7 @@ class PaymentSuccessScreen extends StatelessWidget {
             ),
             const SizedBox(height: 26),
             const Text(
-              'Subscription Renewed!',
+              'Payment Successful!',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF1118A8),
@@ -57,7 +57,7 @@ class PaymentSuccessScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Your test series has been successfully activated. Your preparation can continue without interruption.',
+              'Your test series has been unlocked and is ready for your preparation.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF3563D8),
