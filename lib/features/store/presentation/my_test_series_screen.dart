@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../home/presentation/mobile_test_series_detail_screen.dart';
+import '../domain/series_purchase.dart';
 
 class MyTestSeriesScreen extends ConsumerWidget {
   const MyTestSeriesScreen({super.key, this.seriesId});
@@ -156,69 +157,73 @@ class _PurchasedSeries extends StatelessWidget {
     final completed = _int(eligibility['completedCount']);
     final progress = _int(eligibility['progressPercent']).clamp(0, 100);
     final nextTestId = _text(eligibility['nextTestId'], '');
+    final commerce = SeriesCommerceState.fromBody(body);
+    final expired = !commerce.hasFullAccess && commerce.accessRequired;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
       children: [
         const _TopTabs(),
         const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF5DF),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFFFE0A3)),
-          ),
-          child: Row(
-            children: [
-              const CircleAvatar(
-                backgroundColor: Color(0xFFFFE6B4),
-                child: Icon(Icons.schedule_rounded, color: Color(0xFFB56C00)),
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Renew or extend your access',
-                      style: TextStyle(
-                        color: Color(0xFF6B4600),
-                        fontWeight: FontWeight.w900,
+        if (expired) ...[
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF0F0),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: const Color(0xFFFFCDD2)),
+            ),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Color(0xFFFFDCDD),
+                  child: Icon(Icons.lock_clock_rounded, color: Color(0xFFC2413A)),
+                ),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Your access has expired',
+                        style: TextStyle(
+                          color: Color(0xFF9F312B),
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Keep your preparation, attempts and analytics together.',
-                      style: TextStyle(
-                        color: Color(0xFF8A6A2B),
-                        fontSize: 12,
-                        height: 1.3,
+                      SizedBox(height: 2),
+                      Text(
+                        'Renew to continue tests. Your progress and analytics are preserved.',
+                        style: TextStyle(
+                          color: Color(0xFF9A5A55),
+                          fontSize: 12,
+                          height: 1.3,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: () => context.push(
-                  '/series-renew?seriesId=' +
-                      Uri.encodeQueryComponent(seriesId),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: () => context.push(
+                    '/series-renew?seriesId=' +
+                        Uri.encodeQueryComponent(seriesId),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFE75B45),
+                    foregroundColor: Colors.white,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  child: const Text(
+                    'Renew',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
                 ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFE87417),
-                  foregroundColor: Colors.white,
-                  visualDensity: VisualDensity.compact,
-                ),
-                child: const Text(
-                  'Renew',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
+          const SizedBox(height: 14),
+        ],
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -285,13 +290,17 @@ class _PurchasedSeries extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE1F8ED),
+                      color: expired
+                          ? const Color(0xFFFFE3E3)
+                          : const Color(0xFFE1F8ED),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: const Text(
-                      'Active',
+                    child: Text(
+                      expired ? 'Expired' : 'Active',
                       style: TextStyle(
-                        color: Color(0xFF087653),
+                        color: expired
+                            ? const Color(0xFFC2413A)
+                            : const Color(0xFF087653),
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -382,24 +391,31 @@ class _PurchasedSeries extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: FilledButton(
-                      onPressed: nextTestId.isEmpty
+                      onPressed: expired
                           ? () => context.push(
-                                '/test-series?id=' +
+                                '/series-renew?seriesId=' +
                                     Uri.encodeQueryComponent(seriesId),
                               )
-                          : () => context.push(
-                                '/exam-details?seriesId=' +
-                                    Uri.encodeQueryComponent(seriesId),
-                                extra: nextTestId,
-                              ),
+                          : nextTestId.isEmpty
+                              ? () => context.push(
+                                    '/test-series?id=' +
+                                        Uri.encodeQueryComponent(seriesId),
+                                  )
+                              : () => context.push(
+                                    '/exam-details?seriesId=' +
+                                        Uri.encodeQueryComponent(seriesId),
+                                    extra: nextTestId,
+                                  ),
                       style: FilledButton.styleFrom(
                         minimumSize: const Size.fromHeight(48),
-                        backgroundColor: const Color(0xFF073A6A),
+                        backgroundColor: expired
+                            ? const Color(0xFFE75B45)
+                            : const Color(0xFF073A6A),
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text(
-                        'Continue',
-                        style: TextStyle(fontWeight: FontWeight.w900),
+                      child: Text(
+                        expired ? 'Renew Now' : 'Continue',
+                        style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
                     ),
                   ),
