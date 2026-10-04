@@ -397,6 +397,7 @@ class _LessonSection extends StatelessWidget {
           _LessonTable(table: section.table!),
         ],
       ],
+    ),
     );
   }
 }
