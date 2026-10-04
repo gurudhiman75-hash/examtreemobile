@@ -30,6 +30,7 @@ import '../features/managed_pages/presentation/managed_mobile_page_screen.dart';
 import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
+import '../features/profile/presentation/profile_auxiliary_screens.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
@@ -262,6 +263,41 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/profile-progress',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileProgressScreen(),
+      ),
+      GoRoute(
+        path: '/profile-settings',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/profile-help',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileHelpScreen(),
+      ),
+      GoRoute(
+        path: '/edit-profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/profile-downloads',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileDownloadsScreen(),
+      ),
+      GoRoute(
+        path: '/profile-bookmarks',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileBookmarksScreen(),
+      ),
+      GoRoute(
+        path: '/profile-coupons',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ProfileCouponsScreen(),
       ),
       GoRoute(
         path: '/results',
