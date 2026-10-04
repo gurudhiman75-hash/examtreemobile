@@ -32,6 +32,7 @@ import '../domain/mobile_home_configuration.dart';
 import 'home_exam_priority.dart';
 import 'home_primary_action.dart';
 import 'mobile_home_providers.dart';
+import 'providers/official_exam_icons_provider.dart';
 import 'mobile_custom_home_section.dart';
 
 final homeV8SelectedExamCodesProvider =
@@ -92,6 +93,8 @@ class HomeScreen extends ConsumerWidget {
     );
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
     final canonicalCatalogAsync = ref.watch(examCatalogProvider);
+    final officialExamIconUrls =
+        ref.watch(officialExamIconUrlsProvider).value ?? const <String, String>{};
     final user = ref.watch(authStateChangesProvider).value;
     final notificationUnreadCount = user == null
         ? 0
@@ -247,6 +250,7 @@ class HomeScreen extends ConsumerWidget {
                 : _ExamCategoriesGrid(
                     families: homeExamFamilies,
                     overrides: homeConfig.itemOverrides,
+                    officialIconUrls: officialExamIconUrls,
                     layout: examCategoriesSetting.layout,
                     columns: examCategoriesSetting.columns,
                     onOpen: (family) => context.push(
@@ -262,6 +266,7 @@ class HomeScreen extends ConsumerWidget {
                 : _ExamCategoriesGrid(
                     families: homeExamFamilies,
                     overrides: homeConfig.itemOverrides,
+                    officialIconUrls: officialExamIconUrls,
                     layout: examCategoriesSetting.layout,
                     columns: examCategoriesSetting.columns,
                     onOpen: (family) => context.push(
@@ -278,6 +283,7 @@ class HomeScreen extends ConsumerWidget {
                 : _ExamCategoriesGrid(
                     families: homeExamFamilies,
                     overrides: homeConfig.itemOverrides,
+                    officialIconUrls: officialExamIconUrls,
                     layout: examCategoriesSetting.layout,
                     columns: examCategoriesSetting.columns,
                     onOpen: (family) => context.push(
@@ -818,6 +824,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
     required this.series,
     required this.onOpen,
     this.overrides = const {},
+    this.officialIconUrls = const {},
     this.layout = '',
     this.columns = 0,
   });
@@ -825,6 +832,7 @@ class _ConfiguredSeriesRail extends StatelessWidget {
   final List<MobileFeaturedTestSeries> series;
   final ValueChanged<MobileFeaturedTestSeries> onOpen;
   final Map<String, MobileHomeItemOverride> overrides;
+  final Map<String, String> officialIconUrls;
   final String layout;
   final int columns;
 
@@ -1874,6 +1882,11 @@ class _ExamCategoriesGrid extends StatelessWidget {
             .map((family) {
               final base = _visual(family);
               final override = overrides[family.id];
+              final storageIcon = officialIconForExamFamily(
+                code: family.code,
+                name: family.name,
+                urls: officialIconUrls,
+              );
               return _ExamCategoryPresentation(
                 label: override?.title.trim().isNotEmpty == true
                     ? override!.title
@@ -1888,9 +1901,11 @@ class _ExamCategoriesGrid extends StatelessWidget {
                     : base.$2,
                 background: base.$3,
                 foreground: base.$4,
-                iconUrl: family.iconUrl.trim().isNotEmpty
-                    ? family.iconUrl
-                    : (override?.iconUrl ?? ''),
+                iconUrl: storageIcon.isNotEmpty
+                    ? storageIcon
+                    : family.iconUrl.trim().isNotEmpty
+                        ? family.iconUrl
+                        : (override?.iconUrl ?? ''),
                 imageUrl: override?.imageUrl ?? '',
               );
             })
