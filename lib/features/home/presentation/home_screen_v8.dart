@@ -883,18 +883,24 @@ class _ConfiguredSeriesRail extends StatelessWidget {
           ],
         );
       default:
-        return SizedBox(
-          height: 196,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: visibleSeries.length,
-            separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
-            itemBuilder: (context, index) => SizedBox(
-              width: 300,
-              child: card(index),
-            ),
-          ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final cardWidth =
+                ((constraints.maxWidth - 8) / 2).clamp(166.0, 220.0);
+            return SizedBox(
+              height: 166,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: visibleSeries.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (context, index) => SizedBox(
+                  width: cardWidth,
+                  child: card(index, compact: true),
+                ),
+              ),
+            );
+          },
         );
     }
   }
@@ -1026,28 +1032,29 @@ class _ConfiguredSeriesCard extends StatelessWidget {
         if (compact)
           Row(
             children: [
-              Icon(
-                Icons.layers_rounded,
-                size: 14,
-                color: foreground.withValues(alpha: .82),
-              ),
-              const SizedBox(width: 5),
               Expanded(
-                child: Text(
-                  item.testCount == 1 ? '1 test' : '${item.testCount} tests',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 10,
-                  ),
+                child: _CompactSeriesMetric(
+                  icon: Icons.description_outlined,
+                  value: item.testCount.toString(),
+                  label: 'Tests',
+                  foreground: foreground,
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_rounded,
-                color: foreground,
-                size: 16,
+              Expanded(
+                child: _CompactSeriesMetric(
+                  icon: Icons.schedule_rounded,
+                  value: (item.durationSeconds / 60).round().toString(),
+                  label: 'Mins',
+                  foreground: foreground,
+                ),
+              ),
+              Expanded(
+                child: _CompactSeriesMetric(
+                  icon: Icons.emoji_events_outlined,
+                  value: _formatSeriesMarks(item.totalMarks),
+                  label: 'Marks',
+                  foreground: foreground,
+                ),
               ),
             ],
           )
@@ -1135,6 +1142,54 @@ class _ConfiguredSeriesCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CompactSeriesMetric extends StatelessWidget {
+  const _CompactSeriesMetric({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.foreground,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color foreground;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 14,
+          color: foreground.withValues(alpha: .9),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: foreground,
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: foreground.withValues(alpha: .7),
+            fontSize: 8,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
