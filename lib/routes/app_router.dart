@@ -37,6 +37,7 @@ import '../features/store/presentation/store_screen.dart';
 import '../features/store/presentation/series_plans_screen.dart';
 import '../features/store/presentation/series_checkout_screen.dart';
 import '../features/store/presentation/payment_success_screen.dart';
+import '../features/store/presentation/access_ready_screen.dart';
 import '../features/store/presentation/order_details_screen.dart';
 import '../features/store/presentation/my_test_series_screen.dart';
 import '../features/store/presentation/series_renewal_screen.dart';
@@ -384,6 +385,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             seriesId: seriesId,
             productId: productId,
             couponCode: state.uri.queryParameters['coupon'],
+          );
+        },
+      ),
+      GoRoute(
+        path: '/access-ready',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
+          if (seriesId.isEmpty) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Access unavailable',
+              message: 'The test-series identifier is missing.',
+            );
+          }
+          return AccessReadyScreen(
+            seriesId: seriesId,
+            orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
+            orderNumber:
+                state.uri.queryParameters['orderNumber']?.trim() ?? '',
           );
         },
       ),
