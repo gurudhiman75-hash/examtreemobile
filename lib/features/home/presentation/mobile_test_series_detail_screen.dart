@@ -1036,21 +1036,37 @@ class _TestsTab extends StatelessWidget {
       );
     }
 
+    final groups = _groupMembers(vm.members);
+    var runningIndex = 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ProgressCard(vm: vm),
         const SizedBox(height: 12),
-        for (var index = 0; index < vm.members.length; index++) ...[
-          _SeriesTestCard(
-            index: index + 1,
-            member: vm.members[index],
-            onOpen: vm.members[index].unlocked
-                ? () => onOpenTest(vm.members[index])
-                : null,
+        for (final entry in groups.entries) ...[
+          _TestGroupHeader(
+            title: entry.key,
+            count: entry.value.length,
+            subtitle: switch (entry.key) {
+              'Sectional Tests' => 'Subject-wise practice tests',
+              'Previous Year Papers' => 'Previous exam papers with review',
+              'Topic-wise Tests' => 'Focused practice on important topics',
+              _ => 'Latest pattern full syllabus tests',
+            },
           ),
-          if (index != vm.members.length - 1)
-            const SizedBox(height: 10),
+          const SizedBox(height: 8),
+          for (var localIndex = 0; localIndex < entry.value.length; localIndex++) ...[
+            _SeriesTestCard(
+              index: ++runningIndex,
+              member: entry.value[localIndex],
+              onOpen: entry.value[localIndex].unlocked
+                  ? () => onOpenTest(entry.value[localIndex])
+                  : null,
+            ),
+            if (localIndex != entry.value.length - 1)
+              const SizedBox(height: 8),
+          ],
+          const SizedBox(height: 14),
         ],
       ],
     );
@@ -1566,6 +1582,75 @@ class _ProgressCard extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF64748B),
                     fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TestGroupHeader extends StatelessWidget {
+  const _TestGroupHeader({
+    required this.title,
+    required this.count,
+    required this.subtitle,
+  });
+
+  final String title;
+  final int count;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final isPrevious = title == 'Previous Year Papers';
+    final isTopic = title == 'Topic-wise Tests';
+    final tint = isPrevious
+        ? const Color(0xFFEAFBF3)
+        : isTopic
+            ? const Color(0xFFFFF6DE)
+            : title == 'Sectional Tests'
+                ? const Color(0xFFFFEEF2)
+                : const Color(0xFFEAF4FF);
+    final icon = isPrevious
+        ? Icons.auto_stories_rounded
+        : isTopic
+            ? Icons.track_changes_rounded
+            : title == 'Sectional Tests'
+                ? Icons.view_list_rounded
+                : Icons.description_rounded;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+      decoration: BoxDecoration(
+        color: tint,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF176CC0), size: 23),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title + ' (' + count.toString() + ')',
+                  style: const TextStyle(
+                    color: Color(0xFF10264A),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: Color(0xFF60759B),
+                    fontSize: 11,
                   ),
                 ),
               ],
