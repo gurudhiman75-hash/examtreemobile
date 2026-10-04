@@ -36,10 +36,10 @@ class LearnSubmoduleScreen extends ConsumerWidget {
       final progressItems =
           ref.watch(learnPracticeProgressListProvider).value ?? const [];
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8FBFF),
         appBar: AppBar(
-          title: Text(submodule.title),
-          backgroundColor: Colors.white,
+          title: Text(submodule.title, style: const TextStyle(fontWeight: FontWeight.w900)),
+          backgroundColor: const Color(0xFFF8FBFF),
           foregroundColor: const Color(0xFF10264A),
           surfaceTintColor: Colors.transparent,
           elevation: 0,
@@ -82,10 +82,10 @@ class LearnSubmoduleScreen extends ConsumerWidget {
 
     if (submodule.id != 'gk-polity') {
       return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8FBFF),
         appBar: AppBar(
-          title: Text(submodule.title),
-          backgroundColor: Colors.white,
+          title: Text(submodule.title, style: const TextStyle(fontWeight: FontWeight.w900)),
+          backgroundColor: const Color(0xFFF8FBFF),
           foregroundColor: const Color(0xFF10264A),
           surfaceTintColor: Colors.transparent,
           elevation: 0,
@@ -109,8 +109,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(submodule.title),
-        backgroundColor: Colors.white,
+        title: Text(submodule.title, style: const TextStyle(fontWeight: FontWeight.w900)),
+        backgroundColor: const Color(0xFFF8FBFF),
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -136,7 +136,7 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Choose a topic for a short untimed practice session. Answers and explanations appear immediately after each question.',
+            'Choose a chapter to read the notes or start a short untimed practice session. Answers and explanations appear immediately after each question.',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.45,
