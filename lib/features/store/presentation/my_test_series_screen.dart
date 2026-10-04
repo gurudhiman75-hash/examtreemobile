@@ -163,7 +163,11 @@ class _PurchasedSeries extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
       children: [
-        const _TopTabs(),
+        _TopTabs(
+          onDownloads: () => context.push('/profile-downloads'),
+          onBookmarks: () => context.push('/profile-bookmarks'),
+          onHistory: () => context.push('/results'),
+        ),
         const SizedBox(height: 18),
         if (expired) ...[
           Container(
@@ -430,43 +434,59 @@ class _PurchasedSeries extends StatelessWidget {
 }
 
 class _TopTabs extends StatelessWidget {
-  const _TopTabs();
+  const _TopTabs({
+    required this.onDownloads,
+    required this.onBookmarks,
+    required this.onHistory,
+  });
+
+  final VoidCallback onDownloads;
+  final VoidCallback onBookmarks;
+  final VoidCallback onHistory;
 
   @override
-  Widget build(BuildContext context) => const Row(
+  Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _Tab(label: 'My Series', active: true),
-          _Tab(label: 'Downloads'),
-          _Tab(label: 'Bookmarks'),
-          _Tab(label: 'History'),
+          const _Tab(label: 'My Series', active: true),
+          _Tab(label: 'Downloads', onTap: onDownloads),
+          _Tab(label: 'Bookmarks', onTap: onBookmarks),
+          _Tab(label: 'History', onTap: onHistory),
         ],
       );
 }
 
 class _Tab extends StatelessWidget {
-  const _Tab({required this.label, this.active = false});
+  const _Tab({required this.label, this.active = false, this.onTap});
   final String label;
   final bool active;
+  final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color:
-                  active ? const Color(0xFF081847) : const Color(0xFF536A94),
-              fontWeight: active ? FontWeight.w900 : FontWeight.w700,
-            ),
+  Widget build(BuildContext context) => InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Column(
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color:
+                      active ? const Color(0xFF081847) : const Color(0xFF536A94),
+                  fontWeight: active ? FontWeight.w900 : FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 44,
+                height: 2.5,
+                color: active ? const Color(0xFF081847) : Colors.transparent,
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Container(
-            width: 44,
-            height: 2.5,
-            color: active ? const Color(0xFF081847) : Colors.transparent,
-          ),
-        ],
+        ),
       );
 }
 
