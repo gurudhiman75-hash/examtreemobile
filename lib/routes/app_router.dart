@@ -37,6 +37,7 @@ import '../features/store/presentation/series_plans_screen.dart';
 import '../features/store/presentation/series_checkout_screen.dart';
 import '../features/store/presentation/payment_success_screen.dart';
 import '../features/store/presentation/order_details_screen.dart';
+import '../features/store/presentation/my_test_series_screen.dart';
 import '../features/test_attempt/presentation/canonical_test_attempt_screen.dart';
 import '../shared/layouts/app_scaffold.dart';
 import 'route_extra.dart';
@@ -367,6 +368,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 state.uri.queryParameters['orderNumber']?.trim() ?? '',
           );
         },
+      ),
+      GoRoute(
+        path: '/my-test-series',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => MyTestSeriesScreen(
+          seriesId: state.uri.queryParameters['seriesId']?.trim(),
+        ),
       ),
       GoRoute(
         path: '/order-details',
