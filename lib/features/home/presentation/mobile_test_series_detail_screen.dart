@@ -1346,7 +1346,7 @@ class _ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stars = review.rating <= 0 ? null : '★' * review.rating;
+    final stars = review.rating <= 0 ? null : List.filled(review.rating, '★').join();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
