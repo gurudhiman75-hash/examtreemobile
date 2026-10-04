@@ -163,6 +163,63 @@ class _PurchasedSeries extends StatelessWidget {
         const _TopTabs(),
         const SizedBox(height: 18),
         Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF5DF),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFFFE0A3)),
+          ),
+          child: Row(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Color(0xFFFFE6B4),
+                child: Icon(Icons.schedule_rounded, color: Color(0xFFB56C00)),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Renew or extend your access',
+                      style: TextStyle(
+                        color: Color(0xFF6B4600),
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      'Keep your preparation, attempts and analytics together.',
+                      style: TextStyle(
+                        color: Color(0xFF8A6A2B),
+                        fontSize: 12,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                onPressed: () => context.push(
+                  '/series-renew?seriesId=' +
+                      Uri.encodeQueryComponent(seriesId),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFE87417),
+                  foregroundColor: Colors.white,
+                  visualDensity: VisualDensity.compact,
+                ),
+                child: const Text(
+                  'Renew',
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
