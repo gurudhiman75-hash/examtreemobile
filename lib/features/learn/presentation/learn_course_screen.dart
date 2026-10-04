@@ -33,10 +33,13 @@ class LearnCourseScreen extends ConsumerWidget {
 
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8FBFF),
       appBar: AppBar(
-        title: Text(subject.title),
-        backgroundColor: Colors.white,
+        title: Text(
+          subject.title,
+          style: const TextStyle(fontWeight: FontWeight.w900),
+        ),
+        backgroundColor: const Color(0xFFF8FBFF),
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -55,6 +58,8 @@ class LearnCourseScreen extends ConsumerWidget {
             const LearnLanguageSelector(),
             const SizedBox(height: 12),
             _CourseHero(subject: subject, copy: copy),
+            const SizedBox(height: 14),
+            _CourseStats(subject: subject, copy: copy),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -195,6 +200,100 @@ class _CourseHero extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CourseStats extends StatelessWidget {
+  const _CourseStats({
+    required this.subject,
+    required this.copy,
+  });
+
+  final LearnSubject subject;
+  final LearnUiCopy copy;
+
+  @override
+  Widget build(BuildContext context) {
+    final totalMinutes = subject.lessons.fold<int>(
+      0,
+      (sum, lesson) => sum + (lesson.isReady ? lesson.estimatedMinutes : 0),
+    );
+    return Row(
+      children: [
+        Expanded(
+          child: _CourseMetric(
+            icon: Icons.menu_book_rounded,
+            value: subject.readyLessonCount.toString(),
+            label: 'Ready lessons',
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _CourseMetric(
+            icon: Icons.layers_rounded,
+            value: subject.lessons.length.toString(),
+            label: 'Chapters',
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _CourseMetric(
+            icon: Icons.schedule_rounded,
+            value: totalMinutes.toString() + ' min',
+            label: 'Reading',
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CourseMetric extends StatelessWidget {
+  const _CourseMetric({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE4ECF6)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 20, color: const Color(0xFF176CC0)),
+          const SizedBox(height: 7),
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFF081847),
+              fontWeight: FontWeight.w900,
+              fontSize: 17,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Color(0xFF718096),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),
@@ -361,12 +460,24 @@ class _LessonTile extends StatelessWidget {
                   ),
                 ),
                 if (ready) ...[
-                  const SizedBox(width: 6),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Icon(
-                      Icons.chevron_right_rounded,
-                      color: Color(0xFF52708F),
+                  const SizedBox(width: 8),
+                  Container(
+                    margin: const EdgeInsets.only(top: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEEF5FF),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: const Text(
+                      'Read',
+                      style: TextStyle(
+                        color: Color(0xFF176CC0),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
                 ],
