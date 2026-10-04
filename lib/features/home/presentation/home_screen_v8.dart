@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 // ignore_for_file: unused_element, unused_element_parameter, unnecessary_underscores
 
@@ -33,6 +34,7 @@ import 'home_exam_priority.dart';
 import 'home_primary_action.dart';
 import 'mobile_home_providers.dart';
 import 'providers/official_exam_icons_provider.dart';
+import 'official_exam_icons_embedded.dart';
 import 'mobile_custom_home_section.dart';
 
 final homeV8SelectedExamCodesProvider =
@@ -1810,6 +1812,7 @@ class _ExamCategoryPresentation {
     required this.foreground,
     required this.iconUrl,
     required this.imageUrl,
+    required this.embeddedIconBase64,
   });
 
   final String label;
@@ -1821,6 +1824,7 @@ class _ExamCategoryPresentation {
   final Color foreground;
   final String iconUrl;
   final String imageUrl;
+  final String embeddedIconBase64;
 }
 
 class _ExamCategoriesGrid extends StatelessWidget {
@@ -1828,6 +1832,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
     required this.onOpen,
     this.families = const [],
     this.overrides = const {},
+    this.officialIconUrls = const {},
     this.layout = '',
     this.columns = 0,
   });
@@ -1835,6 +1840,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
   final ValueChanged<String> onOpen;
   final List<MobileFeaturedExamFamily> families;
   final Map<String, MobileHomeItemOverride> overrides;
+  final Map<String, String> officialIconUrls;
   final String layout;
   final int columns;
 
@@ -1882,6 +1888,10 @@ class _ExamCategoriesGrid extends StatelessWidget {
             .map((family) {
               final base = _visual(family);
               final override = overrides[family.id];
+              final embeddedIcon = embeddedOfficialIconForFamily(
+                code: family.code,
+                name: family.name,
+              );
               final storageIcon = officialIconForExamFamily(
                 code: family.code,
                 name: family.name,
@@ -1907,6 +1917,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
                         ? family.iconUrl
                         : (override?.iconUrl ?? ''),
                 imageUrl: override?.imageUrl ?? '',
+                embeddedIconBase64: embeddedIcon,
               );
             })
             .toList(growable: false);
@@ -1979,28 +1990,38 @@ class _ExamCategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final radius = BorderRadius.circular(18);
-    final visual = item.imageUrl.trim().isNotEmpty
-        ? ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              item.imageUrl,
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) =>
-                  Icon(item.icon, color: item.foreground, size: 30),
-            ),
+    final visual = item.embeddedIconBase64.isNotEmpty
+        ? Image.memory(
+            base64Decode(item.embeddedIconBase64),
+            width: 44,
+            height: 44,
+            fit: BoxFit.contain,
+            gaplessPlayback: true,
+            errorBuilder: (_, __, ___) =>
+                Icon(item.icon, color: item.foreground, size: 36),
           )
-        : item.iconUrl.trim().isNotEmpty
-            ? Image.network(
-                item.iconUrl,
-                width: 42,
-                height: 42,
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) =>
-                    Icon(item.icon, color: item.foreground, size: 36),
+        : item.imageUrl.trim().isNotEmpty
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  item.imageUrl,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      Icon(item.icon, color: item.foreground, size: 30),
+                ),
               )
-            : Icon(item.icon, color: item.foreground, size: 36);
+            : item.iconUrl.trim().isNotEmpty
+                ? Image.network(
+                    item.iconUrl,
+                    width: 42,
+                    height: 42,
+                    fit: BoxFit.contain,
+                    errorBuilder: (_, __, ___) =>
+                        Icon(item.icon, color: item.foreground, size: 36),
+                  )
+                : Icon(item.icon, color: item.foreground, size: 36);
 
     return DecoratedBox(
       decoration: BoxDecoration(
