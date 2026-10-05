@@ -47,17 +47,23 @@ class MobileFeaturedExamFamily {
     required this.id,
     required this.code,
     required this.name,
+    this.iconUrl = '',
+    this.colorHex = '',
   });
 
   final String id;
   final String code;
   final String name;
+  final String iconUrl;
+  final String colorHex;
 
   factory MobileFeaturedExamFamily.fromJson(Map<String, dynamic> json) {
     return MobileFeaturedExamFamily(
       id: json['id']?.toString() ?? '',
       code: json['code']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
+      iconUrl: json['iconUrl']?.toString() ?? '',
+      colorHex: json['colorHex']?.toString() ?? '',
     );
   }
 }

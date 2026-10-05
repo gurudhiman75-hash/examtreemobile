@@ -21,7 +21,7 @@ bool shouldShowDailyAction(
   int currentIndex, {
   bool revisionIsPrimary = false,
 }) =>
-    currentIndex == 0 && !revisionIsPrimary;
+    false;
 
 bool shouldUseExpandedNavigation(double width) => width >= 840;
 
