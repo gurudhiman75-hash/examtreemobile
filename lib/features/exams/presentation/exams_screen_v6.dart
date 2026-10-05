@@ -814,6 +814,7 @@ class _CategoryCard extends StatelessWidget {
     return MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.25,
       child: Material(
+      key: Key('exam-category-' + category.code),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
