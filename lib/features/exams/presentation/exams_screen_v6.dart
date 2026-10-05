@@ -875,6 +875,7 @@ class _PopularExamCard extends StatelessWidget {
     return MediaQuery.withClampedTextScaling(
       maxScaleFactor: 1.25,
       child: Material(
+      key: Key('popular-exam-' + exam.code),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
