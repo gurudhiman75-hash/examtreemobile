@@ -572,7 +572,7 @@ class _CategoryCatalogueState extends State<_CategoryCatalogue> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemCount: popularExams.length.clamp(0, 8),
+              itemCount: popularExams.length < 8 ? popularExams.length : 8,
               separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 final exam = popularExams[index];
