@@ -253,7 +253,10 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                       ),
                     ),
               title: Text(
-                shellDestinationLabel(currentIndex),
+                currentIndex == 2 &&
+                        GoRouterState.of(context).uri.path == '/exams'
+                    ? 'Exam Categories'
+                    : shellDestinationLabel(currentIndex),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: const Color(0xFF10264A),
                       fontWeight: FontWeight.w800,
