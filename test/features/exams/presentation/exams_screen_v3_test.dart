@@ -131,7 +131,7 @@ void main() {
     expect(find.byKey(const Key('exam-category-ssc')), findsOneWidget);
     expect(find.byKey(const Key('exam-category-railway')), findsOneWidget);
     expect(find.byKey(const Key('exam-category-banking')), findsOneWidget);
-    expect(find.text('SSC CGL'), findsNothing);
+    expect(find.byKey(const Key('popular-exam-ssc-cgl')), findsOneWidget);
   });
 
   testWidgets('category search filters only master categories', (tester) async {
