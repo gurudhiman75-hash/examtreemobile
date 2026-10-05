@@ -607,7 +607,9 @@ class _CategoryHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final textScale = MediaQuery.textScalerOf(context).scale(1);
     final largeText = textScale > 1.3;
-    return Container(
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.35,
+      child: Container(
       height: largeText ? 250 : 162,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -691,6 +693,7 @@ class _CategoryHero extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 }
@@ -905,7 +908,9 @@ class _PopularExamCard extends StatelessWidget {
               const SizedBox(height: 3),
               Expanded(
                 child: Text(
-                  exam.familyName,
+                  exam.description.trim().isNotEmpty
+                      ? exam.description
+                      : exam.familyName,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
