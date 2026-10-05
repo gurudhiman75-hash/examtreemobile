@@ -1528,24 +1528,7 @@ class _HomePromoFallback extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                   ),
-                  const SizedBox(height: 8),
-                  FilledButton(
-                    onPressed: () => context.go('/exams'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF15806C),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 9,
-                      ),
-                      visualDensity: VisualDensity.compact,
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text(
-                      'Explore Exams',
-                      style: TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                  ),
+
                 ],
               ),
             ),
