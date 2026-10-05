@@ -125,7 +125,7 @@ void main() {
       (tester) async {
     await pumpCategories(tester, catalog: snapshot());
 
-    expect(find.text('Choose your exam path'), findsOneWidget);
+    expect(find.textContaining('Your Preparation'), findsOneWidget);
     expect(find.byKey(const Key('exam-category-catalogue')), findsOneWidget);
     expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
     expect(find.text('SSC'), findsOneWidget);
