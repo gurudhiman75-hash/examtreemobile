@@ -315,7 +315,8 @@ PreferredSizeWidget _appBar(String title) {
   );
 }
 
-class _CategoryCatalogue extends StatelessWidget {
+
+class _CategoryCatalogue extends StatefulWidget {
   const _CategoryCatalogue({
     required this.snapshot,
     required this.searchController,
@@ -331,72 +332,189 @@ class _CategoryCatalogue extends StatelessWidget {
   final VoidCallback onClearSearch;
 
   @override
+  State<_CategoryCatalogue> createState() => _CategoryCatalogueState();
+}
+
+class _CategoryCatalogueState extends State<_CategoryCatalogue> {
+  String _filter = 'All Exams';
+
+  List<String> get _filters => const [
+        'All Exams',
+        'Popular',
+        'Banking',
+        'SSC',
+        'State',
+        'Teaching',
+        'Defence',
+      ];
+
+  bool _matchesFilter(ExamCatalogCategory category) {
+    final key = (category.code + ' ' + category.name).toLowerCase();
+    switch (_filter) {
+      case 'Popular':
+        return category.testCount > 0;
+      case 'Banking':
+        return key.contains('bank') ||
+            key.contains('ibps') ||
+            key.contains('rbi') ||
+            key.contains('sbi');
+      case 'SSC':
+        return key.contains('ssc') || key.contains('staff selection');
+      case 'State':
+        return key.contains('state') ||
+            key.contains('punjab') ||
+            key.contains('psssb') ||
+            key.contains('psc') ||
+            key.contains('pcs');
+      case 'Teaching':
+        return key.contains('teach') || key.contains('education');
+      case 'Defence':
+        return key.contains('defen') ||
+            key.contains('army') ||
+            key.contains('navy') ||
+            key.contains('air force') ||
+            key.contains('police');
+      default:
+        return true;
+    }
+  }
+
+  int _categoryPriority(ExamCatalogCategory category) {
+    final key = (category.code + ' ' + category.name).toLowerCase();
+    if (key.contains('ssc') || key.contains('staff selection')) return 0;
+    if (key.contains('bank') || key.contains('ibps')) return 1;
+    if (key.contains('psc') || key.contains('pcs')) return 2;
+    if (key.contains('psssb') || key.contains('punjab')) return 3;
+    if (key.contains('rail')) return 4;
+    if (key.contains('teach')) return 5;
+    if (key.contains('defen') || key.contains('army')) return 6;
+    if (key.contains('police')) return 7;
+    if (key.contains('insurance') || key.contains('lic')) return 8;
+    if (key.contains('state')) return 9;
+    if (key.contains('entrance')) return 10;
+    return 50;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final normalized = query.trim().toLowerCase();
-    final visible = normalized.isEmpty
-        ? snapshot.categories
-        : snapshot.categories.where((category) {
-            return category.name.toLowerCase().contains(normalized) ||
-                category.description.toLowerCase().contains(normalized);
-          }).toList(growable: false);
+    final normalized = widget.query.trim().toLowerCase();
+    final visible = widget.snapshot.categories.where((category) {
+      if (!_matchesFilter(category)) return false;
+      if (normalized.isEmpty) return true;
+
+      final categoryText = [
+        category.name,
+        category.code,
+        category.description,
+      ].join(' ').toLowerCase();
+
+      if (categoryText.contains(normalized)) return true;
+
+      return widget.snapshot
+          .examsForCategory(category.code)
+          .any((exam) => [
+                exam.name,
+                exam.description,
+                exam.familyName,
+              ].join(' ').toLowerCase().contains(normalized));
+    }).toList(growable: true)
+      ..sort((a, b) {
+        if (_filter == 'Popular') {
+          final popular = b.testCount.compareTo(a.testCount);
+          if (popular != 0) return popular;
+        }
+        final priority = _categoryPriority(a).compareTo(_categoryPriority(b));
+        if (priority != 0) return priority;
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
+
+    final popularExams = [...widget.snapshot.exams]
+      ..sort((a, b) {
+        final series = b.seriesCount.compareTo(a.seriesCount);
+        if (series != 0) return series;
+        final tests = b.testCount.compareTo(a.testCount);
+        if (tests != 0) return tests;
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
 
     return ListView(
       key: const Key('exam-category-catalogue'),
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 112),
       children: [
-        _CategoryHero(
-          totalExams: snapshot.exams.length,
-          categoryCount: snapshot.categories.length,
-          seriesCount: snapshot.series.length,
-        ),
-        const SizedBox(height: 16),
+        const _CategoryHero(),
+        const SizedBox(height: 14),
         SearchBar(
           key: const Key('exam-category-search'),
-          controller: searchController,
-          hintText: 'Search exam categories',
-          leading: const Icon(Icons.search_rounded),
+          controller: widget.searchController,
+          hintText: 'Search exams (e.g. SSC, IBPS, PSSSB...)',
+          leading: const Icon(Icons.search_rounded, color: Color(0xFF607083)),
           elevation: const WidgetStatePropertyAll(0),
           backgroundColor: const WidgetStatePropertyAll(Colors.white),
-          side: const WidgetStatePropertyAll(BorderSide(color: _line)),
+          side: const WidgetStatePropertyAll(
+            BorderSide(color: Color(0xFFE8EBEE)),
+          ),
+          constraints: const BoxConstraints(minHeight: 54),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
           ),
           trailing: [
-            if (query.isNotEmpty)
+            if (widget.query.isNotEmpty)
               IconButton(
                 tooltip: 'Clear search',
-                onPressed: onClearSearch,
+                onPressed: widget.onClearSearch,
                 icon: const Icon(Icons.close_rounded),
               ),
           ],
-          onChanged: onQueryChanged,
+          onChanged: widget.onQueryChanged,
         ),
-        const SizedBox(height: 20),
-        const Text(
-          'Exam Categories',
-          style: TextStyle(
-            color: _ink,
-            fontSize: 21,
-            fontWeight: FontWeight.w900,
-            letterSpacing: -.3,
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 46,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _filters.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final label = _filters[index];
+              final selected = label == _filter;
+              return ChoiceChip(
+                selected: selected,
+                showCheckmark: false,
+                label: Text(label),
+                onSelected: (_) => setState(() => _filter = label),
+                backgroundColor: Colors.white,
+                selectedColor: const Color(0xFF15806C),
+                side: BorderSide(
+                  color: selected
+                      ? const Color(0xFF15806C)
+                      : const Color(0xFFE8EBEE),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                labelStyle: TextStyle(
+                  color: selected ? Colors.white : const Color(0xFF172033),
+                  fontSize: 13,
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                ),
+              );
+            },
           ),
-        ),
-        const SizedBox(height: 3),
-        const Text(
-          'Choose a category to find the exam you are preparing for.',
-          style: TextStyle(color: _muted, fontSize: 13),
         ),
         const SizedBox(height: 12),
         if (visible.isEmpty)
-          snapshot.categories.isEmpty
+          widget.snapshot.categories.isEmpty
               ? const _EmptyCatalogue()
               : const _NoCategoryMatch()
         else
           LayoutBuilder(
             builder: (context, constraints) {
-              const gap = 10.0;
-              final width = (constraints.maxWidth - gap) / 2;
+              const gap = 9.0;
+              final columns = constraints.maxWidth < 310 ? 3 : 4;
+              final width =
+                  (constraints.maxWidth - gap * (columns - 1)) / columns;
               return Wrap(
                 spacing: gap,
                 runSpacing: gap,
@@ -404,13 +522,14 @@ class _CategoryCatalogue extends StatelessWidget {
                   for (final category in visible)
                     SizedBox(
                       width: width,
-                      child: _CategoryCard(
-                        category: category,
-                        examCount:
-                            snapshot.examsForCategory(category.code).length,
-                        onTap: () => context.push(
-                          '/exam-category?family=' +
-                              Uri.encodeQueryComponent(category.code),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: _CategoryCard(
+                          category: category,
+                          onTap: () => context.push(
+                            '/exam-category?family=' +
+                                Uri.encodeQueryComponent(category.code),
+                          ),
                         ),
                       ),
                     ),
@@ -418,87 +537,143 @@ class _CategoryCatalogue extends StatelessWidget {
               );
             },
           ),
+        if (popularExams.isNotEmpty) ...[
+          const SizedBox(height: 28),
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Popular Exams',
+                  style: TextStyle(
+                    color: Color(0xFF0C131F),
+                    fontSize: 21,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.35,
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () => setState(() => _filter = 'Popular'),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF15806C),
+                ),
+                iconAlignment: IconAlignment.end,
+                icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                label: const Text(
+                  'View all',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 184,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemCount: popularExams.length.clamp(0, 8),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              itemBuilder: (context, index) {
+                final exam = popularExams[index];
+                return SizedBox(
+                  width: 152,
+                  child: _PopularExamCard(
+                    exam: exam,
+                    onTap: () => context.push(
+                      '/exam-series?exam=' +
+                          Uri.encodeQueryComponent(exam.code),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ],
     );
   }
 }
 
 class _CategoryHero extends StatelessWidget {
-  const _CategoryHero({
-    required this.totalExams,
-    required this.categoryCount,
-    required this.seriesCount,
-  });
-
-  final int totalExams;
-  final int categoryCount;
-  final int seriesCount;
+  const _CategoryHero();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+      height: 162,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          colors: [_navy, _blue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFFEAF1EB),
+            Color(0xFFF7F7F1),
+            Color(0xFFE4EEE4),
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x18062D5C),
-            blurRadius: 22,
-            offset: Offset(0, 9),
-          ),
-        ],
+        border: Border.all(color: const Color(0xFFE4E9E5)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          const Text(
-            'PREPARE BY EXAM',
-            style: TextStyle(
-              color: Color(0xFFFFD36B),
-              fontWeight: FontWeight.w900,
-              fontSize: 11,
-              letterSpacing: .8,
+          Positioned(
+            right: -8,
+            top: 6,
+            bottom: 0,
+            width: 170,
+            child: _EducationHeroArt(),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 18, 150, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.eco_rounded,
+                      color: Color(0xFF15806C),
+                      size: 19,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'Examtree',
+                      style: TextStyle(
+                        color: Color(0xFF0C131F),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Your Preparation\nStarts Here',
+                  style: TextStyle(
+                    color: Color(0xFF0C131F),
+                    fontSize: 27,
+                    height: 1.0,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.55,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'Explore top government exams and find the right test series.',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: const Color(0xFF253142).withValues(alpha: .82),
+                    fontSize: 12.5,
+                    height: 1.3,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 7),
-          const Text(
-            'Choose your exam path',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              height: 1.12,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -.4,
-            ),
-          ),
-          const SizedBox(height: 7),
-          const Text(
-            'Open a category, choose your exam and continue to its test series.',
-            style: TextStyle(color: Color(0xFFD8E6F5), height: 1.4),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _HeroPill(
-                icon: Icons.grid_view_rounded,
-                text: categoryCount.toString() + ' categories',
-              ),
-              _HeroPill(
-                icon: Icons.school_outlined,
-                text: totalExams.toString() + ' exams',
-              ),
-              _HeroPill(
-                icon: Icons.library_books_outlined,
-                text: seriesCount.toString() + ' series',
-              ),
-            ],
           ),
         ],
       ),
@@ -506,35 +681,88 @@ class _CategoryHero extends StatelessWidget {
   }
 }
 
-class _HeroPill extends StatelessWidget {
-  const _HeroPill({required this.icon, required this.text});
-
-  final IconData icon;
-  final String text;
+class _EducationHeroArt extends StatelessWidget {
+  const _EducationHeroArt();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      decoration: BoxDecoration(
-        color: const Color(0x1AFFFFFF),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: const Color(0xFFFFD36B)),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Positioned(
+          right: 10,
+          bottom: 14,
+          child: Transform.rotate(
+            angle: -.04,
+            child: Container(
+              width: 118,
+              height: 22,
+              decoration: BoxDecoration(
+                color: const Color(0xFF184E78),
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          right: 20,
+          bottom: 37,
+          child: Transform.rotate(
+            angle: .03,
+            child: Container(
+              width: 106,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: const Color(0xFFDDE3E7)),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 12,
+          bottom: 58,
+          child: Container(
+            width: 118,
+            height: 22,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1F6B9B),
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+        const Positioned(
+          right: 27,
+          bottom: 76,
+          child: Icon(
+            Icons.school_rounded,
+            color: Color(0xFF14273A),
+            size: 82,
+          ),
+        ),
+        Positioned(
+          left: 8,
+          bottom: 18,
+          child: Container(
+            width: 34,
+            height: 55,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: .88),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(5),
+                bottom: Radius.circular(12),
+              ),
+              border: Border.all(color: const Color(0xFFE0E6E2)),
+            ),
+            child: const Icon(
+              Icons.edit_rounded,
+              color: Color(0xFFF2A52B),
+              size: 22,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -542,13 +770,26 @@ class _HeroPill extends StatelessWidget {
 class _CategoryCard extends StatelessWidget {
   const _CategoryCard({
     required this.category,
-    required this.examCount,
     required this.onTap,
   });
 
   final ExamCatalogCategory category;
-  final int examCount;
   final VoidCallback onTap;
+
+  String _compactLabel(String value) {
+    final key = value.toLowerCase();
+    if (key.contains('staff selection') || key.trim() == 'ssc') return 'SSC';
+    if (key.contains('bank')) return 'Banking';
+    if (key.contains('rail')) return 'Railway';
+    if (key.contains('teach')) return 'Teaching';
+    if (key.contains('defen')) return 'Defence';
+    if (key.contains('insurance')) return 'Insurance';
+    if (key.contains('punjab') && key.contains('subordinate')) return 'PSSSB';
+    if (key.contains('state') && (key.contains('psc') || key.contains('pcs'))) {
+      return 'State PSC';
+    }
+    return value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -556,67 +797,125 @@ class _CategoryCard extends StatelessWidget {
     return Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: _line),
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: Color(0xFFE8EBEE)),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 14, 12, 13),
+          padding: const EdgeInsets.fromLTRB(7, 8, 7, 7),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  _OfficialIcon(
-                    imageUrl: category.iconUrl,
-                    fallbackIcon: visual.$1,
-                    background: visual.$2,
-                    foreground: visual.$3,
-                    size: 46,
-                  ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.arrow_outward_rounded,
-                    size: 19,
-                    color: Color(0xFF94A3B8),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 13),
-              Text(
-                category.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: _ink,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  height: 1.15,
-                ),
+              _OfficialIcon(
+                imageUrl: category.iconUrl,
+                fallbackIcon: visual.$1,
+                background: Colors.transparent,
+                foreground: visual.$3,
+                size: 48,
               ),
               const SizedBox(height: 6),
-              Text(
-                examCount.toString() +
-                    (examCount == 1 ? ' exam' : ' exams'),
-                style: const TextStyle(
-                  color: Color(0xFF6F7E92),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  _compactLabel(category.name),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: const TextStyle(
+                    color: Color(0xFF0C131F),
+                    fontSize: 13,
+                    height: 1.05,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -.15,
+                  ),
                 ),
               ),
-              if (category.testCount > 0) ...[
-                const SizedBox(height: 5),
-                Text(
-                  category.testCount.toString() + ' live tests',
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PopularExamCard extends StatelessWidget {
+  const _PopularExamCard({
+    required this.exam,
+    required this.onTap,
+  });
+
+  final ExamCatalogExam exam;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = _visualFor(exam.familyName);
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: const BorderSide(color: Color(0xFFE8EBEE)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 9),
+          child: Column(
+            children: [
+              _OfficialIcon(
+                imageUrl: exam.iconUrl,
+                fallbackIcon: visual.$1,
+                background: Colors.transparent,
+                foreground: visual.$3,
+                size: 50,
+              ),
+              const SizedBox(height: 7),
+              Text(
+                exam.name,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color(0xFF0C131F),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Expanded(
+                child: Text(
+                  exam.familyName,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Color(0xFF11966F),
-                    fontSize: 11,
+                    color: Color(0xFF697580),
+                    fontSize: 11.5,
+                    height: 1.18,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE3F3F0),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  exam.seriesCount.toString() +
+                      (exam.seriesCount == 1 ? ' Test Series' : ' Test Series'),
+                  style: const TextStyle(
+                    color: Color(0xFF147F6B),
+                    fontSize: 10.5,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),
