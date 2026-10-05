@@ -720,12 +720,12 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF031B3A),
-                            Color(0xFF063A70),
-                            Color(0xFF0B5D96),
+                            Color(0xFFE7EFE7),
+                            Color(0xFFF7F7F1),
+                            Color(0xFFE1EBE2),
                           ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                         ),
                       ),
                       child: Stack(
@@ -742,11 +742,11 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(0xFF02172F)
-                                      .withValues(alpha: .96),
-                                  const Color(0xFF031B3A)
-                                      .withValues(alpha: .76),
-                                  const Color(0xFF031B3A)
+                                  const Color(0xFFF7F7F1)
+                                      .withValues(alpha: .98),
+                                  const Color(0xFFF7F7F1)
+                                      .withValues(alpha: .86),
+                                  const Color(0xFFF7F7F1)
                                       .withValues(alpha: .18),
                                 ],
                                 begin: Alignment.centerLeft,
@@ -766,7 +766,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                   style: AppTypography.premiumHeading(
                                     Theme.of(context).textTheme.headlineSmall,
                                   ).copyWith(
-                                    color: Colors.white,
+                                    color: const Color(0xFF0C131F),
                                     height: 1.04,
                                   ),
                                 ),
@@ -782,8 +782,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: Colors.white
-                                                .withValues(alpha: .88),
+                                            color: const Color(0xFF58646F),
                                             height: 1.3,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -798,7 +797,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                       vertical: 8,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFFD36B),
+                                      color: const Color(0xFF15806C),
                                       borderRadius: BorderRadius.circular(999),
                                     ),
                                     child: Text(
@@ -809,7 +808,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                           .textTheme
                                           .labelMedium
                                           ?.copyWith(
-                                            color: const Color(0xFF0B2748),
+                                            color: Colors.white,
                                             fontWeight: FontWeight.w900,
                                           ),
                                     ),
@@ -839,7 +838,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 decoration: BoxDecoration(
                   color: index == _index
-                      ? const Color(0xFF073A78)
+                      ? const Color(0xFF15806C)
                       : const Color(0xFFD9E1EA),
                   shape: BoxShape.circle,
                 ),
@@ -986,26 +985,42 @@ class _ConfiguredSeriesCard extends StatelessWidget {
         : 'TEST SERIES';
     final imageUrl = itemOverride?.imageUrl.trim() ?? '';
     final hasImage = imageUrl.isNotEmpty;
-    final foreground =
-        hasImage || !alternate ? Colors.white : const Color(0xFF152746);
-    final decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(compact ? 16 : 22),
-      gradient: hasImage
-          ? null
-          : LinearGradient(
-              colors: alternate
-                  ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
-                  : const [Color(0xFF04366B), Color(0xFF075A98)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    final foreground = compact
+        ? const Color(0xFF0C131F)
+        : hasImage || !alternate
+            ? Colors.white
+            : const Color(0xFF152746);
+    final decoration = compact
+        ? BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE8EBEE)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x090C131F),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          )
+        : BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            gradient: hasImage
+                ? null
+                : LinearGradient(
+                    colors: alternate
+                        ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
+                        : const [Color(0xFF04366B), Color(0xFF075A98)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            color: hasImage ? const Color(0xFF04366B) : null,
+            border: Border.all(
+              color: alternate && !hasImage
+                  ? const Color(0xFFE7C879).withValues(alpha: .42)
+                  : Colors.white.withValues(alpha: .08),
             ),
-      color: hasImage ? const Color(0xFF04366B) : null,
-      border: Border.all(
-        color: alternate && !hasImage
-            ? const Color(0xFFE7C879).withValues(alpha: .42)
-            : Colors.white.withValues(alpha: .08),
-      ),
-    );
+          );
 
     final copy = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1016,7 +1031,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: foreground.withValues(alpha: .78),
+            color: compact
+                ? const Color(0xFF15806C)
+                : foreground.withValues(alpha: .78),
             fontWeight: FontWeight.w900,
             letterSpacing: .6,
             fontSize: compact ? 8 : null,
@@ -1157,13 +1174,13 @@ class _ConfiguredSeriesCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (hasImage)
+              if (hasImage && !compact)
                 Image.network(
                   imageUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
-              if (hasImage)
+              if (hasImage && !compact)
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -3006,8 +3023,8 @@ class _ExamtreeMarkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final navy = Paint()..color = const Color(0xFF0756A5);
-    final deep = Paint()..color = const Color(0xFF073A78);
+    final navy = Paint()..color = const Color(0xFF15806C);
+    final deep = Paint()..color = const Color(0xFF0F6A59);
     final gold = Paint()..color = const Color(0xFFF4A21B);
 
     final left = Path()
