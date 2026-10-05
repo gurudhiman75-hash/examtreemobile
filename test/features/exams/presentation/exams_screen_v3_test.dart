@@ -125,13 +125,13 @@ void main() {
       (tester) async {
     await pumpCategories(tester, catalog: snapshot());
 
-    expect(find.text('Choose your exam path'), findsOneWidget);
+    expect(find.textContaining('Your Preparation'), findsOneWidget);
     expect(find.byKey(const Key('exam-category-catalogue')), findsOneWidget);
     expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
-    expect(find.text('SSC'), findsOneWidget);
-    expect(find.text('Railway'), findsOneWidget);
-    expect(find.text('Banking'), findsOneWidget);
-    expect(find.text('SSC CGL'), findsNothing);
+    expect(find.byKey(const Key('exam-category-ssc')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-railway')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-banking')), findsOneWidget);
+    expect(find.byKey(const Key('popular-exam-ssc-cgl')), findsOneWidget);
   });
 
   testWidgets('category search filters only master categories', (tester) async {
@@ -143,8 +143,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Railway'), findsOneWidget);
-    expect(find.text('SSC'), findsNothing);
+    expect(find.byKey(const Key('exam-category-railway')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-ssc')), findsNothing);
   });
 
   testWidgets('empty category catalogue remains truthful', (tester) async {
