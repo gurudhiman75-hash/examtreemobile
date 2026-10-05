@@ -128,9 +128,9 @@ void main() {
     expect(find.textContaining('Your Preparation'), findsOneWidget);
     expect(find.byKey(const Key('exam-category-catalogue')), findsOneWidget);
     expect(find.byKey(const Key('exam-category-search')), findsOneWidget);
-    expect(find.text('SSC'), findsOneWidget);
-    expect(find.text('Railway'), findsOneWidget);
-    expect(find.text('Banking'), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-ssc')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-railway')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-banking')), findsOneWidget);
     expect(find.text('SSC CGL'), findsNothing);
   });
 
@@ -143,8 +143,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Railway'), findsOneWidget);
-    expect(find.text('SSC'), findsNothing);
+    expect(find.byKey(const Key('exam-category-railway')), findsOneWidget);
+    expect(find.byKey(const Key('exam-category-ssc')), findsNothing);
   });
 
   testWidgets('empty category catalogue remains truthful', (tester) async {
