@@ -2114,7 +2114,7 @@ class _ExamCategoryTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: radius,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -2138,18 +2138,29 @@ class _ExamCategoryTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                visual,
-                const SizedBox(height: 7),
-                Text(
-                  item.label,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: const Color(0xFF10264A),
-                    fontWeight: FontWeight.w900,
-                    fontSize: 10.5,
-                    letterSpacing: -.05,
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: visual,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    item.label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: const Color(0xFF10264A),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 10,
+                      height: 1,
+                      letterSpacing: -.05,
+                    ),
                   ),
                 ),
                 if (showDetails && item.subtitle.trim().isNotEmpty) ...[
