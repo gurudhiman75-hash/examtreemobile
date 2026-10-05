@@ -512,7 +512,12 @@ class _CategoryCatalogueState extends State<_CategoryCatalogue> {
           LayoutBuilder(
             builder: (context, constraints) {
               const gap = 9.0;
-              final columns = constraints.maxWidth < 310 ? 3 : 4;
+              final textScale = MediaQuery.textScalerOf(context).scale(1);
+              final columns = textScale > 1.55
+                  ? 2
+                  : constraints.maxWidth < 310
+                      ? 3
+                      : 4;
               final width =
                   (constraints.maxWidth - gap * (columns - 1)) / columns;
               return Wrap(
@@ -537,7 +542,7 @@ class _CategoryCatalogueState extends State<_CategoryCatalogue> {
               );
             },
           ),
-        if (popularExams.isNotEmpty) ...[
+        if (popularExams.isNotEmpty && normalized.isEmpty && _filter == 'All Exams') ...[
           const SizedBox(height: 28),
           Row(
             children: [
@@ -600,8 +605,10 @@ class _CategoryHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final largeText = textScale > 1.3;
     return Container(
-      height: 162,
+      height: largeText ? 250 : 162,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -626,7 +633,12 @@ class _CategoryHero extends StatelessWidget {
             child: _EducationHeroArt(),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 150, 16),
+            padding: EdgeInsets.fromLTRB(
+              20,
+              18,
+              largeText ? 120 : 150,
+              16,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -650,11 +662,13 @@ class _CategoryHero extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Your Preparation\nStarts Here',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Color(0xFF0C131F),
-                    fontSize: 27,
+                    color: const Color(0xFF0C131F),
+                    fontSize: largeText ? 24 : 27,
                     height: 1.0,
                     fontWeight: FontWeight.w900,
                     letterSpacing: -.55,
@@ -794,7 +808,9 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visual = _visualFor(category.name);
-    return Material(
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.25,
+      child: Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
@@ -835,6 +851,7 @@ class _CategoryCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -851,7 +868,9 @@ class _PopularExamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visual = _visualFor(exam.familyName);
-    return Material(
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.25,
+      child: Material(
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
@@ -920,6 +939,7 @@ class _PopularExamCard extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
 }
