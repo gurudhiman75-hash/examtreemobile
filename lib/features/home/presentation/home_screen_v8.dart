@@ -230,6 +230,8 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
           const SizedBox(height: 12),
+          _HomeSearchBar(onTap: () => context.go('/exams')),
+          const SizedBox(height: 16),
         ],
       )
           : const SizedBox.shrink(),
@@ -451,7 +453,9 @@ class HomeScreen extends ConsumerWidget {
         .whereType<Widget>()
         .toList(growable: false);
 
-    return SafeArea(
+    return ColoredBox(
+      color: const Color(0xFFF6F7F9),
+      child: SafeArea(
       child: RefreshIndicator(
         onRefresh: () => _refreshAll(ref),
         child: CustomScrollView(
@@ -459,9 +463,9 @@ class HomeScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                8,
+                16,
                 AppSpacing.sm,
-                8,
+                16,
                 112,
               ),
               sliver: SliverList.list(
@@ -484,6 +488,7 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -715,12 +720,12 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF031B3A),
-                            Color(0xFF063A70),
-                            Color(0xFF0B5D96),
+                            Color(0xFFE7EFE7),
+                            Color(0xFFF7F7F1),
+                            Color(0xFFE1EBE2),
                           ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                         ),
                       ),
                       child: Stack(
@@ -737,11 +742,11 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(0xFF02172F)
-                                      .withValues(alpha: .96),
-                                  const Color(0xFF031B3A)
-                                      .withValues(alpha: .76),
-                                  const Color(0xFF031B3A)
+                                  const Color(0xFFF7F7F1)
+                                      .withValues(alpha: .98),
+                                  const Color(0xFFF7F7F1)
+                                      .withValues(alpha: .86),
+                                  const Color(0xFFF7F7F1)
                                       .withValues(alpha: .18),
                                 ],
                                 begin: Alignment.centerLeft,
@@ -761,7 +766,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                   style: AppTypography.premiumHeading(
                                     Theme.of(context).textTheme.headlineSmall,
                                   ).copyWith(
-                                    color: Colors.white,
+                                    color: const Color(0xFF0C131F),
                                     height: 1.04,
                                   ),
                                 ),
@@ -777,8 +782,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: Colors.white
-                                                .withValues(alpha: .88),
+                                            color: const Color(0xFF58646F),
                                             height: 1.3,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -793,7 +797,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                       vertical: 8,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFFFD36B),
+                                      color: const Color(0xFF15806C),
                                       borderRadius: BorderRadius.circular(999),
                                     ),
                                     child: Text(
@@ -804,7 +808,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                           .textTheme
                                           .labelMedium
                                           ?.copyWith(
-                                            color: const Color(0xFF0B2748),
+                                            color: Colors.white,
                                             fontWeight: FontWeight.w900,
                                           ),
                                     ),
@@ -834,7 +838,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                 margin: const EdgeInsets.symmetric(horizontal: 3),
                 decoration: BoxDecoration(
                   color: index == _index
-                      ? const Color(0xFF073A78)
+                      ? const Color(0xFF15806C)
                       : const Color(0xFFD9E1EA),
                   shape: BoxShape.circle,
                 ),
@@ -981,26 +985,42 @@ class _ConfiguredSeriesCard extends StatelessWidget {
         : 'TEST SERIES';
     final imageUrl = itemOverride?.imageUrl.trim() ?? '';
     final hasImage = imageUrl.isNotEmpty;
-    final foreground =
-        hasImage || !alternate ? Colors.white : const Color(0xFF152746);
-    final decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(compact ? 16 : 22),
-      gradient: hasImage
-          ? null
-          : LinearGradient(
-              colors: alternate
-                  ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
-                  : const [Color(0xFF04366B), Color(0xFF075A98)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    final foreground = compact
+        ? const Color(0xFF0C131F)
+        : hasImage || !alternate
+            ? Colors.white
+            : const Color(0xFF152746);
+    final decoration = compact
+        ? BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE8EBEE)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x090C131F),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          )
+        : BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            gradient: hasImage
+                ? null
+                : LinearGradient(
+                    colors: alternate
+                        ? const [Color(0xFFFFF0C6), Color(0xFFFFF9E8)]
+                        : const [Color(0xFF04366B), Color(0xFF075A98)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+            color: hasImage ? const Color(0xFF04366B) : null,
+            border: Border.all(
+              color: alternate && !hasImage
+                  ? const Color(0xFFE7C879).withValues(alpha: .42)
+                  : Colors.white.withValues(alpha: .08),
             ),
-      color: hasImage ? const Color(0xFF04366B) : null,
-      border: Border.all(
-        color: alternate && !hasImage
-            ? const Color(0xFFE7C879).withValues(alpha: .42)
-            : Colors.white.withValues(alpha: .08),
-      ),
-    );
+          );
 
     final copy = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1011,7 +1031,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: foreground.withValues(alpha: .78),
+            color: compact
+                ? const Color(0xFF15806C)
+                : foreground.withValues(alpha: .78),
             fontWeight: FontWeight.w900,
             letterSpacing: .6,
             fontSize: compact ? 8 : null,
@@ -1152,13 +1174,13 @@ class _ConfiguredSeriesCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (hasImage)
+              if (hasImage && !compact)
                 Image.network(
                   imageUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
-              if (hasImage)
+              if (hasImage && !compact)
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -1422,184 +1444,232 @@ class _HomePromoFallback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textScale = MediaQuery.textScalerOf(context).scale(1);
-    final largeText = textScale > 1.3;
-    final heroHeight = largeText
-        ? (258 * textScale).clamp(360, 520).toDouble()
-        : 218.0;
+    final scale = MediaQuery.textScalerOf(context).scale(1);
+    final largeText = scale > 1.3;
+    return MediaQuery.withClampedTextScaling(
+      maxScaleFactor: 1.35,
+      child: Container(
+        height: largeText ? 218 : 164,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFFE7EFE7),
+              Color(0xFFF7F7F1),
+              Color(0xFFE1EBE2),
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          border: Border.all(color: const Color(0xFFE3E8E4)),
+        ),
+        child: Stack(
+          children: [
+            const Positioned(
+              right: -5,
+              top: 0,
+              bottom: 0,
+              width: 166,
+              child: _HomeEducationArt(),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                18,
+                16,
+                largeText ? 122 : 145,
+                14,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.eco_rounded,
+                        size: 18,
+                        color: Color(0xFF15806C),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        'EXAMTREE',
+                        style: TextStyle(
+                          color: Color(0xFF15806C),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: .9,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 7),
+                  Text(
+                    'Your Preparation\nStarts Here',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.premiumHeading(
+                      Theme.of(context).textTheme.headlineSmall,
+                    ).copyWith(
+                      color: const Color(0xFF0C131F),
+                      fontSize: largeText ? 24 : 27,
+                      height: 1.0,
+                      letterSpacing: -.55,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Mock tests, learning and exam-focused practice in one place.',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: const Color(0xFF58646F),
+                          height: 1.25,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
 
-    return Container(
-      height: heroHeight,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF031B3A),
-            Color(0xFF062D5C),
-            Color(0xFF0A477C),
+                ],
+              ),
+            ),
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
         ),
-        border: Border.all(
-          color: const Color(0xFFE9B94E).withValues(alpha: 0.30),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF062C59).withValues(alpha: 0.22),
-            blurRadius: 28,
-            offset: const Offset(0, 14),
-          ),
-        ],
       ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          const Positioned.fill(
-            child: CustomPaint(painter: _PunjabLandmarkPainter()),
-          ),
-          Positioned.fill(
-            child: DecoratedBox(
+    );
+  }
+}
+
+class _HomeEducationArt extends StatelessWidget {
+  const _HomeEducationArt();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Positioned(
+          right: 12,
+          bottom: 17,
+          child: Transform.rotate(
+            angle: -.04,
+            child: Container(
+              width: 116,
+              height: 21,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF031B3A).withValues(alpha: 0.96),
-                    const Color(0xFF031B3A).withValues(alpha: 0.78),
-                    const Color(0xFF031B3A).withValues(alpha: 0.08),
-                  ],
-                  stops: const [0, .52, 1],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
+                color: const Color(0xFF184E78),
+                borderRadius: BorderRadius.circular(5),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(13, 12, 13, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE9B94E)),
-                      borderRadius: BorderRadius.circular(999),
-                      color: const Color(0xFF082A52).withValues(alpha: .52),
-                    ),
-                    child: Text(
-                      'PUNJAB GOVT. EXAMS',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: const Color(0xFFFFD977),
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 7),
-                FractionallySizedBox(
-                  widthFactor: largeText ? 0.88 : 0.64,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Your Dream Government Job Starts Here',
-                    maxLines: largeText ? 5 : 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.premiumHeading(
-                      theme.textTheme.headlineSmall,
-                    ).copyWith(
-                      color: Colors.white,
-                      height: 1.02,
-                      letterSpacing: -0.35,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                FractionallySizedBox(
-                  widthFactor: largeText ? .92 : .68,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Complete Test Series • Expert Guidance\nPrevious Papers • Bilingual Content',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white.withValues(alpha: .88),
-                      height: 1.28,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                if (largeText)
-                  Material(
-                    color: const Color(0xFFFFD36B),
-                    borderRadius: BorderRadius.circular(24),
-                    child: InkWell(
-                      onTap: () => context.go('/exams'),
-                      borderRadius: BorderRadius.circular(24),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Start Preparing',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  color: const Color(0xFF082A52),
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 19,
-                              color: Color(0xFF082A52),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      FilledButton.icon(
-                        onPressed: () => context.go('/exams'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFD36B),
-                          foregroundColor: const Color(0xFF082A52),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 8,
-                          ),
-                          shape: const StadiumBorder(),
-                        ),
-                        label: const Text('Start Preparing'),
-                        iconAlignment: IconAlignment.end,
-                        icon: const Icon(Icons.arrow_forward_rounded, size: 19),
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(child: _HeroFeatureRow()),
-                    ],
-                  ),
-                if (largeText)
-                  const SizedBox(height: 2),
-              ],
+        ),
+        Positioned(
+          right: 24,
+          bottom: 39,
+          child: Container(
+            width: 102,
+            height: 19,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: const Color(0xFFDCE2DF)),
             ),
           ),
-        ],
+        ),
+        Positioned(
+          right: 14,
+          bottom: 59,
+          child: Container(
+            width: 116,
+            height: 21,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E6B98),
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ),
+        const Positioned(
+          right: 28,
+          bottom: 78,
+          child: Icon(
+            Icons.school_rounded,
+            color: Color(0xFF173044),
+            size: 77,
+          ),
+        ),
+        Positioned(
+          left: 8,
+          bottom: 18,
+          child: Container(
+            width: 31,
+            height: 51,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: .9),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(5),
+                bottom: Radius.circular(10),
+              ),
+              border: Border.all(color: const Color(0xFFE0E5E1)),
+            ),
+            child: const Icon(
+              Icons.edit_rounded,
+              color: Color(0xFFF2A52B),
+              size: 20,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HomeSearchBar extends StatelessWidget {
+  const _HomeSearchBar({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(28),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          height: 54,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: const Color(0xFFE8EBEE)),
+          ),
+          child: const Row(
+            children: [
+              Icon(
+                Icons.search_rounded,
+                size: 23,
+                color: Color(0xFF607083),
+              ),
+              SizedBox(width: 11),
+              Expanded(
+                child: Text(
+                  'Search exams, test series, topics...',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Color(0xFF7A858F),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.tune_rounded,
+                size: 21,
+                color: Color(0xFF15806C),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -2051,13 +2121,13 @@ class _ExamCategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final radius = BorderRadius.circular(18);
+    final radius = BorderRadius.circular(14);
     final embeddedBytes = _decodeEmbeddedOfficialIcon(item.embeddedIconBase64);
     final visual = embeddedBytes != null
         ? Image.memory(
             embeddedBytes,
-            width: 44,
-            height: 44,
+            width: 46,
+            height: 46,
             fit: BoxFit.contain,
             gaplessPlayback: true,
             errorBuilder: (_, __, ___) =>
@@ -2088,22 +2158,17 @@ class _ExamCategoryTile extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: item.background,
+        color: Colors.white,
         borderRadius: radius,
         border: Border.all(
-          color: item.foreground.withValues(alpha: .20),
+          color: const Color(0xFFE8EBEE),
           width: 1,
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: item.foreground.withValues(alpha: .10),
-            blurRadius: 13,
-            offset: const Offset(0, 5),
-          ),
-          BoxShadow(
-            color: const Color(0xFF10264A).withValues(alpha: .035),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
+            color: Color(0x090C131F),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -2866,7 +2931,7 @@ class _HomeHeader extends StatelessWidget {
             style: AppTypography.premiumHeading(
               theme.textTheme.headlineSmall,
             ).copyWith(
-              color: const Color(0xFF092B5A),
+              color: const Color(0xFF0C131F),
               fontWeight: FontWeight.w900,
               letterSpacing: -0.45,
             ),
@@ -2941,8 +3006,8 @@ class _ExamtreeMarkPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final navy = Paint()..color = const Color(0xFF0756A5);
-    final deep = Paint()..color = const Color(0xFF073A78);
+    final navy = Paint()..color = const Color(0xFF15806C);
+    final deep = Paint()..color = const Color(0xFF0F6A59);
     final gold = Paint()..color = const Color(0xFFF4A21B);
 
     final left = Path()
