@@ -127,8 +127,8 @@ void main() {
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
 
     await tester.scrollUntilVisible(
-      find.text('Free practice'),
-      260,
+      find.text('SSC CGL free mock'),
+      300,
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Free practice'), findsOneWidget);
@@ -149,6 +149,7 @@ void main() {
 
     expect(find.byKey(const Key('learn-subject-switcher')), findsOneWidget);
     expect(find.byKey(const Key('learn-subject-english')), findsOneWidget);
+    expect(find.text('0'), findsNWidgets(3));
     await tester.scrollUntilVisible(
       find.text('No free learning resources are published yet.'),
       320,
@@ -158,7 +159,6 @@ void main() {
       find.text('No free learning resources are published yet.'),
       findsOneWidget,
     );
-    expect(find.text('0'), findsNWidgets(3));
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('trending'), findsNothing);
   });
