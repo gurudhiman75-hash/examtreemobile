@@ -65,7 +65,9 @@ class LearnScreen extends ConsumerWidget {
         .where((item) => item.category != LearningResourceCategory.currentAffairs)
         .toList(growable: false);
 
-    return SafeArea(
+    return ColoredBox(
+      color: const Color(0xFFF6F7F9),
+      child: SafeArea(
       child: RefreshIndicator(
         onRefresh: () => _refresh(ref),
         child: CustomScrollView(
@@ -73,9 +75,9 @@ class LearnScreen extends ConsumerWidget {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
-                10,
+                16,
                 AppSpacing.sm,
-                10,
+                16,
                 AppSpacing.xxl,
               ),
               sliver: SliverList.list(
@@ -151,6 +153,7 @@ class LearnScreen extends ConsumerWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -189,19 +192,20 @@ class _LearnIntro extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xFF031B3A),
-            Color(0xFF063A70),
-            Color(0xFF0B5D96),
+            Color(0xFFE7EFE7),
+            Color(0xFFF7F7F1),
+            Color(0xFFE1EBE2),
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE3E8E4)),
+        boxShadow: const [
           BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: .14),
-            blurRadius: 22,
-            offset: const Offset(0, 9),
+            color: Color(0x080C131F),
+            blurRadius: 8,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -214,7 +218,7 @@ class _LearnIntro extends ConsumerWidget {
               width: 118,
               height: 118,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: .08),
+                color: const Color(0xFF15806C).withValues(alpha: .08),
                 shape: BoxShape.circle,
               ),
             ),
@@ -226,7 +230,7 @@ class _LearnIntro extends ConsumerWidget {
               width: 92,
               height: 92,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: .055),
+                color: const Color(0xFF15806C).withValues(alpha: .05),
                 shape: BoxShape.circle,
               ),
             ),
@@ -240,13 +244,13 @@ class _LearnIntro extends ConsumerWidget {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFD36B).withValues(alpha: .14),
+                  color: const Color(0xFFE3F3F0),
                   borderRadius: BorderRadius.circular(99),
                 ),
                 child: Text(
                   'YOUR LEARNING SPACE',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: const Color(0xFFFFD36B),
+                    color: const Color(0xFF15806C),
                     fontWeight: FontWeight.w900,
                     letterSpacing: .85,
                   ),
@@ -256,7 +260,7 @@ class _LearnIntro extends ConsumerWidget {
               Text(
                 'Learn smarter. Practice better.',
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
+                  color: const Color(0xFF0C131F),
                   fontWeight: FontWeight.w900,
                   height: 1.08,
                   letterSpacing: -.45,
@@ -266,7 +270,7 @@ class _LearnIntro extends ConsumerWidget {
               Text(
                 'Pick a topic, answer at your pace, and learn from every explanation.',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: .84),
+                  color: const Color(0xFF58646F),
                   height: 1.4,
                   fontWeight: FontWeight.w500,
                 ),
@@ -278,7 +282,7 @@ class _LearnIntro extends ConsumerWidget {
                     child: Text(
                       'Your practice progress',
                       style: theme.textTheme.labelMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: .78),
+                        color: const Color(0xFF697580),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -287,7 +291,7 @@ class _LearnIntro extends ConsumerWidget {
                     '$progressPercent%',
                     key: const Key('learn-overall-progress'),
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: const Color(0xFFFFD36B),
+                      color: const Color(0xFF15806C),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -299,9 +303,9 @@ class _LearnIntro extends ConsumerWidget {
                 child: LinearProgressIndicator(
                   minHeight: 5,
                   value: progressValue.clamp(0.0, 1.0).toDouble(),
-                  backgroundColor: Colors.white.withValues(alpha: .14),
+                  backgroundColor: const Color(0xFFDCE5E1),
                   valueColor: const AlwaysStoppedAnimation(
-                    Color(0xFFFFD36B),
+                    Color(0xFF15806C),
                   ),
                 ),
               ),
@@ -355,21 +359,21 @@ class _LearnStat extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .13),
+        color: Colors.white.withValues(alpha: .88),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: Colors.white.withValues(alpha: .12),
+          color: const Color(0xFFE3E8E4),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: const Color(0xFFFFD36B)),
+          Icon(icon, size: 16, color: const Color(0xFF15806C)),
           const SizedBox(width: AppSpacing.xs),
           Text(
             value,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: Colors.white,
+              color: const Color(0xFF0C131F),
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -377,7 +381,7 @@ class _LearnStat extends StatelessWidget {
           Text(
             label,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: Colors.white.withValues(alpha: .8),
+              color: const Color(0xFF697580),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -438,13 +442,9 @@ class _ContinueLearningCard extends ConsumerWidget {
       color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFFBF1), Color(0xFFFFF6DD)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFF2DFAD)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: const Color(0xFFE8EBEE)),
         ),
         child: InkWell(
           onTap: () async {
@@ -472,12 +472,12 @@ class _ContinueLearningCard extends ConsumerWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDBE),
-                    borderRadius: BorderRadius.circular(15),
+                    color: const Color(0xFFE3F3F0),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(
                     Icons.auto_stories_rounded,
-                    color: Color(0xFF0B3A6F),
+                    color: Color(0xFF15806C),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
@@ -488,7 +488,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                       Text(
                         'Continue where you left off',
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: const Color(0xFF0B3A6F),
+                              color: const Color(0xFF15806C),
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -527,7 +527,7 @@ class _ContinueLearningCard extends ConsumerWidget {
                 FilledButton(
                   onPressed: null,
                   style: FilledButton.styleFrom(
-                    disabledBackgroundColor: const Color(0xFF0B3A6F),
+                    disabledBackgroundColor: const Color(0xFF15806C),
                     disabledForegroundColor: Colors.white,
                     minimumSize: const Size(0, 42),
                     padding: const EdgeInsets.symmetric(horizontal: 14),

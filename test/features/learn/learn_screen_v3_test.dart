@@ -114,10 +114,10 @@ void main() {
     );
 
     expect(find.byKey(const Key('learn-hero')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-quant')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-switcher')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-english')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
+    expect(find.byKey(const Key('learn-topic-ENG-VOC-SYN')), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Daily current affairs'),
       260,
@@ -147,7 +147,8 @@ void main() {
   testWidgets('empty learn state stays truthful', (tester) async {
     await pumpLearn(tester, resources: const [], freeTests: const []);
 
-    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-switcher')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-english')), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('No free learning resources are published yet.'),
       320,
