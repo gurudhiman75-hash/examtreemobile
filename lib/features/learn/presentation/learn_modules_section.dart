@@ -300,9 +300,9 @@ class _EnglishTopicRow extends StatelessWidget {
     final inProgress = progress?.status == LearnPracticeStatus.inProgress;
 
     return InkWell(
-      key: Key('learn-topic-\${topic.id}'),
+      key: Key('learn-topic-${topic.id}'),
       onTap: () => context.push(
-        '/learn-practice?topic=\${Uri.encodeQueryComponent(topic.id)}',
+        '/learn-practice?topic=${Uri.encodeQueryComponent(topic.id)}',
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 11, 10, 11),
@@ -317,7 +317,7 @@ class _EnglishTopicRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                '\$percent%',
+                '$percent%',
                 style: const TextStyle(
                   color: Color(0xFF147F6B),
                   fontSize: 10.5,
@@ -345,8 +345,8 @@ class _EnglishTopicRow extends StatelessWidget {
                     completed
                         ? 'Completed'
                         : inProgress
-                            ? 'In progress · \$current/\$target'
-                            : 'Not started · \$target questions',
+                            ? 'In progress · $current/$target'
+                            : 'Not started · $target questions',
                     style: const TextStyle(
                       color: Color(0xFF697580),
                       fontSize: 11.5,
@@ -375,9 +375,9 @@ class _PolityLessonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      key: Key('learn-polity-\${lesson.id}'),
+      key: Key('learn-polity-${lesson.id}'),
       onTap: () => context.push(
-        '/learn-lesson?id=\${Uri.encodeQueryComponent(lesson.id)}',
+        '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 11, 10, 11),
@@ -427,7 +427,7 @@ class _PolityLessonRow extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              '\${lesson.estimatedMinutes} min',
+              '${lesson.estimatedMinutes} min',
               style: const TextStyle(
                 color: Color(0xFF15806C),
                 fontSize: 11,
