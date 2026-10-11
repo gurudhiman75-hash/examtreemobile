@@ -112,7 +112,7 @@ class ApiClient {
   static Dio _createBaseDio() {
     const configuredBaseUrl = String.fromEnvironment(
       'EXAMTREE_API_BASE_URL',
-      defaultValue: 'https://examtree-new.onrender.com/api/',
+      defaultValue: 'https://examtree.in/api/',
     );
     return Dio(
       BaseOptions(
