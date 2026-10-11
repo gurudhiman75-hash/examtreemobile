@@ -10,7 +10,7 @@ void main() {
     ).readAsStringSync();
 
     expect(script, contains("base.pathname !== '/api/'"));
-    expect(script, contains("new URL('/health', base)"));
+    expect(script, contains("new URL('commerce/products', base)"));
     expect(script, contains("new URL('tests', base)"));
     expect(script, contains("new URL('categories', base)"));
     expect(script, contains("new URL('subcategories', base)"));
@@ -22,7 +22,7 @@ void main() {
     expect(workflow, contains('Verify Production API'));
     expect(
       workflow,
-      contains('https://examtree-new.onrender.com/api/'),
+      contains('https://examtree.in/api/'),
     );
     expect(workflow, contains('node tool/verify_production_api.mjs'));
   });
