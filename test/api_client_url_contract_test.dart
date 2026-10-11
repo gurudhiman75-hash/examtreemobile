@@ -2,11 +2,11 @@ import 'package:examtree/core/network/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const productionBase = 'https://examtree-new.onrender.com/api/';
+  const productionBase = 'https://examtree.in/api/';
 
   test('normalizes a pathful API base with a trailing slash', () {
     expect(
-      normalizeApiBaseUrl('https://examtree-new.onrender.com/api'),
+      normalizeApiBaseUrl('https://examtree.in/api'),
       productionBase,
     );
   });
@@ -36,7 +36,7 @@ void main() {
         baseUrl: productionBase,
         requestPath: '/tests',
       ).toString(),
-      'https://examtree-new.onrender.com/api/tests',
+      'https://examtree.in/api/tests',
     );
   });
 

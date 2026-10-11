@@ -7,7 +7,7 @@ if (base.pathname !== '/api/') {
 }
 
 const targets = [
-  { name: 'health', url: new URL('/health', base), shape: 'none' },
+  { name: 'health', url: new URL('commerce/products', base), shape: 'object' },
   { name: 'tests', url: new URL('tests', base), shape: 'array' },
   { name: 'categories', url: new URL('categories', base), shape: 'array' },
   { name: 'subcategories', url: new URL('subcategories', base), shape: 'array' },
@@ -43,8 +43,11 @@ async function fetchWithRetry(target) {
         } catch {
           throw new Error(`Expected JSON from ${target.url}`);
         }
-        items = target.shape === 'array' ? body : body?.series;
-        if (!Array.isArray(items)) {
+        items = target.shape === 'array' ? body : target.shape === 'series' ? body?.series : null;
+        if (target.shape === 'object' && (!body || typeof body !== 'object' || Array.isArray(body))) {
+          throw new Error(`Expected API JSON object from ${target.url}`);
+        }
+        if (target.shape !== 'object' && !Array.isArray(items)) {
           throw new Error(
             target.shape === 'array'
               ? `Expected JSON array from ${target.url}`

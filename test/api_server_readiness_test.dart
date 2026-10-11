@@ -6,16 +6,16 @@ void main() {
   group('apiHealthUriForBase', () {
     test('targets the root health route from the production API base', () {
       final health = apiHealthUriForBase(
-        'https://examtree-new.onrender.com/api',
+        'https://examtree.in/api',
       );
 
-      expect(health.toString(), 'https://examtree-new.onrender.com/health');
+      expect(health.toString(), 'https://examtree.in/api/commerce/products');
     });
 
     test('preserves a development host and explicit port', () {
       final health = apiHealthUriForBase('http://127.0.0.1:3001/api');
 
-      expect(health.toString(), 'http://127.0.0.1:3001/health');
+      expect(health.toString(), 'http://127.0.0.1:3001/api/commerce/products');
     });
 
     test('rejects a relative API base', () {
@@ -29,7 +29,7 @@ void main() {
   group('DioApiServerReadiness', () {
     test('uses a bounded production warmup window', () {
       final readiness = DioApiServerReadiness(
-        apiBaseUrl: 'https://examtree-new.onrender.com/api',
+        apiBaseUrl: 'https://examtree.in/api',
       );
       addTearDown(readiness.close);
 
@@ -40,7 +40,7 @@ void main() {
 
   group('isRetryableApiReadinessError', () {
     final request = RequestOptions(
-      path: 'https://examtree-new.onrender.com/health',
+      path: 'https://examtree.in/api/commerce/products',
     );
 
     test('retries connection and timeout failures', () {

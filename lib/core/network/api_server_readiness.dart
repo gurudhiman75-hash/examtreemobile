@@ -15,7 +15,7 @@ Uri apiHealthUriForBase(String apiBaseUrl) {
     userInfo: apiUri.userInfo,
     host: apiUri.host,
     port: apiUri.hasPort ? apiUri.port : null,
-    path: '/health',
+    path: '/api/commerce/products',
   );
 }
 

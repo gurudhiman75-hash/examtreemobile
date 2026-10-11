@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const productionBase = 'https://examtree-new.onrender.com/api';
+  const productionBase = 'https://examtree.in/api';
   const unverifiedCustomOrigin = 'https://api.examtree.in';
 
   const shippingConfigurationFiles = <String>[
