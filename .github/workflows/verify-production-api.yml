@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      EXAMTREE_API_BASE_URL: https://examtree-new.onrender.com/api/
+      EXAMTREE_API_BASE_URL: https://examtree.in/api/
 
     steps:
       - name: Check out repository
