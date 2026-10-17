@@ -332,69 +332,6 @@ PreferredSizeWidget _bar(String title) => AppBar(
       surfaceTintColor: Colors.transparent,
     );
 
-class _Metric extends StatelessWidget {
-  const _Metric({required this.value, required this.label, required this.icon});
-  final String value;
-  final String label;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE4ECF6))),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(icon, color: const Color(0xFF176CC0)),
-          const SizedBox(height: 10),
-          Text(value, style: const TextStyle(color: Color(0xFF081847), fontSize: 23, fontWeight: FontWeight.w900)),
-          Text(label, style: const TextStyle(color: Color(0xFF60759B), fontSize: 12)),
-        ]),
-      );
-}
-
-class _SectionProgress extends StatelessWidget {
-  const _SectionProgress({required this.section});
-  final SectionPerformance section;
-
-  @override
-  Widget build(BuildContext context) {
-    final accuracy = section.accuracy.clamp(0, 100).toDouble();
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE4ECF6))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Expanded(child: Text(section.name, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900))),
-          Text(_pct(accuracy), style: const TextStyle(color: Color(0xFF3563D8), fontWeight: FontWeight.w900)),
-        ]),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(value: accuracy / 100, minHeight: 7, borderRadius: BorderRadius.circular(999), backgroundColor: const Color(0xFFE6EDF7)),
-        const SizedBox(height: 6),
-        Text(section.answered.toString() + ' answered · ' + section.totalQuestions.toString() + ' total', style: const TextStyle(color: Color(0xFF718096), fontSize: 11)),
-      ]),
-    );
-  }
-}
-
-class _RecentResult extends StatelessWidget {
-  const _RecentResult({required this.point});
-  final PerformanceTrendPoint point;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(13),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: const Color(0xFFE4ECF6))),
-        child: Row(children: [
-          Container(width: 44, height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEEF5FF), borderRadius: BorderRadius.circular(13)), child: Text(_pct(point.percentageScore), style: const TextStyle(color: Color(0xFF176CC0), fontWeight: FontWeight.w900, fontSize: 11))),
-          const SizedBox(width: 11),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(point.testName, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w800)),
-            const SizedBox(height: 2),
-            Text(_pct(point.accuracy) + ' accuracy', style: const TextStyle(color: Color(0xFF718096), fontSize: 11)),
-          ])),
-        ]),
-      );
-}
-
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
   final String text;
@@ -436,17 +373,6 @@ class _SettingRow extends StatelessWidget {
           const Icon(Icons.chevron_right_rounded),
         ]),
         onTap: onTap,
-      );
-}
-
-class _InfoBox extends StatelessWidget {
-  const _InfoBox({required this.text});
-  final String text;
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: const Color(0xFFEEF5FF), borderRadius: BorderRadius.circular(16)),
-        child: Text(text, style: const TextStyle(color: Color(0xFF526A92), height: 1.4)),
       );
 }
 
