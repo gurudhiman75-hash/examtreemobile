@@ -32,62 +32,6 @@ class ProfileProgressScreen extends ConsumerWidget {
   }
 }
 
-class _ProgressBody extends StatelessWidget {
-  const _ProgressBody({required this.value});
-  final PerformanceAnalytics value;
-
-  @override
-  Widget build(BuildContext context) {
-    if (value.totalTestsAttempted == 0) {
-      return _EmptyPage(
-        icon: Icons.insights_outlined,
-        title: 'Your progress starts with your first test',
-        body: 'Complete a mock or practice test to build accuracy, score and section insights here.',
-        action: 'Browse Tests',
-        onAction: () => context.go('/exams'),
-      );
-    }
-
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-      children: [
-        Row(
-          children: [
-            Expanded(child: _Metric(value: _pct(value.averageAccuracy), label: 'Overall Accuracy', icon: Icons.track_changes_rounded)),
-            const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalQuestions.toString(), label: 'Questions', icon: Icons.quiz_outlined)),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(child: _Metric(value: _pct(value.averageScore), label: 'Average Score', icon: Icons.bar_chart_rounded)),
-            const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalTestsAttempted.toString(), label: 'Tests', icon: Icons.fact_check_outlined)),
-          ],
-        ),
-        const SizedBox(height: 22),
-        const Text('Subject-wise Progress', style: TextStyle(color: Color(0xFF081847), fontSize: 20, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 10),
-        if (value.sectionPerformance.isEmpty)
-          const _InfoBox(text: 'Section-wise performance will appear after reviewed questions are available.')
-        else
-          for (final section in value.sectionPerformance) ...[
-            _SectionProgress(section: section),
-            const SizedBox(height: 10),
-          ],
-        const SizedBox(height: 16),
-        const Text('Recent Tests', style: TextStyle(color: Color(0xFF081847), fontSize: 20, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 10),
-        for (final point in value.scoreTrend.reversed) ...[
-          _RecentResult(point: point),
-          const SizedBox(height: 8),
-        ],
-      ],
-    );
-  }
-}
-
 class ProfileSettingsScreen extends ConsumerWidget {
   const ProfileSettingsScreen({super.key});
 
