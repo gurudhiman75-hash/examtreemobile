@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
-import '../domain/performance_analytics.dart';
+import 'performance_analysis_view.dart';
 import 'providers/analytics_providers.dart';
 
 class ProfileProgressScreen extends ConsumerWidget {
@@ -15,72 +15,18 @@ class ProfileProgressScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final analytics = ref.watch(performanceAnalyticsProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FBFF),
-      appBar: _bar('My Progress'),
+      backgroundColor: const Color(0xFFF6F7F9),
+      appBar: _bar('Performance & Analysis'),
       body: analytics.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Color(0xFF15806C)),
+        ),
         error: (_, __) => _Retry(
-          text: 'Unable to load your progress.',
+          text: 'Unable to load your performance.',
           onRetry: () => ref.invalidate(performanceAnalyticsProvider),
         ),
-        data: (value) => _ProgressBody(value: value),
+        data: (value) => PerformanceAnalysisView(analytics: value),
       ),
-    );
-  }
-}
-
-class _ProgressBody extends StatelessWidget {
-  const _ProgressBody({required this.value});
-  final PerformanceAnalytics value;
-
-  @override
-  Widget build(BuildContext context) {
-    if (value.totalTestsAttempted == 0) {
-      return _EmptyPage(
-        icon: Icons.insights_outlined,
-        title: 'Your progress starts with your first test',
-        body: 'Complete a mock or practice test to build accuracy, score and section insights here.',
-        action: 'Browse Tests',
-        onAction: () => context.go('/exams'),
-      );
-    }
-
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-      children: [
-        Row(
-          children: [
-            Expanded(child: _Metric(value: _pct(value.averageAccuracy), label: 'Overall Accuracy', icon: Icons.track_changes_rounded)),
-            const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalQuestions.toString(), label: 'Questions', icon: Icons.quiz_outlined)),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(child: _Metric(value: _pct(value.averageScore), label: 'Average Score', icon: Icons.bar_chart_rounded)),
-            const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalTestsAttempted.toString(), label: 'Tests', icon: Icons.fact_check_outlined)),
-          ],
-        ),
-        const SizedBox(height: 22),
-        const Text('Subject-wise Progress', style: TextStyle(color: Color(0xFF081847), fontSize: 20, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 10),
-        if (value.sectionPerformance.isEmpty)
-          const _InfoBox(text: 'Section-wise performance will appear after reviewed questions are available.')
-        else
-          for (final section in value.sectionPerformance) ...[
-            _SectionProgress(section: section),
-            const SizedBox(height: 10),
-          ],
-        const SizedBox(height: 16),
-        const Text('Recent Tests', style: TextStyle(color: Color(0xFF081847), fontSize: 20, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 10),
-        for (final point in value.scoreTrend.reversed) ...[
-          _RecentResult(point: point),
-          const SizedBox(height: 8),
-        ],
-      ],
     );
   }
 }
@@ -385,69 +331,6 @@ PreferredSizeWidget _bar(String title) => AppBar(
       surfaceTintColor: Colors.transparent,
     );
 
-class _Metric extends StatelessWidget {
-  const _Metric({required this.value, required this.label, required this.icon});
-  final String value;
-  final String label;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE4ECF6))),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(icon, color: const Color(0xFF176CC0)),
-          const SizedBox(height: 10),
-          Text(value, style: const TextStyle(color: Color(0xFF081847), fontSize: 23, fontWeight: FontWeight.w900)),
-          Text(label, style: const TextStyle(color: Color(0xFF60759B), fontSize: 12)),
-        ]),
-      );
-}
-
-class _SectionProgress extends StatelessWidget {
-  const _SectionProgress({required this.section});
-  final SectionPerformance section;
-
-  @override
-  Widget build(BuildContext context) {
-    final accuracy = section.accuracy.clamp(0, 100).toDouble();
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE4ECF6))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Expanded(child: Text(section.name, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900))),
-          Text(_pct(accuracy), style: const TextStyle(color: Color(0xFF3563D8), fontWeight: FontWeight.w900)),
-        ]),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(value: accuracy / 100, minHeight: 7, borderRadius: BorderRadius.circular(999), backgroundColor: const Color(0xFFE6EDF7)),
-        const SizedBox(height: 6),
-        Text(section.answered.toString() + ' answered · ' + section.totalQuestions.toString() + ' total', style: const TextStyle(color: Color(0xFF718096), fontSize: 11)),
-      ]),
-    );
-  }
-}
-
-class _RecentResult extends StatelessWidget {
-  const _RecentResult({required this.point});
-  final PerformanceTrendPoint point;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(13),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: const Color(0xFFE4ECF6))),
-        child: Row(children: [
-          Container(width: 44, height: 44, alignment: Alignment.center, decoration: BoxDecoration(color: const Color(0xFFEEF5FF), borderRadius: BorderRadius.circular(13)), child: Text(_pct(point.percentageScore), style: const TextStyle(color: Color(0xFF176CC0), fontWeight: FontWeight.w900, fontSize: 11))),
-          const SizedBox(width: 11),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(point.testName, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w800)),
-            const SizedBox(height: 2),
-            Text(_pct(point.accuracy) + ' accuracy', style: const TextStyle(color: Color(0xFF718096), fontSize: 11)),
-          ])),
-        ]),
-      );
-}
-
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
   final String text;
@@ -489,17 +372,6 @@ class _SettingRow extends StatelessWidget {
           const Icon(Icons.chevron_right_rounded),
         ]),
         onTap: onTap,
-      );
-}
-
-class _InfoBox extends StatelessWidget {
-  const _InfoBox({required this.text});
-  final String text;
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: const Color(0xFFEEF5FF), borderRadius: BorderRadius.circular(16)),
-        child: Text(text, style: const TextStyle(color: Color(0xFF526A92), height: 1.4)),
       );
 }
 
@@ -556,7 +428,3 @@ class _EmptyPage extends StatelessWidget {
       );
 }
 
-String _pct(double value) {
-  final safe = value.clamp(0, 100).toDouble();
-  return safe == safe.roundToDouble() ? safe.toInt().toString() + '%' : safe.toStringAsFixed(1) + '%';
-}
