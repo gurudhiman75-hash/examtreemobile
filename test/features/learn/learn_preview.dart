@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:examtree/core/models/exam_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/learn/domain/learning_resource.dart';
+import 'package:examtree/features/content_planning/presentation/mobile_content_planning_providers.dart';
 import 'package:examtree/features/learn/domain/learn_practice_models.dart';
 import 'package:examtree/features/learn/presentation/providers/learn_practice_providers.dart';
 import 'package:examtree/features/learn/presentation/learn_screen.dart';
@@ -162,6 +163,9 @@ void main() {
                 updatedAt: now,
               ),
             ],
+          ),
+          mobileContentPlanProvider('learn_featured').overrideWith(
+            (ref) async => const [],
           ),
         ],
         child: MaterialApp(

@@ -114,10 +114,10 @@ void main() {
     );
 
     expect(find.byKey(const Key('learn-hero')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-quant')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-reasoning')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-english')), findsOneWidget);
-    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-switcher')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-english')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-polity')), findsOneWidget);
+    expect(find.byKey(const Key('learn-topic-ENG-VOC-SYN')), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Daily current affairs'),
       260,
@@ -127,11 +127,10 @@ void main() {
     expect(find.byKey(const Key('learn-current-affairs')), findsOneWidget);
 
     await tester.scrollUntilVisible(
-      find.text('Free practice'),
-      260,
+      find.text('SSC CGL free mock'),
+      300,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Free practice'), findsOneWidget);
     expect(find.byKey(const Key('learn-free-practice')), findsOneWidget);
     expect(find.text('SSC CGL free mock'), findsOneWidget);
 
@@ -147,7 +146,9 @@ void main() {
   testWidgets('empty learn state stays truthful', (tester) async {
     await pumpLearn(tester, resources: const [], freeTests: const []);
 
-    expect(find.byKey(const Key('learn-module-gk')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-switcher')), findsOneWidget);
+    expect(find.byKey(const Key('learn-subject-english')), findsOneWidget);
+    expect(find.text('0'), findsNWidgets(3));
     await tester.scrollUntilVisible(
       find.text('No free learning resources are published yet.'),
       320,
@@ -157,7 +158,6 @@ void main() {
       find.text('No free learning resources are published yet.'),
       findsOneWidget,
     );
-    expect(find.text('0'), findsNWidgets(3));
     expect(find.textContaining('popular'), findsNothing);
     expect(find.textContaining('trending'), findsNothing);
   });
