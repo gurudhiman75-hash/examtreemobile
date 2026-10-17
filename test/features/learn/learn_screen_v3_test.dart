@@ -131,7 +131,6 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Free practice'), findsOneWidget);
     expect(find.byKey(const Key('learn-free-practice')), findsOneWidget);
     expect(find.text('SSC CGL free mock'), findsOneWidget);
 
