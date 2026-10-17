@@ -6,6 +6,7 @@ import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/performance_analytics.dart';
+import 'performance_analysis_view.dart';
 import 'providers/analytics_providers.dart';
 
 class ProfileProgressScreen extends ConsumerWidget {
@@ -15,15 +16,17 @@ class ProfileProgressScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final analytics = ref.watch(performanceAnalyticsProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FBFF),
-      appBar: _bar('My Progress'),
+      backgroundColor: const Color(0xFFF6F7F9),
+      appBar: _bar('Performance & Analysis'),
       body: analytics.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Color(0xFF15806C)),
+        ),
         error: (_, __) => _Retry(
-          text: 'Unable to load your progress.',
+          text: 'Unable to load your performance.',
           onRetry: () => ref.invalidate(performanceAnalyticsProvider),
         ),
-        data: (value) => _ProgressBody(value: value),
+        data: (value) => PerformanceAnalysisView(analytics: value),
       ),
     );
   }
