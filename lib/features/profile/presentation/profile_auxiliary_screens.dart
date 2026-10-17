@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
-import '../domain/performance_analytics.dart';
 import 'performance_analysis_view.dart';
 import 'providers/analytics_providers.dart';
 
@@ -429,7 +428,3 @@ class _EmptyPage extends StatelessWidget {
       );
 }
 
-String _pct(double value) {
-  final safe = value.clamp(0, 100).toDouble();
-  return safe == safe.roundToDouble() ? safe.toInt().toString() + '%' : safe.toStringAsFixed(1) + '%';
-}
