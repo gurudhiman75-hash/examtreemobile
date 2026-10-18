@@ -1,6 +1,6 @@
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/exams/domain/exam_catalog.dart';
-import 'package:examtree/features/exams/presentation/exams_screen.dart';
+import 'package:examtree/features/exams/presentation/exams_screen_v6.dart' as category_catalog;
 import 'package:examtree/features/exams/presentation/providers/exam_catalog_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,7 +111,7 @@ void main() {
                 textScaler: TextScaler.linear(textScale),
                 disableAnimations: true,
               ),
-              child: const ExamsScreen(),
+              child: const category_catalog.ExamsScreen(),
             ),
           ),
         ),
