@@ -44,12 +44,14 @@ class LocalPromotionExposureStore {
       );
       if (rows.isEmpty) return true;
       final row = rows.first;
-      if ((row['dismissed'] as int? ?? 0) == 1) return false;
+      final today = _dayKey(now ?? DateTime.now());
+      final storedDay = row['impression_day']?.toString();
+      if ((row['dismissed'] as int? ?? 0) == 1 && storedDay == today) {
+        return false;
+      }
 
       final cap = campaign.frequencyCapPerDay;
       if (cap == null) return true;
-      final today = _dayKey(now ?? DateTime.now());
-      final storedDay = row['impression_day']?.toString();
       final count = row['impression_count'] as int? ?? 0;
       return storedDay != today || count < cap;
     } catch (_) {
