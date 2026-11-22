@@ -121,6 +121,27 @@ void main() {
     expect(find.text('SSC CGL Mock'), findsOneWidget);
   });
 
+  testWidgets('Analysis shows performance and returns to attempt history', (tester) async {
+    await pumpResults(
+      tester,
+      results: [
+        result(id: '1', name: 'SSC CGL Mock', category: 'SSC', score: 74, accuracy: 82),
+      ],
+    );
+
+    await tester.tap(find.text('Analysis'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Performance overview'), findsOneWidget);
+    expect(find.text('Recent score and accuracy'), findsOneWidget);
+    expect(find.text('Score 74%'), findsOneWidget);
+
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Attempt history'), findsOneWidget);
+  });
+
   testWidgets('review mistakes is primary before retake when review exists', (tester) async {
     await pumpResults(
       tester,
@@ -155,7 +176,7 @@ void main() {
     expect(find.byKey(const Key('results-retake-secondary')), findsOneWidget);
   });
 
-  testWidgets('legacy result without question review keeps retake usable as primary', (tester) async {
+  testWidgets('history without embedded answers can still open attempt review', (tester) async {
     await pumpResults(
       tester,
       results: [
@@ -170,9 +191,8 @@ void main() {
       ],
     );
 
-    expect(find.byKey(const Key('results-review-primary')), findsNothing);
-    expect(find.byKey(const Key('results-retake-primary')), findsOneWidget);
-    expect(find.byKey(const Key('results-retake-secondary')), findsNothing);
+    expect(find.byKey(const Key('results-review-primary')), findsOneWidget);
+    expect(find.byKey(const Key('results-retake-secondary')), findsOneWidget);
   });
 
   testWidgets('search filters attempt history and exposes reset', (tester) async {

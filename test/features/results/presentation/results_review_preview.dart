@@ -4,6 +4,7 @@ import 'package:examtree/core/models/result_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:examtree/features/results/presentation/results_screen.dart';
+import 'package:examtree/features/results/presentation/test_result_screen.dart';
 import 'package:examtree/features/results/presentation/review_retry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,6 +78,8 @@ void main() {
     double score = 72,
     double accuracy = 78,
     int daysAgo = 0,
+    int? rank,
+    double? percentile,
   }) {
     final questions = [
       question(
@@ -118,6 +121,8 @@ void main() {
       category: category,
       percentageScore: score,
       rawScore: score,
+      rank: rank,
+      percentile: percentile,
       totalQuestions: 100,
       questionReview: questions,
     );
@@ -204,6 +209,40 @@ void main() {
     );
   });
 
+  testWidgets('render Results Analysis charts', (tester) async {
+    await configurePhone(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          userResultsProvider.overrideWith((ref) async => history()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: phoneSize,
+              devicePixelRatio: 1,
+              disableAnimations: true,
+            ),
+            child: resultsShell(),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    await tester.tap(find.text('Analysis'));
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/results_analysis_390x844.png'),
+    );
+  });
+
   testWidgets('render lower Results history viewport', (tester) async {
     await configurePhone(tester);
     await tester.pumpWidget(
@@ -237,6 +276,38 @@ void main() {
     );
   });
 
+  testWidgets('render post-submission Test Results', (tester) async {
+    await configurePhone(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          resultProvider('attempt-1').overrideWith(
+            (ref) async => detailedResult(
+              name: 'Punjab Police Full Mock Test 01',
+              score: 78.5,
+              accuracy: 88,
+              rank: 1240,
+              percentile: 94.2,
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
+          home: const TestResultScreen(attemptId: 'attempt-1'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('78.5'), findsOneWidget);
+    expect(find.text('94.2%'), findsOneWidget);
+    expect(find.text('View Solutions'), findsOneWidget);
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/test_results_390x844.png'),
+    );
+  });
+
   testWidgets('render Answer Review with learning handoff', (tester) async {
     await configurePhone(tester);
     final result = detailedResult();
@@ -266,6 +337,13 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('previews/review_question_390x844.png'),
+    );
+
+    await tester.tap(find.byTooltip('Marks breakdown'));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/review_marks_390x844.png'),
     );
   });
 }

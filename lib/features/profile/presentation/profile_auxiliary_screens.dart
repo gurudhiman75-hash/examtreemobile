@@ -134,7 +134,7 @@ class ProfileSettingsScreen extends ConsumerWidget {
                 icon: Icons.history_rounded,
                 title: 'Test History',
                 value: 'Results',
-                onTap: () => context.push('/results'),
+                onTap: () => context.go('/results'),
               ),
               _SettingRow(
                 icon: Icons.help_outline_rounded,

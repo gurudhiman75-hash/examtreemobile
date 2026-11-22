@@ -76,7 +76,7 @@ class ProfileScreen extends ConsumerWidget {
             onProgress: () => context.push('/profile-progress'),
             onDownloads: () => context.push('/profile-downloads'),
             onBookmarks: () => context.push('/profile-bookmarks'),
-            onHistory: () => context.push('/results'),
+            onHistory: () => context.go('/results'),
             onCoupons: () => context.push('/profile-coupons'),
             onEdit: () => context.push('/edit-profile'),
             onHelp: () => context.push('/profile-help'),
@@ -92,7 +92,7 @@ class ProfileScreen extends ConsumerWidget {
             data: (analytics) => _PerformanceContent(
               analytics: analytics,
               onBrowseTests: () => context.go('/exams'),
-              onOpenResults: () => context.push('/results'),
+              onOpenResults: () => context.go('/results'),
               onReviewLatest: analytics.latestAttemptId == null
                   ? null
                   : () => context.push(
@@ -111,7 +111,7 @@ class ProfileScreen extends ConsumerWidget {
             language: language,
             onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
-            onResults: () => context.push('/results'),
+            onResults: () => context.go('/results'),
             onLogout: () => ref.read(authControllerProvider).signOut(),
           ),
         ],

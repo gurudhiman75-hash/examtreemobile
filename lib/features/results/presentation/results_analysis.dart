@@ -1,0 +1,397 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/models/result_model.dart';
+import '../../profile/domain/performance_analytics.dart';
+import 'result_history_filter.dart';
+
+class ResultsAnalysis extends StatefulWidget {
+  const ResultsAnalysis({
+    super.key,
+    required this.results,
+    required this.category,
+    required this.onCategoryChanged,
+    required this.onRefresh,
+  });
+
+  final List<Result> results;
+  final String? category;
+  final ValueChanged<String?> onCategoryChanged;
+  final Future<void> Function() onRefresh;
+
+  @override
+  State<ResultsAnalysis> createState() => _ResultsAnalysisState();
+}
+
+class _ResultsAnalysisState extends State<ResultsAnalysis> {
+  String? _testId;
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = resultCategories(widget.results);
+    final selected = categories.contains(widget.category) ? widget.category : null;
+    final categoryAttempts = filterAndSortResults(
+      results: widget.results,
+      category: selected,
+    );
+    final tests = <String, String>{
+      for (final attempt in categoryAttempts)
+        if (attempt.examId.isNotEmpty) attempt.examId: attempt.testName,
+    };
+    final selectedTest = tests.containsKey(_testId) ? _testId : null;
+    final attempts = selectedTest == null
+        ? categoryAttempts
+        : categoryAttempts.where((attempt) => attempt.examId == selectedTest).toList();
+    final analytics = PerformanceAnalytics.fromResults(
+      attempts.first.userId,
+      attempts,
+    );
+    final weakest = analytics.weakestSection;
+    final strongest = analytics.strongestSection;
+    final colors = Theme.of(context).colorScheme;
+    final maxPace = analytics.sectionPerformance.fold<int>(
+      0,
+      (max, section) => section.averageTimePerQuestion > max
+          ? section.averageTimePerQuestion
+          : max,
+    );
+
+    return RefreshIndicator(
+      onRefresh: widget.onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+        children: [
+          if (categories.length > 1)
+            DropdownButton<String>(
+              isExpanded: true,
+              value: selected ?? '',
+              onChanged: (value) {
+                setState(() => _testId = null);
+                widget.onCategoryChanged(value == '' ? null : value);
+              },
+              items: [
+                const DropdownMenuItem(value: '', child: Text('All exams')),
+                for (final category in categories)
+                  DropdownMenuItem(
+                    value: category,
+                    child: Text(category, overflow: TextOverflow.ellipsis),
+                  ),
+              ],
+            ),
+          if (tests.length > 1)
+            DropdownButton<String>(
+              isExpanded: true,
+              value: selectedTest ?? '',
+              onChanged: (value) => setState(() => _testId = value),
+              items: [
+                const DropdownMenuItem(value: '', child: Text('All tests')),
+                for (final test in tests.entries)
+                  DropdownMenuItem(
+                    value: test.key,
+                    child: Text(test.value, overflow: TextOverflow.ellipsis),
+                  ),
+              ],
+            ),
+          _AnalysisCard(
+            title: 'Performance overview',
+            children: [
+              Wrap(
+                spacing: 18,
+                runSpacing: 10,
+                children: [
+                  _Metric('Average score', _percent(analytics.averageScore)),
+                  _Metric('Accuracy', _percent(analytics.averageAccuracy)),
+                  _Metric(
+                    'Completed tests',
+                    '${analytics.totalTestsAttempted}',
+                  ),
+                  if (analytics.hasTimingData)
+                    _Metric(
+                      'Avg. time per question',
+                      '${analytics.averageTimePerQuestion}s',
+                    ),
+                ],
+              ),
+            ],
+          ),
+          _AnalysisCard(
+            title: 'Recent score and accuracy',
+            children: [
+              if (analytics.scoreTrend.length > 1)
+                _ScoreTrend(
+                  points: analytics.scoreTrend,
+                  scoreColor: colors.primary,
+                  accuracyColor: colors.tertiary,
+                ),
+              for (final point in analytics.scoreTrend.reversed)
+                InkWell(
+                  onTap: point.attemptId.trim().isEmpty
+                      ? null
+                      : () => context.push('/review', extra: point.attemptId),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          point.testName,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          MaterialLocalizations.of(context)
+                              .formatShortDate(point.completedAt),
+                        ),
+                        _Measure(
+                          'Score',
+                          point.percentageScore,
+                          colors.primary,
+                        ),
+                        _Measure('Accuracy', point.accuracy, colors.tertiary),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          _AnalysisCard(
+            title: 'Question outcomes',
+            children: [
+              Wrap(
+                spacing: 18,
+                runSpacing: 10,
+                children: [
+                  _Metric('Correct', '${analytics.totalCorrect}'),
+                  _Metric('Incorrect', '${analytics.totalIncorrect}'),
+                  _Metric('Unanswered', '${analytics.totalUnanswered}'),
+                ],
+              ),
+            ],
+          ),
+          _AnalysisCard(
+            title: 'Section performance',
+            children: [
+              if (analytics.sectionPerformance.isEmpty)
+                const Text(
+                  'Section breakdowns will appear when available for your attempts.',
+                ),
+              if (strongest != null &&
+                  weakest != null &&
+                  strongest != weakest) ...[
+                Text('Highest accuracy: ${strongest.name}'),
+                Text('Focus area: ${weakest.name}'),
+                const SizedBox(height: 8),
+              ],
+              for (final section in analytics.sectionPerformance)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        section.name,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Text(
+                        '${section.correct} correct · ${section.incorrect} incorrect · ${section.unanswered} unanswered',
+                      ),
+                      if (section.answered > 0)
+                        _Measure('Accuracy', section.accuracy, colors.tertiary),
+                      if (section.timedQuestions > 0) ...[
+                        Text('${section.averageTimePerQuestion}s per timed question'),
+                        LinearProgressIndicator(
+                          value: maxPace == 0
+                              ? 0.0
+                              : section.averageTimePerQuestion / maxPace,
+                          color: colors.secondary,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnalysisCard extends StatelessWidget {
+  const _AnalysisCard({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 12),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Metric extends StatelessWidget {
+  const _Metric(this.label, this.value);
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(value, style: Theme.of(context).textTheme.headlineSmall),
+        Text(label),
+      ],
+    );
+  }
+}
+
+class _Measure extends StatelessWidget {
+  const _Measure(this.label, this.value, this.color);
+
+  final String label;
+  final double value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$label ${_percent(value)}'),
+          ExcludeSemantics(
+            child: LinearProgressIndicator(
+              value: (value / 100).clamp(0.0, 1.0).toDouble(),
+              color: color,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _percent(double value) => '${value.round()}%';
+
+class _ScoreTrend extends StatelessWidget {
+  const _ScoreTrend({
+    required this.points,
+    required this.scoreColor,
+    required this.accuracyColor,
+  });
+
+  final List<PerformanceTrendPoint> points;
+  final Color scoreColor;
+  final Color accuracyColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final scores = points.map((point) => point.percentageScore).toList();
+    final accuracy = points.map((point) => point.accuracy).toList();
+    final minScore = scores.fold<double>(0, (min, score) => score < min ? score : min);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Wrap(
+          spacing: 16,
+          children: [
+            Text('● Score', style: TextStyle(color: scoreColor)),
+            Text('● Accuracy', style: TextStyle(color: accuracyColor)),
+          ],
+        ),
+        ExcludeSemantics(
+          child: SizedBox(
+            height: 132,
+            child: CustomPaint(
+              painter: _TrendPainter(
+                scores: scores,
+                accuracy: accuracy,
+                scoreColor: scoreColor,
+                accuracyColor: accuracyColor,
+                gridColor: Theme.of(context).colorScheme.outlineVariant,
+                minScore: minScore,
+              ),
+            ),
+          ),
+        ),
+        Text('Oldest to newest · ${_percent(minScore)} to 100%'),
+      ],
+    );
+  }
+}
+
+class _TrendPainter extends CustomPainter {
+  const _TrendPainter({
+    required this.scores,
+    required this.accuracy,
+    required this.scoreColor,
+    required this.accuracyColor,
+    required this.gridColor,
+    required this.minScore,
+  });
+
+  final List<double> scores;
+  final List<double> accuracy;
+  final Color scoreColor;
+  final Color accuracyColor;
+  final Color gridColor;
+  final double minScore;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const inset = 8.0;
+    final width = size.width - 2 * inset;
+    final height = size.height - 2 * inset;
+    final grid = Paint()..color = gridColor;
+    for (var row = 0; row <= 4; row++) {
+      final y = inset + height * row / 4;
+      canvas.drawLine(Offset(inset, y), Offset(size.width - inset, y), grid);
+    }
+    void drawSeries(List<double> values, Color color) {
+      final paint = Paint()
+        ..color = color
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round;
+      Offset? previous;
+      for (var index = 0; index < values.length; index++) {
+        final fraction = ((values[index] - minScore) / (100 - minScore))
+            .clamp(0.0, 1.0).toDouble();
+        final point = Offset(
+          inset + width * index / (values.length - 1),
+          inset + height * (1 - fraction),
+        );
+        if (previous != null) canvas.drawLine(previous, point, paint);
+        canvas.drawCircle(point, 3.5, paint);
+        previous = point;
+      }
+    }
+
+    drawSeries(scores, scoreColor);
+    drawSeries(accuracy, accuracyColor);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrendPainter oldDelegate) =>
+      scores != oldDelegate.scores ||
+      accuracy != oldDelegate.accuracy ||
+      scoreColor != oldDelegate.scoreColor ||
+      accuracyColor != oldDelegate.accuracyColor ||
+      gridColor != oldDelegate.gridColor ||
+      minScore != oldDelegate.minScore;
+}

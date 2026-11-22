@@ -32,6 +32,7 @@ import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/profile/presentation/profile_auxiliary_screens.dart';
 import '../features/results/presentation/results_screen.dart';
+import '../features/results/presentation/test_result_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
 import '../features/store/presentation/series_plans_screen.dart';
@@ -56,13 +57,14 @@ final GlobalKey<NavigatorState> _shellNavigatorExamsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellExams');
 final GlobalKey<NavigatorState> _shellNavigatorCurrentAffairsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellCurrentAffairs');
-final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
+final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellResults');
 
 bool _routeNeedsIdentifier(String path) => const {
       '/exam-details',
       '/test-attempt',
       '/review',
+      '/test-result',
       '/learn-resource',
       '/learn-lesson',
     }.contains(path);
@@ -255,15 +257,26 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorProfileKey,
+            navigatorKey: _shellNavigatorResultsKey,
             routes: [
               GoRoute(
-                path: '/profile',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'profile', nativeChild: ProfileScreen()),
+                path: '/results',
+                builder: (context, state) => const ResultsScreen(),
               ),
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/profile',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text('Profile')),
+          body: const RegisteredMobilePageScreen(
+            slug: 'profile',
+            nativeChild: ProfileScreen(),
+          ),
+        ),
       ),
       GoRoute(
         path: '/profile-progress',
@@ -299,25 +312,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/profile-coupons',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const ProfileCouponsScreen(),
-      ),
-      GoRoute(
-        path: '/results',
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => Scaffold(
-          backgroundColor: const Color(0xFFFBFCFE),
-          appBar: AppBar(
-            title: const Text('Results'),
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xFF10264A),
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            bottom: const PreferredSize(
-              preferredSize: Size.fromHeight(1),
-              child: Divider(height: 1, color: Color(0xFFE8EDF3)),
-            ),
-          ),
-          body: const ResultsScreen(),
-        ),
       ),
       GoRoute(
         path: '/account',
@@ -634,6 +628,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             examId: examId,
             seriesId: seriesId == null || seriesId.isEmpty ? null : seriesId,
           );
+        },
+      ),
+      GoRoute(
+        path: '/test-result',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final attemptId = readRequiredRouteId(state.extra, uri: state.uri);
+          if (attemptId == null) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Result unavailable',
+              message: 'Open the result again from your history.',
+            );
+          }
+          return TestResultScreen(attemptId: attemptId);
         },
       ),
       GoRoute(
