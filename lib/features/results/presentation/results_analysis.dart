@@ -31,6 +31,12 @@ class ResultsAnalysis extends StatelessWidget {
     final weakest = analytics.weakestSection;
     final strongest = analytics.strongestSection;
     final colors = Theme.of(context).colorScheme;
+    final maxPace = analytics.sectionPerformance.fold<int>(
+      0,
+      (max, section) => section.averageTimePerQuestion > max
+          ? section.averageTimePerQuestion
+          : max,
+    );
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -78,6 +84,12 @@ class ResultsAnalysis extends StatelessWidget {
           _AnalysisCard(
             title: 'Recent score and accuracy',
             children: [
+              if (analytics.scoreTrend.length > 1)
+                _ScoreTrend(
+                  points: analytics.scoreTrend,
+                  scoreColor: colors.primary,
+                  accuracyColor: colors.tertiary,
+                ),
               for (final point in analytics.scoreTrend.reversed)
                 InkWell(
                   onTap: point.attemptId.trim().isEmpty
@@ -151,10 +163,15 @@ class ResultsAnalysis extends StatelessWidget {
                       ),
                       if (section.answered > 0)
                         _Measure('Accuracy', section.accuracy, colors.tertiary),
-                      if (section.timedQuestions > 0)
-                        Text(
-                          '${section.averageTimePerQuestion}s per timed question',
+                      if (section.timedQuestions > 0) ...[
+                        Text('${section.averageTimePerQuestion}s per timed question'),
+                        LinearProgressIndicator(
+                          value: maxPace == 0
+                              ? 0.0
+                              : section.averageTimePerQuestion / maxPace,
+                          color: colors.secondary,
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -237,3 +254,110 @@ class _Measure extends StatelessWidget {
 }
 
 String _percent(double value) => '${value.round()}%';
+
+class _ScoreTrend extends StatelessWidget {
+  const _ScoreTrend({
+    required this.points,
+    required this.scoreColor,
+    required this.accuracyColor,
+  });
+
+  final List<PerformanceTrendPoint> points;
+  final Color scoreColor;
+  final Color accuracyColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final scores = points.map((point) => point.percentageScore).toList();
+    final accuracy = points.map((point) => point.accuracy).toList();
+    final minScore = scores.fold<double>(0, (min, score) => score < min ? score : min);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Wrap(
+          spacing: 16,
+          children: [
+            Text('● Score', style: TextStyle(color: scoreColor)),
+            Text('● Accuracy', style: TextStyle(color: accuracyColor)),
+          ],
+        ),
+        ExcludeSemantics(
+          child: SizedBox(
+            height: 132,
+            child: CustomPaint(
+              painter: _TrendPainter(
+                scores: scores,
+                accuracy: accuracy,
+                scoreColor: scoreColor,
+                accuracyColor: accuracyColor,
+                gridColor: Theme.of(context).colorScheme.outlineVariant,
+                minScore: minScore,
+              ),
+            ),
+          ),
+        ),
+        Text('Oldest to newest · ${_percent(minScore)} to 100%'),
+      ],
+    );
+  }
+}
+
+class _TrendPainter extends CustomPainter {
+  const _TrendPainter({
+    required this.scores,
+    required this.accuracy,
+    required this.scoreColor,
+    required this.accuracyColor,
+    required this.gridColor,
+    required this.minScore,
+  });
+
+  final List<double> scores;
+  final List<double> accuracy;
+  final Color scoreColor;
+  final Color accuracyColor;
+  final Color gridColor;
+  final double minScore;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const inset = 8.0;
+    final width = size.width - 2 * inset;
+    final height = size.height - 2 * inset;
+    final grid = Paint()..color = gridColor;
+    for (var row = 0; row <= 4; row++) {
+      final y = inset + height * row / 4;
+      canvas.drawLine(Offset(inset, y), Offset(size.width - inset, y), grid);
+    }
+    void drawSeries(List<double> values, Color color) {
+      final paint = Paint()
+        ..color = color
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round;
+      Offset? previous;
+      for (var index = 0; index < values.length; index++) {
+        final fraction = ((values[index] - minScore) / (100 - minScore))
+            .clamp(0.0, 1.0).toDouble();
+        final point = Offset(
+          inset + width * index / (values.length - 1),
+          inset + height * (1 - fraction),
+        );
+        if (previous != null) canvas.drawLine(previous, point, paint);
+        canvas.drawCircle(point, 3.5, paint);
+        previous = point;
+      }
+    }
+
+    drawSeries(scores, scoreColor);
+    drawSeries(accuracy, accuracyColor);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrendPainter oldDelegate) =>
+      scores != oldDelegate.scores ||
+      accuracy != oldDelegate.accuracy ||
+      scoreColor != oldDelegate.scoreColor ||
+      accuracyColor != oldDelegate.accuracyColor ||
+      gridColor != oldDelegate.gridColor ||
+      minScore != oldDelegate.minScore;
+}
