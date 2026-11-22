@@ -29,7 +29,11 @@ class TestResultScreen extends ConsumerWidget {
         title: const Text('Test Results'),
         centerTitle: true,
         backgroundColor: const Color(0xFFF4F6FA),
-        titleTextStyle: const TextStyle(color: _navy, fontSize: 22, fontWeight: FontWeight.w800),
+        titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+          color: _navy,
+          fontSize: 22,
+          fontWeight: FontWeight.w800,
+        ),
         leading: BackButton(
           onPressed: () =>
               context.canPop() ? context.pop() : context.go('/results'),
@@ -169,11 +173,13 @@ class _ScoreCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       color: Colors.white,
-      elevation: 5,
-      shadowColor: const Color(0x33142B56),
+      elevation: 0,
       surfaceTintColor: Colors.transparent,
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: const BorderSide(color: Color(0xFFE9ECF2)),
+      ),
       child: Stack(
         children: [
           const Positioned(
@@ -291,10 +297,12 @@ class _SummaryCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       color: Colors.white,
-      elevation: 4,
-      shadowColor: const Color(0x26142B56),
+      elevation: 0,
       surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+        side: const BorderSide(color: Color(0xFFE9ECF2)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
