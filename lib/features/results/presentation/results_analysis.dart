@@ -5,7 +5,7 @@ import '../../../core/models/result_model.dart';
 import '../../profile/domain/performance_analytics.dart';
 import 'result_history_filter.dart';
 
-class ResultsAnalysis extends StatelessWidget {
+class ResultsAnalysis extends StatefulWidget {
   const ResultsAnalysis({
     super.key,
     required this.results,
@@ -20,10 +20,28 @@ class ResultsAnalysis extends StatelessWidget {
   final Future<void> Function() onRefresh;
 
   @override
+  State<ResultsAnalysis> createState() => _ResultsAnalysisState();
+}
+
+class _ResultsAnalysisState extends State<ResultsAnalysis> {
+  String? _testId;
+
+  @override
   Widget build(BuildContext context) {
-    final categories = resultCategories(results);
-    final selected = categories.contains(category) ? category : null;
-    final attempts = filterAndSortResults(results: results, category: selected);
+    final categories = resultCategories(widget.results);
+    final selected = categories.contains(widget.category) ? widget.category : null;
+    final categoryAttempts = filterAndSortResults(
+      results: widget.results,
+      category: selected,
+    );
+    final tests = <String, String>{
+      for (final attempt in categoryAttempts)
+        if (attempt.examId.isNotEmpty) attempt.examId: attempt.testName,
+    };
+    final selectedTest = tests.containsKey(_testId) ? _testId : null;
+    final attempts = selectedTest == null
+        ? categoryAttempts
+        : categoryAttempts.where((attempt) => attempt.examId == selectedTest).toList();
     final analytics = PerformanceAnalytics.fromResults(
       attempts.first.userId,
       attempts,
@@ -39,7 +57,7 @@ class ResultsAnalysis extends StatelessWidget {
     );
 
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: widget.onRefresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
@@ -48,14 +66,30 @@ class ResultsAnalysis extends StatelessWidget {
             DropdownButton<String>(
               isExpanded: true,
               value: selected ?? '',
-              onChanged: (value) =>
-                  onCategoryChanged(value == '' ? null : value),
+              onChanged: (value) {
+                setState(() => _testId = null);
+                widget.onCategoryChanged(value == '' ? null : value);
+              },
               items: [
                 const DropdownMenuItem(value: '', child: Text('All exams')),
                 for (final category in categories)
                   DropdownMenuItem(
                     value: category,
                     child: Text(category, overflow: TextOverflow.ellipsis),
+                  ),
+              ],
+            ),
+          if (tests.length > 1)
+            DropdownButton<String>(
+              isExpanded: true,
+              value: selectedTest ?? '',
+              onChanged: (value) => setState(() => _testId = value),
+              items: [
+                const DropdownMenuItem(value: '', child: Text('All tests')),
+                for (final test in tests.entries)
+                  DropdownMenuItem(
+                    value: test.key,
+                    child: Text(test.value, overflow: TextOverflow.ellipsis),
                   ),
               ],
             ),
