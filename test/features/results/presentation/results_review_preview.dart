@@ -204,6 +204,40 @@ void main() {
     );
   });
 
+  testWidgets('render Results Analysis charts', (tester) async {
+    await configurePhone(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          userResultsProvider.overrideWith((ref) async => history()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
+          home: MediaQuery(
+            data: const MediaQueryData(
+              size: phoneSize,
+              devicePixelRatio: 1,
+              disableAnimations: true,
+            ),
+            child: resultsShell(),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+
+    await tester.tap(find.text('Analysis'));
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/results_analysis_390x844.png'),
+    );
+  });
+
   testWidgets('render lower Results history viewport', (tester) async {
     await configurePhone(tester);
     await tester.pumpWidget(
@@ -266,6 +300,13 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('previews/review_question_390x844.png'),
+    );
+
+    await tester.tap(find.byTooltip('Marks breakdown'));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/review_marks_390x844.png'),
     );
   });
 }
