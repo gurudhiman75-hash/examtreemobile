@@ -626,6 +626,15 @@ class _ResultCard extends StatelessWidget {
                       .toList(growable: false),
                 ),
               const SizedBox(height: AppSpacing.md),
+              if (canReview)
+                FilledButton.tonalIcon(
+                  onPressed: () => context.push(
+                    '/test-result',
+                    extra: result.attemptId.trim(),
+                  ),
+                  icon: const Icon(Icons.bar_chart_rounded),
+                  label: const Text('View Result'),
+                ),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final stack = constraints.maxWidth < 290 || largeText;
