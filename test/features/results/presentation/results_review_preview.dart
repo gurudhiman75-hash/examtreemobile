@@ -78,6 +78,8 @@ void main() {
     double score = 72,
     double accuracy = 78,
     int daysAgo = 0,
+    int? rank,
+    double? percentile,
   }) {
     final questions = [
       question(
@@ -119,6 +121,8 @@ void main() {
       category: category,
       percentageScore: score,
       rawScore: score,
+      rank: rank,
+      percentile: percentile,
       totalQuestions: 100,
       questionReview: questions,
     );
@@ -277,7 +281,15 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          resultProvider('attempt-1').overrideWith((ref) async => detailedResult()),
+          resultProvider('attempt-1').overrideWith(
+            (ref) async => detailedResult(
+              name: 'Punjab Police Full Mock Test 01',
+              score: 78.5,
+              accuracy: 88,
+              rank: 1240,
+              percentile: 94.2,
+            ),
+          ),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -287,7 +299,8 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('72'), findsWidgets);
+    expect(find.text('78.5'), findsOneWidget);
+    expect(find.text('94.2%'), findsOneWidget);
     expect(find.text('View Solutions'), findsOneWidget);
     await expectLater(
       find.byType(Scaffold),
