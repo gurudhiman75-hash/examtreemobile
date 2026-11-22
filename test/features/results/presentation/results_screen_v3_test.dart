@@ -121,6 +121,27 @@ void main() {
     expect(find.text('SSC CGL Mock'), findsOneWidget);
   });
 
+  testWidgets('Analysis shows performance and returns to attempt history', (tester) async {
+    await pumpResults(
+      tester,
+      results: [
+        result(id: '1', name: 'SSC CGL Mock', category: 'SSC', score: 74, accuracy: 82),
+      ],
+    );
+
+    await tester.tap(find.text('Analysis'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Performance overview'), findsOneWidget);
+    expect(find.text('Recent score and accuracy'), findsOneWidget);
+    expect(find.text('Score 74%'), findsOneWidget);
+
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Attempt history'), findsOneWidget);
+  });
+
   testWidgets('review mistakes is primary before retake when review exists', (tester) async {
     await pumpResults(
       tester,

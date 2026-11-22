@@ -117,6 +117,18 @@ class PerformanceAnalytics {
       totalIncorrect += result.incorrectCount;
       totalUnanswered += result.skippedCount;
 
+      final hasSectionTotals = result.sectionStats.isNotEmpty;
+      for (final stats in result.sectionStats) {
+        final name = stats.name.trim().isEmpty ? 'General' : stats.name.trim();
+        final section = sections.putIfAbsent(
+          name,
+          () => _MutableSectionPerformance(name),
+        );
+        section.correct += stats.correct;
+        section.incorrect += stats.wrong;
+        section.unanswered += stats.unanswered;
+      }
+
       for (final review in result.questionReview) {
         final sectionName = review.section.trim().isEmpty
             ? 'General'
@@ -126,12 +138,14 @@ class PerformanceAnalytics {
           () => _MutableSectionPerformance(sectionName),
         );
 
-        if (!review.isAnswered) {
-          section.unanswered++;
-        } else if (review.isCorrect) {
-          section.correct++;
-        } else {
-          section.incorrect++;
+        if (!hasSectionTotals) {
+          if (!review.isAnswered) {
+            section.unanswered++;
+          } else if (review.isCorrect) {
+            section.correct++;
+          } else {
+            section.incorrect++;
+          }
         }
 
         final seconds = review.timeTakenSeconds;

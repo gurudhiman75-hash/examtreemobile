@@ -11,6 +11,7 @@ import '../../promotions/presentation/providers/promotion_providers.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import 'providers/result_providers.dart';
 import 'result_history_filter.dart';
+import 'results_analysis.dart';
 
 class ResultsScreen extends ConsumerStatefulWidget {
   const ResultsScreen({super.key});
@@ -22,6 +23,8 @@ class ResultsScreen extends ConsumerStatefulWidget {
 class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   late final TextEditingController _searchController;
   String _query = '';
+  bool _showAnalysis = false;
+  String? _analysisCategory;
   String? _selectedCategory;
   ResultSortOption _sort = ResultSortOption.newest;
 
@@ -73,7 +76,36 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
           fallbackTitle: 'Unable to load your attempt history',
           onRetry: () => ref.invalidate(userResultsProvider),
         ),
-        data: (results) => _buildHistory(context, results),
+        data: (results) => results.isEmpty
+            ? _buildHistory(context, results)
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: SegmentedButton<bool>(
+                      segments: const [
+                        ButtonSegment(value: false, label: Text('History')),
+                        ButtonSegment(value: true, label: Text('Analysis')),
+                      ],
+                      selected: {_showAnalysis},
+                      onSelectionChanged: (value) => setState(
+                        () => _showAnalysis = value.single,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: _showAnalysis
+                        ? ResultsAnalysis(
+                            results: results,
+                            category: _analysisCategory,
+                            onCategoryChanged: (value) =>
+                                setState(() => _analysisCategory = value),
+                            onRefresh: _refresh,
+                          )
+                        : _buildHistory(context, results),
+                  ),
+                ],
+              ),
       ),
     );
   }
