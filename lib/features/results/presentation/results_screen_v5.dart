@@ -117,16 +117,26 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                     key: const Key('results-performance-snapshot'),
                     summary: summary,
                   ),
-                  const SizedBox(height: AppSpacing.md),
-                  const PromotionPlacementView(
-                    placement: PromotionPlacement.results,
-                    compact: true,
-                  ),
                   const SizedBox(height: AppSpacing.lg),
-                  _HistoryToolsIntro(
-                    hasFilters: _hasFilters,
-                    onReset: _resetFilters,
+                  _SectionHeader(
+                    title: 'Attempt history',
+                    subtitle: filtered.length == results.length
+                        ? '${results.length} completed'
+                        : '${filtered.length} of ${results.length} shown.',
+                    trailing: _SortButton(
+                      value: _sort,
+                      onChanged: (value) => setState(() => _sort = value),
+                    ),
                   ),
+                  if (_hasFilters)
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: TextButton(
+                        key: const Key('results-reset'),
+                        onPressed: _resetFilters,
+                        child: const Text('Reset filters'),
+                      ),
+                    ),
                   const SizedBox(height: AppSpacing.sm),
                   Theme(
                     data: Theme.of(context).copyWith(
@@ -145,23 +155,23 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                       ),
                     ),
                     child: SearchBar(
-                    key: const Key('results-search'),
-                    controller: _searchController,
-                    hintText: 'Search tests or exam categories',
-                    leading: const Icon(Icons.search_rounded),
-                    trailing: [
-                      if (_query.isNotEmpty)
-                        IconButton(
-                          tooltip: 'Clear search',
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _query = '');
-                          },
-                          icon: const Icon(Icons.close_rounded),
-                        ),
-                    ],
-                    onChanged: (value) => setState(() => _query = value),
-                  ),
+                      key: const Key('results-search'),
+                      controller: _searchController,
+                      hintText: 'Search tests or exam categories',
+                      leading: const Icon(Icons.search_rounded),
+                      trailing: [
+                        if (_query.isNotEmpty)
+                          IconButton(
+                            tooltip: 'Clear search',
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _query = '');
+                            },
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                      ],
+                      onChanged: (value) => setState(() => _query = value),
+                    ),
                   ),
                   if (categories.isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.sm),
@@ -173,18 +183,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                       },
                     ),
                   ],
-                  const SizedBox(height: AppSpacing.xl),
-                  _SectionHeader(
-                    title: 'Attempt history',
-                    subtitle: filtered.length == results.length
-                        ? '${results.length} completed ${results.length == 1 ? 'attempt' : 'attempts'}.'
-                        : '${filtered.length} of ${results.length} shown.',
-                    trailing: _SortButton(
-                      value: _sort,
-                      onChanged: (value) => setState(() => _sort = value),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.md),
                   if (filtered.isEmpty)
                     _FilteredResultsEmpty(onReset: _resetFilters)
                   else
@@ -194,6 +193,11 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                         child: _ResultCard(result: result),
                       ),
                     ),
+                  const SizedBox(height: AppSpacing.sm),
+                  const PromotionPlacementView(
+                    placement: PromotionPlacement.results,
+                    compact: true,
+                  ),
                 ],
               ],
             ),
@@ -238,73 +242,21 @@ class _PerformanceHero extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'YOUR PERFORMANCE',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: const Color(0xFFFFD36B),
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.8,
+            '${summary.totalAttempts} ${summary.totalAttempts == 1 ? 'attempt' : 'attempts'} completed',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 82,
-                height: 82,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CircularProgressIndicator(
-                      value: average / 100,
-                      strokeWidth: 8,
-                      strokeCap: StrokeCap.round,
-                      backgroundColor: Colors.white.withValues(alpha: 0.18),
-                      color: const Color(0xFFFFD36B),
-                    ),
-                    Center(
-                      child: Text(
-                        '${average.round()}%',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: const Color(0xFFFFD36B),
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpacing.lg),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Average score',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.75),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      '${summary.totalAttempts} ${summary.totalAttempts == 1 ? 'attempt' : 'attempts'} completed',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
           LayoutBuilder(
             builder: (context, constraints) {
               final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
               final items = [
+                _HeroMetric(
+                  value: '${average.round()}%',
+                  label: 'Average score',
+                ),
                 _HeroMetric(
                   value: '${summary.bestScore.round()}%',
                   label: 'Best score',
@@ -314,21 +266,24 @@ class _PerformanceHero extends StatelessWidget {
                   label: 'Accuracy',
                 ),
               ];
-              if (largeText) {
+              if (largeText || constraints.maxWidth < 300) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    items[0],
-                    const SizedBox(height: AppSpacing.sm),
-                    items[1],
+                    for (final item in items)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                        child: item,
+                      ),
                   ],
                 );
               }
               return Row(
                 children: [
-                  Expanded(child: items[0]),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(child: items[1]),
+                  for (var index = 0; index < items.length; index++) ...[
+                    if (index > 0) const SizedBox(width: AppSpacing.xs),
+                    Expanded(child: items[index]),
+                  ],
                 ],
               );
             },
@@ -357,7 +312,8 @@ class _HeroMetric extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             value,
@@ -366,66 +322,15 @@ class _HeroMetric extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.78),
-                fontWeight: FontWeight.w700,
-              ),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: Colors.white.withValues(alpha: 0.82),
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _HistoryToolsIntro extends StatelessWidget {
-  const _HistoryToolsIntro({
-    required this.hasFilters,
-    required this.onReset,
-  });
-
-  final bool hasFilters;
-  final VoidCallback onReset;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Find an attempt',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: const Color(0xFF10264A),
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -.3,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                'Review mistakes before deciding what to retake.',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (hasFilters)
-          TextButton(
-            key: const Key('results-reset'),
-            onPressed: onReset,
-            child: const Text('Reset'),
-          ),
-      ],
     );
   }
 }
@@ -594,7 +499,7 @@ class _ResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final percentage = result.percentageScore.clamp(0, 100).toDouble();
-    final canReview = result.questionReview.isNotEmpty;
+    final canReview = result.attemptId.trim().isNotEmpty;
     final canRetake = result.examId.trim().isNotEmpty;
     final hasMistakes = result.incorrectCount > 0 || result.skippedCount > 0;
     final reviewLabel = hasMistakes ? 'Review mistakes' : 'Review answers';
@@ -695,7 +600,7 @@ class _ResultCard extends StatelessWidget {
                   final review = FilledButton.icon(
                     key: const Key('results-review-primary'),
                     onPressed: canReview
-                        ? () => context.push('/review', extra: result.attemptId)
+                        ? () => context.push('/review', extra: result.attemptId.trim())
                         : null,
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF073A6A),
@@ -780,6 +685,12 @@ class _ResultCard extends StatelessWidget {
 
   List<(IconData, String, Color)> _resultMetadata(Result result) {
     return [
+      if (result.maxScore > 0)
+        (
+          Icons.score_outlined,
+          '${_formatNumber(result.rawScore)} / ${_formatNumber(result.maxScore)} marks',
+          AppColors.onSurfaceVariant,
+        ),
       (
         Icons.track_changes_rounded,
         '${_formatNumber(result.accuracy)}% accuracy',
