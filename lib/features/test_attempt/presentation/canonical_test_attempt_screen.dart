@@ -670,7 +670,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       ref.invalidate(userResultsProvider);
       if (!mounted) return;
       context.replace(
-        '/review',
+        '/result-summary',
         extra: response.attemptId.isEmpty ? _attemptId! : response.attemptId,
       );
     } catch (_) {

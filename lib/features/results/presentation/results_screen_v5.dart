@@ -620,7 +620,14 @@ class _ResultCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              InkWell(
+                key: const Key('results-open-summary'),
+                borderRadius: BorderRadius.circular(14),
+                onTap: () => context.push(
+                  '/result-summary',
+                  extra: result.attemptId,
+                ),
+                child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _ScoreBadge(percentage: percentage),
@@ -656,6 +663,7 @@ class _ResultCard extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
               ),
               const SizedBox(height: AppSpacing.md),
               if (largeText)
