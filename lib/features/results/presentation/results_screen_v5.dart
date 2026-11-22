@@ -782,7 +782,7 @@ class _ResultMeta extends StatelessWidget {
           Icon(icon, size: 15, color: color),
           const SizedBox(width: AppSpacing.xxs),
           Flexible(
-            Text(
+            child: Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
