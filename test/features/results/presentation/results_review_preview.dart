@@ -4,6 +4,7 @@ import 'package:examtree/core/models/result_model.dart';
 import 'package:examtree/core/theme/app_theme.dart';
 import 'package:examtree/features/results/presentation/providers/result_providers.dart';
 import 'package:examtree/features/results/presentation/results_screen.dart';
+import 'package:examtree/features/results/presentation/test_result_screen.dart';
 import 'package:examtree/features/results/presentation/review_retry_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -268,6 +269,29 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('previews/results_lower_390x844.png'),
+    );
+  });
+
+  testWidgets('render post-submission Test Results', (tester) async {
+    await configurePhone(tester);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          resultProvider('attempt-1').overrideWith((ref) async => detailedResult()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: previewTheme(),
+          home: const TestResultScreen(attemptId: 'attempt-1'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('72'), findsWidgets);
+    expect(find.text('View Solutions'), findsOneWidget);
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('previews/test_results_390x844.png'),
     );
   });
 
