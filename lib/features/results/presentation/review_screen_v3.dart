@@ -25,6 +25,14 @@ class ReviewScreen extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
+        actions: [
+          if (resultAsync.value case final result?)
+            IconButton(
+              tooltip: 'Marks breakdown',
+              onPressed: () => _showMarks(context, result),
+              icon: const Icon(Icons.score_outlined),
+            ),
+        ],
       ),
       body: resultAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -42,6 +50,66 @@ class ReviewScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+
+void _showMarks(BuildContext context, Result result) {
+  final outcomes = [
+    (result.correctCount, 'Correct', AppColors.mint),
+    (result.incorrectCount, 'Incorrect', AppColors.error),
+    (result.skippedCount, 'Unanswered', const Color(0xFFE1AB35)),
+  ];
+  showModalBottomSheet<void>(
+    context: context,
+    useSafeArea: true,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (context) => SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Marks breakdown', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          Text(
+            result.maxScore > 0
+                ? '${result.rawScore} / ${result.maxScore} marks'
+                : '${result.rawScore} marks',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 16),
+          if (outcomes.any((outcome) => outcome.$1 > 0))
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Row(
+                children: [
+                  for (final (count, _, color) in outcomes)
+                    if (count > 0)
+                      Expanded(
+                        flex: count,
+                        child: ColoredBox(
+                          color: color,
+                          child: const SizedBox(height: 12),
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            children: [
+              for (final (count, label, _) in outcomes) Text('$count $label'),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Text('Final marks reflect the test’s scoring rules. Individual deductions are unavailable.'),
+        ],
+      ),
+    ),
+  );
 }
 
 class _ReviewLoadState extends StatelessWidget {
