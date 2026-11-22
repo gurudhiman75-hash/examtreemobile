@@ -157,7 +157,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                     child: SearchBar(
                       key: const Key('results-search'),
                       controller: _searchController,
-                      hintText: 'Search tests or exam categories',
+                      hintText: 'Search attempts',
                       leading: const Icon(Icons.search_rounded),
                       trailing: [
                         if (_query.isNotEmpty)
@@ -781,11 +781,13 @@ class _ResultMeta extends StatelessWidget {
         children: [
           Icon(icon, size: 15, color: color),
           const SizedBox(width: AppSpacing.xxs),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+          Flexible(
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           ),
         ],
       ),
