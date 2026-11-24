@@ -31,6 +31,7 @@ import '../features/notifications/presentation/mobile_notifications_screen.dart'
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/profile/presentation/profile_auxiliary_screens.dart';
+import '../features/results/presentation/attempt_result_screen.dart';
 import '../features/results/presentation/results_screen.dart';
 import '../features/results/presentation/review_retry_screen.dart';
 import '../features/store/presentation/store_screen.dart';
@@ -63,6 +64,7 @@ bool _routeNeedsIdentifier(String path) => const {
       '/exam-details',
       '/test-attempt',
       '/review',
+      '/result-summary',
       '/learn-resource',
       '/learn-lesson',
     }.contains(path);
@@ -634,6 +636,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             examId: examId,
             seriesId: seriesId == null || seriesId.isEmpty ? null : seriesId,
           );
+        },
+      ),
+      GoRoute(
+        path: '/result-summary',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final resultId = readRequiredRouteId(state.extra, uri: state.uri);
+          if (resultId == null) {
+            return const _MissingRouteIdentifierScreen(
+              title: 'Result unavailable',
+              message:
+                  'No attempt identifier was supplied. Open the result again from your history.',
+            );
+          }
+          return AttemptResultScreen(resultId: resultId);
         },
       ),
       GoRoute(
