@@ -20,19 +20,18 @@ bool shouldResetBranchOnSelection({
 bool shouldShowDailyAction(
   int currentIndex, {
   bool revisionIsPrimary = false,
-}) =>
-    false;
+}) => false;
 
 bool shouldUseExpandedNavigation(double width) => width >= 840;
 
 String shellDestinationLabel(int index) => switch (index) {
-      0 => 'Home',
-      1 => 'Learn',
-      2 => 'Tests',
-      3 => 'Current Affairs',
-      4 => 'Profile',
-      _ => 'ExamTree',
-    };
+  0 => 'Home',
+  1 => 'Learn',
+  2 => 'Tests',
+  3 => 'Current Affairs',
+  4 => 'Results',
+  _ => 'ExamTree',
+};
 
 bool isRevisionPrimaryOnHome({
   required AsyncValue<List<Exam>> activeAsync,
@@ -66,10 +65,7 @@ String dailyActionLabel({
 }
 
 class AppScaffold extends ConsumerStatefulWidget {
-  const AppScaffold({
-    super.key,
-    required this.navigationShell,
-  });
+  const AppScaffold({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
@@ -188,9 +184,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         icon: const Icon(Icons.shopping_bag_outlined),
                       ),
                       IconButton(
-                        tooltip: 'Results & history',
-                        onPressed: () => context.push('/results'),
-                        icon: const Icon(Icons.bar_chart_outlined),
+                        tooltip: 'Profile',
+                        onPressed: () => context.push('/profile'),
+                        icon: const Icon(Icons.person_outline_rounded),
                       ),
                     ],
                   ),
@@ -217,9 +213,9 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     label: Text('Current Affairs'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.person_outline_rounded),
-                    selectedIcon: Icon(Icons.person_rounded),
-                    label: Text('Profile'),
+                    icon: Icon(Icons.bar_chart_outlined),
+                    selectedIcon: Icon(Icons.bar_chart_rounded),
+                    label: Text('Results'),
                   ),
                 ],
               ),
@@ -239,9 +235,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
               surfaceTintColor: Colors.transparent,
               elevation: 0,
               scrolledUnderElevation: 0,
-              shape: const Border(
-                bottom: BorderSide(color: Color(0xFFE8EDF3)),
-              ),
+              shape: const Border(bottom: BorderSide(color: Color(0xFFE8EDF3))),
               leading: expandedNavigation
                   ? null
                   : Builder(
@@ -255,36 +249,33 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
               title: Text(
                 shellDestinationLabel(currentIndex),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: const Color(0xFF10264A),
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.25,
-                    ),
+                  color: const Color(0xFF10264A),
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.25,
+                ),
               ),
               actions: [
-                if (currentIndex != 4)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Semantics(
-                      button: true,
-                      label: 'Open profile',
-                      child: InkWell(
-                        onTap: () => context.go('/profile'),
-                        customBorder: const CircleBorder(),
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundColor: const Color(0xFFEAF2FB),
-                          foregroundColor: const Color(0xFF0B3A6F),
-                          child: Text(
-                            initial,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
-                                ?.copyWith(fontWeight: FontWeight.w800),
-                          ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Semantics(
+                    button: true,
+                    label: 'Open profile',
+                    child: InkWell(
+                      onTap: () => context.push('/profile'),
+                      customBorder: const CircleBorder(),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: const Color(0xFFEAF2FB),
+                        foregroundColor: const Color(0xFF0B3A6F),
+                        child: Text(
+                          initial,
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
                     ),
                   ),
+                ),
               ],
             ),
       drawer: expandedNavigation
@@ -298,7 +289,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                 }
                 switch (index) {
                   case 5:
-                    _closeDrawerAnd(() => context.push('/results'));
+                    _closeDrawerAnd(() => context.push('/profile'));
                   case 6:
                     _closeDrawerAnd(() => context.push('/my-exams'));
                   case 7:
@@ -306,9 +297,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   case 8:
                     _closeDrawerAnd(() => context.push('/exam-day'));
                   case 9:
-                    _closeDrawerAnd(
-                      () => context.push('/store?section=tests'),
-                    );
+                    _closeDrawerAnd(() => context.push('/store?section=tests'));
                   case 10:
                     _closeDrawerAnd(
                       () => context.push('/store?section=batches'),
@@ -326,9 +315,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         foregroundColor: const Color(0xFF0B3A6F),
                         child: Text(
                           initial,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
+                          style: Theme.of(context).textTheme.titleSmall
                               ?.copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
@@ -341,9 +328,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                               displayName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(fontWeight: FontWeight.w800),
                             ),
                             if (contact.isNotEmpty)
@@ -351,9 +336,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                                 contact,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
+                                style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(color: scheme.onSurfaceVariant),
                               ),
                           ],
@@ -384,18 +367,18 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   label: Text('Current Affairs'),
                 ),
                 const NavigationDrawerDestination(
-                  icon: Icon(Icons.person_outline_rounded),
-                  selectedIcon: Icon(Icons.person_rounded),
-                  label: Text('Profile'),
+                  icon: Icon(Icons.bar_chart_outlined),
+                  selectedIcon: Icon(Icons.bar_chart_rounded),
+                  label: Text('Results'),
                 ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(28, 18, 16, 8),
                   child: Text('PREPARATION'),
                 ),
                 const NavigationDrawerDestination(
-                  icon: Icon(Icons.bar_chart_outlined),
-                  selectedIcon: Icon(Icons.bar_chart_rounded),
-                  label: Text('Results & history'),
+                  icon: Icon(Icons.person_outline_rounded),
+                  selectedIcon: Icon(Icons.person_rounded),
+                  label: Text('Profile'),
                 ),
                 const NavigationDrawerDestination(
                   icon: Icon(Icons.bookmarks_outlined),
@@ -447,9 +430,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
           : DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: const Border(
-                  top: BorderSide(color: Color(0xFFE8EDF3)),
-                ),
+                border: const Border(top: BorderSide(color: Color(0xFFE8EDF3))),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF10264A).withValues(alpha: 0.07),
@@ -477,16 +458,16 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         size: selected ? 25 : 23,
                       );
                     }),
-                    labelTextStyle:
-                        WidgetStateProperty.resolveWith((states) {
+                    labelTextStyle: WidgetStateProperty.resolveWith((states) {
                       final selected = states.contains(WidgetState.selected);
                       return TextStyle(
                         color: selected
                             ? const Color(0xFF0B3A6F)
                             : const Color(0xFF7B8796),
                         fontSize: 10.5,
-                        fontWeight:
-                            selected ? FontWeight.w800 : FontWeight.w600,
+                        fontWeight: selected
+                            ? FontWeight.w800
+                            : FontWeight.w600,
                         letterSpacing: 0.1,
                       );
                     }),
@@ -520,10 +501,10 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                         tooltip: 'Current Affairs',
                       ),
                       NavigationDestination(
-                        icon: Icon(Icons.person_outline_rounded),
-                        selectedIcon: Icon(Icons.person_rounded),
-                        label: 'Profile',
-                        tooltip: 'Profile',
+                        icon: Icon(Icons.bar_chart_outlined),
+                        selectedIcon: Icon(Icons.bar_chart_rounded),
+                        label: 'Results',
+                        tooltip: 'Results',
                       ),
                     ],
                   ),

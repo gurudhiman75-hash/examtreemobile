@@ -8,7 +8,7 @@ void main() {
     expect(shellDestinationLabel(1), 'Learn');
     expect(shellDestinationLabel(2), 'Tests');
     expect(shellDestinationLabel(3), 'Current Affairs');
-    expect(shellDestinationLabel(4), 'Profile');
+    expect(shellDestinationLabel(4), 'Results');
     expect(shellDestinationLabel(99), 'ExamTree');
   });
 

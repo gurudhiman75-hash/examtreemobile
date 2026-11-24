@@ -166,7 +166,7 @@ class _PurchasedSeries extends StatelessWidget {
         _TopTabs(
           onDownloads: () => context.push('/profile-downloads'),
           onBookmarks: () => context.push('/profile-bookmarks'),
-          onHistory: () => context.push('/results'),
+          onHistory: () => context.go('/results'),
         ),
         const SizedBox(height: 18),
         if (expired) ...[
