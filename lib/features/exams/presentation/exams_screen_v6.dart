@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../../shared/widgets/skeleton.dart';
 import '../domain/exam_catalog.dart';
 import 'providers/exam_catalog_providers.dart';
 
@@ -1213,7 +1214,9 @@ class _CategoryLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return SkeletonShimmer(
+      child: ListView(
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 112),
       children: [
         Container(
@@ -1258,6 +1261,7 @@ class _CategoryLoading extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }

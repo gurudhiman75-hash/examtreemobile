@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/providers/repository_providers.dart';
 import '../../store/domain/series_purchase.dart';
+import '../../../shared/widgets/skeleton.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -2419,7 +2420,9 @@ class _SeriesLoadingScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFD),
       appBar: _appBar(),
-      body: ListView(
+      body: SkeletonShimmer(
+        child: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 32),
         children: [
           Container(
@@ -2449,6 +2452,7 @@ class _SeriesLoadingScaffold extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../../shared/widgets/skeleton.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
@@ -1267,7 +1268,8 @@ class _ProfileLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.surfaceContainerHigh;
-    return Column(
+    return SkeletonShimmer(
+      child: Column(
       children: [
         Container(
           height: 210,
@@ -1285,6 +1287,7 @@ class _ProfileLoadingState extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 }

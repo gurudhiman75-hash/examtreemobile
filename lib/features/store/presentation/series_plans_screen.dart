@@ -6,6 +6,7 @@ import '../../home/presentation/mobile_test_series_detail_screen.dart';
 import '../data/store_repository.dart';
 import '../domain/series_purchase.dart';
 import 'providers/store_providers.dart';
+import '../../../shared/widgets/skeleton.dart';
 import 'series_purchase_shared.dart';
 
 class SeriesPlansScreen extends ConsumerStatefulWidget {
@@ -66,7 +67,22 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
       backgroundColor: purchasePage,
       appBar: purchaseAppBar('Choose Plan'),
       body: detail.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonShimmer(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SkeletonBlock(height: 96, radius: 24),
+                SizedBox(height: 16),
+                SkeletonBlock(height: 88, radius: 20),
+                SizedBox(height: 12),
+                SkeletonBlock(height: 88, radius: 20),
+                SizedBox(height: 12),
+                SkeletonBlock(height: 88, radius: 20),
+              ],
+            ),
+          ),
+        ),
         error: (_, __) => PurchaseState(
           icon: Icons.cloud_off_outlined,
           title: 'Unable to load plans',
