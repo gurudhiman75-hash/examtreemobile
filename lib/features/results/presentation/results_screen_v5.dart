@@ -6,6 +6,7 @@ import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../../shared/widgets/skeleton.dart';
 import '../../promotions/domain/promotion_campaign.dart';
 import '../../promotions/presentation/providers/promotion_providers.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
@@ -999,8 +1000,9 @@ class _ResultsLoadingView extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
           ),
         );
-    return ListView(
-      physics: const AlwaysScrollableScrollPhysics(),
+    return SkeletonShimmer(
+      child: ListView(
+      physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
         AppSpacing.sm,
@@ -1016,6 +1018,7 @@ class _ResultsLoadingView extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         block(210),
       ],
+    ),
     );
   }
 }
