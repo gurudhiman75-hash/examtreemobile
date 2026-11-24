@@ -3,9 +3,20 @@ import 'package:flutter/material.dart';
 class AppTypography {
   AppTypography._();
 
+  /// Primary UI font, bundled so text looks the same offline and on every
+  /// device.
+  static const String fontFamily = 'PlusJakartaSans';
+
+  /// Fallbacks for question, solution and review text in Hindi and Punjabi.
+  static const List<String> fontFamilyFallback = [
+    'NotoSansDevanagari',
+    'NotoSansGurmukhi',
+  ];
+
   static TextStyle premiumHeading(TextStyle? base) {
     return (base ?? const TextStyle()).copyWith(
-      fontFamily: 'serif',
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontFamilyFallback,
       fontWeight: FontWeight.w800,
       letterSpacing: -0.25,
       height: 1.08,

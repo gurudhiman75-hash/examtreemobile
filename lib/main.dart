@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/observability/crash_reporting.dart';
@@ -19,6 +20,7 @@ import 'routes/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _registerFontLicenses();
 
   FirebaseBootstrapConfiguration configuration;
   try {
@@ -240,4 +242,20 @@ class FirebaseStartupErrorApp extends StatelessWidget {
       ),
     );
   }
+}
+
+
+void _registerFontLicenses() {
+  const fonts = {
+    'Plus Jakarta Sans': 'PlusJakartaSans-OFL.txt',
+    'Noto Sans Devanagari': 'NotoSansDevanagari-OFL.txt',
+    'Noto Sans Gurmukhi': 'NotoSansGurmukhi-OFL.txt',
+  };
+  LicenseRegistry.addLicense(() async* {
+    for (final entry in fonts.entries) {
+      final text =
+          await rootBundle.loadString('assets/fonts/licenses/${entry.value}');
+      yield LicenseEntryWithLineBreaks([entry.key], text);
+    }
+  });
 }
