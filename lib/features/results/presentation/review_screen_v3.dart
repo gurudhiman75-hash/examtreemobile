@@ -35,7 +35,8 @@ class ReviewScreen extends ConsumerWidget {
         ),
         data: (result) => result.questionReview.isEmpty
             ? _ReviewLoadState(
-                message: 'Question-level review is unavailable for this attempt.',
+                message:
+                    'Question-level review is unavailable for this attempt.',
                 onRetry: () => ref.invalidate(resultProvider(resultId)),
               )
             : _ReviewBody(result: result),
@@ -207,110 +208,45 @@ class _ReviewOverview extends StatelessWidget {
     final incorrect = questions
         .where((question) => question.isAnswered && !question.isCorrect)
         .length;
-    final unanswered = questions.where((question) => !question.isAnswered).length;
+    final unanswered = questions
+        .where((question) => !question.isAnswered)
+        .length;
+    final summary = '$correct correct · $incorrect wrong · $unanswered skipped';
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
 
     return Container(
       key: const Key('review-overview'),
-      margin: const EdgeInsets.fromLTRB(10, AppSpacing.sm, 10, AppSpacing.sm),
-      padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF031B3A),
-            Color(0xFF063A70),
-            Color(0xFF0B5D96),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF062D5C).withValues(alpha: .10),
-            blurRadius: 18,
-            offset: const Offset(0, 7),
-          ),
-        ],
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFE4E9F1))),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'ATTEMPT REVIEW',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: const Color(0xFFFFD36B),
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-            ),
-          ),
-          if (result.testName.trim().isNotEmpty) ...[
-            const SizedBox(height: 4),
+          if (result.testName.trim().isNotEmpty)
             Text(
               result.testName,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -0.3,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: const Color(0xFF10264A),
+                fontWeight: FontWeight.w800,
               ),
             ),
-          ],
-          const SizedBox(height: AppSpacing.md),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final textScale = MediaQuery.textScalerOf(context).scale(1);
-              final compact = textScale >= 1.5 || constraints.maxWidth < 340;
-              final metrics = [
-                _OverviewMetric(
-                  value: '$correct',
-                  label: 'Correct',
-                  background: AppColors.mintContainer,
-                  foreground: AppColors.onMintContainer,
-                ),
-                _OverviewMetric(
-                  value: '$incorrect',
-                  label: 'Incorrect',
-                  background: AppColors.roseContainer,
-                  foreground: AppColors.onRoseContainer,
-                ),
-                _OverviewMetric(
-                  value: '$unanswered',
-                  label: 'Unanswered',
-                  background: Colors.white.withValues(alpha: .14),
-                  foreground: Colors.white.withValues(alpha: .88),
-                ),
-                _OverviewMetric(
-                  value: '${result.accuracy.round()}%',
-                  label: 'Accuracy',
-                  background: Colors.white.withValues(alpha: .12),
-                  foreground: Colors.white,
-                ),
-              ];
-              if (!compact) {
-                return Row(
-                  children: [
-                    for (var index = 0; index < metrics.length; index++) ...[
-                      if (index > 0) const SizedBox(width: AppSpacing.xs),
-                      Expanded(child: metrics[index]),
-                    ],
-                  ],
-                );
-              }
-              final width = (constraints.maxWidth - AppSpacing.sm) / 2;
-              return Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
-                children: [
-                  for (final metric in metrics)
-                    SizedBox(width: width, child: metric),
-                ],
-              );
-            },
+          const SizedBox(height: 2),
+          Text(
+            summary,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: const Color(0xFF5F6F82),
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.xs),
           SizedBox(
-            height: MediaQuery.textScalerOf(context).scale(1) >= 1.5 ? 58 : 42,
+            height: largeText ? 56 : 40,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: ReviewQuestionFilter.values.length,
@@ -318,16 +254,19 @@ class _ReviewOverview extends StatelessWidget {
               itemBuilder: (context, index) {
                 final filter = ReviewQuestionFilter.values[index];
                 final count = reviewQuestionCount(questions, filter);
+                final selected = selectedFilter == filter;
                 return ChoiceChip(
-                  selected: selectedFilter == filter,
+                  selected: selected,
                   showCheckmark: false,
-                  side: BorderSide.none,
-                  backgroundColor: Colors.white.withValues(alpha: .10),
-                  selectedColor: const Color(0xFFFFD36B),
+                  side: BorderSide(
+                    color: selected
+                        ? const Color(0xFF0B3A6F)
+                        : const Color(0xFFDCE5EF),
+                  ),
+                  backgroundColor: Colors.white,
+                  selectedColor: const Color(0xFF0B3A6F),
                   labelStyle: theme.textTheme.labelMedium?.copyWith(
-                    color: selectedFilter == filter
-                        ? const Color(0xFF0B2748)
-                        : Colors.white.withValues(alpha: .88),
+                    color: selected ? Colors.white : const Color(0xFF10264A),
                     fontWeight: FontWeight.w800,
                   ),
                   label: Text('${filter.label} $count'),
@@ -337,63 +276,6 @@ class _ReviewOverview extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OverviewMetric extends StatelessWidget {
-  const _OverviewMetric({
-    required this.value,
-    required this.label,
-    required this.background,
-    required this.foreground,
-  });
-
-  final String value;
-  final String label;
-  final Color background;
-  final Color foreground;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Semantics(
-      label: '$label: $value',
-      excludeSemantics: true,
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 62),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xs,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              value,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -489,7 +371,8 @@ class _QuestionReviewPane extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               Semantics(
-                label: 'Review progress: ${visiblePosition + 1} of $visibleCount',
+                label:
+                    'Review progress: ${visiblePosition + 1} of $visibleCount',
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(99),
                   child: LinearProgressIndicator(
@@ -571,27 +454,28 @@ class _QuestionStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (label, background, foreground, icon) = switch (
-      (question.isAnswered, question.isCorrect)
-    ) {
+    final (label, background, foreground, icon) = switch ((
+      question.isAnswered,
+      question.isCorrect,
+    )) {
       (false, _) => (
-          'Unanswered',
-          Theme.of(context).colorScheme.surfaceContainerHigh,
-          Theme.of(context).colorScheme.onSurfaceVariant,
-          Icons.remove_circle_outline,
-        ),
+        'Unanswered',
+        Theme.of(context).colorScheme.surfaceContainerHigh,
+        Theme.of(context).colorScheme.onSurfaceVariant,
+        Icons.remove_circle_outline,
+      ),
       (true, true) => (
-          'Correct',
-          AppColors.mintContainer,
-          AppColors.onMintContainer,
-          Icons.check_circle_outline,
-        ),
+        'Correct',
+        AppColors.mintContainer,
+        AppColors.onMintContainer,
+        Icons.check_circle_outline,
+      ),
       (true, false) => (
-          'Incorrect',
-          AppColors.roseContainer,
-          AppColors.onRoseContainer,
-          Icons.cancel_outlined,
-        ),
+        'Incorrect',
+        AppColors.roseContainer,
+        AppColors.onRoseContainer,
+        Icons.cancel_outlined,
+      ),
     };
 
     return Container(
@@ -658,10 +542,7 @@ class _MetaChip extends StatelessWidget {
 }
 
 class _OptionReviewTile extends StatelessWidget {
-  const _OptionReviewTile({
-    required this.optionIndex,
-    required this.question,
-  });
+  const _OptionReviewTile({required this.optionIndex, required this.question});
 
   final int optionIndex;
   final ResultQuestionReview question;
@@ -678,18 +559,18 @@ class _OptionReviewTile extends StatelessWidget {
     final background = isCorrect
         ? AppColors.mintContainer
         : isSelected
-            ? AppColors.roseContainer
-            : Colors.white;
+        ? AppColors.roseContainer
+        : Colors.white;
     final foreground = isCorrect
         ? AppColors.onMintContainer
         : isSelected
-            ? AppColors.onRoseContainer
-            : const Color(0xFF26384F);
+        ? AppColors.onRoseContainer
+        : const Color(0xFF26384F);
     final border = isCorrect
         ? AppColors.mint.withValues(alpha: .18)
         : isSelected
-            ? AppColors.rose.withValues(alpha: .18)
-            : const Color(0xFFE3E9F1);
+        ? AppColors.rose.withValues(alpha: .18)
+        : const Color(0xFFE3E9F1);
 
     String? annotation;
     IconData? icon;
@@ -739,8 +620,9 @@ class _OptionReviewTile extends StatelessWidget {
                   question.options[optionIndex],
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: foreground,
-                    fontWeight:
-                        isCorrect || isSelected ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: isCorrect || isSelected
+                        ? FontWeight.w700
+                        : FontWeight.w500,
                     height: 1.4,
                   ),
                 ),
@@ -1040,15 +922,21 @@ class _QuestionPalette extends StatelessWidget {
                         duration: const Duration(milliseconds: 140),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: selected ? colors.foreground : colors.background,
-                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                          color: selected
+                              ? colors.foreground
+                              : colors.background,
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusMd,
+                          ),
                         ),
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
                             '${originalIndex + 1}',
                             style: theme.textTheme.labelLarge?.copyWith(
-                              color: selected ? Colors.white : colors.foreground,
+                              color: selected
+                                  ? Colors.white
+                                  : colors.foreground,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -1077,15 +965,9 @@ class _QuestionPalette extends StatelessWidget {
     );
   }
   if (question.isCorrect) {
-    return (
-      background: AppColors.mintContainer,
-      foreground: AppColors.mint,
-    );
+    return (background: AppColors.mintContainer, foreground: AppColors.mint);
   }
-  return (
-    background: AppColors.roseContainer,
-    foreground: AppColors.rose,
-  );
+  return (background: AppColors.roseContainer, foreground: AppColors.rose);
 }
 
 String _statusLabel(ResultQuestionReview question) {
