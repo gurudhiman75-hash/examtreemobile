@@ -57,17 +57,17 @@ final GlobalKey<NavigatorState> _shellNavigatorExamsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellExams');
 final GlobalKey<NavigatorState> _shellNavigatorCurrentAffairsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellCurrentAffairs');
-final GlobalKey<NavigatorState> _shellNavigatorProfileKey =
+final GlobalKey<NavigatorState> _shellNavigatorResultsKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
 
 bool _routeNeedsIdentifier(String path) => const {
-      '/exam-details',
-      '/test-attempt',
-      '/review',
-      '/result-summary',
-      '/learn-resource',
-      '/learn-lesson',
-    }.contains(path);
+  '/exam-details',
+  '/test-attempt',
+  '/review',
+  '/result-summary',
+  '/learn-resource',
+  '/learn-lesson',
+}.contains(path);
 
 String _continuationFor(Uri uri, {Object? routeExtra}) {
   var durableUri = uri;
@@ -76,10 +76,7 @@ String _continuationFor(Uri uri, {Object? routeExtra}) {
     final routeId = readRequiredRouteId(routeExtra);
     if (routeId != null) {
       durableUri = uri.replace(
-        queryParameters: {
-          ...uri.queryParameters,
-          'id': routeId,
-        },
+        queryParameters: {...uri.queryParameters, 'id': routeId},
       );
     }
   }
@@ -90,7 +87,8 @@ String _continuationFor(Uri uri, {Object? routeExtra}) {
 
 String? _validatedContinuation(String? location) {
   if (location == null || !location.startsWith('/')) return null;
-  if (location.startsWith('/login') || location.startsWith('/forgot-password')) {
+  if (location.startsWith('/login') ||
+      location.startsWith('/forgot-password')) {
     return null;
   }
   return location;
@@ -109,8 +107,7 @@ String? resolveAuthRedirect({
   Object? routeExtra,
 }) {
   final isLogin = matchedLocation == '/login';
-  final isPublicAuthRoute =
-      isLogin || matchedLocation == '/forgot-password';
+  final isPublicAuthRoute = isLogin || matchedLocation == '/forgot-password';
 
   if (!authReady) return null;
   if (!isAuthenticated && !isPublicAuthRoute) {
@@ -133,8 +130,8 @@ String? resolveAuthRedirect({
 
 class RouterAuthRefresh extends ChangeNotifier {
   RouterAuthRefresh(FirebaseAuth auth, AuthNavigationGate navigationGate)
-      : _navigationGate = navigationGate,
-        _user = auth.currentUser {
+    : _navigationGate = navigationGate,
+      _user = auth.currentUser {
     _navigationGate.addListener(_handleNavigationGateChanged);
     _subscription = auth.authStateChanges().listen(
       (user) {
@@ -205,10 +202,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       );
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/forgot-password',
         builder: (context, state) => PasswordRecoveryScreen(
@@ -225,7 +219,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/home',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'home', nativeChild: HomeScreen()),
+                builder: (context, state) => const RegisteredMobilePageScreen(
+                  slug: 'home',
+                  nativeChild: HomeScreen(),
+                ),
               ),
             ],
           ),
@@ -234,7 +231,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/learn',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'learn', nativeChild: LearnScreen()),
+                builder: (context, state) => const RegisteredMobilePageScreen(
+                  slug: 'learn',
+                  nativeChild: LearnScreen(),
+                ),
               ),
             ],
           ),
@@ -243,7 +243,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/exams',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'exams', nativeChild: ExamsScreen()),
+                builder: (context, state) => const RegisteredMobilePageScreen(
+                  slug: 'exams',
+                  nativeChild: ExamsScreen(),
+                ),
               ),
             ],
           ),
@@ -252,16 +255,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/current-affairs',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'current-affairs', nativeChild: CurrentAffairsScreen()),
+                builder: (context, state) => const RegisteredMobilePageScreen(
+                  slug: 'current-affairs',
+                  nativeChild: CurrentAffairsScreen(),
+                ),
               ),
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorProfileKey,
+            navigatorKey: _shellNavigatorResultsKey,
             routes: [
               GoRoute(
-                path: '/profile',
-                builder: (context, state) => const RegisteredMobilePageScreen(slug: 'profile', nativeChild: ProfileScreen()),
+                path: '/results',
+                builder: (context, state) => const ResultsScreen(),
               ),
             ],
           ),
@@ -303,12 +309,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ProfileCouponsScreen(),
       ),
       GoRoute(
-        path: '/results',
+        path: '/profile',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => Scaffold(
           backgroundColor: const Color(0xFFFBFCFE),
           appBar: AppBar(
-            title: const Text('Results'),
+            title: const Text('Profile'),
             backgroundColor: Colors.white,
             foregroundColor: const Color(0xFF10264A),
             surfaceTintColor: Colors.transparent,
@@ -318,7 +324,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               child: Divider(height: 1, color: Color(0xFFE8EDF3)),
             ),
           ),
-          body: const ResultsScreen(),
+          body: const RegisteredMobilePageScreen(
+            slug: 'profile',
+            nativeChild: ProfileScreen(),
+          ),
         ),
       ),
       GoRoute(
@@ -351,7 +360,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (seriesId.isEmpty) {
             return const _MissingRouteIdentifierScreen(
               title: 'Test series unavailable',
-              message: 'No test-series identifier was supplied. Open the series again from Home.',
+              message:
+                  'No test-series identifier was supplied. Open the series again from Home.',
             );
           }
           return MobileTestSeriesDetailScreen(seriesId: seriesId);
@@ -376,7 +386,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
           final seriesId = state.uri.queryParameters['seriesId']?.trim() ?? '';
-          final productId = state.uri.queryParameters['productId']?.trim() ?? '';
+          final productId =
+              state.uri.queryParameters['productId']?.trim() ?? '';
           if (seriesId.isEmpty || productId.isEmpty) {
             return const _MissingRouteIdentifierScreen(
               title: 'Checkout unavailable',
@@ -404,8 +415,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return AccessReadyScreen(
             seriesId: seriesId,
             orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
-            orderNumber:
-                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+            orderNumber: state.uri.queryParameters['orderNumber']?.trim() ?? '',
           );
         },
       ),
@@ -423,8 +433,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return PaymentSuccessScreen(
             seriesId: seriesId,
             orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
-            orderNumber:
-                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+            orderNumber: state.uri.queryParameters['orderNumber']?.trim() ?? '',
           );
         },
       ),
@@ -463,17 +472,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return OrderDetailsScreen(
             seriesId: seriesId,
             orderId: state.uri.queryParameters['orderId']?.trim() ?? '',
-            orderNumber:
-                state.uri.queryParameters['orderNumber']?.trim() ?? '',
+            orderNumber: state.uri.queryParameters['orderNumber']?.trim() ?? '',
           );
         },
       ),
       GoRoute(
         path: '/page/:slug',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => ManagedMobilePageScreen(
-          slug: state.pathParameters['slug'] ?? '',
-        ),
+        builder: (context, state) =>
+            ManagedMobilePageScreen(slug: state.pathParameters['slug'] ?? ''),
       ),
       GoRoute(
         path: '/notifications',
@@ -493,9 +500,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/quick-revision',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => QuickRevisionScreen(
-          minutes: _quickRevisionMinutes(state.uri),
-        ),
+        builder: (context, state) =>
+            QuickRevisionScreen(minutes: _quickRevisionMinutes(state.uri)),
       ),
       GoRoute(
         path: '/learn-module',
@@ -524,7 +530,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => LearnPracticeResultScreen(
           topicId: state.uri.queryParameters['topic'] ?? '',
-          correct: int.tryParse(state.uri.queryParameters['correct'] ?? '') ?? 0,
+          correct:
+              int.tryParse(state.uri.queryParameters['correct'] ?? '') ?? 0,
           total: int.tryParse(state.uri.queryParameters['total'] ?? '') ?? 0,
         ),
       ),
@@ -543,7 +550,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           if (lessonId == null) {
             return const _MissingRouteIdentifierScreen(
               title: 'Lesson unavailable',
-              message: 'No lesson identifier was supplied. Open the lesson again from Learn.',
+              message:
+                  'No lesson identifier was supplied. Open the lesson again from Learn.',
             );
           }
           return LearnLessonScreen(lessonId: lessonId);
@@ -589,8 +597,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final categoryCode =
               state.uri.queryParameters['family']?.trim() ??
-                  state.uri.queryParameters['id']?.trim() ??
-                  '';
+              state.uri.queryParameters['id']?.trim() ??
+              '';
           if (categoryCode.isEmpty) {
             return const _MissingRouteIdentifierScreen(
               title: 'Exam category unavailable',
@@ -607,8 +615,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final examCode =
               state.uri.queryParameters['exam']?.trim() ??
-                  state.uri.queryParameters['id']?.trim() ??
-                  '';
+              state.uri.queryParameters['id']?.trim() ??
+              '';
           if (examCode.isEmpty) {
             return const _MissingRouteIdentifierScreen(
               title: 'Exam unavailable',
@@ -762,8 +770,7 @@ class _MissingRouteIdentifierScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      textStyle:
-                          const TextStyle(fontWeight: FontWeight.w900),
+                      textStyle: const TextStyle(fontWeight: FontWeight.w900),
                     ),
                     icon: const Icon(Icons.home_outlined),
                     label: const Text('Back to Home'),

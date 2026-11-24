@@ -104,7 +104,7 @@ class HomeScreen extends ConsumerWidget {
                       greeting: _greeting(currentTime),
                       todayLabel: _todayLabel(currentTime),
                       onSearch: () => context.go('/exams'),
-                      onProfile: () => context.go('/profile'),
+                      onProfile: () => context.push('/profile'),
                     ),
                     const SizedBox(height: AppSpacing.md),
                     _PrimaryActionStateView(
@@ -142,7 +142,7 @@ class HomeScreen extends ConsumerWidget {
                       title: 'Performance pulse',
                       subtitle: 'Only the signals you need for your next session.',
                       actionLabel: 'Details',
-                      onAction: () => context.go('/profile'),
+                      onAction: () => context.push('/profile'),
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     analyticsAsync.when(
@@ -156,7 +156,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       data: (analytics) => _PerformancePulse(
                         analytics: analytics,
-                        onOpen: () => context.go('/profile'),
+                        onOpen: () => context.push('/profile'),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.md),
