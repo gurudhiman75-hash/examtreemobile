@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../store/domain/series_purchase.dart';
 import '../../../shared/widgets/skeleton.dart';
+import '../domain/series_test_type.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -1075,7 +1076,7 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-class _TestsTab extends StatelessWidget {
+class _TestsTab extends StatefulWidget {
   const _TestsTab({
     required this.vm,
     required this.onOpenTest,
@@ -1085,7 +1086,15 @@ class _TestsTab extends StatelessWidget {
   final ValueChanged<_SeriesMember> onOpenTest;
 
   @override
+  State<_TestsTab> createState() => _TestsTabState();
+}
+
+class _TestsTabState extends State<_TestsTab> {
+  SeriesTestType? _selected;
+
+  @override
   Widget build(BuildContext context) {
+    final vm = widget.vm;
     if (vm.members.isEmpty) {
       return _EmptySeries(
         message: vm.comingSoon && vm.learnerMessage.isNotEmpty
@@ -1094,39 +1103,168 @@ class _TestsTab extends StatelessWidget {
       );
     }
 
-    final groups = _groupMembers(vm.members);
-    var runningIndex = 0;
+    final groups = groupBySeriesTestType(vm.members, (m) => m.title);
+    final types = groups.keys.toList(growable: false);
+    final selected = types.contains(_selected) ? _selected! : types.first;
+    final members = groups[selected]!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ProgressCard(vm: vm),
         const SizedBox(height: 12),
-        for (final entry in groups.entries) ...[
-          _TestGroupHeader(
-            title: entry.key,
-            count: entry.value.length,
-            subtitle: switch (entry.key) {
-              'Sectional Tests' => 'Subject-wise practice tests',
-              'Previous Year Papers' => 'Previous exam papers with review',
-              'Topic-wise Tests' => 'Focused practice on important topics',
-              _ => 'Latest pattern full syllabus tests',
-            },
+        if (types.length > 1) ...[
+          _TestTypeSwitcher(
+            types: types,
+            counts: {for (final t in types) t: groups[t]!.length},
+            selected: selected,
+            onSelected: (type) => setState(() => _selected = type),
           ),
-          const SizedBox(height: 8),
-          for (var localIndex = 0; localIndex < entry.value.length; localIndex++) ...[
-            _SeriesTestCard(
-              index: ++runningIndex,
-              member: entry.value[localIndex],
-              onOpen: entry.value[localIndex].unlocked
-                  ? () => onOpenTest(entry.value[localIndex])
-                  : null,
-            ),
-            if (localIndex != entry.value.length - 1)
-              const SizedBox(height: 8),
-          ],
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
         ],
+        _TestGroupHeader(
+          title: selected.title,
+          count: members.length,
+          subtitle: selected.subtitle,
+        ),
+        const SizedBox(height: 8),
+        for (var index = 0; index < members.length; index++) ...[
+          _SeriesTestCard(
+            index: index + 1,
+            member: members[index],
+            onOpen: members[index].unlocked
+                ? () => widget.onOpenTest(members[index])
+                : null,
+          ),
+          if (index != members.length - 1) const SizedBox(height: 8),
+        ],
+        const SizedBox(height: 14),
       ],
+    );
+  }
+}
+
+class _TestTypeSwitcher extends StatelessWidget {
+  const _TestTypeSwitcher({
+    required this.types,
+    required this.counts,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final List<SeriesTestType> types;
+  final Map<SeriesTestType, int> counts;
+  final SeriesTestType selected;
+  final ValueChanged<SeriesTestType> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.3;
+    final buttons = [
+      for (final type in types)
+        _TestTypeButton(
+          key: ValueKey('series-test-type-${type.name}'),
+          label: type.tabLabel,
+          count: counts[type] ?? 0,
+          selected: type == selected,
+          onTap: () => onSelected(type),
+        ),
+    ];
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE9EEF5),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: largeText
+          ? SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final button in buttons)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: button,
+                    ),
+                ],
+              ),
+            )
+          : Row(
+              children: [
+                for (var i = 0; i < buttons.length; i++) ...[
+                  Expanded(child: buttons[i]),
+                  if (i != buttons.length - 1) const SizedBox(width: 4),
+                ],
+              ],
+            ),
+    );
+  }
+}
+
+class _TestTypeButton extends StatelessWidget {
+  const _TestTypeButton({
+    super.key,
+    required this.label,
+    required this.count,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final int count;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$label, $count tests',
+      excludeSemantics: true,
+      child: Material(
+        color: selected ? Colors.white : Colors.transparent,
+        elevation: selected ? 1 : 0,
+        shadowColor: const Color(0x2610264A),
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 52),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      color: selected
+                          ? const Color(0xFF0B3A6F)
+                          : const Color(0xFF31445F),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    '$count',
+                    style: const TextStyle(
+                      color: Color(0xFF5F6F82),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1456,19 +1594,10 @@ class _FaqsTab extends StatelessWidget {
 }
 
 Map<String, List<_SeriesMember>> _groupMembers(List<_SeriesMember> members) {
-  final result = <String, List<_SeriesMember>>{};
-  for (final member in members) {
-    final title = member.title.toLowerCase();
-    final group = title.contains('section')
-        ? 'Sectional Tests'
-        : title.contains('previous') || title.contains('pyq')
-            ? 'Previous Year Papers'
-            : title.contains('topic') || title.contains('chapter')
-                ? 'Topic-wise Tests'
-                : 'Full Length Mock Tests';
-    result.putIfAbsent(group, () => <_SeriesMember>[]).add(member);
-  }
-  return result;
+  return {
+    for (final entry in groupBySeriesTestType(members, (m) => m.title).entries)
+      entry.key.title: entry.value,
+  };
 }
 
 class _SectionCard extends StatelessWidget {
