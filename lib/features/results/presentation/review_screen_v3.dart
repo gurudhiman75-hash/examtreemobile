@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/models/result_model.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
+import '../../bookmarks/domain/question_bookmark.dart';
+import '../../bookmarks/presentation/providers/bookmark_providers.dart';
 import 'providers/result_providers.dart';
 import 'review_question_filter.dart';
 
@@ -151,6 +154,7 @@ class _ReviewBodyState extends State<_ReviewBody> {
         else
           Expanded(
             child: _QuestionReviewPane(
+              result: widget.result,
               question: _questions[visibleIndexes[_visiblePosition]],
               originalIndex: visibleIndexes[_visiblePosition],
               totalQuestions: _questions.length,
@@ -283,6 +287,7 @@ class _ReviewOverview extends StatelessWidget {
 
 class _QuestionReviewPane extends StatelessWidget {
   const _QuestionReviewPane({
+    required this.result,
     required this.question,
     required this.originalIndex,
     required this.totalQuestions,
@@ -291,6 +296,7 @@ class _QuestionReviewPane extends StatelessWidget {
     required this.onOpenPalette,
   });
 
+  final Result result;
   final ResultQuestionReview question;
   final int originalIndex;
   final int totalQuestions;
@@ -339,12 +345,17 @@ class _QuestionReviewPane extends StatelessWidget {
                     onPressed: onOpenPalette,
                     icon: const Icon(Icons.grid_view_rounded),
                   );
+                  final bookmark = _BookmarkQuestionButton(
+                    result: result,
+                    question: question,
+                  );
                   if (!stack) {
                     return Row(
                       children: [
                         Expanded(child: title),
                         status,
-                        const SizedBox(width: AppSpacing.sm),
+                        const SizedBox(width: AppSpacing.xs),
+                        bookmark,
                         palette,
                       ],
                     );
@@ -362,6 +373,7 @@ class _QuestionReviewPane extends StatelessWidget {
                               child: status,
                             ),
                           ),
+                          bookmark,
                           palette,
                         ],
                       ),
@@ -982,4 +994,68 @@ String _formatDuration(int seconds) {
   final remainder = safeSeconds % 60;
   if (minutes == 0) return '${remainder}s';
   return '${minutes}m ${remainder.toString().padLeft(2, '0')}s';
+}
+
+
+class _BookmarkQuestionButton extends ConsumerWidget {
+  const _BookmarkQuestionButton({required this.result, required this.question});
+
+  final Result result;
+  final ResultQuestionReview question;
+
+  Future<void> _toggle(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final router = GoRouter.maybeOf(context);
+    // Save the question with all its languages, not just the one on screen.
+    var source = question;
+    try {
+      final raw = await ref.read(rawResultProvider(result.id).future);
+      source = raw.questionReview.firstWhere(
+        (item) =>
+            QuestionBookmark.idFor(item) == QuestionBookmark.idFor(question),
+        orElse: () => question,
+      );
+    } catch (_) {
+      // Offline or unavailable: keep the version already on screen.
+    }
+    try {
+      final saved = await ref.read(questionBookmarksProvider.notifier).toggle(
+            question: source,
+            testName: result.testName,
+            attemptId: result.id,
+          );
+      messenger
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(saved ? 'Saved to Bookmarks' : 'Removed from Bookmarks'),
+            action: saved && router != null
+                ? SnackBarAction(
+                    label: 'View',
+                    onPressed: () => router.push('/profile-bookmarks'),
+                  )
+                : null,
+          ),
+        );
+    } catch (_) {
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Could not save this question. Try again.')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final saved = ref.watch(
+      isQuestionBookmarkedProvider(QuestionBookmark.idFor(question)),
+    );
+    return IconButton(
+      key: const Key('review-bookmark-question'),
+      tooltip: saved ? 'Remove bookmark' : 'Bookmark this question',
+      isSelected: saved,
+      onPressed: () => _toggle(context, ref),
+      icon: const Icon(Icons.bookmark_border_rounded),
+      selectedIcon: const Icon(Icons.bookmark_rounded, color: Color(0xFF0B3A6F)),
+    );
+  }
 }

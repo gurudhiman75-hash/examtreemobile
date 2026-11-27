@@ -348,20 +348,6 @@ class ProfileDownloadsScreen extends StatelessWidget {
       );
 }
 
-class ProfileBookmarksScreen extends StatelessWidget {
-  const ProfileBookmarksScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: const Color(0xFFF8FBFF),
-        appBar: _bar('Bookmarks'),
-        body: const _EmptyPage(
-          icon: Icons.bookmark_outline_rounded,
-          title: 'No saved bookmarks yet',
-          body: 'Items you save for revision will appear here as bookmark support expands across Learn and tests.',
-        ),
-      );
-}
-
 class ProfileCouponsScreen extends StatelessWidget {
   const ProfileCouponsScreen({super.key});
   @override
