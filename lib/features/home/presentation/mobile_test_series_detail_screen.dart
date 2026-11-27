@@ -6,6 +6,7 @@ import '../../../core/providers/repository_providers.dart';
 import '../../store/domain/series_purchase.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../domain/series_test_type.dart';
+import '../../mobile_config/presentation/mobile_app_configuration_providers.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -485,7 +486,10 @@ class _SeriesMember {
     required this.lockReason,
     required this.paidAccessRequired,
     required this.entitled,
+    required this.type,
   });
+
+  final SeriesTestType type;
 
   final String testId;
   final String title;
@@ -534,6 +538,13 @@ class _SeriesMember {
       lockReason: _text(json['lockReason']),
       paidAccessRequired: json['paidAccessRequired'] == true,
       entitled: json['entitled'] == true,
+      type: SeriesTestType.resolve(
+        kind: json['kind'] ??
+            (json['configuration'] is Map
+                ? (json['configuration'] as Map)['kind']
+                : null),
+        title: _text(json['title']),
+      ),
     );
   }
 }
@@ -1076,7 +1087,7 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-class _TestsTab extends StatefulWidget {
+class _TestsTab extends ConsumerStatefulWidget {
   const _TestsTab({
     required this.vm,
     required this.onOpenTest,
@@ -1086,10 +1097,10 @@ class _TestsTab extends StatefulWidget {
   final ValueChanged<_SeriesMember> onOpenTest;
 
   @override
-  State<_TestsTab> createState() => _TestsTabState();
+  ConsumerState<_TestsTab> createState() => _TestsTabState();
 }
 
-class _TestsTabState extends State<_TestsTab> {
+class _TestsTabState extends ConsumerState<_TestsTab> {
   SeriesTestType? _selected;
 
   @override
@@ -1103,7 +1114,17 @@ class _TestsTabState extends State<_TestsTab> {
       );
     }
 
-    final groups = groupBySeriesTestType(vm.members, (m) => m.title);
+    final tabsEnabled = ref.watch(
+      mobileFeatureFlagProvider((
+        key: MobileFeatureFlags.seriesTestTypeTabs,
+        defaultValue: true,
+      )),
+    );
+    if (!tabsEnabled) {
+      return _AllGroupsList(vm: vm, onOpenTest: widget.onOpenTest);
+    }
+
+    final groups = groupBySeriesTestType(vm.members, (m) => m.type);
     final types = groups.keys.toList(growable: false);
     final selected = types.contains(_selected) ? _selected! : types.first;
     final members = groups[selected]!;
@@ -1139,6 +1160,44 @@ class _TestsTabState extends State<_TestsTab> {
           if (index != members.length - 1) const SizedBox(height: 8),
         ],
         const SizedBox(height: 14),
+      ],
+    );
+  }
+}
+
+/// The previous stacked layout, used when the tabs flag is turned off.
+class _AllGroupsList extends StatelessWidget {
+  const _AllGroupsList({required this.vm, required this.onOpenTest});
+
+  final _SeriesViewModel vm;
+  final ValueChanged<_SeriesMember> onOpenTest;
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = groupBySeriesTestType(vm.members, (m) => m.type);
+    var number = 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ProgressCard(vm: vm),
+        const SizedBox(height: 12),
+        for (final entry in groups.entries) ...[
+          _TestGroupHeader(
+            title: entry.key.title,
+            count: entry.value.length,
+            subtitle: entry.key.subtitle,
+          ),
+          const SizedBox(height: 8),
+          for (final member in entry.value) ...[
+            _SeriesTestCard(
+              index: ++number,
+              member: member,
+              onOpen: member.unlocked ? () => onOpenTest(member) : null,
+            ),
+            const SizedBox(height: 8),
+          ],
+          const SizedBox(height: 6),
+        ],
       ],
     );
   }
@@ -1595,7 +1654,7 @@ class _FaqsTab extends StatelessWidget {
 
 Map<String, List<_SeriesMember>> _groupMembers(List<_SeriesMember> members) {
   return {
-    for (final entry in groupBySeriesTestType(members, (m) => m.title).entries)
+    for (final entry in groupBySeriesTestType(members, (m) => m.type).entries)
       entry.key.title: entry.value,
   };
 }

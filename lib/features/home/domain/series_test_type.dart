@@ -36,6 +36,24 @@ enum SeriesTestType {
   final String title;
   final String subtitle;
 
+  /// Reads the type the backend sends for a series test (`kind`), accepting
+  /// the admin values and common spellings. Returns null when the value is
+  /// missing or unknown, so callers can fall back to [fromTitle].
+  static SeriesTestType? fromKind(Object? kind) {
+    final value = kind?.toString().trim().toLowerCase().replaceAll('_', '-');
+    return switch (value) {
+      'full' || 'full-length' || 'mock' => SeriesTestType.full,
+      'sectional' || 'section' => SeriesTestType.sectional,
+      'topic' || 'topic-wise' || 'chapter' => SeriesTestType.topic,
+      'pyq' || 'previous-year' || 'previous' => SeriesTestType.previousYear,
+      _ => null,
+    };
+  }
+
+  /// The backend type when it sends one, otherwise a guess from the title.
+  static SeriesTestType resolve({Object? kind, required String title}) =>
+      fromKind(kind) ?? fromTitle(title);
+
   static SeriesTestType fromTitle(String title) {
     final value = title.toLowerCase();
     if (value.contains('section')) return SeriesTestType.sectional;
@@ -56,11 +74,11 @@ enum SeriesTestType {
 /// types.
 Map<SeriesTestType, List<T>> groupBySeriesTestType<T>(
   Iterable<T> items,
-  String Function(T item) titleOf,
+  SeriesTestType Function(T item) typeOf,
 ) {
   final buckets = {for (final type in SeriesTestType.values) type: <T>[]};
   for (final item in items) {
-    buckets[SeriesTestType.fromTitle(titleOf(item))]!.add(item);
+    buckets[typeOf(item)]!.add(item);
   }
   buckets.removeWhere((_, list) => list.isEmpty);
   return buckets;

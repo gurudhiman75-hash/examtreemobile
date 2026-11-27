@@ -21,6 +21,12 @@ class MobileAppConfiguration {
   final String defaultLanguage;
   final Map<String, bool> featureFlags;
 
+  /// Whether the remote feature flag [key] is on. A flag the admin has not
+  /// set uses [defaultValue], so shipped features stay on and unreleased ones
+  /// stay off until someone changes them in App Configuration.
+  bool isEnabled(String key, {bool defaultValue = false}) =>
+      featureFlags[key] ?? defaultValue;
+
   static const fallback = MobileAppConfiguration(
     minimumSupportedVersion: '',
     latestVersion: '',
