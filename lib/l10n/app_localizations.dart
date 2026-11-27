@@ -1539,6 +1539,342 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected exams'**
   String get learnSelectedExams;
+
+  /// No description provided for @homeExamCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Categories'**
+  String get homeExamCategories;
+
+  /// No description provided for @homeSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get homeSeeAll;
+
+  /// No description provided for @homeCategoriesFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam categories could not be loaded'**
+  String get homeCategoriesFailed;
+
+  /// No description provided for @homeNoCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'No exam categories are published right now.'**
+  String get homeNoCategories;
+
+  /// No description provided for @homeFeaturedSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured Test Series'**
+  String get homeFeaturedSeries;
+
+  /// No description provided for @homeSeriesFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Test series could not be loaded'**
+  String get homeSeriesFailed;
+
+  /// No description provided for @homeContinueLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Learning'**
+  String get homeContinueLearning;
+
+  /// No description provided for @homeRecommendedLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended Learning'**
+  String get homeRecommendedLearning;
+
+  /// No description provided for @homeCurrentAffairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Affairs'**
+  String get homeCurrentAffairs;
+
+  /// No description provided for @homeProgressUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress is temporarily unavailable'**
+  String get homeProgressUnavailable;
+
+  /// No description provided for @familyPunjab.
+  ///
+  /// In en, this message translates to:
+  /// **'Punjab Govt.'**
+  String get familyPunjab;
+
+  /// No description provided for @familyBanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Banking'**
+  String get familyBanking;
+
+  /// No description provided for @familyRailway.
+  ///
+  /// In en, this message translates to:
+  /// **'Railway'**
+  String get familyRailway;
+
+  /// No description provided for @familyTeaching.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaching'**
+  String get familyTeaching;
+
+  /// No description provided for @familyDefence.
+  ///
+  /// In en, this message translates to:
+  /// **'Defence'**
+  String get familyDefence;
+
+  /// No description provided for @familyStatePcs.
+  ///
+  /// In en, this message translates to:
+  /// **'State PCS'**
+  String get familyStatePcs;
+
+  /// No description provided for @familyOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Exams'**
+  String get familyOther;
+
+  /// No description provided for @homeExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get homeExplore;
+
+  /// No description provided for @homeTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests'**
+  String get homeTests;
+
+  /// No description provided for @homeMins.
+  ///
+  /// In en, this message translates to:
+  /// **'Mins'**
+  String get homeMins;
+
+  /// No description provided for @homeMarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Marks'**
+  String get homeMarks;
+
+  /// No description provided for @homeQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get homeQuestions;
+
+  /// No description provided for @homeDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get homeDuration;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String minutesShort(int minutes);
+
+  /// No description provided for @homeHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Preparation\nStarts Here'**
+  String get homeHeroTitle;
+
+  /// No description provided for @homeHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock tests, learning and exam-focused practice in one place.'**
+  String get homeHeroBody;
+
+  /// No description provided for @homeSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exams, test series, topics...'**
+  String get homeSearchHint;
+
+  /// No description provided for @homeContinueUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue learning is temporarily unavailable'**
+  String get homeContinueUnavailable;
+
+  /// No description provided for @homeKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Going!'**
+  String get homeKeepGoing;
+
+  /// No description provided for @homeTestsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 test completed so far.} other{{count} tests completed so far.}}'**
+  String homeTestsCompleted(int count);
+
+  /// No description provided for @homeSearchTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tests'**
+  String get homeSearchTests;
+
+  /// No description provided for @homeOpenProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open profile'**
+  String get homeOpenProfile;
+
+  /// No description provided for @homeNotificationsUnreadA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications, {count} unread'**
+  String homeNotificationsUnreadA11y(int count);
+
+  /// No description provided for @homeNotificationsNoneA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications, no unread updates'**
+  String get homeNotificationsNoneA11y;
+
+  /// No description provided for @homeNotificationsUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications ({count} unread)'**
+  String homeNotificationsUnread(int count);
+
+  /// No description provided for @homeNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get homeNotifications;
+
+  /// No description provided for @homeNextActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your next action could not be prepared'**
+  String get homeNextActionFailed;
+
+  /// No description provided for @homeLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get homeLearn;
+
+  /// No description provided for @homeRevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision'**
+  String get homeRevision;
+
+  /// No description provided for @homeStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get homeStore;
+
+  /// No description provided for @homeStrongMomentum.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong momentum'**
+  String get homeStrongMomentum;
+
+  /// No description provided for @homeKeepConsistency.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep building consistency'**
+  String get homeKeepConsistency;
+
+  /// No description provided for @homeFocusAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus on accuracy first'**
+  String get homeFocusAccuracy;
+
+  /// No description provided for @homeAvgScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg score'**
+  String get homeAvgScore;
+
+  /// No description provided for @homePerQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Per question'**
+  String get homePerQuestion;
+
+  /// No description provided for @homeQs.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Qs'**
+  String homeQs(int count);
+
+  /// No description provided for @homeNoTests.
+  ///
+  /// In en, this message translates to:
+  /// **'No tests are published right now.'**
+  String get homeNoTests;
+
+  /// No description provided for @homeCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'You are caught up on current recommendations.'**
+  String get homeCaughtUp;
+
+  /// No description provided for @homeBrowse.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse'**
+  String get homeBrowse;
+
+  /// No description provided for @homeScorePct.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}% score'**
+  String homeScorePct(int value);
+
+  /// No description provided for @homeAccuracyPct.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}% accuracy'**
+  String homeAccuracyPct(int value);
+
+  /// No description provided for @homeDue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} due'**
+  String homeDue(int count);
+
+  /// No description provided for @homeStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get homeStudent;
+
+  /// No description provided for @homeGoodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get homeGoodMorning;
+
+  /// No description provided for @homeGoodAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get homeGoodAfternoon;
+
+  /// No description provided for @homeGoodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get homeGoodEvening;
 }
 
 class _AppLocalizationsDelegate

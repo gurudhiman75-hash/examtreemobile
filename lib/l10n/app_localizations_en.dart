@@ -919,4 +919,196 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get learnSelectedExams => 'Selected exams';
+
+  @override
+  String get homeExamCategories => 'Exam Categories';
+
+  @override
+  String get homeSeeAll => 'See All';
+
+  @override
+  String get homeCategoriesFailed => 'Exam categories could not be loaded';
+
+  @override
+  String get homeNoCategories => 'No exam categories are published right now.';
+
+  @override
+  String get homeFeaturedSeries => 'Featured Test Series';
+
+  @override
+  String get homeSeriesFailed => 'Test series could not be loaded';
+
+  @override
+  String get homeContinueLearning => 'Continue Learning';
+
+  @override
+  String get homeRecommendedLearning => 'Recommended Learning';
+
+  @override
+  String get homeCurrentAffairs => 'Current Affairs';
+
+  @override
+  String get homeProgressUnavailable => 'Progress is temporarily unavailable';
+
+  @override
+  String get familyPunjab => 'Punjab Govt.';
+
+  @override
+  String get familyBanking => 'Banking';
+
+  @override
+  String get familyRailway => 'Railway';
+
+  @override
+  String get familyTeaching => 'Teaching';
+
+  @override
+  String get familyDefence => 'Defence';
+
+  @override
+  String get familyStatePcs => 'State PCS';
+
+  @override
+  String get familyOther => 'Other Exams';
+
+  @override
+  String get homeExplore => 'Explore';
+
+  @override
+  String get homeTests => 'Tests';
+
+  @override
+  String get homeMins => 'Mins';
+
+  @override
+  String get homeMarks => 'Marks';
+
+  @override
+  String get homeQuestions => 'Questions';
+
+  @override
+  String get homeDuration => 'Duration';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get homeHeroTitle => 'Your Preparation\nStarts Here';
+
+  @override
+  String get homeHeroBody =>
+      'Mock tests, learning and exam-focused practice in one place.';
+
+  @override
+  String get homeSearchHint => 'Search exams, test series, topics...';
+
+  @override
+  String get homeContinueUnavailable =>
+      'Continue learning is temporarily unavailable';
+
+  @override
+  String get homeKeepGoing => 'Keep Going!';
+
+  @override
+  String homeTestsCompleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tests completed so far.',
+      one: '1 test completed so far.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeSearchTests => 'Search tests';
+
+  @override
+  String get homeOpenProfile => 'Open profile';
+
+  @override
+  String homeNotificationsUnreadA11y(int count) {
+    return 'Notifications, $count unread';
+  }
+
+  @override
+  String get homeNotificationsNoneA11y => 'Notifications, no unread updates';
+
+  @override
+  String homeNotificationsUnread(int count) {
+    return 'Notifications ($count unread)';
+  }
+
+  @override
+  String get homeNotifications => 'Notifications';
+
+  @override
+  String get homeNextActionFailed => 'Your next action could not be prepared';
+
+  @override
+  String get homeLearn => 'Learn';
+
+  @override
+  String get homeRevision => 'Revision';
+
+  @override
+  String get homeStore => 'Store';
+
+  @override
+  String get homeStrongMomentum => 'Strong momentum';
+
+  @override
+  String get homeKeepConsistency => 'Keep building consistency';
+
+  @override
+  String get homeFocusAccuracy => 'Focus on accuracy first';
+
+  @override
+  String get homeAvgScore => 'Avg score';
+
+  @override
+  String get homePerQuestion => 'Per question';
+
+  @override
+  String homeQs(int count) {
+    return '$count Qs';
+  }
+
+  @override
+  String get homeNoTests => 'No tests are published right now.';
+
+  @override
+  String get homeCaughtUp => 'You are caught up on current recommendations.';
+
+  @override
+  String get homeBrowse => 'Browse';
+
+  @override
+  String homeScorePct(int value) {
+    return '$value% score';
+  }
+
+  @override
+  String homeAccuracyPct(int value) {
+    return '$value% accuracy';
+  }
+
+  @override
+  String homeDue(int count) {
+    return '$count due';
+  }
+
+  @override
+  String get homeStudent => 'Student';
+
+  @override
+  String get homeGoodMorning => 'Good morning';
+
+  @override
+  String get homeGoodAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGoodEvening => 'Good evening';
 }

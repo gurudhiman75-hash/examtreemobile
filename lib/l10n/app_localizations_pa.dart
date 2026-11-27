@@ -921,4 +921,195 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get learnSelectedExams => 'ਚੁਣੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ';
+
+  @override
+  String get homeExamCategories => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ';
+
+  @override
+  String get homeSeeAll => 'ਸਾਰੇ ਦੇਖੋ';
+
+  @override
+  String get homeCategoriesFailed => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ';
+
+  @override
+  String get homeNoCategories => 'ਅਜੇ ਕੋਈ ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get homeFeaturedSeries => 'ਚੋਣਵੀਆਂ ਟੈਸਟ ਸੀਰੀਜ਼';
+
+  @override
+  String get homeSeriesFailed => 'ਟੈਸਟ ਸੀਰੀਜ਼ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ';
+
+  @override
+  String get homeContinueLearning => 'ਸਿੱਖਣਾ ਜਾਰੀ ਰੱਖੋ';
+
+  @override
+  String get homeRecommendedLearning => 'ਸੁਝਾਈ ਗਈ ਸਮੱਗਰੀ';
+
+  @override
+  String get homeCurrentAffairs => 'ਕਰੰਟ ਅਫੇਅਰਜ਼';
+
+  @override
+  String get homeProgressUnavailable => 'ਪ੍ਰਗਤੀ ਅਜੇ ਉਪਲਬਧ ਨਹੀਂ ਹੈ';
+
+  @override
+  String get familyPunjab => 'ਪੰਜਾਬ ਸਰਕਾਰ';
+
+  @override
+  String get familyBanking => 'ਬੈਂਕਿੰਗ';
+
+  @override
+  String get familyRailway => 'ਰੇਲਵੇ';
+
+  @override
+  String get familyTeaching => 'ਅਧਿਆਪਨ';
+
+  @override
+  String get familyDefence => 'ਰੱਖਿਆ';
+
+  @override
+  String get familyStatePcs => 'ਰਾਜ PCS';
+
+  @override
+  String get familyOther => 'ਹੋਰ ਪ੍ਰੀਖਿਆਵਾਂ';
+
+  @override
+  String get homeExplore => 'ਦੇਖੋ';
+
+  @override
+  String get homeTests => 'ਟੈਸਟ';
+
+  @override
+  String get homeMins => 'ਮਿੰਟ';
+
+  @override
+  String get homeMarks => 'ਅੰਕ';
+
+  @override
+  String get homeQuestions => 'ਸਵਾਲ';
+
+  @override
+  String get homeDuration => 'ਸਮਾਂ';
+
+  @override
+  String minutesShort(int minutes) {
+    return '$minutes ਮਿੰਟ';
+  }
+
+  @override
+  String get homeHeroTitle => 'ਤੁਹਾਡੀ ਤਿਆਰੀ\nਇੱਥੋਂ ਸ਼ੁਰੂ';
+
+  @override
+  String get homeHeroBody =>
+      'ਮੌਕ ਟੈਸਟ, ਪੜ੍ਹਾਈ ਅਤੇ ਪ੍ਰੀਖਿਆ-ਕੇਂਦਰਿਤ ਅਭਿਆਸ ਇੱਕੋ ਥਾਂ।';
+
+  @override
+  String get homeSearchHint => 'ਪ੍ਰੀਖਿਆਵਾਂ, ਟੈਸਟ ਸੀਰੀਜ਼, ਵਿਸ਼ੇ ਖੋਜੋ...';
+
+  @override
+  String get homeContinueUnavailable => 'ਸਿੱਖਣਾ ਜਾਰੀ ਰੱਖੋ ਅਜੇ ਉਪਲਬਧ ਨਹੀਂ ਹੈ';
+
+  @override
+  String get homeKeepGoing => 'ਲੱਗੇ ਰਹੋ!';
+
+  @override
+  String homeTestsCompleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ਹੁਣ ਤੱਕ $count ਟੈਸਟ ਪੂਰੇ।',
+      one: 'ਹੁਣ ਤੱਕ 1 ਟੈਸਟ ਪੂਰਾ।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeSearchTests => 'ਟੈਸਟ ਖੋਜੋ';
+
+  @override
+  String get homeOpenProfile => 'ਪ੍ਰੋਫਾਈਲ ਖੋਲ੍ਹੋ';
+
+  @override
+  String homeNotificationsUnreadA11y(int count) {
+    return 'ਸੂਚਨਾਵਾਂ, $count ਅਣਪੜ੍ਹੀਆਂ';
+  }
+
+  @override
+  String get homeNotificationsNoneA11y => 'ਸੂਚਨਾਵਾਂ, ਕੋਈ ਨਵੀਂ ਨਹੀਂ';
+
+  @override
+  String homeNotificationsUnread(int count) {
+    return 'ਸੂਚਨਾਵਾਂ ($count ਅਣਪੜ੍ਹੀਆਂ)';
+  }
+
+  @override
+  String get homeNotifications => 'ਸੂਚਨਾਵਾਂ';
+
+  @override
+  String get homeNextActionFailed => 'ਤੁਹਾਡਾ ਅਗਲਾ ਕਦਮ ਤਿਆਰ ਨਹੀਂ ਹੋ ਸਕਿਆ';
+
+  @override
+  String get homeLearn => 'ਸਿੱਖੋ';
+
+  @override
+  String get homeRevision => 'ਦੁਹਰਾਈ';
+
+  @override
+  String get homeStore => 'ਸਟੋਰ';
+
+  @override
+  String get homeStrongMomentum => 'ਵਧੀਆ ਰਫ਼ਤਾਰ';
+
+  @override
+  String get homeKeepConsistency => 'ਲਗਾਤਾਰਤਾ ਬਣਾਈ ਰੱਖੋ';
+
+  @override
+  String get homeFocusAccuracy => 'ਪਹਿਲਾਂ ਸ਼ੁੱਧਤਾ \'ਤੇ ਧਿਆਨ ਦਿਓ';
+
+  @override
+  String get homeAvgScore => 'ਔਸਤ ਸਕੋਰ';
+
+  @override
+  String get homePerQuestion => 'ਪ੍ਰਤੀ ਸਵਾਲ';
+
+  @override
+  String homeQs(int count) {
+    return '$count ਸਵਾਲ';
+  }
+
+  @override
+  String get homeNoTests => 'ਅਜੇ ਕੋਈ ਟੈਸਟ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get homeCaughtUp => 'ਤੁਸੀਂ ਸਾਰੇ ਮੌਜੂਦਾ ਸੁਝਾਅ ਪੂਰੇ ਕਰ ਲਏ ਹਨ।';
+
+  @override
+  String get homeBrowse => 'ਦੇਖੋ';
+
+  @override
+  String homeScorePct(int value) {
+    return '$value% ਸਕੋਰ';
+  }
+
+  @override
+  String homeAccuracyPct(int value) {
+    return '$value% ਸ਼ੁੱਧਤਾ';
+  }
+
+  @override
+  String homeDue(int count) {
+    return '$count ਬਾਕੀ';
+  }
+
+  @override
+  String get homeStudent => 'ਵਿਦਿਆਰਥੀ';
+
+  @override
+  String get homeGoodMorning => 'ਸ਼ੁਭ ਸਵੇਰ';
+
+  @override
+  String get homeGoodAfternoon => 'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ';
+
+  @override
+  String get homeGoodEvening => 'ਸ਼ੁਭ ਸ਼ਾਮ';
 }

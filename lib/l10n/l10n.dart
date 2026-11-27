@@ -44,3 +44,24 @@ String formatDayMonth(
     return withYear ? '$text ${value.year}' : text;
   }
 }
+
+const _englishWeekdays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
+/// "Friday, 27 Nov" in the app language.
+String formatWeekdayDayMonth(BuildContext context, DateTime value) {
+  final locale = Localizations.maybeLocaleOf(context)?.languageCode ?? 'en';
+  try {
+    return DateFormat('EEEE, d MMM', locale).format(value);
+  } catch (_) {
+    return '${_englishWeekdays[value.weekday - 1]}, ${value.day} '
+        '${_englishMonths[value.month - 1]}';
+  }
+}

@@ -618,5 +618,117 @@
   "learnEmpty": "No free learning resources are published yet. Published material will appear here automatically.",
   "learnPartialRefresh": "Some learning content could not be refreshed. The items shown above are still available.",
   "learnOpenFailed": "This resource could not be opened.",
-  "learnSelectedExams": "Selected exams"
+  "learnSelectedExams": "Selected exams",
+  "homeExamCategories": "Exam Categories",
+  "homeSeeAll": "See All",
+  "homeCategoriesFailed": "Exam categories could not be loaded",
+  "homeNoCategories": "No exam categories are published right now.",
+  "homeFeaturedSeries": "Featured Test Series",
+  "homeSeriesFailed": "Test series could not be loaded",
+  "homeContinueLearning": "Continue Learning",
+  "homeRecommendedLearning": "Recommended Learning",
+  "homeCurrentAffairs": "Current Affairs",
+  "homeProgressUnavailable": "Progress is temporarily unavailable",
+  "familyPunjab": "Punjab Govt.",
+  "familyBanking": "Banking",
+  "familyRailway": "Railway",
+  "familyTeaching": "Teaching",
+  "familyDefence": "Defence",
+  "familyStatePcs": "State PCS",
+  "familyOther": "Other Exams",
+  "homeExplore": "Explore",
+  "homeTests": "Tests",
+  "homeMins": "Mins",
+  "homeMarks": "Marks",
+  "homeQuestions": "Questions",
+  "homeDuration": "Duration",
+  "minutesShort": "{minutes} min",
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "homeHeroTitle": "Your Preparation\nStarts Here",
+  "homeHeroBody": "Mock tests, learning and exam-focused practice in one place.",
+  "homeSearchHint": "Search exams, test series, topics...",
+  "homeContinueUnavailable": "Continue learning is temporarily unavailable",
+  "homeKeepGoing": "Keep Going!",
+  "homeTestsCompleted": "{count, plural, =1{1 test completed so far.} other{{count} tests completed so far.}}",
+  "@homeTestsCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSearchTests": "Search tests",
+  "homeOpenProfile": "Open profile",
+  "homeNotificationsUnreadA11y": "Notifications, {count} unread",
+  "@homeNotificationsUnreadA11y": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNotificationsNoneA11y": "Notifications, no unread updates",
+  "homeNotificationsUnread": "Notifications ({count} unread)",
+  "@homeNotificationsUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNotifications": "Notifications",
+  "homeNextActionFailed": "Your next action could not be prepared",
+  "homeLearn": "Learn",
+  "homeRevision": "Revision",
+  "homeStore": "Store",
+  "homeStrongMomentum": "Strong momentum",
+  "homeKeepConsistency": "Keep building consistency",
+  "homeFocusAccuracy": "Focus on accuracy first",
+  "homeAvgScore": "Avg score",
+  "homePerQuestion": "Per question",
+  "homeQs": "{count} Qs",
+  "@homeQs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNoTests": "No tests are published right now.",
+  "homeCaughtUp": "You are caught up on current recommendations.",
+  "homeBrowse": "Browse",
+  "homeScorePct": "{value}% score",
+  "@homeScorePct": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAccuracyPct": "{value}% accuracy",
+  "@homeAccuracyPct": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "homeDue": "{count} due",
+  "@homeDue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStudent": "Student",
+  "homeGoodMorning": "Good morning",
+  "homeGoodAfternoon": "Good afternoon",
+  "homeGoodEvening": "Good evening"
 }
