@@ -180,4 +180,251 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get attemptNoQuestions => 'No questions available';
+
+  @override
+  String get attemptSignInRequired => 'Sign in required. Redirecting...';
+
+  @override
+  String get attemptPurchaseRequired =>
+      'Purchase required to access this test.';
+
+  @override
+  String attemptLoadFailed(String error) {
+    return 'Unable to load test: $error';
+  }
+
+  @override
+  String get attemptRecoveredLocal =>
+      'Unsynced progress was recovered from this device. Syncing it to ExamTree now.';
+
+  @override
+  String get attemptRestoredServer => 'Saved progress restored from ExamTree.';
+
+  @override
+  String get attemptTenMinutes => '10 minutes remaining';
+
+  @override
+  String get attemptFiveMinutes => '5 minutes remaining';
+
+  @override
+  String get attemptOneMinute => '1 minute remaining. Finish your review now.';
+
+  @override
+  String attemptSecondsRemaining(int seconds) {
+    return '$seconds seconds remaining';
+  }
+
+  @override
+  String get attemptTimeOverSubmitting =>
+      'Time is over. Your test is being submitted.';
+
+  @override
+  String get attemptChangedElsewhere =>
+      'This test changed on another device. The latest server progress was loaded.';
+
+  @override
+  String get attemptSavedNotSynced =>
+      'Progress is saved on this device but has not reached ExamTree yet.';
+
+  @override
+  String get attemptTimeOverRetry =>
+      'Time is over. Your answers are safe on this device; reconnect and retry submission.';
+
+  @override
+  String get attemptSubmitFailed =>
+      'Unable to submit right now. Your answers remain saved; try again.';
+
+  @override
+  String get attemptStillOpen =>
+      'The test remains open because the latest progress could not be saved.';
+
+  @override
+  String get attemptPreparing => 'Preparing your secure test session...';
+
+  @override
+  String get attemptUnableToStart => 'Unable to start test';
+
+  @override
+  String get attemptSessionNotCreated =>
+      'The attempt session could not be created.';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get attemptTimeExpiredSubmitting =>
+      'Time expired — submitting your test';
+
+  @override
+  String get attemptSubmittingTest => 'Submitting your test';
+
+  @override
+  String get attemptLockedPending =>
+      'Time expired. Answers are locked and submission is pending.';
+
+  @override
+  String get attemptRetrySubmit => 'Retry submit';
+
+  @override
+  String get attemptSaveAnswer => 'Save answer';
+
+  @override
+  String get attemptSaveNext => 'Save & next';
+
+  @override
+  String attemptPaletteLeft(int count) {
+    return 'Palette · $count left';
+  }
+
+  @override
+  String get attemptSubmitting => 'Submitting…';
+
+  @override
+  String get attemptSubmitTest => 'Submit test';
+
+  @override
+  String attemptQuestionOf(int number, int total) {
+    return 'Question $number of $total';
+  }
+
+  @override
+  String get attemptNotSavedRetry => 'Progress not saved. Retry.';
+
+  @override
+  String get attemptSavingProgress => 'Saving progress';
+
+  @override
+  String get attemptSaveExit => 'Save and exit';
+
+  @override
+  String attemptQuestionNumber(int number) {
+    return 'Question $number';
+  }
+
+  @override
+  String get attemptMarkedForReview => 'Marked for review';
+
+  @override
+  String attemptOptionLabel(String letter, String text) {
+    return 'Option $letter: $text';
+  }
+
+  @override
+  String get attemptPrevious => 'Previous';
+
+  @override
+  String get attemptClear => 'Clear';
+
+  @override
+  String get attemptReview => 'Review';
+
+  @override
+  String get attemptSubmitQuestion => 'Submit test?';
+
+  @override
+  String attemptUnansweredLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count unanswered questions are still left. You can review them before submitting.',
+      one:
+          '1 unanswered question is still left. You can review it before submitting.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get attemptCannotChange =>
+      'After submission, answers cannot be changed.';
+
+  @override
+  String get attemptReviewUnanswered => 'Review unanswered';
+
+  @override
+  String get attemptSubmitNow => 'Submit now';
+
+  @override
+  String get attemptContinueTest => 'Continue test';
+
+  @override
+  String get attemptAnswered => 'Answered';
+
+  @override
+  String get attemptUnanswered => 'Unanswered';
+
+  @override
+  String get attemptAnsweredMarked => 'Answered + marked';
+
+  @override
+  String get attemptSyncNeededTitle => 'Progress still needs to sync';
+
+  @override
+  String get attemptSyncNeededBody =>
+      'Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.';
+
+  @override
+  String get attemptSavingTitle => 'Saving your progress';
+
+  @override
+  String get attemptSavingBody =>
+      'ExamTree is still saving your latest changes. Keep the test open until this save finishes.';
+
+  @override
+  String get attemptLeaveTitle => 'Save and leave test?';
+
+  @override
+  String get attemptLeaveBody =>
+      'Your attempt will stay active and can be resumed later from this device or the ExamTree website.';
+
+  @override
+  String get attemptRetrySave => 'Retry save';
+
+  @override
+  String get attemptSaveLeave => 'Save and leave';
+
+  @override
+  String get attemptStay => 'Stay';
+
+  @override
+  String get attemptSavingEllipsis => 'Saving progress…';
+
+  @override
+  String get attemptWaitingSync =>
+      'Saved on this device. Waiting to sync with ExamTree.';
+
+  @override
+  String get attemptNotSyncedYet =>
+      'Latest changes are safe on this device but not synced yet.';
+
+  @override
+  String get paletteTitle => 'Question palette';
+
+  @override
+  String get paletteClose => 'Close palette';
+
+  @override
+  String get paletteMarked => 'Marked';
+
+  @override
+  String paletteUnansweredCount(int count) {
+    return 'Unanswered $count';
+  }
+
+  @override
+  String paletteMarkedCount(int count) {
+    return 'Marked $count';
+  }
+
+  @override
+  String get paletteHint => 'Tap a number to jump directly to that question.';
+
+  @override
+  String get paletteNoMatch => 'No questions match this filter.';
+
+  @override
+  String get paletteShowAll => 'Show all questions';
 }

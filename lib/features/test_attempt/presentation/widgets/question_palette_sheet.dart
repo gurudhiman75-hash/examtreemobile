@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/test_attempt_experience.dart';
+import '../../../../l10n/l10n.dart';
 
 class QuestionPaletteSheet extends StatefulWidget {
   const QuestionPaletteSheet({
@@ -57,7 +58,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Question palette',
+                            context.l10n.paletteTitle,
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w800,
                             ),
@@ -73,7 +74,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                       ),
                     ),
                     IconButton(
-                      tooltip: 'Close palette',
+                      tooltip: context.l10n.paletteClose,
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.close_rounded),
                     ),
@@ -86,7 +87,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                   children: [
                     Expanded(
                       child: _CountTile(
-                        label: 'Answered',
+                        label: context.l10n.attemptAnswered,
                         count: summary.totalAnswered,
                         color: widget.statusColor(
                           context,
@@ -97,7 +98,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CountTile(
-                        label: 'Unanswered',
+                        label: context.l10n.attemptUnanswered,
                         count: summary.totalUnanswered,
                         color: widget.statusColor(
                           context,
@@ -108,7 +109,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: _CountTile(
-                        label: 'Marked',
+                        label: context.l10n.paletteMarked,
                         count: summary.totalMarked,
                         color: widget.statusColor(
                           context,
@@ -127,20 +128,20 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   children: [
                     _PaletteFilterChip(
-                      label: 'All',
+                      label: context.l10n.bookmarksAll,
                       selected: _filter == PaletteFilter.all,
                       onSelected: () => setState(() => _filter = PaletteFilter.all),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     _PaletteFilterChip(
-                      label: 'Unanswered ${summary.totalUnanswered}',
+                      label: context.l10n.paletteUnansweredCount(summary.totalUnanswered),
                       selected: _filter == PaletteFilter.unanswered,
                       onSelected: () =>
                           setState(() => _filter = PaletteFilter.unanswered),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     _PaletteFilterChip(
-                      label: 'Marked ${summary.totalMarked}',
+                      label: context.l10n.paletteMarkedCount(summary.totalMarked),
                       selected: _filter == PaletteFilter.marked,
                       onSelected: () =>
                           setState(() => _filter = PaletteFilter.marked),
@@ -161,7 +162,7 @@ class _QuestionPaletteSheetState extends State<QuestionPaletteSheet> {
                     const SizedBox(width: AppSpacing.xs),
                     Expanded(
                       child: Text(
-                        'Tap a number to jump directly to that question.',
+                        context.l10n.paletteHint,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -348,7 +349,7 @@ class _EmptyPaletteFilter extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'No questions match this filter.',
+              context.l10n.paletteNoMatch,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w700,
@@ -357,7 +358,7 @@ class _EmptyPaletteFilter extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             TextButton(
               onPressed: onShowAll,
-              child: const Text('Show all questions'),
+              child: Text(context.l10n.paletteShowAll),
             ),
           ],
         ),

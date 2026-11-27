@@ -180,4 +180,253 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get retry => 'ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+
+  @override
+  String get attemptNoQuestions => 'ਕੋਈ ਸਵਾਲ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get attemptSignInRequired =>
+      'ਸਾਈਨ ਇਨ ਲਾਜ਼ਮੀ ਹੈ। ਅੱਗੇ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...';
+
+  @override
+  String get attemptPurchaseRequired => 'ਇਸ ਟੈਸਟ ਲਈ ਖਰੀਦਣਾ ਲਾਜ਼ਮੀ ਹੈ।';
+
+  @override
+  String attemptLoadFailed(String error) {
+    return 'ਟੈਸਟ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ: $error';
+  }
+
+  @override
+  String get attemptRecoveredLocal =>
+      'ਇਸ ਡਿਵਾਈਸ ਤੋਂ ਬਿਨਾਂ ਸਿੰਕ ਹੋਈ ਪ੍ਰਗਤੀ ਵਾਪਸ ਮਿਲੀ। ਹੁਣ ਇਸਨੂੰ ExamTree ਨਾਲ ਸਿੰਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।';
+
+  @override
+  String get attemptRestoredServer =>
+      'ExamTree ਤੋਂ ਸੇਵ ਕੀਤੀ ਪ੍ਰਗਤੀ ਵਾਪਸ ਲਿਆਂਦੀ ਗਈ।';
+
+  @override
+  String get attemptTenMinutes => '10 ਮਿੰਟ ਬਾਕੀ';
+
+  @override
+  String get attemptFiveMinutes => '5 ਮਿੰਟ ਬਾਕੀ';
+
+  @override
+  String get attemptOneMinute => '1 ਮਿੰਟ ਬਾਕੀ। ਆਪਣੀ ਸਮੀਖਿਆ ਹੁਣੇ ਪੂਰੀ ਕਰੋ।';
+
+  @override
+  String attemptSecondsRemaining(int seconds) {
+    return '$seconds ਸਕਿੰਟ ਬਾਕੀ';
+  }
+
+  @override
+  String get attemptTimeOverSubmitting =>
+      'ਸਮਾਂ ਖ਼ਤਮ। ਤੁਹਾਡਾ ਟੈਸਟ ਸਬਮਿਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।';
+
+  @override
+  String get attemptChangedElsewhere =>
+      'ਇਹ ਟੈਸਟ ਕਿਸੇ ਹੋਰ ਡਿਵਾਈਸ \'ਤੇ ਬਦਲਿਆ ਗਿਆ। ਸਰਵਰ ਦੀ ਨਵੀਂ ਪ੍ਰਗਤੀ ਲੋਡ ਕੀਤੀ ਗਈ।';
+
+  @override
+  String get attemptSavedNotSynced =>
+      'ਪ੍ਰਗਤੀ ਇਸ ਡਿਵਾਈਸ \'ਤੇ ਸੇਵ ਹੈ, ਪਰ ਅਜੇ ExamTree ਤੱਕ ਨਹੀਂ ਪਹੁੰਚੀ।';
+
+  @override
+  String get attemptTimeOverRetry =>
+      'ਸਮਾਂ ਖ਼ਤਮ। ਤੁਹਾਡੇ ਜਵਾਬ ਇਸ ਡਿਵਾਈਸ \'ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ; ਇੰਟਰਨੈੱਟ ਜੋੜ ਕੇ ਦੁਬਾਰਾ ਸਬਮਿਟ ਕਰੋ।';
+
+  @override
+  String get attemptSubmitFailed =>
+      'ਹੁਣੇ ਸਬਮਿਟ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਤੁਹਾਡੇ ਜਵਾਬ ਸੇਵ ਹਨ; ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
+
+  @override
+  String get attemptStillOpen =>
+      'ਟੈਸਟ ਖੁੱਲ੍ਹਾ ਹੈ ਕਿਉਂਕਿ ਨਵੀਂ ਪ੍ਰਗਤੀ ਸੇਵ ਨਹੀਂ ਹੋ ਸਕੀ।';
+
+  @override
+  String get attemptPreparing =>
+      'ਤੁਹਾਡਾ ਸੁਰੱਖਿਅਤ ਟੈਸਟ ਸੈਸ਼ਨ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ...';
+
+  @override
+  String get attemptUnableToStart => 'ਟੈਸਟ ਸ਼ੁਰੂ ਨਹੀਂ ਹੋ ਸਕਿਆ';
+
+  @override
+  String get attemptSessionNotCreated => 'ਟੈਸਟ ਸੈਸ਼ਨ ਨਹੀਂ ਬਣ ਸਕਿਆ।';
+
+  @override
+  String get tryAgain => 'ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+
+  @override
+  String get attemptTimeExpiredSubmitting =>
+      'ਸਮਾਂ ਖ਼ਤਮ — ਤੁਹਾਡਾ ਟੈਸਟ ਸਬਮਿਟ ਹੋ ਰਿਹਾ ਹੈ';
+
+  @override
+  String get attemptSubmittingTest => 'ਤੁਹਾਡਾ ਟੈਸਟ ਸਬਮਿਟ ਹੋ ਰਿਹਾ ਹੈ';
+
+  @override
+  String get attemptLockedPending =>
+      'ਸਮਾਂ ਖ਼ਤਮ। ਜਵਾਬ ਲਾਕ ਹਨ ਅਤੇ ਸਬਮਿਸ਼ਨ ਬਾਕੀ ਹੈ।';
+
+  @override
+  String get attemptRetrySubmit => 'ਦੁਬਾਰਾ ਸਬਮਿਟ ਕਰੋ';
+
+  @override
+  String get attemptSaveAnswer => 'ਜਵਾਬ ਸੇਵ ਕਰੋ';
+
+  @override
+  String get attemptSaveNext => 'ਸੇਵ ਕਰੋ ਅਤੇ ਅੱਗੇ';
+
+  @override
+  String attemptPaletteLeft(int count) {
+    return 'ਪੈਲੇਟ · $count ਬਾਕੀ';
+  }
+
+  @override
+  String get attemptSubmitting => 'ਸਬਮਿਟ ਹੋ ਰਿਹਾ ਹੈ…';
+
+  @override
+  String get attemptSubmitTest => 'ਟੈਸਟ ਸਬਮਿਟ ਕਰੋ';
+
+  @override
+  String attemptQuestionOf(int number, int total) {
+    return 'ਸਵਾਲ $number / $total';
+  }
+
+  @override
+  String get attemptNotSavedRetry => 'ਪ੍ਰਗਤੀ ਸੇਵ ਨਹੀਂ ਹੋਈ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
+
+  @override
+  String get attemptSavingProgress => 'ਪ੍ਰਗਤੀ ਸੇਵ ਹੋ ਰਹੀ ਹੈ';
+
+  @override
+  String get attemptSaveExit => 'ਸੇਵ ਕਰੋ ਅਤੇ ਬਾਹਰ ਜਾਓ';
+
+  @override
+  String attemptQuestionNumber(int number) {
+    return 'ਸਵਾਲ $number';
+  }
+
+  @override
+  String get attemptMarkedForReview => 'ਸਮੀਖਿਆ ਲਈ ਨਿਸ਼ਾਨਬੱਧ';
+
+  @override
+  String attemptOptionLabel(String letter, String text) {
+    return 'ਵਿਕਲਪ $letter: $text';
+  }
+
+  @override
+  String get attemptPrevious => 'ਪਿਛਲਾ';
+
+  @override
+  String get attemptClear => 'ਹਟਾਓ';
+
+  @override
+  String get attemptReview => 'ਸਮੀਖਿਆ';
+
+  @override
+  String get attemptSubmitQuestion => 'ਟੈਸਟ ਸਬਮਿਟ ਕਰਨਾ ਹੈ?';
+
+  @override
+  String attemptUnansweredLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count ਸਵਾਲਾਂ ਦੇ ਜਵਾਬ ਅਜੇ ਬਾਕੀ ਹਨ। ਸਬਮਿਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਤੁਸੀਂ ਉਨ੍ਹਾਂ ਨੂੰ ਦੇਖ ਸਕਦੇ ਹੋ।',
+      one:
+          '1 ਸਵਾਲ ਦਾ ਜਵਾਬ ਅਜੇ ਬਾਕੀ ਹੈ। ਸਬਮਿਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਤੁਸੀਂ ਉਸਨੂੰ ਦੇਖ ਸਕਦੇ ਹੋ।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get attemptCannotChange =>
+      'ਸਬਮਿਟ ਕਰਨ ਤੋਂ ਬਾਅਦ ਜਵਾਬ ਨਹੀਂ ਬਦਲੇ ਜਾ ਸਕਦੇ।';
+
+  @override
+  String get attemptReviewUnanswered => 'ਬਿਨਾਂ ਜਵਾਬ ਵਾਲੇ ਦੇਖੋ';
+
+  @override
+  String get attemptSubmitNow => 'ਹੁਣੇ ਸਬਮਿਟ ਕਰੋ';
+
+  @override
+  String get attemptContinueTest => 'ਟੈਸਟ ਜਾਰੀ ਰੱਖੋ';
+
+  @override
+  String get attemptAnswered => 'ਜਵਾਬ ਦਿੱਤਾ';
+
+  @override
+  String get attemptUnanswered => 'ਜਵਾਬ ਨਹੀਂ ਦਿੱਤਾ';
+
+  @override
+  String get attemptAnsweredMarked => 'ਜਵਾਬ ਦਿੱਤਾ + ਨਿਸ਼ਾਨਬੱਧ';
+
+  @override
+  String get attemptSyncNeededTitle => 'ਪ੍ਰਗਤੀ ਅਜੇ ਸਿੰਕ ਹੋਣੀ ਬਾਕੀ ਹੈ';
+
+  @override
+  String get attemptSyncNeededBody =>
+      'ਤੁਹਾਡੇ ਨਵੇਂ ਜਵਾਬ ਇਸ ਡਿਵਾਈਸ \'ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ, ਪਰ ਅਜੇ ExamTree ਤੱਕ ਨਹੀਂ ਪਹੁੰਚੇ। ਜਾਣ ਤੋਂ ਪਹਿਲਾਂ ਦੁਬਾਰਾ ਸੇਵ ਕਰੋ।';
+
+  @override
+  String get attemptSavingTitle => 'ਤੁਹਾਡੀ ਪ੍ਰਗਤੀ ਸੇਵ ਹੋ ਰਹੀ ਹੈ';
+
+  @override
+  String get attemptSavingBody =>
+      'ExamTree ਅਜੇ ਤੁਹਾਡੇ ਨਵੇਂ ਬਦਲਾਅ ਸੇਵ ਕਰ ਰਿਹਾ ਹੈ। ਸੇਵ ਪੂਰਾ ਹੋਣ ਤੱਕ ਟੈਸਟ ਖੁੱਲ੍ਹਾ ਰੱਖੋ।';
+
+  @override
+  String get attemptLeaveTitle => 'ਸੇਵ ਕਰਕੇ ਟੈਸਟ ਛੱਡਣਾ ਹੈ?';
+
+  @override
+  String get attemptLeaveBody =>
+      'ਤੁਹਾਡੀ ਕੋਸ਼ਿਸ਼ ਚਾਲੂ ਰਹੇਗੀ ਅਤੇ ਬਾਅਦ ਵਿੱਚ ਇਸ ਡਿਵਾਈਸ ਜਾਂ ExamTree ਵੈੱਬਸਾਈਟ ਤੋਂ ਜਾਰੀ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ।';
+
+  @override
+  String get attemptRetrySave => 'ਦੁਬਾਰਾ ਸੇਵ ਕਰੋ';
+
+  @override
+  String get attemptSaveLeave => 'ਸੇਵ ਕਰੋ ਅਤੇ ਛੱਡੋ';
+
+  @override
+  String get attemptStay => 'ਰੁਕੋ';
+
+  @override
+  String get attemptSavingEllipsis => 'ਪ੍ਰਗਤੀ ਸੇਵ ਹੋ ਰਹੀ ਹੈ…';
+
+  @override
+  String get attemptWaitingSync =>
+      'ਇਸ ਡਿਵਾਈਸ \'ਤੇ ਸੇਵ। ExamTree ਨਾਲ ਸਿੰਕ ਹੋਣ ਦੀ ਉਡੀਕ।';
+
+  @override
+  String get attemptNotSyncedYet =>
+      'ਨਵੇਂ ਬਦਲਾਅ ਇਸ ਡਿਵਾਈਸ \'ਤੇ ਸੁਰੱਖਿਅਤ ਹਨ ਪਰ ਅਜੇ ਸਿੰਕ ਨਹੀਂ ਹੋਏ।';
+
+  @override
+  String get paletteTitle => 'ਸਵਾਲ ਪੈਲੇਟ';
+
+  @override
+  String get paletteClose => 'ਪੈਲੇਟ ਬੰਦ ਕਰੋ';
+
+  @override
+  String get paletteMarked => 'ਨਿਸ਼ਾਨਬੱਧ';
+
+  @override
+  String paletteUnansweredCount(int count) {
+    return 'ਬਿਨਾਂ ਜਵਾਬ $count';
+  }
+
+  @override
+  String paletteMarkedCount(int count) {
+    return 'ਨਿਸ਼ਾਨਬੱਧ $count';
+  }
+
+  @override
+  String get paletteHint =>
+      'ਕਿਸੇ ਨੰਬਰ \'ਤੇ ਟੈਪ ਕਰੋ ਅਤੇ ਸਿੱਧਾ ਉਸ ਸਵਾਲ \'ਤੇ ਜਾਓ।';
+
+  @override
+  String get paletteNoMatch => 'ਇਸ ਫ਼ਿਲਟਰ ਨਾਲ ਕੋਈ ਸਵਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।';
+
+  @override
+  String get paletteShowAll => 'ਸਾਰੇ ਸਵਾਲ ਦਿਖਾਓ';
 }

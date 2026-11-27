@@ -74,5 +74,142 @@
   "profileBookmarks": "Bookmarks",
   "profilePrivacy": "Privacy & account",
   "profilePrivacySubtitle": "Account controls and privacy settings",
-  "retry": "Retry"
+  "retry": "Retry",
+  "attemptNoQuestions": "No questions available",
+  "attemptSignInRequired": "Sign in required. Redirecting...",
+  "attemptPurchaseRequired": "Purchase required to access this test.",
+  "attemptLoadFailed": "Unable to load test: {error}",
+  "@attemptLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "attemptRecoveredLocal": "Unsynced progress was recovered from this device. Syncing it to ExamTree now.",
+  "attemptRestoredServer": "Saved progress restored from ExamTree.",
+  "attemptTenMinutes": "10 minutes remaining",
+  "attemptFiveMinutes": "5 minutes remaining",
+  "attemptOneMinute": "1 minute remaining. Finish your review now.",
+  "attemptSecondsRemaining": "{seconds} seconds remaining",
+  "@attemptSecondsRemaining": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptTimeOverSubmitting": "Time is over. Your test is being submitted.",
+  "attemptChangedElsewhere": "This test changed on another device. The latest server progress was loaded.",
+  "attemptSavedNotSynced": "Progress is saved on this device but has not reached ExamTree yet.",
+  "attemptTimeOverRetry": "Time is over. Your answers are safe on this device; reconnect and retry submission.",
+  "attemptSubmitFailed": "Unable to submit right now. Your answers remain saved; try again.",
+  "attemptStillOpen": "The test remains open because the latest progress could not be saved.",
+  "attemptPreparing": "Preparing your secure test session...",
+  "attemptUnableToStart": "Unable to start test",
+  "attemptSessionNotCreated": "The attempt session could not be created.",
+  "tryAgain": "Try Again",
+  "attemptTimeExpiredSubmitting": "Time expired — submitting your test",
+  "attemptSubmittingTest": "Submitting your test",
+  "attemptLockedPending": "Time expired. Answers are locked and submission is pending.",
+  "attemptRetrySubmit": "Retry submit",
+  "attemptSaveAnswer": "Save answer",
+  "attemptSaveNext": "Save & next",
+  "attemptPaletteLeft": "Palette · {count} left",
+  "@attemptPaletteLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptSubmitting": "Submitting…",
+  "attemptSubmitTest": "Submit test",
+  "attemptQuestionOf": "Question {number} of {total}",
+  "@attemptQuestionOf": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptNotSavedRetry": "Progress not saved. Retry.",
+  "attemptSavingProgress": "Saving progress",
+  "attemptSaveExit": "Save and exit",
+  "attemptQuestionNumber": "Question {number}",
+  "@attemptQuestionNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptMarkedForReview": "Marked for review",
+  "attemptOptionLabel": "Option {letter}: {text}",
+  "@attemptOptionLabel": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "attemptPrevious": "Previous",
+  "attemptClear": "Clear",
+  "attemptReview": "Review",
+  "attemptSubmitQuestion": "Submit test?",
+  "attemptUnansweredLeft": "{count, plural, =1{1 unanswered question is still left. You can review it before submitting.} other{{count} unanswered questions are still left. You can review them before submitting.}}",
+  "@attemptUnansweredLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptCannotChange": "After submission, answers cannot be changed.",
+  "attemptReviewUnanswered": "Review unanswered",
+  "attemptSubmitNow": "Submit now",
+  "attemptContinueTest": "Continue test",
+  "attemptAnswered": "Answered",
+  "attemptUnanswered": "Unanswered",
+  "attemptAnsweredMarked": "Answered + marked",
+  "attemptSyncNeededTitle": "Progress still needs to sync",
+  "attemptSyncNeededBody": "Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.",
+  "attemptSavingTitle": "Saving your progress",
+  "attemptSavingBody": "ExamTree is still saving your latest changes. Keep the test open until this save finishes.",
+  "attemptLeaveTitle": "Save and leave test?",
+  "attemptLeaveBody": "Your attempt will stay active and can be resumed later from this device or the ExamTree website.",
+  "attemptRetrySave": "Retry save",
+  "attemptSaveLeave": "Save and leave",
+  "attemptStay": "Stay",
+  "attemptSavingEllipsis": "Saving progress…",
+  "attemptWaitingSync": "Saved on this device. Waiting to sync with ExamTree.",
+  "attemptNotSyncedYet": "Latest changes are safe on this device but not synced yet.",
+  "paletteTitle": "Question palette",
+  "paletteClose": "Close palette",
+  "paletteMarked": "Marked",
+  "paletteUnansweredCount": "Unanswered {count}",
+  "@paletteUnansweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paletteMarkedCount": "Marked {count}",
+  "@paletteMarkedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paletteHint": "Tap a number to jump directly to that question.",
+  "paletteNoMatch": "No questions match this filter.",
+  "paletteShowAll": "Show all questions"
 }

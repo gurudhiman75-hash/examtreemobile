@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/test_attempt_experience.dart';
+import '../../../../l10n/l10n.dart';
 
 enum SubmissionDecision { cancel, reviewUnanswered, submit }
 
@@ -22,7 +23,7 @@ class SubmissionSummaryDialog extends StatelessWidget {
 
     return AlertDialog(
       scrollable: true,
-      title: const Text('Submit test?'),
+      title: Text(context.l10n.attemptSubmitQuestion),
       content: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
         child: Column(
@@ -64,8 +65,8 @@ class SubmissionSummaryDialog extends StatelessWidget {
                   Expanded(
                     child: Text(
                       hasUnanswered
-                          ? '${summary.totalUnanswered} unanswered ${summary.totalUnanswered == 1 ? 'question is' : 'questions are'} still left. You can review them before submitting.'
-                          : 'After submission, answers cannot be changed.',
+                          ? context.l10n.attemptUnansweredLeft(summary.totalUnanswered)
+                          : context.l10n.attemptCannotChange,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: hasUnanswered
                             ? theme.colorScheme.onTertiaryContainer
@@ -85,19 +86,19 @@ class SubmissionSummaryDialog extends StatelessWidget {
                   SubmissionDecision.reviewUnanswered,
                 ),
                 icon: const Icon(Icons.fact_check_outlined),
-                label: const Text('Review unanswered'),
+                label: Text(context.l10n.attemptReviewUnanswered),
               ),
               const SizedBox(height: AppSpacing.sm),
             ],
             FilledButton.icon(
               onPressed: () => Navigator.pop(context, SubmissionDecision.submit),
               icon: const Icon(Icons.check_circle_outline_rounded),
-              label: const Text('Submit now'),
+              label: Text(context.l10n.attemptSubmitNow),
             ),
             const SizedBox(height: AppSpacing.xs),
             TextButton(
               onPressed: () => Navigator.pop(context, SubmissionDecision.cancel),
-              child: const Text('Continue test'),
+              child: Text(context.l10n.attemptContinueTest),
             ),
           ],
         ),
@@ -116,22 +117,22 @@ class _SubmissionSummaryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final metrics = [
       _SubmissionMetric(
-        label: 'Answered',
+        label: context.l10n.attemptAnswered,
         value: summary.totalAnswered,
         icon: Icons.check_circle_outline,
       ),
       _SubmissionMetric(
-        label: 'Unanswered',
+        label: context.l10n.attemptUnanswered,
         value: summary.totalUnanswered,
         icon: Icons.remove_circle_outline,
       ),
       _SubmissionMetric(
-        label: 'Marked for review',
+        label: context.l10n.attemptMarkedForReview,
         value: summary.totalMarked,
         icon: Icons.bookmark_border_rounded,
       ),
       _SubmissionMetric(
-        label: 'Answered + marked',
+        label: context.l10n.attemptAnsweredMarked,
         value: summary.answeredAndMarkedForReview,
         icon: Icons.bookmarks_outlined,
       ),
@@ -220,19 +221,19 @@ class ExitAttemptDialog extends StatelessWidget {
     final (icon, title, message) = syncFailed
         ? (
             Icons.cloud_off_outlined,
-            'Progress still needs to sync',
-            'Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.',
+            context.l10n.attemptSyncNeededTitle,
+            context.l10n.attemptSyncNeededBody,
           )
         : syncing
             ? (
                 Icons.cloud_sync_outlined,
-                'Saving your progress',
-                'ExamTree is still saving your latest changes. Keep the test open until this save finishes.',
+                context.l10n.attemptSavingTitle,
+                context.l10n.attemptSavingBody,
               )
             : (
                 Icons.pause_circle_outline_rounded,
-                'Save and leave test?',
-                'Your attempt will stay active and can be resumed later from this device or the ExamTree website.',
+                context.l10n.attemptLeaveTitle,
+                context.l10n.attemptLeaveBody,
               );
 
     return AlertDialog(
@@ -266,12 +267,16 @@ class ExitAttemptDialog extends StatelessWidget {
               icon: Icon(
                 syncFailed ? Icons.sync_rounded : Icons.save_outlined,
               ),
-              label: Text(syncFailed ? 'Retry save' : 'Save and leave'),
+              label: Text(
+              syncFailed
+                  ? context.l10n.attemptRetrySave
+                  : context.l10n.attemptSaveLeave,
+            ),
             ),
             const SizedBox(height: AppSpacing.xs),
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Stay'),
+              child: Text(context.l10n.attemptStay),
             ),
           ],
         ),
@@ -333,10 +338,10 @@ class SyncStatusBanner extends StatelessWidget {
               Expanded(
                 child: Text(
                   syncing
-                      ? 'Saving progress…'
+                      ? context.l10n.attemptSavingEllipsis
                       : lastSavedAt == null
-                          ? 'Saved on this device. Waiting to sync with ExamTree.'
-                          : 'Latest changes are safe on this device but not synced yet.',
+                          ? context.l10n.attemptWaitingSync
+                          : context.l10n.attemptNotSyncedYet,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foreground,
                     fontWeight: FontWeight.w600,
@@ -346,7 +351,7 @@ class SyncStatusBanner extends StatelessWidget {
               if (syncFailed)
                 TextButton(
                   onPressed: onRetry,
-                  child: Text('Retry', style: TextStyle(color: foreground)),
+                  child: Text(context.l10n.retry, style: TextStyle(color: foreground)),
                 ),
             ],
           ),

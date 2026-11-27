@@ -21,6 +21,7 @@ import '../domain/test_attempt_experience.dart';
 import 'widgets/question_palette_sheet.dart';
 import 'widgets/test_attempt_dialogs.dart';
 import 'widgets/test_attempt_stage.dart';
+import '../../../l10n/l10n.dart';
 
 class CanonicalTestAttemptScreen extends ConsumerWidget {
   const CanonicalTestAttemptScreen({
@@ -54,7 +55,7 @@ class CanonicalTestAttemptScreen extends ConsumerWidget {
         error: (error, _) => _ExamLoadError(error: error),
         data: (questions) {
           if (questions.isEmpty) {
-            return const Center(child: Text('No questions available'));
+            return Center(child: Text(context.l10n.attemptNoQuestions));
           }
           return examAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -82,12 +83,12 @@ class _ExamLoadError extends StatelessWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) context.go('/login');
       });
-      return const Center(child: Text('Sign in required. Redirecting...'));
+      return Center(child: Text(context.l10n.attemptSignInRequired));
     }
     if (error is ExamPaymentRequiredException) {
-      return const Center(child: Text('Purchase required to access this test.'));
+      return Center(child: Text(context.l10n.attemptPurchaseRequired));
     }
-    return Center(child: Text('Unable to load test: $error'));
+    return Center(child: Text(context.l10n.attemptLoadFailed('$error')));
   }
 }
 
@@ -324,17 +325,17 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
 
       if (recovered != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Unsynced progress was recovered from this device. Syncing it to ExamTree now.',
+              context.l10n.attemptRecoveredLocal,
             ),
           ),
         );
         unawaited(_saveSession(quiet: false));
       } else if (session.state != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Saved progress restored from ExamTree.'),
+          SnackBar(
+            content: Text(context.l10n.attemptRestoredServer),
           ),
         );
       }
@@ -394,10 +395,10 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     if (!mounted || _shownTimerWarnings.contains(threshold)) return;
     _shownTimerWarnings.add(threshold);
     final message = switch (threshold) {
-      600 => '10 minutes remaining',
-      300 => '5 minutes remaining',
-      60 => '1 minute remaining. Finish your review now.',
-      _ => '$threshold seconds remaining',
+      600 => context.l10n.attemptTenMinutes,
+      300 => context.l10n.attemptFiveMinutes,
+      60 => context.l10n.attemptOneMinute,
+      _ => context.l10n.attemptSecondsRemaining(threshold),
     };
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
@@ -418,8 +419,8 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(
-        const SnackBar(
-          content: Text('Time is over. Your test is being submitted.'),
+        SnackBar(
+          content: Text(context.l10n.attemptTimeOverSubmitting),
           duration: Duration(seconds: 4),
         ),
       );
@@ -567,9 +568,9 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         _saveQueued = false;
         success = false;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'This test changed on another device. The latest server progress was loaded.',
+              context.l10n.attemptChangedElsewhere,
             ),
           ),
         );
@@ -579,9 +580,9 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         success = false;
         if (!quiet) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(
-                'Progress is saved on this device but has not reached ExamTree yet.',
+                context.l10n.attemptSavedNotSynced,
               ),
             ),
           );
@@ -681,8 +682,8 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         SnackBar(
           content: Text(
             autoSubmit
-                ? 'Time is over. Your answers are safe on this device; reconnect and retry submission.'
-                : 'Unable to submit right now. Your answers remain saved; try again.',
+                ? context.l10n.attemptTimeOverRetry
+                : context.l10n.attemptSubmitFailed,
           ),
         ),
       );
@@ -715,9 +716,9 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'The test remains open because the latest progress could not be saved.',
+            context.l10n.attemptStillOpen,
           ),
         ),
       );
@@ -858,14 +859,14 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
 
   Widget _buildInitialState() {
     if (_initialising) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: AppSpacing.md),
-              Text('Preparing your secure test session...'),
+              Text(context.l10n.attemptPreparing),
             ],
           ),
         ),
@@ -873,7 +874,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Unable to start test')),
+      appBar: AppBar(title: Text(context.l10n.attemptUnableToStart)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -881,13 +882,13 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'The attempt session could not be created.\n\n$_startupError',
+                '${context.l10n.attemptSessionNotCreated}\n\n$_startupError',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.lg),
               FilledButton(
                 onPressed: _initialiseAttempt,
-                child: const Text('Try Again'),
+                child: Text(context.l10n.tryAgain),
               ),
             ],
           ),
@@ -913,8 +914,8 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
               Flexible(
                 child: Text(
                   _timeExpired
-                      ? 'Time expired — submitting your test'
-                      : 'Submitting your test',
+                      ? context.l10n.attemptTimeExpiredSubmitting
+                      : context.l10n.attemptSubmittingTest,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.bold,
@@ -943,7 +944,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                'Time expired. Answers are locked and submission is pending.',
+                context.l10n.attemptLockedPending,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onErrorContainer,
                   fontWeight: FontWeight.w700,
@@ -953,7 +954,7 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
             TextButton(
               onPressed: () => unawaited(_submitAttempt(autoSubmit: true)),
               child: Text(
-                'Retry submit',
+                context.l10n.attemptRetrySubmit,
                 style: TextStyle(color: theme.colorScheme.onErrorContainer),
               ),
             ),
@@ -1016,11 +1017,13 @@ class _CanonicalAttemptBodyState extends ConsumerState<_CanonicalAttemptBody>
         onMarkReview: locked ? null : _markForReview,
         onSaveNext: locked ? null : _saveAndNext,
         saveNextLabel: _currentIndex == _questions.length - 1
-            ? 'Save answer'
-            : 'Save & next',
-        paletteLabel: 'Palette · ${summary.totalUnanswered} left',
+            ? context.l10n.attemptSaveAnswer
+            : context.l10n.attemptSaveNext,
+        paletteLabel: context.l10n.attemptPaletteLeft(summary.totalUnanswered),
         onPalette: locked ? null : _showPalette,
-        submitLabel: _submitting ? 'Submitting…' : 'Submit test',
+        submitLabel: _submitting
+          ? context.l10n.attemptSubmitting
+          : context.l10n.attemptSubmitTest,
         onSubmit: locked ? null : _requestSubmit,
       ),
     );

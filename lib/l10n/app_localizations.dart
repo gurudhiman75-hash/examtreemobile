@@ -381,6 +381,414 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @attemptNoQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions available'**
+  String get attemptNoQuestions;
+
+  /// No description provided for @attemptSignInRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in required. Redirecting...'**
+  String get attemptSignInRequired;
+
+  /// No description provided for @attemptPurchaseRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase required to access this test.'**
+  String get attemptPurchaseRequired;
+
+  /// No description provided for @attemptLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load test: {error}'**
+  String attemptLoadFailed(String error);
+
+  /// No description provided for @attemptRecoveredLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsynced progress was recovered from this device. Syncing it to ExamTree now.'**
+  String get attemptRecoveredLocal;
+
+  /// No description provided for @attemptRestoredServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved progress restored from ExamTree.'**
+  String get attemptRestoredServer;
+
+  /// No description provided for @attemptTenMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'10 minutes remaining'**
+  String get attemptTenMinutes;
+
+  /// No description provided for @attemptFiveMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'5 minutes remaining'**
+  String get attemptFiveMinutes;
+
+  /// No description provided for @attemptOneMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute remaining. Finish your review now.'**
+  String get attemptOneMinute;
+
+  /// No description provided for @attemptSecondsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} seconds remaining'**
+  String attemptSecondsRemaining(int seconds);
+
+  /// No description provided for @attemptTimeOverSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Time is over. Your test is being submitted.'**
+  String get attemptTimeOverSubmitting;
+
+  /// No description provided for @attemptChangedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'This test changed on another device. The latest server progress was loaded.'**
+  String get attemptChangedElsewhere;
+
+  /// No description provided for @attemptSavedNotSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress is saved on this device but has not reached ExamTree yet.'**
+  String get attemptSavedNotSynced;
+
+  /// No description provided for @attemptTimeOverRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Time is over. Your answers are safe on this device; reconnect and retry submission.'**
+  String get attemptTimeOverRetry;
+
+  /// No description provided for @attemptSubmitFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to submit right now. Your answers remain saved; try again.'**
+  String get attemptSubmitFailed;
+
+  /// No description provided for @attemptStillOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'The test remains open because the latest progress could not be saved.'**
+  String get attemptStillOpen;
+
+  /// No description provided for @attemptPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your secure test session...'**
+  String get attemptPreparing;
+
+  /// No description provided for @attemptUnableToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to start test'**
+  String get attemptUnableToStart;
+
+  /// No description provided for @attemptSessionNotCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'The attempt session could not be created.'**
+  String get attemptSessionNotCreated;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @attemptTimeExpiredSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Time expired — submitting your test'**
+  String get attemptTimeExpiredSubmitting;
+
+  /// No description provided for @attemptSubmittingTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting your test'**
+  String get attemptSubmittingTest;
+
+  /// No description provided for @attemptLockedPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Time expired. Answers are locked and submission is pending.'**
+  String get attemptLockedPending;
+
+  /// No description provided for @attemptRetrySubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry submit'**
+  String get attemptRetrySubmit;
+
+  /// No description provided for @attemptSaveAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Save answer'**
+  String get attemptSaveAnswer;
+
+  /// No description provided for @attemptSaveNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & next'**
+  String get attemptSaveNext;
+
+  /// No description provided for @attemptPaletteLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Palette · {count} left'**
+  String attemptPaletteLeft(int count);
+
+  /// No description provided for @attemptSubmitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get attemptSubmitting;
+
+  /// No description provided for @attemptSubmitTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit test'**
+  String get attemptSubmitTest;
+
+  /// No description provided for @attemptQuestionOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {number} of {total}'**
+  String attemptQuestionOf(int number, int total);
+
+  /// No description provided for @attemptNotSavedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress not saved. Retry.'**
+  String get attemptNotSavedRetry;
+
+  /// No description provided for @attemptSavingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving progress'**
+  String get attemptSavingProgress;
+
+  /// No description provided for @attemptSaveExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and exit'**
+  String get attemptSaveExit;
+
+  /// No description provided for @attemptQuestionNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {number}'**
+  String attemptQuestionNumber(int number);
+
+  /// No description provided for @attemptMarkedForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked for review'**
+  String get attemptMarkedForReview;
+
+  /// No description provided for @attemptOptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Option {letter}: {text}'**
+  String attemptOptionLabel(String letter, String text);
+
+  /// No description provided for @attemptPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get attemptPrevious;
+
+  /// No description provided for @attemptClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get attemptClear;
+
+  /// No description provided for @attemptReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get attemptReview;
+
+  /// No description provided for @attemptSubmitQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit test?'**
+  String get attemptSubmitQuestion;
+
+  /// No description provided for @attemptUnansweredLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unanswered question is still left. You can review it before submitting.} other{{count} unanswered questions are still left. You can review them before submitting.}}'**
+  String attemptUnansweredLeft(int count);
+
+  /// No description provided for @attemptCannotChange.
+  ///
+  /// In en, this message translates to:
+  /// **'After submission, answers cannot be changed.'**
+  String get attemptCannotChange;
+
+  /// No description provided for @attemptReviewUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Review unanswered'**
+  String get attemptReviewUnanswered;
+
+  /// No description provided for @attemptSubmitNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit now'**
+  String get attemptSubmitNow;
+
+  /// No description provided for @attemptContinueTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue test'**
+  String get attemptContinueTest;
+
+  /// No description provided for @attemptAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered'**
+  String get attemptAnswered;
+
+  /// No description provided for @attemptUnanswered.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered'**
+  String get attemptUnanswered;
+
+  /// No description provided for @attemptAnsweredMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Answered + marked'**
+  String get attemptAnsweredMarked;
+
+  /// No description provided for @attemptSyncNeededTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress still needs to sync'**
+  String get attemptSyncNeededTitle;
+
+  /// No description provided for @attemptSyncNeededBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.'**
+  String get attemptSyncNeededBody;
+
+  /// No description provided for @attemptSavingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving your progress'**
+  String get attemptSavingTitle;
+
+  /// No description provided for @attemptSavingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree is still saving your latest changes. Keep the test open until this save finishes.'**
+  String get attemptSavingBody;
+
+  /// No description provided for @attemptLeaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and leave test?'**
+  String get attemptLeaveTitle;
+
+  /// No description provided for @attemptLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your attempt will stay active and can be resumed later from this device or the ExamTree website.'**
+  String get attemptLeaveBody;
+
+  /// No description provided for @attemptRetrySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry save'**
+  String get attemptRetrySave;
+
+  /// No description provided for @attemptSaveLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and leave'**
+  String get attemptSaveLeave;
+
+  /// No description provided for @attemptStay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get attemptStay;
+
+  /// No description provided for @attemptSavingEllipsis.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving progress…'**
+  String get attemptSavingEllipsis;
+
+  /// No description provided for @attemptWaitingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device. Waiting to sync with ExamTree.'**
+  String get attemptWaitingSync;
+
+  /// No description provided for @attemptNotSyncedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest changes are safe on this device but not synced yet.'**
+  String get attemptNotSyncedYet;
+
+  /// No description provided for @paletteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Question palette'**
+  String get paletteTitle;
+
+  /// No description provided for @paletteClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close palette'**
+  String get paletteClose;
+
+  /// No description provided for @paletteMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked'**
+  String get paletteMarked;
+
+  /// No description provided for @paletteUnansweredCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Unanswered {count}'**
+  String paletteUnansweredCount(int count);
+
+  /// No description provided for @paletteMarkedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked {count}'**
+  String paletteMarkedCount(int count);
+
+  /// No description provided for @paletteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a number to jump directly to that question.'**
+  String get paletteHint;
+
+  /// No description provided for @paletteNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions match this filter.'**
+  String get paletteNoMatch;
+
+  /// No description provided for @paletteShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all questions'**
+  String get paletteShowAll;
 }
 
 class _AppLocalizationsDelegate
