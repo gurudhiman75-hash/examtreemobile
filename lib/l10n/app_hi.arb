@@ -223,5 +223,21 @@
   "examsNoneInCategoryTitle": "अभी कोई {category} परीक्षा प्रकाशित नहीं है।",
   "examsNoneInCategoryBody": "नई परीक्षाएँ प्रकाशित होते ही यहाँ अपने आप दिखेंगी।",
   "examsNoSeriesTitle": "अभी कोई टेस्ट सीरीज़ उपलब्ध नहीं",
-  "examsNoSeriesBody": "इस परीक्षा की प्रकाशित टेस्ट सीरीज़ यहाँ अपने आप दिखेंगी।"
+  "examsNoSeriesBody": "इस परीक्षा की प्रकाशित टेस्ट सीरीज़ यहाँ अपने आप दिखेंगी।",
+  "learnCurrentAffairs": "करंट अफेयर्स",
+  "learnCurrentAffairsSubtitle": "जल्दी दोहराने के लिए ताज़ा प्रकाशित अपडेट।",
+  "learnFreePractice": "मुफ़्त अभ्यास",
+  "learnFreePracticeSubtitle": "पढ़ाई को तुरंत टेस्ट सत्र में बदलें।",
+  "learnAllTests": "सभी टेस्ट",
+  "learnNotes": "नोट्स और फ़ॉर्मूला शीट",
+  "learnNotesSubtitle": "आपकी परीक्षाओं के लिए प्रकाशित सामग्री।",
+  "learnHeroTitle": "अपनी परीक्षाओं के लिए सीखें",
+  "learnHeroBody": "करंट अफेयर्स, नोट्स और मुफ़्त अभ्यास, जो वास्तव में आपके लिए प्रकाशित हैं।",
+  "learnArticle": "लेख",
+  "learnMinFree": "{minutes} मिनट · मुफ़्त",
+  "learnLoadFailed": "मुफ़्त सीखने की सामग्री लोड नहीं हो सकी",
+  "learnEmpty": "अभी कोई मुफ़्त सामग्री प्रकाशित नहीं है। प्रकाशित सामग्री यहाँ अपने आप दिखेगी।",
+  "learnPartialRefresh": "कुछ सामग्री रीफ़्रेश नहीं हो सकी। ऊपर दिखाई गई चीज़ें अभी भी उपलब्ध हैं।",
+  "learnOpenFailed": "यह सामग्री खोली नहीं जा सकी।",
+  "learnSelectedExams": "चुनी गई परीक्षाएँ"
 }

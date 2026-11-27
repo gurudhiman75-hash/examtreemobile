@@ -223,5 +223,21 @@
   "examsNoneInCategoryTitle": "ਅਜੇ ਕੋਈ {category} ਪ੍ਰੀਖਿਆ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ।",
   "examsNoneInCategoryBody": "ਨਵੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਪ੍ਰਕਾਸ਼ਿਤ ਹੁੰਦੇ ਹੀ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।",
   "examsNoSeriesTitle": "ਅਜੇ ਕੋਈ ਟੈਸਟ ਸੀਰੀਜ਼ ਉਪਲਬਧ ਨਹੀਂ",
-  "examsNoSeriesBody": "ਇਸ ਪ੍ਰੀਖਿਆ ਦੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ ਸੀਰੀਜ਼ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।"
+  "examsNoSeriesBody": "ਇਸ ਪ੍ਰੀਖਿਆ ਦੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ ਸੀਰੀਜ਼ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।",
+  "learnCurrentAffairs": "ਕਰੰਟ ਅਫੇਅਰਜ਼",
+  "learnCurrentAffairsSubtitle": "ਛੇਤੀ ਦੁਹਰਾਈ ਲਈ ਤਾਜ਼ਾ ਪ੍ਰਕਾਸ਼ਿਤ ਅੱਪਡੇਟ।",
+  "learnFreePractice": "ਮੁਫ਼ਤ ਅਭਿਆਸ",
+  "learnFreePracticeSubtitle": "ਪੜ੍ਹਾਈ ਨੂੰ ਤੁਰੰਤ ਟੈਸਟ ਸੈਸ਼ਨ ਵਿੱਚ ਬਦਲੋ।",
+  "learnAllTests": "ਸਾਰੇ ਟੈਸਟ",
+  "learnNotes": "ਨੋਟਸ ਅਤੇ ਫ਼ਾਰਮੂਲਾ ਸ਼ੀਟਾਂ",
+  "learnNotesSubtitle": "ਤੁਹਾਡੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਲਈ ਪ੍ਰਕਾਸ਼ਿਤ ਸਮੱਗਰੀ।",
+  "learnHeroTitle": "ਆਪਣੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਲਈ ਸਿੱਖੋ",
+  "learnHeroBody": "ਕਰੰਟ ਅਫੇਅਰਜ਼, ਨੋਟਸ ਅਤੇ ਮੁਫ਼ਤ ਅਭਿਆਸ, ਜੋ ਅਸਲ ਵਿੱਚ ਤੁਹਾਡੇ ਲਈ ਪ੍ਰਕਾਸ਼ਿਤ ਹਨ।",
+  "learnArticle": "ਲੇਖ",
+  "learnMinFree": "{minutes} ਮਿੰਟ · ਮੁਫ਼ਤ",
+  "learnLoadFailed": "ਮੁਫ਼ਤ ਸਿੱਖਣ ਦੀ ਸਮੱਗਰੀ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ",
+  "learnEmpty": "ਅਜੇ ਕੋਈ ਮੁਫ਼ਤ ਸਮੱਗਰੀ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ। ਪ੍ਰਕਾਸ਼ਿਤ ਸਮੱਗਰੀ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖੇਗੀ।",
+  "learnPartialRefresh": "ਕੁਝ ਸਮੱਗਰੀ ਰੀਫ੍ਰੈਸ਼ ਨਹੀਂ ਹੋ ਸਕੀ। ਉੱਪਰ ਦਿਖਾਈਆਂ ਚੀਜ਼ਾਂ ਅਜੇ ਵੀ ਉਪਲਬਧ ਹਨ।",
+  "learnOpenFailed": "ਇਹ ਸਮੱਗਰੀ ਖੋਲ੍ਹੀ ਨਹੀਂ ਜਾ ਸਕੀ।",
+  "learnSelectedExams": "ਚੁਣੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ"
 }

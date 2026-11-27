@@ -864,4 +864,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get examsNoSeriesBody =>
       'Published test series for this exam will appear here automatically.';
+
+  @override
+  String get learnCurrentAffairs => 'Current affairs';
+
+  @override
+  String get learnCurrentAffairsSubtitle =>
+      'Fresh published updates for quick revision.';
+
+  @override
+  String get learnFreePractice => 'Free practice';
+
+  @override
+  String get learnFreePracticeSubtitle =>
+      'Turn reading into an immediate test session.';
+
+  @override
+  String get learnAllTests => 'All tests';
+
+  @override
+  String get learnNotes => 'Notes & formula sheets';
+
+  @override
+  String get learnNotesSubtitle => 'Focused material published for your exams.';
+
+  @override
+  String get learnHeroTitle => 'Learn for your exams';
+
+  @override
+  String get learnHeroBody =>
+      'Current affairs, notes and free practice selected from what is actually published for you.';
+
+  @override
+  String get learnArticle => 'Article';
+
+  @override
+  String learnMinFree(int minutes) {
+    return '$minutes min · Free';
+  }
+
+  @override
+  String get learnLoadFailed => 'Unable to load free learning';
+
+  @override
+  String get learnEmpty =>
+      'No free learning resources are published yet. Published material will appear here automatically.';
+
+  @override
+  String get learnPartialRefresh =>
+      'Some learning content could not be refreshed. The items shown above are still available.';
+
+  @override
+  String get learnOpenFailed => 'This resource could not be opened.';
+
+  @override
+  String get learnSelectedExams => 'Selected exams';
 }

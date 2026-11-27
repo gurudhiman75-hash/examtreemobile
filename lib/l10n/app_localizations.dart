@@ -1443,6 +1443,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Published test series for this exam will appear here automatically.'**
   String get examsNoSeriesBody;
+
+  /// No description provided for @learnCurrentAffairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Current affairs'**
+  String get learnCurrentAffairs;
+
+  /// No description provided for @learnCurrentAffairsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh published updates for quick revision.'**
+  String get learnCurrentAffairsSubtitle;
+
+  /// No description provided for @learnFreePractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Free practice'**
+  String get learnFreePractice;
+
+  /// No description provided for @learnFreePracticeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn reading into an immediate test session.'**
+  String get learnFreePracticeSubtitle;
+
+  /// No description provided for @learnAllTests.
+  ///
+  /// In en, this message translates to:
+  /// **'All tests'**
+  String get learnAllTests;
+
+  /// No description provided for @learnNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes & formula sheets'**
+  String get learnNotes;
+
+  /// No description provided for @learnNotesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focused material published for your exams.'**
+  String get learnNotesSubtitle;
+
+  /// No description provided for @learnHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn for your exams'**
+  String get learnHeroTitle;
+
+  /// No description provided for @learnHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Current affairs, notes and free practice selected from what is actually published for you.'**
+  String get learnHeroBody;
+
+  /// No description provided for @learnArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Article'**
+  String get learnArticle;
+
+  /// No description provided for @learnMinFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min · Free'**
+  String learnMinFree(int minutes);
+
+  /// No description provided for @learnLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load free learning'**
+  String get learnLoadFailed;
+
+  /// No description provided for @learnEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No free learning resources are published yet. Published material will appear here automatically.'**
+  String get learnEmpty;
+
+  /// No description provided for @learnPartialRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Some learning content could not be refreshed. The items shown above are still available.'**
+  String get learnPartialRefresh;
+
+  /// No description provided for @learnOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This resource could not be opened.'**
+  String get learnOpenFailed;
+
+  /// No description provided for @learnSelectedExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected exams'**
+  String get learnSelectedExams;
 }
 
 class _AppLocalizationsDelegate

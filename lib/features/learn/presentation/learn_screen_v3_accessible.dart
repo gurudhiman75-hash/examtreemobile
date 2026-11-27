@@ -17,6 +17,7 @@ import '../domain/learning_resource.dart';
 import 'learn_screen_v3.dart' as standard;
 import 'providers/learning_resources_providers.dart';
 import 'learn_modules_section.dart';
+import '../../../l10n/l10n.dart';
 
 /// Keeps Learn V3's compact visual rails at normal text sizes and switches to
 /// natural-height vertical content when accessibility text becomes large.
@@ -103,9 +104,9 @@ class LearnScreen extends ConsumerWidget {
                     )
                   else ...[
                     if (currentAffairs.isNotEmpty) ...[
-                      const _Heading(
-                        title: 'Current affairs',
-                        subtitle: 'Fresh published updates for quick revision.',
+                      _Heading(
+                        title: context.l10n.learnCurrentAffairs,
+                        subtitle: context.l10n.learnCurrentAffairsSubtitle,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Column(
@@ -126,9 +127,9 @@ class LearnScreen extends ConsumerWidget {
                       const SizedBox(height: AppSpacing.xl),
                     ],
                     if (freeTests.isNotEmpty) ...[
-                      const _Heading(
-                        title: 'Free practice',
-                        subtitle: 'Turn reading into an immediate test session.',
+                      _Heading(
+                        title: context.l10n.learnFreePractice,
+                        subtitle: context.l10n.learnFreePracticeSubtitle,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Column(
@@ -146,15 +147,15 @@ class LearnScreen extends ConsumerWidget {
                         child: TextButton.icon(
                           onPressed: () => context.go('/exams'),
                           icon: const Icon(Icons.arrow_forward_rounded),
-                          label: const Text('All tests'),
+                          label: Text(context.l10n.learnAllTests),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
                     ],
                     if (notes.isNotEmpty) ...[
-                      const _Heading(
-                        title: 'Notes & formula sheets',
-                        subtitle: 'Focused material published for your exams.',
+                      _Heading(
+                        title: context.l10n.learnNotes,
+                        subtitle: context.l10n.learnNotesSubtitle,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Column(
@@ -232,7 +233,7 @@ class _AccessibleIntro extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Learn for your exams',
+          context.l10n.learnHeroTitle,
           style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w900,
@@ -241,7 +242,7 @@ class _AccessibleIntro extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Current affairs, notes and free practice selected from what is actually published for you.',
+          context.l10n.learnHeroBody,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: Colors.white.withValues(alpha: .78),
             height: 1.45,
@@ -426,10 +427,10 @@ class _AccessibleResourceCard extends StatelessWidget {
                     _Badge(
                       label: resource.format == LearningResourceFormat.pdf
                           ? 'PDF'
-                          : 'Article',
+                          : context.l10n.learnArticle,
                     ),
                     _Badge(label: resource.languageCode.toUpperCase()),
-                    if (date != null) _Badge(label: _dateLabel(date)),
+                    if (date != null) _Badge(label: formatDayMonth(context, date.toLocal())),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -452,7 +453,7 @@ class _AccessibleResourceCard extends StatelessWidget {
                 ],
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  _resourceTarget(resource),
+                  _resourceTarget(context, resource),
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: const Color(0xFF0B3A6F),
                     fontWeight: FontWeight.w800,
@@ -514,14 +515,14 @@ class _AccessibleTestCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  '${exam.totalQuestions} questions',
+                  context.l10n.resultQuestionsCount(exam.totalQuestions),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '$minutes min · Free',
+                  context.l10n.learnMinFree(minutes),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -592,7 +593,7 @@ class _AccessibleEmpty extends StatelessWidget {
     if (hasError) {
       return NetworkFailureView(
         error: Exception('Learning catalogue unavailable'),
-        fallbackTitle: 'Unable to load free learning',
+        fallbackTitle: context.l10n.learnLoadFailed,
         onRetry: onRetry,
       );
     }
@@ -604,7 +605,7 @@ class _AccessibleEmpty extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        'No free learning resources are published yet. Published material will appear here automatically.',
+        context.l10n.learnEmpty,
         style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
       ),
     );
@@ -629,14 +630,14 @@ class _AccessibleNotice extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Some learning content could not be refreshed. The items shown above are still available.',
+            context.l10n.learnPartialRefresh,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: AppColors.onAmberContainer,
               height: 1.45,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
         ],
       ),
     );
@@ -658,31 +659,16 @@ Future<void> _openResource(
   }
   if (!context.mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('This resource could not be opened.')),
+    SnackBar(content: Text(context.l10n.learnOpenFailed)),
   );
 }
 
-String _resourceTarget(LearningResourceSummary resource) {
-  if (resource.isGeneral) return 'All exams';
-  if (resource.exams.isEmpty) return 'Selected exams';
+String _resourceTarget(
+  BuildContext context,
+  LearningResourceSummary resource,
+) {
+  if (resource.isGeneral) return context.l10n.resultsAllExams;
+  if (resource.exams.isEmpty) return context.l10n.learnSelectedExams;
   return resource.exams.take(2).map((exam) => exam.name).join(' · ');
 }
 
-String _dateLabel(DateTime value) {
-  final local = value.toLocal();
-  const months = <String>[
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return '${local.day} ${months[local.month - 1]} ${local.year}';
-}

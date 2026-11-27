@@ -866,4 +866,59 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get examsNoSeriesBody =>
       'ਇਸ ਪ੍ਰੀਖਿਆ ਦੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ ਸੀਰੀਜ਼ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।';
+
+  @override
+  String get learnCurrentAffairs => 'ਕਰੰਟ ਅਫੇਅਰਜ਼';
+
+  @override
+  String get learnCurrentAffairsSubtitle =>
+      'ਛੇਤੀ ਦੁਹਰਾਈ ਲਈ ਤਾਜ਼ਾ ਪ੍ਰਕਾਸ਼ਿਤ ਅੱਪਡੇਟ।';
+
+  @override
+  String get learnFreePractice => 'ਮੁਫ਼ਤ ਅਭਿਆਸ';
+
+  @override
+  String get learnFreePracticeSubtitle =>
+      'ਪੜ੍ਹਾਈ ਨੂੰ ਤੁਰੰਤ ਟੈਸਟ ਸੈਸ਼ਨ ਵਿੱਚ ਬਦਲੋ।';
+
+  @override
+  String get learnAllTests => 'ਸਾਰੇ ਟੈਸਟ';
+
+  @override
+  String get learnNotes => 'ਨੋਟਸ ਅਤੇ ਫ਼ਾਰਮੂਲਾ ਸ਼ੀਟਾਂ';
+
+  @override
+  String get learnNotesSubtitle => 'ਤੁਹਾਡੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਲਈ ਪ੍ਰਕਾਸ਼ਿਤ ਸਮੱਗਰੀ।';
+
+  @override
+  String get learnHeroTitle => 'ਆਪਣੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਲਈ ਸਿੱਖੋ';
+
+  @override
+  String get learnHeroBody =>
+      'ਕਰੰਟ ਅਫੇਅਰਜ਼, ਨੋਟਸ ਅਤੇ ਮੁਫ਼ਤ ਅਭਿਆਸ, ਜੋ ਅਸਲ ਵਿੱਚ ਤੁਹਾਡੇ ਲਈ ਪ੍ਰਕਾਸ਼ਿਤ ਹਨ।';
+
+  @override
+  String get learnArticle => 'ਲੇਖ';
+
+  @override
+  String learnMinFree(int minutes) {
+    return '$minutes ਮਿੰਟ · ਮੁਫ਼ਤ';
+  }
+
+  @override
+  String get learnLoadFailed => 'ਮੁਫ਼ਤ ਸਿੱਖਣ ਦੀ ਸਮੱਗਰੀ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ';
+
+  @override
+  String get learnEmpty =>
+      'ਅਜੇ ਕੋਈ ਮੁਫ਼ਤ ਸਮੱਗਰੀ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ। ਪ੍ਰਕਾਸ਼ਿਤ ਸਮੱਗਰੀ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖੇਗੀ।';
+
+  @override
+  String get learnPartialRefresh =>
+      'ਕੁਝ ਸਮੱਗਰੀ ਰੀਫ੍ਰੈਸ਼ ਨਹੀਂ ਹੋ ਸਕੀ। ਉੱਪਰ ਦਿਖਾਈਆਂ ਚੀਜ਼ਾਂ ਅਜੇ ਵੀ ਉਪਲਬਧ ਹਨ।';
+
+  @override
+  String get learnOpenFailed => 'ਇਹ ਸਮੱਗਰੀ ਖੋਲ੍ਹੀ ਨਹੀਂ ਜਾ ਸਕੀ।';
+
+  @override
+  String get learnSelectedExams => 'ਚੁਣੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ';
 }

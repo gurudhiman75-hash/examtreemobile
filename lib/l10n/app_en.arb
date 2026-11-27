@@ -595,5 +595,28 @@
   },
   "examsNoneInCategoryBody": "New exams will appear here automatically when published.",
   "examsNoSeriesTitle": "No test series available yet",
-  "examsNoSeriesBody": "Published test series for this exam will appear here automatically."
+  "examsNoSeriesBody": "Published test series for this exam will appear here automatically.",
+  "learnCurrentAffairs": "Current affairs",
+  "learnCurrentAffairsSubtitle": "Fresh published updates for quick revision.",
+  "learnFreePractice": "Free practice",
+  "learnFreePracticeSubtitle": "Turn reading into an immediate test session.",
+  "learnAllTests": "All tests",
+  "learnNotes": "Notes & formula sheets",
+  "learnNotesSubtitle": "Focused material published for your exams.",
+  "learnHeroTitle": "Learn for your exams",
+  "learnHeroBody": "Current affairs, notes and free practice selected from what is actually published for you.",
+  "learnArticle": "Article",
+  "learnMinFree": "{minutes} min · Free",
+  "@learnMinFree": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "learnLoadFailed": "Unable to load free learning",
+  "learnEmpty": "No free learning resources are published yet. Published material will appear here automatically.",
+  "learnPartialRefresh": "Some learning content could not be refreshed. The items shown above are still available.",
+  "learnOpenFailed": "This resource could not be opened.",
+  "learnSelectedExams": "Selected exams"
 }
