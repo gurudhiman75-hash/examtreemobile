@@ -427,4 +427,156 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paletteShowAll => 'Show all questions';
+
+  @override
+  String get resultTitle => 'Result';
+
+  @override
+  String get resultLoadFailed => 'Unable to load this result';
+
+  @override
+  String get resultTestResult => 'Test result';
+
+  @override
+  String resultQuestionsCount(int count) {
+    return '$count questions';
+  }
+
+  @override
+  String resultMarks(String marks) {
+    return '$marks marks';
+  }
+
+  @override
+  String get resultRank => 'Rank';
+
+  @override
+  String get resultAccuracy => 'Accuracy';
+
+  @override
+  String resultXofY(int x, int y) {
+    return '$x of $y';
+  }
+
+  @override
+  String get resultTime => 'Time';
+
+  @override
+  String get resultSpent => 'spent';
+
+  @override
+  String get resultAttempted => 'Attempted';
+
+  @override
+  String resultOfTotal(int total) {
+    return 'of $total';
+  }
+
+  @override
+  String resultScoreA11y(String score, String max) {
+    return 'Score $score out of $max.';
+  }
+
+  @override
+  String resultDelta(String delta) {
+    return '$delta pts vs your last attempt';
+  }
+
+  @override
+  String resultLastAttempts(int count) {
+    return 'Your last $count attempts';
+  }
+
+  @override
+  String get resultTrendSubtitle => 'Score as a percentage of the maximum.';
+
+  @override
+  String get resultCorrect => 'Correct';
+
+  @override
+  String get resultWrong => 'Wrong';
+
+  @override
+  String get resultSkipped => 'Skipped';
+
+  @override
+  String resultHowWent(int total) {
+    return 'How your $total questions went';
+  }
+
+  @override
+  String resultQuickestWin(String section) {
+    return 'Quickest win: $section. ';
+  }
+
+  @override
+  String resultSkippedMost(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'You skipped $count questions there, more than in any other section.',
+      one: 'You skipped 1 question there, more than in any other section.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String resultAccuracyValue(String value) {
+    return 'Accuracy $value';
+  }
+
+  @override
+  String resultTimeShare(String section, int share) {
+    return '$section took $share% of your time.';
+  }
+
+  @override
+  String resultTimeShareAccuracy(String section, int share, int accuracy) {
+    return '$section took $share% of your time at $accuracy% accuracy.';
+  }
+
+  @override
+  String resultLowestAccuracy(String section, int accuracy) {
+    return '$section had your lowest accuracy, $accuracy%.';
+  }
+
+  @override
+  String resultLowestAccuracyShare(String section, int accuracy, int share) {
+    return '$section had your lowest accuracy, $accuracy%, on $share% of your time.';
+  }
+
+  @override
+  String get resultAccuracyVsTime => 'Accuracy vs time spent';
+
+  @override
+  String get resultAccuracyVsTimeSubtitle =>
+      'Is your time going where your marks are?';
+
+  @override
+  String get resultShareOfTime => 'Share of your time';
+
+  @override
+  String get resultTimePerQuestion => 'Time per question';
+
+  @override
+  String get resultTimePerQuestionSubtitle =>
+      'One bar per question, in the order of the paper.';
+
+  @override
+  String resultSlowest(String section, int number, String time) {
+    return 'Slowest question: $section Q$number at $time.';
+  }
+
+  @override
+  String get resultQuestionMap => 'Question map';
+
+  @override
+  String get resultReviewSolutions => 'Review solutions';
+
+  @override
+  String get resultReviseMistakes => 'Revise mistakes (5 min)';
+
+  @override
+  String get resultRetake => 'Retake test';
 }

@@ -428,4 +428,155 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get paletteShowAll => 'सभी प्रश्न दिखाएँ';
+
+  @override
+  String get resultTitle => 'परिणाम';
+
+  @override
+  String get resultLoadFailed => 'यह परिणाम लोड नहीं हो सका';
+
+  @override
+  String get resultTestResult => 'टेस्ट परिणाम';
+
+  @override
+  String resultQuestionsCount(int count) {
+    return '$count प्रश्न';
+  }
+
+  @override
+  String resultMarks(String marks) {
+    return '$marks अंक';
+  }
+
+  @override
+  String get resultRank => 'रैंक';
+
+  @override
+  String get resultAccuracy => 'सटीकता';
+
+  @override
+  String resultXofY(int x, int y) {
+    return '$y में से $x';
+  }
+
+  @override
+  String get resultTime => 'समय';
+
+  @override
+  String get resultSpent => 'लगा';
+
+  @override
+  String get resultAttempted => 'हल किए';
+
+  @override
+  String resultOfTotal(int total) {
+    return '$total में से';
+  }
+
+  @override
+  String resultScoreA11y(String score, String max) {
+    return 'स्कोर $max में से $score।';
+  }
+
+  @override
+  String resultDelta(String delta) {
+    return 'पिछले प्रयास से $delta अंक';
+  }
+
+  @override
+  String resultLastAttempts(int count) {
+    return 'आपके पिछले $count प्रयास';
+  }
+
+  @override
+  String get resultTrendSubtitle => 'अधिकतम अंकों के प्रतिशत के रूप में स्कोर।';
+
+  @override
+  String get resultCorrect => 'सही';
+
+  @override
+  String get resultWrong => 'गलत';
+
+  @override
+  String get resultSkipped => 'छोड़े';
+
+  @override
+  String resultHowWent(int total) {
+    return 'आपके $total प्रश्नों का हाल';
+  }
+
+  @override
+  String resultQuickestWin(String section) {
+    return 'सबसे जल्दी सुधार: $section। ';
+  }
+
+  @override
+  String resultSkippedMost(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'वहाँ आपने $count प्रश्न छोड़े, किसी भी दूसरे सेक्शन से ज़्यादा।',
+      one: 'वहाँ आपने 1 प्रश्न छोड़ा, किसी भी दूसरे सेक्शन से ज़्यादा।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String resultAccuracyValue(String value) {
+    return 'सटीकता $value';
+  }
+
+  @override
+  String resultTimeShare(String section, int share) {
+    return '$section में आपका $share% समय लगा।';
+  }
+
+  @override
+  String resultTimeShareAccuracy(String section, int share, int accuracy) {
+    return '$section में आपका $share% समय लगा, $accuracy% सटीकता के साथ।';
+  }
+
+  @override
+  String resultLowestAccuracy(String section, int accuracy) {
+    return '$section में आपकी सबसे कम सटीकता रही, $accuracy%।';
+  }
+
+  @override
+  String resultLowestAccuracyShare(String section, int accuracy, int share) {
+    return '$section में आपकी सबसे कम सटीकता रही, $accuracy%, आपके $share% समय में।';
+  }
+
+  @override
+  String get resultAccuracyVsTime => 'सटीकता बनाम लगा समय';
+
+  @override
+  String get resultAccuracyVsTimeSubtitle =>
+      'क्या आपका समय वहीं लग रहा है जहाँ अंक हैं?';
+
+  @override
+  String get resultShareOfTime => 'आपके समय का हिस्सा';
+
+  @override
+  String get resultTimePerQuestion => 'प्रति प्रश्न समय';
+
+  @override
+  String get resultTimePerQuestionSubtitle =>
+      'हर प्रश्न के लिए एक बार, पेपर के क्रम में।';
+
+  @override
+  String resultSlowest(String section, int number, String time) {
+    return 'सबसे धीमा प्रश्न: $section Q$number, $time में।';
+  }
+
+  @override
+  String get resultQuestionMap => 'प्रश्न मानचित्र';
+
+  @override
+  String get resultReviewSolutions => 'हल देखें';
+
+  @override
+  String get resultReviseMistakes => 'गलतियाँ दोहराएँ (5 मिनट)';
+
+  @override
+  String get resultRetake => 'टेस्ट दोबारा दें';
 }

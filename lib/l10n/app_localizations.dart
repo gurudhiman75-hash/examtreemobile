@@ -789,6 +789,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show all questions'**
   String get paletteShowAll;
+
+  /// No description provided for @resultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get resultTitle;
+
+  /// No description provided for @resultLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load this result'**
+  String get resultLoadFailed;
+
+  /// No description provided for @resultTestResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Test result'**
+  String get resultTestResult;
+
+  /// No description provided for @resultQuestionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} questions'**
+  String resultQuestionsCount(int count);
+
+  /// No description provided for @resultMarks.
+  ///
+  /// In en, this message translates to:
+  /// **'{marks} marks'**
+  String resultMarks(String marks);
+
+  /// No description provided for @resultRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get resultRank;
+
+  /// No description provided for @resultAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get resultAccuracy;
+
+  /// No description provided for @resultXofY.
+  ///
+  /// In en, this message translates to:
+  /// **'{x} of {y}'**
+  String resultXofY(int x, int y);
+
+  /// No description provided for @resultTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get resultTime;
+
+  /// No description provided for @resultSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'spent'**
+  String get resultSpent;
+
+  /// No description provided for @resultAttempted.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempted'**
+  String get resultAttempted;
+
+  /// No description provided for @resultOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {total}'**
+  String resultOfTotal(int total);
+
+  /// No description provided for @resultScoreA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Score {score} out of {max}.'**
+  String resultScoreA11y(String score, String max);
+
+  /// No description provided for @resultDelta.
+  ///
+  /// In en, this message translates to:
+  /// **'{delta} pts vs your last attempt'**
+  String resultDelta(String delta);
+
+  /// No description provided for @resultLastAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Your last {count} attempts'**
+  String resultLastAttempts(int count);
+
+  /// No description provided for @resultTrendSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Score as a percentage of the maximum.'**
+  String get resultTrendSubtitle;
+
+  /// No description provided for @resultCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get resultCorrect;
+
+  /// No description provided for @resultWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong'**
+  String get resultWrong;
+
+  /// No description provided for @resultSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get resultSkipped;
+
+  /// No description provided for @resultHowWent.
+  ///
+  /// In en, this message translates to:
+  /// **'How your {total} questions went'**
+  String resultHowWent(int total);
+
+  /// No description provided for @resultQuickestWin.
+  ///
+  /// In en, this message translates to:
+  /// **'Quickest win: {section}. '**
+  String resultQuickestWin(String section);
+
+  /// No description provided for @resultSkippedMost.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{You skipped 1 question there, more than in any other section.} other{You skipped {count} questions there, more than in any other section.}}'**
+  String resultSkippedMost(int count);
+
+  /// No description provided for @resultAccuracyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy {value}'**
+  String resultAccuracyValue(String value);
+
+  /// No description provided for @resultTimeShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{section} took {share}% of your time.'**
+  String resultTimeShare(String section, int share);
+
+  /// No description provided for @resultTimeShareAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'{section} took {share}% of your time at {accuracy}% accuracy.'**
+  String resultTimeShareAccuracy(String section, int share, int accuracy);
+
+  /// No description provided for @resultLowestAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'{section} had your lowest accuracy, {accuracy}%.'**
+  String resultLowestAccuracy(String section, int accuracy);
+
+  /// No description provided for @resultLowestAccuracyShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{section} had your lowest accuracy, {accuracy}%, on {share}% of your time.'**
+  String resultLowestAccuracyShare(String section, int accuracy, int share);
+
+  /// No description provided for @resultAccuracyVsTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy vs time spent'**
+  String get resultAccuracyVsTime;
+
+  /// No description provided for @resultAccuracyVsTimeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is your time going where your marks are?'**
+  String get resultAccuracyVsTimeSubtitle;
+
+  /// No description provided for @resultShareOfTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Share of your time'**
+  String get resultShareOfTime;
+
+  /// No description provided for @resultTimePerQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Time per question'**
+  String get resultTimePerQuestion;
+
+  /// No description provided for @resultTimePerQuestionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One bar per question, in the order of the paper.'**
+  String get resultTimePerQuestionSubtitle;
+
+  /// No description provided for @resultSlowest.
+  ///
+  /// In en, this message translates to:
+  /// **'Slowest question: {section} Q{number} at {time}.'**
+  String resultSlowest(String section, int number, String time);
+
+  /// No description provided for @resultQuestionMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Question map'**
+  String get resultQuestionMap;
+
+  /// No description provided for @resultReviewSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Review solutions'**
+  String get resultReviewSolutions;
+
+  /// No description provided for @resultReviseMistakes.
+  ///
+  /// In en, this message translates to:
+  /// **'Revise mistakes (5 min)'**
+  String get resultReviseMistakes;
+
+  /// No description provided for @resultRetake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake test'**
+  String get resultRetake;
 }
 
 class _AppLocalizationsDelegate

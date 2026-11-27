@@ -211,5 +211,184 @@
   },
   "paletteHint": "Tap a number to jump directly to that question.",
   "paletteNoMatch": "No questions match this filter.",
-  "paletteShowAll": "Show all questions"
+  "paletteShowAll": "Show all questions",
+  "resultTitle": "Result",
+  "resultLoadFailed": "Unable to load this result",
+  "resultTestResult": "Test result",
+  "resultQuestionsCount": "{count} questions",
+  "@resultQuestionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultMarks": "{marks} marks",
+  "@resultMarks": {
+    "placeholders": {
+      "marks": {
+        "type": "String"
+      }
+    }
+  },
+  "resultRank": "Rank",
+  "resultAccuracy": "Accuracy",
+  "resultXofY": "{x} of {y}",
+  "@resultXofY": {
+    "placeholders": {
+      "x": {
+        "type": "int"
+      },
+      "y": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTime": "Time",
+  "resultSpent": "spent",
+  "resultAttempted": "Attempted",
+  "resultOfTotal": "of {total}",
+  "@resultOfTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultScoreA11y": "Score {score} out of {max}.",
+  "@resultScoreA11y": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "resultDelta": "{delta} pts vs your last attempt",
+  "@resultDelta": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "resultLastAttempts": "Your last {count} attempts",
+  "@resultLastAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTrendSubtitle": "Score as a percentage of the maximum.",
+  "resultCorrect": "Correct",
+  "resultWrong": "Wrong",
+  "resultSkipped": "Skipped",
+  "resultHowWent": "How your {total} questions went",
+  "@resultHowWent": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultQuickestWin": "Quickest win: {section}. ",
+  "@resultQuickestWin": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "resultSkippedMost": "{count, plural, =1{You skipped 1 question there, more than in any other section.} other{You skipped {count} questions there, more than in any other section.}}",
+  "@resultSkippedMost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultAccuracyValue": "Accuracy {value}",
+  "@resultAccuracyValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultTimeShare": "{section} took {share}% of your time.",
+  "@resultTimeShare": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "share": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTimeShareAccuracy": "{section} took {share}% of your time at {accuracy}% accuracy.",
+  "@resultTimeShareAccuracy": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "share": {
+        "type": "int"
+      },
+      "accuracy": {
+        "type": "int"
+      }
+    }
+  },
+  "resultLowestAccuracy": "{section} had your lowest accuracy, {accuracy}%.",
+  "@resultLowestAccuracy": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "accuracy": {
+        "type": "int"
+      }
+    }
+  },
+  "resultLowestAccuracyShare": "{section} had your lowest accuracy, {accuracy}%, on {share}% of your time.",
+  "@resultLowestAccuracyShare": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "accuracy": {
+        "type": "int"
+      },
+      "share": {
+        "type": "int"
+      }
+    }
+  },
+  "resultAccuracyVsTime": "Accuracy vs time spent",
+  "resultAccuracyVsTimeSubtitle": "Is your time going where your marks are?",
+  "resultShareOfTime": "Share of your time",
+  "resultTimePerQuestion": "Time per question",
+  "resultTimePerQuestionSubtitle": "One bar per question, in the order of the paper.",
+  "resultSlowest": "Slowest question: {section} Q{number} at {time}.",
+  "@resultSlowest": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resultQuestionMap": "Question map",
+  "resultReviewSolutions": "Review solutions",
+  "resultReviseMistakes": "Revise mistakes (5 min)",
+  "resultRetake": "Retake test"
 }
