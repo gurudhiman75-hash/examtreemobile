@@ -1,0 +1,78 @@
+{
+  "@@locale": "en",
+  "navHome": "Home",
+  "navLearn": "Learn",
+  "navTests": "Tests",
+  "navCurrentAffairs": "Current Affairs",
+  "navResults": "Results",
+  "navProfile": "Profile",
+  "navMenu": "Menu",
+  "appLanguage": "App language",
+  "appLanguageHelp": "Used for menus, buttons and screen text. Some screens are still in English while translation is completed.",
+  "alsoUseForQuestions": "Show questions in this language too",
+  "questionLanguage": "Question language",
+  "languageSaveFailed": "Unable to save the language on this device.",
+  "bookmarksTitle": "Bookmarks",
+  "bookmarksCount": "{count, plural, =1{1 saved question · on this device} other{{count} saved questions · on this device}}",
+  "@bookmarksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarksAll": "All",
+  "bookmarksEmptyTitle": "No saved questions yet",
+  "bookmarksEmptyBody": "While reviewing a test, tap the bookmark icon on any question to save it here with its solution.",
+  "bookmarkRemoved": "This bookmark was removed.",
+  "savedQuestion": "Saved question",
+  "removeBookmark": "Remove bookmark",
+  "bookmarkQuestion": "Bookmark this question",
+  "savedToBookmarks": "Saved to Bookmarks",
+  "removedFromBookmarks": "Removed from Bookmarks",
+  "bookmarkSaveFailed": "Could not save this question. Try again.",
+  "view": "View",
+  "solution": "Solution",
+  "correctAnswer": "Correct answer",
+  "yourAnswer": "Your answer",
+  "correctYourAnswer": "Correct · your answer",
+  "savedToday": "Saved today",
+  "savedYesterday": "Saved yesterday",
+  "savedDaysAgo": "Saved {days} days ago",
+  "@savedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineTitle": "Downloads & offline",
+  "offlineIntro": "Available without internet on this phone",
+  "offlineSavedQuestions": "Saved questions",
+  "offlineSavedQuestionsEmpty": "Bookmark questions while reviewing a test",
+  "offlineSavedQuestionsCount": "{count, plural, =1{1 question with solutions} other{{count} questions with solutions}}",
+  "@offlineSavedQuestionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineRevision": "Revision queue",
+  "offlineRevisionEmpty": "Questions you get wrong are added here for revision",
+  "offlineRevisionCount": "{count, plural, =1{1 question from your past mistakes} other{{count} questions from your past mistakes}}",
+  "@offlineRevisionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineTestsTitle": "Tests need a connection to start and submit",
+  "offlineTestsBody": "If your connection drops during a test, your answers stay saved on this phone and you can continue when you are back online. Full tests and notes cannot be downloaded yet.",
+  "profileDownloads": "Downloads & offline",
+  "profileBookmarks": "Bookmarks",
+  "profilePrivacy": "Privacy & account",
+  "profilePrivacySubtitle": "Account controls and privacy settings",
+  "retry": "Retry"
+}

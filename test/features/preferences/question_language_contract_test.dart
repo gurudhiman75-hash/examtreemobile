@@ -26,7 +26,7 @@ void main() {
     expect(results, contains('localizeResult(result, language)'));
     expect(profileEntry, contains("export 'profile_screen_v5.dart';"));
     expect(profile, contains("Key('profile-question-language')"));
-    expect(profile, contains("title: 'Question language'"));
+    expect(profile, contains('title: context.l10n.questionLanguage'));
     expect(profile, contains('subtitle: language.label'));
     expect(profile, contains('English is used when a translation is unavailable.'));
     expect(preference, contains('return QuestionLanguage.english;'));

@@ -10,6 +10,8 @@ import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/performance_analytics.dart';
+import '../../../l10n/l10n.dart';
+import '../../preferences/presentation/providers/app_language_providers.dart';
 import 'providers/analytics_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -110,6 +112,13 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           _AccountActions(
             language: language,
+            appLanguage: ref.watch(appLanguageProvider).value ??
+                QuestionLanguage.english,
+            onAppLanguage: () => _chooseAppLanguage(
+              context,
+              ref,
+              ref.read(appLanguageProvider).value ?? QuestionLanguage.english,
+            ),
             onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
             onResults: () => context.go('/results'),
@@ -118,6 +127,29 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _chooseAppLanguage(
+    BuildContext context,
+    WidgetRef ref,
+    QuestionLanguage current,
+  ) async {
+    final result = await showModalBottomSheet<(QuestionLanguage, bool)>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => _AppLanguageSheet(current: current),
+    );
+    if (result == null || !context.mounted) return;
+    final (selected, alsoForQuestions) = result;
+    if (selected == current && !alsoForQuestions) return;
+    try {
+      await setAppLanguage(ref, selected, alsoForQuestions: alsoForQuestions);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.languageSaveFailed)),
+      );
+    }
   }
 
   Future<void> _chooseQuestionLanguage(
@@ -329,14 +361,14 @@ class _ProfileMenu extends StatelessWidget {
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.download_rounded,
-            title: 'Downloads & offline',
+            title: context.l10n.profileDownloads,
             subtitle: 'Offline learning resources',
             onTap: onDownloads,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.bookmark_outline_rounded,
-            title: 'Bookmarks',
+            title: context.l10n.profileBookmarks,
             subtitle: 'Saved revision items',
             onTap: onBookmarks,
           ),
@@ -1101,6 +1133,8 @@ class _SectionHeading extends StatelessWidget {
 class _AccountActions extends StatelessWidget {
   const _AccountActions({
     required this.language,
+    required this.appLanguage,
+    required this.onAppLanguage,
     required this.onLanguage,
     required this.onPrivacy,
     required this.onResults,
@@ -1108,6 +1142,8 @@ class _AccountActions extends StatelessWidget {
   });
 
   final QuestionLanguage language;
+  final QuestionLanguage appLanguage;
+  final VoidCallback onAppLanguage;
   final VoidCallback onLanguage;
   final VoidCallback onPrivacy;
   final VoidCallback onResults;
@@ -1126,11 +1162,21 @@ class _AccountActions extends StatelessWidget {
       child: Column(
         children: [
           _AccountRow(
+            key: const Key('profile-app-language'),
+            icon: Icons.language_rounded,
+            iconBackground: AppColors.skyContainer,
+            iconForeground: AppColors.onSkyContainer,
+            title: context.l10n.appLanguage,
+            subtitle: appLanguage.label,
+            onTap: onAppLanguage,
+          ),
+          const Divider(height: 1),
+          _AccountRow(
             key: const Key('profile-question-language'),
             icon: Icons.translate_rounded,
             iconBackground: AppColors.skyContainer,
             iconForeground: AppColors.onSkyContainer,
-            title: 'Question language',
+            title: context.l10n.questionLanguage,
             subtitle: language.label,
             onTap: onLanguage,
           ),
@@ -1140,8 +1186,8 @@ class _AccountActions extends StatelessWidget {
             icon: Icons.privacy_tip_outlined,
             iconBackground: AppColors.primaryContainer,
             iconForeground: AppColors.onPrimaryContainer,
-            title: 'Privacy & account',
-            subtitle: 'Account controls and privacy settings',
+            title: context.l10n.profilePrivacy,
+            subtitle: context.l10n.profilePrivacySubtitle,
             onTap: onPrivacy,
           ),
           const Divider(height: 1),
@@ -1331,4 +1377,87 @@ String _formatDate(DateTime value) {
   ];
   final local = value.toLocal();
   return '${local.day} ${months[local.month - 1]}';
+}
+
+
+class _AppLanguageSheet extends StatefulWidget {
+  const _AppLanguageSheet({required this.current});
+
+  final QuestionLanguage current;
+
+  @override
+  State<_AppLanguageSheet> createState() => _AppLanguageSheetState();
+}
+
+class _AppLanguageSheetState extends State<_AppLanguageSheet> {
+  late QuestionLanguage _selected = widget.current;
+  bool _alsoForQuestions = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          AppSpacing.lg,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.appLanguage,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.appLanguageHelp,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            RadioGroup<QuestionLanguage>(
+              groupValue: _selected,
+              onChanged: (value) {
+                if (value != null) setState(() => _selected = value);
+              },
+              child: Column(
+                children: [
+                  for (final language in QuestionLanguage.values)
+                    RadioListTile<QuestionLanguage>(
+                      key: Key('app-language-${language.name}'),
+                      value: language,
+                      title: Text(language.label),
+                    ),
+                ],
+              ),
+            ),
+            SwitchListTile(
+              key: const Key('app-language-also-questions'),
+              value: _alsoForQuestions,
+              onChanged: (value) => setState(() => _alsoForQuestions = value),
+              title: Text(l10n.alsoUseForQuestions),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                key: const Key('app-language-save'),
+                onPressed: () =>
+                    Navigator.of(context).pop((_selected, _alsoForQuestions)),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

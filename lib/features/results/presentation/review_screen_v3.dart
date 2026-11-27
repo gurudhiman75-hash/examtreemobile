@@ -8,6 +8,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../bookmarks/domain/question_bookmark.dart';
 import '../../bookmarks/presentation/providers/bookmark_providers.dart';
+import '../../../l10n/l10n.dart';
 import 'providers/result_providers.dart';
 import 'review_question_filter.dart';
 
@@ -1006,6 +1007,7 @@ class _BookmarkQuestionButton extends ConsumerWidget {
   Future<void> _toggle(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.maybeOf(context);
     final router = GoRouter.maybeOf(context);
+    final l10n = context.l10n;
     // Save the question with all its languages, not just the one on screen.
     var source = question;
     try {
@@ -1028,10 +1030,12 @@ class _BookmarkQuestionButton extends ConsumerWidget {
         ?..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text(saved ? 'Saved to Bookmarks' : 'Removed from Bookmarks'),
+            content: Text(
+              saved ? l10n.savedToBookmarks : l10n.removedFromBookmarks,
+            ),
             action: saved && router != null
                 ? SnackBarAction(
-                    label: 'View',
+                    label: l10n.view,
                     onPressed: () => router.push('/profile-bookmarks'),
                   )
                 : null,
@@ -1039,7 +1043,7 @@ class _BookmarkQuestionButton extends ConsumerWidget {
         );
     } catch (_) {
       messenger?.showSnackBar(
-        const SnackBar(content: Text('Could not save this question. Try again.')),
+        SnackBar(content: Text(l10n.bookmarkSaveFailed)),
       );
     }
   }
@@ -1051,7 +1055,9 @@ class _BookmarkQuestionButton extends ConsumerWidget {
     );
     return IconButton(
       key: const Key('review-bookmark-question'),
-      tooltip: saved ? 'Remove bookmark' : 'Bookmark this question',
+      tooltip: saved
+          ? context.l10n.removeBookmark
+          : context.l10n.bookmarkQuestion,
       isSelected: saved,
       onPressed: () => _toggle(context, ref),
       icon: const Icon(Icons.bookmark_border_rounded),

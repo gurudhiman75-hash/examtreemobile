@@ -15,7 +15,9 @@ import 'features/companion/presentation/providers/daily_companion_providers.dart
 import 'features/exam_day/presentation/providers/exam_day_providers.dart';
 import 'features/mobile_config/presentation/mobile_runtime_gate.dart';
 import 'features/notifications/presentation/push_notification_providers.dart';
+import 'features/preferences/presentation/providers/app_language_providers.dart';
 import 'firebase_options.dart';
+import 'l10n/app_localizations.dart';
 import 'routes/app_router.dart';
 
 Future<void> main() async {
@@ -110,6 +112,9 @@ class ExamTreeApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'ExamTree',
       theme: AppTheme.lightTheme,
+      locale: ref.watch(appLocaleProvider),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: goRouter,
       builder: (context, child) => MobileRuntimeGate(
         child: child ?? const SizedBox.shrink(),

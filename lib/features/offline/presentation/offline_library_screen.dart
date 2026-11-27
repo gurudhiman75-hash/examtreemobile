@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../bookmarks/presentation/providers/bookmark_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
+import '../../../l10n/l10n.dart';
 
 const _ink = Color(0xFF10264A);
 const _muted = Color(0xFF5F6F82);
@@ -22,11 +23,12 @@ class OfflineLibraryScreen extends ConsumerWidget {
     final bookmarks = ref.watch(questionBookmarksProvider).value ?? const [];
     final companion = ref.watch(dailyCompanionSnapshotProvider).value;
     final revisionCount = companion?.items.length ?? 0;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: _page,
       appBar: AppBar(
-        title: const Text('Downloads & offline'),
+        title: Text(l10n.offlineTitle),
         backgroundColor: _page,
         foregroundColor: _ink,
         surfaceTintColor: Colors.transparent,
@@ -34,9 +36,9 @@ class OfflineLibraryScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
         children: [
-          const Text(
-            'Available without internet on this phone',
-            style: TextStyle(
+          Text(
+            l10n.offlineIntro,
+            style: const TextStyle(
               color: _muted,
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -46,20 +48,20 @@ class OfflineLibraryScreen extends ConsumerWidget {
           _OfflineTile(
             key: const Key('offline-bookmarks'),
             icon: Icons.bookmark_rounded,
-            title: 'Saved questions',
+            title: l10n.offlineSavedQuestions,
             detail: bookmarks.isEmpty
-                ? 'Bookmark questions while reviewing a test'
-                : '${bookmarks.length} ${bookmarks.length == 1 ? 'question' : 'questions'} with solutions',
+                ? l10n.offlineSavedQuestionsEmpty
+                : l10n.offlineSavedQuestionsCount(bookmarks.length),
             onTap: () => context.push('/profile-bookmarks'),
           ),
           const SizedBox(height: 10),
           _OfflineTile(
             key: const Key('offline-revision'),
             icon: Icons.replay_rounded,
-            title: 'Revision queue',
+            title: l10n.offlineRevision,
             detail: revisionCount == 0
-                ? 'Questions you get wrong are added here for revision'
-                : '$revisionCount ${revisionCount == 1 ? 'question' : 'questions'} from your past mistakes',
+                ? l10n.offlineRevisionEmpty
+                : l10n.offlineRevisionCount(revisionCount),
             onTap: () => context.push('/daily'),
           ),
           const SizedBox(height: 18),
@@ -69,21 +71,25 @@ class OfflineLibraryScreen extends ConsumerWidget {
               color: const Color(0xFFEEF2F8),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Tests need a connection to start and submit',
-                  style: TextStyle(
+                  l10n.offlineTestsTitle,
+                  style: const TextStyle(
                     color: _ink,
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Text(
-                  'If your connection drops during a test, your answers stay saved on this phone and you can continue when you are back online. Full tests and notes cannot be downloaded yet.',
-                  style: TextStyle(color: _muted, fontSize: 13, height: 1.5),
+                  l10n.offlineTestsBody,
+                  style: const TextStyle(
+                    color: _muted,
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
                 ),
               ],
             ),

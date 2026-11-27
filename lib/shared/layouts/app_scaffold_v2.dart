@@ -9,6 +9,7 @@ import '../../features/companion/presentation/providers/daily_companion_provider
 import '../../features/exams/presentation/providers/exam_providers.dart';
 import '../../features/home/presentation/home_primary_action.dart';
 import '../../features/results/presentation/providers/result_providers.dart';
+import '../../l10n/l10n.dart';
 
 bool shouldResetBranchOnSelection({
   required int selectedIndex,
@@ -32,6 +33,18 @@ String shellDestinationLabel(int index) => switch (index) {
   4 => 'Results',
   _ => 'ExamTree',
 };
+
+String localizedShellDestinationLabel(BuildContext context, int index) {
+  final l10n = context.l10n;
+  return switch (index) {
+    0 => l10n.navHome,
+    1 => l10n.navLearn,
+    2 => l10n.navTests,
+    3 => l10n.navCurrentAffairs,
+    4 => l10n.navResults,
+    _ => 'ExamTree',
+  };
+}
 
 bool isRevisionPrimaryOnHome({
   required AsyncValue<List<Exam>> activeAsync,
@@ -191,31 +204,31 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                     ],
                   ),
                 ),
-                destinations: const [
+                destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.home_outlined),
                     selectedIcon: Icon(Icons.home_rounded),
-                    label: Text('Home'),
+                    label: Text(context.l10n.navHome),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.menu_book_outlined),
                     selectedIcon: Icon(Icons.menu_book_rounded),
-                    label: Text('Learn'),
+                    label: Text(context.l10n.navLearn),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.assignment_outlined),
                     selectedIcon: Icon(Icons.assignment_rounded),
-                    label: Text('Tests'),
+                    label: Text(context.l10n.navTests),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.newspaper_outlined),
                     selectedIcon: Icon(Icons.newspaper_rounded),
-                    label: Text('Current Affairs'),
+                    label: Text(context.l10n.navCurrentAffairs),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.bar_chart_outlined),
                     selectedIcon: Icon(Icons.bar_chart_rounded),
-                    label: Text('Results'),
+                    label: Text(context.l10n.navResults),
                   ),
                 ],
               ),
@@ -247,7 +260,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                       ),
                     ),
               title: Text(
-                shellDestinationLabel(currentIndex),
+                localizedShellDestinationLabel(context, currentIndex),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
                   fontWeight: FontWeight.w800,
@@ -346,39 +359,39 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   ),
                 ),
                 const Divider(),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.home_outlined),
                   selectedIcon: Icon(Icons.home_rounded),
-                  label: Text('Home'),
+                  label: Text(context.l10n.navHome),
                 ),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.menu_book_outlined),
                   selectedIcon: Icon(Icons.menu_book_rounded),
-                  label: Text('Learn'),
+                  label: Text(context.l10n.navLearn),
                 ),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.assignment_outlined),
                   selectedIcon: Icon(Icons.assignment_rounded),
-                  label: Text('Tests'),
+                  label: Text(context.l10n.navTests),
                 ),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.newspaper_outlined),
                   selectedIcon: Icon(Icons.newspaper_rounded),
-                  label: Text('Current Affairs'),
+                  label: Text(context.l10n.navCurrentAffairs),
                 ),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.bar_chart_outlined),
                   selectedIcon: Icon(Icons.bar_chart_rounded),
-                  label: Text('Results'),
+                  label: Text(context.l10n.navResults),
                 ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(28, 18, 16, 8),
                   child: Text('PREPARATION'),
                 ),
-                const NavigationDrawerDestination(
+                NavigationDrawerDestination(
                   icon: Icon(Icons.person_outline_rounded),
                   selectedIcon: Icon(Icons.person_rounded),
-                  label: Text('Profile'),
+                  label: Text(context.l10n.navProfile),
                 ),
                 const NavigationDrawerDestination(
                   icon: Icon(Icons.bookmarks_outlined),
@@ -475,36 +488,36 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                   child: NavigationBar(
                     selectedIndex: currentIndex,
                     onDestinationSelected: _goBranch,
-                    destinations: const [
+                    destinations: [
                       NavigationDestination(
                         icon: Icon(Icons.home_outlined),
                         selectedIcon: Icon(Icons.home_rounded),
-                        label: 'Home',
-                        tooltip: 'Home',
+                        label: context.l10n.navHome,
+                        tooltip: context.l10n.navHome,
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.menu_book_outlined),
                         selectedIcon: Icon(Icons.menu_book_rounded),
-                        label: 'Learn',
-                        tooltip: 'Learn',
+                        label: context.l10n.navLearn,
+                        tooltip: context.l10n.navLearn,
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.assignment_outlined),
                         selectedIcon: Icon(Icons.assignment_rounded),
-                        label: 'Tests',
-                        tooltip: 'Tests',
+                        label: context.l10n.navTests,
+                        tooltip: context.l10n.navTests,
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.newspaper_outlined),
                         selectedIcon: Icon(Icons.newspaper_rounded),
-                        label: 'Current Affairs',
-                        tooltip: 'Current Affairs',
+                        label: context.l10n.navCurrentAffairs,
+                        tooltip: context.l10n.navCurrentAffairs,
                       ),
                       NavigationDestination(
                         icon: Icon(Icons.bar_chart_outlined),
                         selectedIcon: Icon(Icons.bar_chart_rounded),
-                        label: 'Results',
-                        tooltip: 'Results',
+                        label: context.l10n.navResults,
+                        tooltip: context.l10n.navResults,
                       ),
                     ],
                   ),
