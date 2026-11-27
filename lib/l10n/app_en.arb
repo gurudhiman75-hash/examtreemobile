@@ -390,5 +390,210 @@
   "resultQuestionMap": "Question map",
   "resultReviewSolutions": "Review solutions",
   "resultReviseMistakes": "Revise mistakes (5 min)",
-  "resultRetake": "Retake test"
+  "resultRetake": "Retake test",
+  "resultsHistoryLoadFailed": "Unable to load your attempt history",
+  "resultsSearchHint": "Search tests or exam categories",
+  "clearSearch": "Clear search",
+  "resultsAttemptHistory": "Attempt history",
+  "resultsAverageScore": "Average score",
+  "resultsAttemptsCompleted": "{count, plural, =1{1 attempt completed} other{{count} attempts completed}}",
+  "@resultsAttemptsCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsBestScore": "Best score",
+  "resultsFindAttempt": "Find an attempt",
+  "resultsFindHint": "Review mistakes before deciding what to retake.",
+  "reset": "Reset",
+  "resultsAllExams": "All exams",
+  "resultsSort": "Sort results",
+  "resultsSortNewest": "Newest",
+  "resultsSortHighestScore": "Highest score",
+  "resultsSortHighestAccuracy": "Highest accuracy",
+  "resultsReviewMistakes": "Review mistakes",
+  "resultsReviewAnswers": "Review answers",
+  "resultsRetake": "Retake",
+  "resultsAccuracyPct": "{value}% accuracy",
+  "@resultsAccuracyPct": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsCorrectCount": "{count} correct",
+  "@resultsCorrectCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsIncorrectCount": "{count} incorrect",
+  "@resultsIncorrectCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSkippedCount": "{count} skipped",
+  "@resultsSkippedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsScorePercentA11y": "Score {value} percent",
+  "@resultsScorePercentA11y": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsEmptyTitle": "No completed attempts yet",
+  "resultsEmptyBody": "Complete your first test to unlock score history, accuracy and answer review.",
+  "resultsExploreTests": "Explore tests",
+  "resultsNoMatchTitle": "No attempts match these filters",
+  "resultsNoMatchBody": "Try another test name, category or sort order.",
+  "resultsResetFilters": "Reset filters",
+  "dateUnavailable": "Date unavailable",
+  "examsCategoriesLoadFailed": "Unable to load exam categories",
+  "examsTitle": "Exams",
+  "examsLoadFailed": "Unable to load exams",
+  "examsSearchIn": "Search {category} exams",
+  "@examsSearchIn": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsCategoryExams": "{category} Exams",
+  "@examsCategoryExams": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsAvailable": "{count, plural, =1{1 exam available} other{{count} exams available}}",
+  "@examsAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestSeries": "Test Series",
+  "examsSeriesLoadFailed": "Unable to load test series",
+  "examsAvailableSeries": "Available Test Series",
+  "examsNoActiveSeries": "No active test series yet",
+  "examsSeriesAvailable": "{count} series available",
+  "@examsSeriesAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsSearchCategories": "Search exam categories",
+  "examsCategories": "Exam Categories",
+  "examsChooseCategory": "Choose a category to find the exam you are preparing for.",
+  "examsChoosePath": "Choose your exam path",
+  "examsChoosePathBody": "Open a category, choose your exam and continue to its test series.",
+  "examsCategoriesCount": "{count} categories",
+  "@examsCategoriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsExamsCount": "{count, plural, =1{1 exam} other{{count} exams}}",
+  "@examsExamsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsSeriesCount": "{count} series",
+  "@examsSeriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsLiveTests": "{count} live tests",
+  "@examsLiveTests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestsCount": "{count} tests",
+  "@examsTestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestSeriesCount": "{count} test series",
+  "@examsTestSeriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsFullMocks": "{count} full mocks",
+  "@examsFullMocks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsMinPerTest": "~{minutes} min/test",
+  "@examsMinPerTest": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "examsViewTestSeries": "View Test Series",
+  "examsNoQuestionsYet": "No questions yet",
+  "examsViewDetails": "View Details",
+  "examsViewSeries": "View Series",
+  "examsEmptyCatalogueTitle": "No exam categories are published yet.",
+  "examsEmptyCatalogueBody": "Pull down to check again.",
+  "examsNoCategoryMatchTitle": "No exam category matches your search.",
+  "examsNoCategoryMatchBody": "Try another exam family or clear the search.",
+  "examsNoExamMatchTitle": "No exams match this search.",
+  "examsNoExamMatchBody": "Try a shorter exam name or clear the search.",
+  "examsCategoryUnavailableTitle": "Exam category unavailable",
+  "examsCategoryUnavailableBody": "Open the category again from the Exams page.",
+  "examsExamUnavailableTitle": "Exam unavailable",
+  "examsExamUnavailableBody": "Open the exam again from its category.",
+  "examsNoneInCategoryTitle": "No {category} exams are published yet.",
+  "@examsNoneInCategoryTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsNoneInCategoryBody": "New exams will appear here automatically when published.",
+  "examsNoSeriesTitle": "No test series available yet",
+  "examsNoSeriesBody": "Published test series for this exam will appear here automatically."
 }

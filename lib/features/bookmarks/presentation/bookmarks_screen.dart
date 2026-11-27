@@ -474,5 +474,5 @@ String _savedLabel(BuildContext context, DateTime savedAt) {
   if (days <= 0) return l10n.savedToday;
   if (days == 1) return l10n.savedYesterday;
   if (days < 7) return l10n.savedDaysAgo(days);
-  return MaterialLocalizations.of(context).formatShortMonthDay(savedAt);
+  return formatDayMonth(context, savedAt, withYear: false);
 }

@@ -1011,6 +1011,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retake test'**
   String get resultRetake;
+
+  /// No description provided for @resultsHistoryLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your attempt history'**
+  String get resultsHistoryLoadFailed;
+
+  /// No description provided for @resultsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tests or exam categories'**
+  String get resultsSearchHint;
+
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
+  /// No description provided for @resultsAttemptHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt history'**
+  String get resultsAttemptHistory;
+
+  /// No description provided for @resultsAverageScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Average score'**
+  String get resultsAverageScore;
+
+  /// No description provided for @resultsAttemptsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 attempt completed} other{{count} attempts completed}}'**
+  String resultsAttemptsCompleted(int count);
+
+  /// No description provided for @resultsBestScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Best score'**
+  String get resultsBestScore;
+
+  /// No description provided for @resultsFindAttempt.
+  ///
+  /// In en, this message translates to:
+  /// **'Find an attempt'**
+  String get resultsFindAttempt;
+
+  /// No description provided for @resultsFindHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Review mistakes before deciding what to retake.'**
+  String get resultsFindHint;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @resultsAllExams.
+  ///
+  /// In en, this message translates to:
+  /// **'All exams'**
+  String get resultsAllExams;
+
+  /// No description provided for @resultsSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort results'**
+  String get resultsSort;
+
+  /// No description provided for @resultsSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get resultsSortNewest;
+
+  /// No description provided for @resultsSortHighestScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest score'**
+  String get resultsSortHighestScore;
+
+  /// No description provided for @resultsSortHighestAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest accuracy'**
+  String get resultsSortHighestAccuracy;
+
+  /// No description provided for @resultsReviewMistakes.
+  ///
+  /// In en, this message translates to:
+  /// **'Review mistakes'**
+  String get resultsReviewMistakes;
+
+  /// No description provided for @resultsReviewAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Review answers'**
+  String get resultsReviewAnswers;
+
+  /// No description provided for @resultsRetake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get resultsRetake;
+
+  /// No description provided for @resultsAccuracyPct.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}% accuracy'**
+  String resultsAccuracyPct(String value);
+
+  /// No description provided for @resultsCorrectCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} correct'**
+  String resultsCorrectCount(int count);
+
+  /// No description provided for @resultsIncorrectCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} incorrect'**
+  String resultsIncorrectCount(int count);
+
+  /// No description provided for @resultsSkippedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} skipped'**
+  String resultsSkippedCount(int count);
+
+  /// No description provided for @resultsScorePercentA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'Score {value} percent'**
+  String resultsScorePercentA11y(String value);
+
+  /// No description provided for @resultsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed attempts yet'**
+  String get resultsEmptyTitle;
+
+  /// No description provided for @resultsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete your first test to unlock score history, accuracy and answer review.'**
+  String get resultsEmptyBody;
+
+  /// No description provided for @resultsExploreTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore tests'**
+  String get resultsExploreTests;
+
+  /// No description provided for @resultsNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No attempts match these filters'**
+  String get resultsNoMatchTitle;
+
+  /// No description provided for @resultsNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another test name, category or sort order.'**
+  String get resultsNoMatchBody;
+
+  /// No description provided for @resultsResetFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset filters'**
+  String get resultsResetFilters;
+
+  /// No description provided for @dateUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Date unavailable'**
+  String get dateUnavailable;
+
+  /// No description provided for @examsCategoriesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load exam categories'**
+  String get examsCategoriesLoadFailed;
+
+  /// No description provided for @examsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exams'**
+  String get examsTitle;
+
+  /// No description provided for @examsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load exams'**
+  String get examsLoadFailed;
+
+  /// No description provided for @examsSearchIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Search {category} exams'**
+  String examsSearchIn(String category);
+
+  /// No description provided for @examsCategoryExams.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} Exams'**
+  String examsCategoryExams(String category);
+
+  /// No description provided for @examsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 exam available} other{{count} exams available}}'**
+  String examsAvailable(int count);
+
+  /// No description provided for @examsTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Series'**
+  String get examsTestSeries;
+
+  /// No description provided for @examsSeriesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load test series'**
+  String get examsSeriesLoadFailed;
+
+  /// No description provided for @examsAvailableSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Test Series'**
+  String get examsAvailableSeries;
+
+  /// No description provided for @examsNoActiveSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'No active test series yet'**
+  String get examsNoActiveSeries;
+
+  /// No description provided for @examsSeriesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} series available'**
+  String examsSeriesAvailable(int count);
+
+  /// No description provided for @examsSearchCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exam categories'**
+  String get examsSearchCategories;
+
+  /// No description provided for @examsCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Categories'**
+  String get examsCategories;
+
+  /// No description provided for @examsChooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category to find the exam you are preparing for.'**
+  String get examsChooseCategory;
+
+  /// No description provided for @examsChoosePath.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your exam path'**
+  String get examsChoosePath;
+
+  /// No description provided for @examsChoosePathBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a category, choose your exam and continue to its test series.'**
+  String get examsChoosePathBody;
+
+  /// No description provided for @examsCategoriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} categories'**
+  String examsCategoriesCount(int count);
+
+  /// No description provided for @examsExamsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 exam} other{{count} exams}}'**
+  String examsExamsCount(int count);
+
+  /// No description provided for @examsSeriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} series'**
+  String examsSeriesCount(int count);
+
+  /// No description provided for @examsLiveTests.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} live tests'**
+  String examsLiveTests(int count);
+
+  /// No description provided for @examsTestsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tests'**
+  String examsTestsCount(int count);
+
+  /// No description provided for @examsTestSeriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} test series'**
+  String examsTestSeriesCount(int count);
+
+  /// No description provided for @examsFullMocks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} full mocks'**
+  String examsFullMocks(int count);
+
+  /// No description provided for @examsMinPerTest.
+  ///
+  /// In en, this message translates to:
+  /// **'~{minutes} min/test'**
+  String examsMinPerTest(int minutes);
+
+  /// No description provided for @examsViewTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'View Test Series'**
+  String get examsViewTestSeries;
+
+  /// No description provided for @examsNoQuestionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions yet'**
+  String get examsNoQuestionsYet;
+
+  /// No description provided for @examsViewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get examsViewDetails;
+
+  /// No description provided for @examsViewSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'View Series'**
+  String get examsViewSeries;
+
+  /// No description provided for @examsEmptyCatalogueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exam categories are published yet.'**
+  String get examsEmptyCatalogueTitle;
+
+  /// No description provided for @examsEmptyCatalogueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull down to check again.'**
+  String get examsEmptyCatalogueBody;
+
+  /// No description provided for @examsNoCategoryMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exam category matches your search.'**
+  String get examsNoCategoryMatchTitle;
+
+  /// No description provided for @examsNoCategoryMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another exam family or clear the search.'**
+  String get examsNoCategoryMatchBody;
+
+  /// No description provided for @examsNoExamMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exams match this search.'**
+  String get examsNoExamMatchTitle;
+
+  /// No description provided for @examsNoExamMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a shorter exam name or clear the search.'**
+  String get examsNoExamMatchBody;
+
+  /// No description provided for @examsCategoryUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam category unavailable'**
+  String get examsCategoryUnavailableTitle;
+
+  /// No description provided for @examsCategoryUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the category again from the Exams page.'**
+  String get examsCategoryUnavailableBody;
+
+  /// No description provided for @examsExamUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam unavailable'**
+  String get examsExamUnavailableTitle;
+
+  /// No description provided for @examsExamUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the exam again from its category.'**
+  String get examsExamUnavailableBody;
+
+  /// No description provided for @examsNoneInCategoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No {category} exams are published yet.'**
+  String examsNoneInCategoryTitle(String category);
+
+  /// No description provided for @examsNoneInCategoryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New exams will appear here automatically when published.'**
+  String get examsNoneInCategoryBody;
+
+  /// No description provided for @examsNoSeriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No test series available yet'**
+  String get examsNoSeriesTitle;
+
+  /// No description provided for @examsNoSeriesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Published test series for this exam will appear here automatically.'**
+  String get examsNoSeriesBody;
 }
 
 class _AppLocalizationsDelegate

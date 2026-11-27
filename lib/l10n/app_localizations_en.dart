@@ -579,4 +579,289 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resultRetake => 'Retake test';
+
+  @override
+  String get resultsHistoryLoadFailed => 'Unable to load your attempt history';
+
+  @override
+  String get resultsSearchHint => 'Search tests or exam categories';
+
+  @override
+  String get clearSearch => 'Clear search';
+
+  @override
+  String get resultsAttemptHistory => 'Attempt history';
+
+  @override
+  String get resultsAverageScore => 'Average score';
+
+  @override
+  String resultsAttemptsCompleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count attempts completed',
+      one: '1 attempt completed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get resultsBestScore => 'Best score';
+
+  @override
+  String get resultsFindAttempt => 'Find an attempt';
+
+  @override
+  String get resultsFindHint =>
+      'Review mistakes before deciding what to retake.';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get resultsAllExams => 'All exams';
+
+  @override
+  String get resultsSort => 'Sort results';
+
+  @override
+  String get resultsSortNewest => 'Newest';
+
+  @override
+  String get resultsSortHighestScore => 'Highest score';
+
+  @override
+  String get resultsSortHighestAccuracy => 'Highest accuracy';
+
+  @override
+  String get resultsReviewMistakes => 'Review mistakes';
+
+  @override
+  String get resultsReviewAnswers => 'Review answers';
+
+  @override
+  String get resultsRetake => 'Retake';
+
+  @override
+  String resultsAccuracyPct(String value) {
+    return '$value% accuracy';
+  }
+
+  @override
+  String resultsCorrectCount(int count) {
+    return '$count correct';
+  }
+
+  @override
+  String resultsIncorrectCount(int count) {
+    return '$count incorrect';
+  }
+
+  @override
+  String resultsSkippedCount(int count) {
+    return '$count skipped';
+  }
+
+  @override
+  String resultsScorePercentA11y(String value) {
+    return 'Score $value percent';
+  }
+
+  @override
+  String get resultsEmptyTitle => 'No completed attempts yet';
+
+  @override
+  String get resultsEmptyBody =>
+      'Complete your first test to unlock score history, accuracy and answer review.';
+
+  @override
+  String get resultsExploreTests => 'Explore tests';
+
+  @override
+  String get resultsNoMatchTitle => 'No attempts match these filters';
+
+  @override
+  String get resultsNoMatchBody =>
+      'Try another test name, category or sort order.';
+
+  @override
+  String get resultsResetFilters => 'Reset filters';
+
+  @override
+  String get dateUnavailable => 'Date unavailable';
+
+  @override
+  String get examsCategoriesLoadFailed => 'Unable to load exam categories';
+
+  @override
+  String get examsTitle => 'Exams';
+
+  @override
+  String get examsLoadFailed => 'Unable to load exams';
+
+  @override
+  String examsSearchIn(String category) {
+    return 'Search $category exams';
+  }
+
+  @override
+  String examsCategoryExams(String category) {
+    return '$category Exams';
+  }
+
+  @override
+  String examsAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count exams available',
+      one: '1 exam available',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examsTestSeries => 'Test Series';
+
+  @override
+  String get examsSeriesLoadFailed => 'Unable to load test series';
+
+  @override
+  String get examsAvailableSeries => 'Available Test Series';
+
+  @override
+  String get examsNoActiveSeries => 'No active test series yet';
+
+  @override
+  String examsSeriesAvailable(int count) {
+    return '$count series available';
+  }
+
+  @override
+  String get examsSearchCategories => 'Search exam categories';
+
+  @override
+  String get examsCategories => 'Exam Categories';
+
+  @override
+  String get examsChooseCategory =>
+      'Choose a category to find the exam you are preparing for.';
+
+  @override
+  String get examsChoosePath => 'Choose your exam path';
+
+  @override
+  String get examsChoosePathBody =>
+      'Open a category, choose your exam and continue to its test series.';
+
+  @override
+  String examsCategoriesCount(int count) {
+    return '$count categories';
+  }
+
+  @override
+  String examsExamsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count exams',
+      one: '1 exam',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String examsSeriesCount(int count) {
+    return '$count series';
+  }
+
+  @override
+  String examsLiveTests(int count) {
+    return '$count live tests';
+  }
+
+  @override
+  String examsTestsCount(int count) {
+    return '$count tests';
+  }
+
+  @override
+  String examsTestSeriesCount(int count) {
+    return '$count test series';
+  }
+
+  @override
+  String examsFullMocks(int count) {
+    return '$count full mocks';
+  }
+
+  @override
+  String examsMinPerTest(int minutes) {
+    return '~$minutes min/test';
+  }
+
+  @override
+  String get examsViewTestSeries => 'View Test Series';
+
+  @override
+  String get examsNoQuestionsYet => 'No questions yet';
+
+  @override
+  String get examsViewDetails => 'View Details';
+
+  @override
+  String get examsViewSeries => 'View Series';
+
+  @override
+  String get examsEmptyCatalogueTitle =>
+      'No exam categories are published yet.';
+
+  @override
+  String get examsEmptyCatalogueBody => 'Pull down to check again.';
+
+  @override
+  String get examsNoCategoryMatchTitle =>
+      'No exam category matches your search.';
+
+  @override
+  String get examsNoCategoryMatchBody =>
+      'Try another exam family or clear the search.';
+
+  @override
+  String get examsNoExamMatchTitle => 'No exams match this search.';
+
+  @override
+  String get examsNoExamMatchBody =>
+      'Try a shorter exam name or clear the search.';
+
+  @override
+  String get examsCategoryUnavailableTitle => 'Exam category unavailable';
+
+  @override
+  String get examsCategoryUnavailableBody =>
+      'Open the category again from the Exams page.';
+
+  @override
+  String get examsExamUnavailableTitle => 'Exam unavailable';
+
+  @override
+  String get examsExamUnavailableBody =>
+      'Open the exam again from its category.';
+
+  @override
+  String examsNoneInCategoryTitle(String category) {
+    return 'No $category exams are published yet.';
+  }
+
+  @override
+  String get examsNoneInCategoryBody =>
+      'New exams will appear here automatically when published.';
+
+  @override
+  String get examsNoSeriesTitle => 'No test series available yet';
+
+  @override
+  String get examsNoSeriesBody =>
+      'Published test series for this exam will appear here automatically.';
 }

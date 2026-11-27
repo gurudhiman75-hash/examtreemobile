@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import 'app_localizations.dart';
 
@@ -11,4 +12,35 @@ extension AppLocalizationsContext on BuildContext {
   AppLocalizations get l10n =>
       Localizations.of<AppLocalizations>(this, AppLocalizations) ??
       lookupAppLocalizations(const Locale('en'));
+}
+
+const _englishMonths = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+/// "27 Nov 2026" (or "27 Nov" without [withYear]) in the app language.
+/// Uses English month names where locale date data is not loaded.
+String formatDayMonth(
+  BuildContext context,
+  DateTime value, {
+  bool withYear = true,
+}) {
+  final locale = Localizations.maybeLocaleOf(context)?.languageCode ?? 'en';
+  try {
+    return DateFormat(withYear ? 'd MMM y' : 'd MMM', locale).format(value);
+  } catch (_) {
+    final text = '${value.day} ${_englishMonths[value.month - 1]}';
+    return withYear ? '$text ${value.year}' : text;
+  }
 }

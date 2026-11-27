@@ -12,6 +12,7 @@ import '../../promotions/presentation/providers/promotion_providers.dart';
 import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import 'providers/result_providers.dart';
 import 'result_history_filter.dart';
+import '../../../l10n/l10n.dart';
 
 class ResultsScreen extends ConsumerStatefulWidget {
   const ResultsScreen({super.key});
@@ -71,7 +72,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         loading: () => const _ResultsLoadingView(),
         error: (error, stackTrace) => NetworkFailureView(
           error: error,
-          fallbackTitle: 'Unable to load your attempt history',
+          fallbackTitle: context.l10n.resultsHistoryLoadFailed,
           onRetry: () => ref.invalidate(userResultsProvider),
         ),
         data: (results) => _buildHistory(context, results),
@@ -148,12 +149,12 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                     child: SearchBar(
                     key: const Key('results-search'),
                     controller: _searchController,
-                    hintText: 'Search tests or exam categories',
+                    hintText: context.l10n.resultsSearchHint,
                     leading: const Icon(Icons.search_rounded),
                     trailing: [
                       if (_query.isNotEmpty)
                         IconButton(
-                          tooltip: 'Clear search',
+                          tooltip: context.l10n.clearSearch,
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _query = '');
@@ -176,7 +177,7 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                   ],
                   const SizedBox(height: AppSpacing.xl),
                   _SectionHeader(
-                    title: 'Attempt history',
+                    title: context.l10n.resultsAttemptHistory,
                     subtitle: filtered.length == results.length
                         ? '${results.length} completed ${results.length == 1 ? 'attempt' : 'attempts'}.'
                         : '${filtered.length} of ${results.length} shown.',
@@ -281,7 +282,7 @@ class _PerformanceHero extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Average score',
+                      context.l10n.resultsAverageScore,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: Colors.white.withValues(alpha: 0.75),
                         fontWeight: FontWeight.w700,
@@ -289,7 +290,7 @@ class _PerformanceHero extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      '${summary.totalAttempts} ${summary.totalAttempts == 1 ? 'attempt' : 'attempts'} completed',
+                      context.l10n.resultsAttemptsCompleted(summary.totalAttempts),
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
@@ -308,11 +309,11 @@ class _PerformanceHero extends StatelessWidget {
               final items = [
                 _HeroMetric(
                   value: '${summary.bestScore.round()}%',
-                  label: 'Best score',
+                  label: context.l10n.resultsBestScore,
                 ),
                 _HeroMetric(
                   value: '${summary.averageAccuracy.round()}%',
-                  label: 'Accuracy',
+                  label: context.l10n.resultAccuracy,
                 ),
               ];
               if (largeText) {
@@ -403,7 +404,7 @@ class _HistoryToolsIntro extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Find an attempt',
+                context.l10n.resultsFindAttempt,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
                   fontWeight: FontWeight.w900,
@@ -412,7 +413,7 @@ class _HistoryToolsIntro extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xxs),
               Text(
-                'Review mistakes before deciding what to retake.',
+                context.l10n.resultsFindHint,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -424,7 +425,7 @@ class _HistoryToolsIntro extends StatelessWidget {
           TextButton(
             key: const Key('results-reset'),
             onPressed: onReset,
-            child: const Text('Reset'),
+            child: Text(context.l10n.reset),
           ),
       ],
     );
@@ -457,7 +458,7 @@ class _CategoryRail extends StatelessWidget {
           final category = index == 0 ? null : categories[index - 1];
           final selected = category == selectedCategory;
           return ChoiceChip(
-            label: Text(category ?? 'All exams'),
+            label: Text(category ?? context.l10n.resultsAllExams),
             selected: selected,
             selectedColor: const Color(0xFF0B3A6F),
             backgroundColor: Colors.white,
@@ -555,7 +556,7 @@ class _SortButton extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sort results',
+                    context.l10n.resultsSort,
                     style: Theme.of(sheetContext).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w900,
                         ),
@@ -564,7 +565,7 @@ class _SortButton extends StatelessWidget {
                   for (final option in ResultSortOption.values)
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(option.label),
+                      title: Text(_sortLabel(context, option)),
                       trailing: option == value
                           ? Icon(
                               Icons.check_circle_rounded,
@@ -581,7 +582,7 @@ class _SortButton extends StatelessWidget {
         if (selected != null) onChanged(selected);
       },
       icon: const Icon(Icons.swap_vert_rounded, size: 18),
-      label: Text(value.label),
+      label: Text(_sortLabel(context, value)),
     );
   }
 }
@@ -598,7 +599,9 @@ class _ResultCard extends StatelessWidget {
     final canReview = result.questionReview.isNotEmpty;
     final canRetake = result.examId.trim().isNotEmpty;
     final hasMistakes = result.incorrectCount > 0 || result.skippedCount > 0;
-    final reviewLabel = hasMistakes ? 'Review mistakes' : 'Review answers';
+    final reviewLabel = hasMistakes
+        ? context.l10n.resultsReviewMistakes
+        : context.l10n.resultsReviewAnswers;
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
 
     return Material(
@@ -639,7 +642,7 @@ class _ResultCard extends StatelessWidget {
                       children: [
                         Text(
                           result.testName.trim().isEmpty
-                              ? 'Test result'
+                              ? context.l10n.resultTestResult
                               : result.testName,
                           maxLines: largeText ? 4 : 2,
                           overflow: TextOverflow.ellipsis,
@@ -656,7 +659,7 @@ class _ResultCard extends StatelessWidget {
                             if (result.category.trim().isNotEmpty)
                               _TextTag(label: result.category),
                             _TextTag(
-                              label: _formatDateCompact(result.calculatedAt),
+                              label: _formatDateCompact(context, result.calculatedAt),
                             ),
                           ],
                         ),
@@ -670,7 +673,7 @@ class _ResultCard extends StatelessWidget {
               if (largeText)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _resultMetadata(result)
+                  children: _resultMetadata(context, result)
                       .map(
                         (item) => Padding(
                           padding: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -687,7 +690,7 @@ class _ResultCard extends StatelessWidget {
                 Wrap(
                   spacing: AppSpacing.md,
                   runSpacing: AppSpacing.xs,
-                  children: _resultMetadata(result)
+                  children: _resultMetadata(context, result)
                       .map(
                         (item) => _ResultMeta(
                           icon: item.$1,
@@ -736,7 +739,7 @@ class _ResultCard extends StatelessWidget {
                                 const TextStyle(fontWeight: FontWeight.w800),
                           ),
                           icon: const Icon(Icons.replay_rounded),
-                          label: const Text('Retake'),
+                          label: Text(context.l10n.resultsRetake),
                         )
                       : FilledButton.icon(
                           key: const Key('results-retake-primary'),
@@ -756,7 +759,7 @@ class _ResultCard extends StatelessWidget {
                                 const TextStyle(fontWeight: FontWeight.w900),
                           ),
                           icon: const Icon(Icons.replay_rounded),
-                          label: const Text('Retake'),
+                          label: Text(context.l10n.resultsRetake),
                         );
                   if (stack) {
                     return Column(
@@ -787,27 +790,30 @@ class _ResultCard extends StatelessWidget {
     );
   }
 
-  List<(IconData, String, Color)> _resultMetadata(Result result) {
+  List<(IconData, String, Color)> _resultMetadata(
+    BuildContext context,
+    Result result,
+  ) {
     return [
       (
         Icons.track_changes_rounded,
-        '${_formatNumber(result.accuracy)}% accuracy',
+        context.l10n.resultsAccuracyPct(_formatNumber(result.accuracy)),
         AppColors.mint,
       ),
       (
         Icons.check_circle_outline_rounded,
-        '${result.correctCount} correct',
+        context.l10n.resultsCorrectCount(result.correctCount),
         AppColors.mint,
       ),
       (
         Icons.cancel_outlined,
-        '${result.incorrectCount} incorrect',
+        context.l10n.resultsIncorrectCount(result.incorrectCount),
         AppColors.error,
       ),
       if (result.skippedCount > 0)
         (
           Icons.remove_circle_outline_rounded,
-          '${result.skippedCount} skipped',
+          context.l10n.resultsSkippedCount(result.skippedCount),
           AppColors.onSurfaceVariant,
         ),
     ];
@@ -823,7 +829,7 @@ class _ScoreBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Semantics(
-      label: 'Score ${_formatNumber(percentage)} percent',
+      label: context.l10n.resultsScorePercentA11y(_formatNumber(percentage)),
       child: Container(
         width: 62,
         height: 62,
@@ -923,7 +929,7 @@ class _EmptyResults extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'No completed attempts yet',
+            context.l10n.resultsEmptyTitle,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w900,
@@ -931,7 +937,7 @@ class _EmptyResults extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Complete your first test to unlock score history, accuracy and answer review.',
+            context.l10n.resultsEmptyBody,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -942,7 +948,7 @@ class _EmptyResults extends StatelessWidget {
           FilledButton.icon(
             onPressed: onExplore,
             icon: const Icon(Icons.assignment_outlined),
-            label: const Text('Explore tests'),
+            label: Text(context.l10n.resultsExploreTests),
           ),
         ],
       ),
@@ -969,7 +975,7 @@ class _FilteredResultsEmpty extends StatelessWidget {
           const Icon(Icons.search_off_rounded, size: 44),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'No attempts match these filters',
+            context.l10n.resultsNoMatchTitle,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w900,
@@ -977,7 +983,7 @@ class _FilteredResultsEmpty extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Try another test name, category or sort order.',
+            context.l10n.resultsNoMatchBody,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -987,7 +993,7 @@ class _FilteredResultsEmpty extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: onReset,
             icon: const Icon(Icons.restart_alt_rounded),
-            label: const Text('Reset filters'),
+            label: Text(context.l10n.resultsResetFilters),
           ),
         ],
       ),
@@ -1036,23 +1042,17 @@ String _formatNumber(double value) {
   return value.toStringAsFixed(1);
 }
 
-String _formatDateCompact(DateTime value) {
-  if (value.millisecondsSinceEpoch == 0) return 'Date unavailable';
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  final local = value.toLocal();
-  return '${local.day} ${months[local.month - 1]} ${local.year}';
+String _formatDateCompact(BuildContext context, DateTime value) {
+  if (value.millisecondsSinceEpoch == 0) return context.l10n.dateUnavailable;
+  return formatDayMonth(context, value.toLocal());
+}
+
+String _sortLabel(BuildContext context, ResultSortOption option) {
+  final l10n = context.l10n;
+  return switch (option) {
+    ResultSortOption.newest => l10n.resultsSortNewest,
+    ResultSortOption.highestScore => l10n.resultsSortHighestScore,
+    ResultSortOption.highestAccuracy => l10n.resultsSortHighestAccuracy,
+  };
 }
 

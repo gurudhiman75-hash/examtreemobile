@@ -580,4 +580,290 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get resultRetake => 'ਟੈਸਟ ਦੁਬਾਰਾ ਦਿਓ';
+
+  @override
+  String get resultsHistoryLoadFailed =>
+      'ਤੁਹਾਡਾ ਕੋਸ਼ਿਸ਼ ਇਤਿਹਾਸ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ';
+
+  @override
+  String get resultsSearchHint => 'ਟੈਸਟ ਜਾਂ ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ ਖੋਜੋ';
+
+  @override
+  String get clearSearch => 'ਖੋਜ ਹਟਾਓ';
+
+  @override
+  String get resultsAttemptHistory => 'ਕੋਸ਼ਿਸ਼ ਇਤਿਹਾਸ';
+
+  @override
+  String get resultsAverageScore => 'ਔਸਤ ਸਕੋਰ';
+
+  @override
+  String resultsAttemptsCompleted(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ਕੋਸ਼ਿਸ਼ਾਂ ਪੂਰੀਆਂ',
+      one: '1 ਕੋਸ਼ਿਸ਼ ਪੂਰੀ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get resultsBestScore => 'ਸਭ ਤੋਂ ਵਧੀਆ ਸਕੋਰ';
+
+  @override
+  String get resultsFindAttempt => 'ਕੋਈ ਕੋਸ਼ਿਸ਼ ਖੋਜੋ';
+
+  @override
+  String get resultsFindHint =>
+      'ਦੁਬਾਰਾ ਕੀ ਦੇਣਾ ਹੈ, ਇਹ ਤੈਅ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਗਲਤੀਆਂ ਦੇਖੋ।';
+
+  @override
+  String get reset => 'ਰੀਸੈੱਟ';
+
+  @override
+  String get resultsAllExams => 'ਸਾਰੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ';
+
+  @override
+  String get resultsSort => 'ਨਤੀਜੇ ਤਰਤੀਬ ਦਿਓ';
+
+  @override
+  String get resultsSortNewest => 'ਸਭ ਤੋਂ ਨਵੇਂ';
+
+  @override
+  String get resultsSortHighestScore => 'ਸਭ ਤੋਂ ਵੱਧ ਸਕੋਰ';
+
+  @override
+  String get resultsSortHighestAccuracy => 'ਸਭ ਤੋਂ ਵੱਧ ਸ਼ੁੱਧਤਾ';
+
+  @override
+  String get resultsReviewMistakes => 'ਗਲਤੀਆਂ ਦੇਖੋ';
+
+  @override
+  String get resultsReviewAnswers => 'ਜਵਾਬ ਦੇਖੋ';
+
+  @override
+  String get resultsRetake => 'ਦੁਬਾਰਾ ਦਿਓ';
+
+  @override
+  String resultsAccuracyPct(String value) {
+    return '$value% ਸ਼ੁੱਧਤਾ';
+  }
+
+  @override
+  String resultsCorrectCount(int count) {
+    return '$count ਸਹੀ';
+  }
+
+  @override
+  String resultsIncorrectCount(int count) {
+    return '$count ਗਲਤ';
+  }
+
+  @override
+  String resultsSkippedCount(int count) {
+    return '$count ਛੱਡੇ';
+  }
+
+  @override
+  String resultsScorePercentA11y(String value) {
+    return 'ਸਕੋਰ $value ਪ੍ਰਤੀਸ਼ਤ';
+  }
+
+  @override
+  String get resultsEmptyTitle => 'ਅਜੇ ਕੋਈ ਕੋਸ਼ਿਸ਼ ਪੂਰੀ ਨਹੀਂ ਹੋਈ';
+
+  @override
+  String get resultsEmptyBody =>
+      'ਸਕੋਰ ਇਤਿਹਾਸ, ਸ਼ੁੱਧਤਾ ਅਤੇ ਜਵਾਬ ਸਮੀਖਿਆ ਦੇਖਣ ਲਈ ਆਪਣਾ ਪਹਿਲਾ ਟੈਸਟ ਪੂਰਾ ਕਰੋ।';
+
+  @override
+  String get resultsExploreTests => 'ਟੈਸਟ ਦੇਖੋ';
+
+  @override
+  String get resultsNoMatchTitle =>
+      'ਇਨ੍ਹਾਂ ਫ਼ਿਲਟਰਾਂ ਨਾਲ ਕੋਈ ਕੋਸ਼ਿਸ਼ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ';
+
+  @override
+  String get resultsNoMatchBody =>
+      'ਕੋਈ ਹੋਰ ਟੈਸਟ ਨਾਮ, ਸ਼੍ਰੇਣੀ ਜਾਂ ਤਰਤੀਬ ਅਜ਼ਮਾਓ।';
+
+  @override
+  String get resultsResetFilters => 'ਫ਼ਿਲਟਰ ਰੀਸੈੱਟ ਕਰੋ';
+
+  @override
+  String get dateUnavailable => 'ਤਾਰੀਖ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get examsCategoriesLoadFailed => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ';
+
+  @override
+  String get examsTitle => 'ਪ੍ਰੀਖਿਆਵਾਂ';
+
+  @override
+  String get examsLoadFailed => 'ਪ੍ਰੀਖਿਆਵਾਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ';
+
+  @override
+  String examsSearchIn(String category) {
+    return '$category ਪ੍ਰੀਖਿਆਵਾਂ ਖੋਜੋ';
+  }
+
+  @override
+  String examsCategoryExams(String category) {
+    return '$category ਪ੍ਰੀਖਿਆਵਾਂ';
+  }
+
+  @override
+  String examsAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ਪ੍ਰੀਖਿਆਵਾਂ ਉਪਲਬਧ',
+      one: '1 ਪ੍ਰੀਖਿਆ ਉਪਲਬਧ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get examsTestSeries => 'ਟੈਸਟ ਸੀਰੀਜ਼';
+
+  @override
+  String get examsSeriesLoadFailed => 'ਟੈਸਟ ਸੀਰੀਜ਼ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ';
+
+  @override
+  String get examsAvailableSeries => 'ਉਪਲਬਧ ਟੈਸਟ ਸੀਰੀਜ਼';
+
+  @override
+  String get examsNoActiveSeries => 'ਅਜੇ ਕੋਈ ਚਾਲੂ ਟੈਸਟ ਸੀਰੀਜ਼ ਨਹੀਂ';
+
+  @override
+  String examsSeriesAvailable(int count) {
+    return '$count ਸੀਰੀਜ਼ ਉਪਲਬਧ';
+  }
+
+  @override
+  String get examsSearchCategories => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ ਖੋਜੋ';
+
+  @override
+  String get examsCategories => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀਆਂ';
+
+  @override
+  String get examsChooseCategory =>
+      'ਜਿਸ ਪ੍ਰੀਖਿਆ ਦੀ ਤਿਆਰੀ ਕਰ ਰਹੇ ਹੋ, ਉਸਨੂੰ ਲੱਭਣ ਲਈ ਸ਼੍ਰੇਣੀ ਚੁਣੋ।';
+
+  @override
+  String get examsChoosePath => 'ਆਪਣੀ ਪ੍ਰੀਖਿਆ ਦਾ ਰਾਹ ਚੁਣੋ';
+
+  @override
+  String get examsChoosePathBody =>
+      'ਸ਼੍ਰੇਣੀ ਖੋਲ੍ਹੋ, ਆਪਣੀ ਪ੍ਰੀਖਿਆ ਚੁਣੋ ਅਤੇ ਉਸਦੀ ਟੈਸਟ ਸੀਰੀਜ਼ \'ਤੇ ਜਾਓ।';
+
+  @override
+  String examsCategoriesCount(int count) {
+    return '$count ਸ਼੍ਰੇਣੀਆਂ';
+  }
+
+  @override
+  String examsExamsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ਪ੍ਰੀਖਿਆਵਾਂ',
+      one: '1 ਪ੍ਰੀਖਿਆ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String examsSeriesCount(int count) {
+    return '$count ਸੀਰੀਜ਼';
+  }
+
+  @override
+  String examsLiveTests(int count) {
+    return '$count ਉਪਲਬਧ ਟੈਸਟ';
+  }
+
+  @override
+  String examsTestsCount(int count) {
+    return '$count ਟੈਸਟ';
+  }
+
+  @override
+  String examsTestSeriesCount(int count) {
+    return '$count ਟੈਸਟ ਸੀਰੀਜ਼';
+  }
+
+  @override
+  String examsFullMocks(int count) {
+    return '$count ਫੁੱਲ ਮੌਕ';
+  }
+
+  @override
+  String examsMinPerTest(int minutes) {
+    return '~$minutes ਮਿੰਟ/ਟੈਸਟ';
+  }
+
+  @override
+  String get examsViewTestSeries => 'ਟੈਸਟ ਸੀਰੀਜ਼ ਦੇਖੋ';
+
+  @override
+  String get examsNoQuestionsYet => 'ਅਜੇ ਕੋਈ ਸਵਾਲ ਨਹੀਂ';
+
+  @override
+  String get examsViewDetails => 'ਵੇਰਵੇ ਦੇਖੋ';
+
+  @override
+  String get examsViewSeries => 'ਸੀਰੀਜ਼ ਦੇਖੋ';
+
+  @override
+  String get examsEmptyCatalogueTitle =>
+      'ਅਜੇ ਕੋਈ ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get examsEmptyCatalogueBody => 'ਦੁਬਾਰਾ ਦੇਖਣ ਲਈ ਹੇਠਾਂ ਖਿੱਚੋ।';
+
+  @override
+  String get examsNoCategoryMatchTitle =>
+      'ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।';
+
+  @override
+  String get examsNoCategoryMatchBody =>
+      'ਕੋਈ ਹੋਰ ਪ੍ਰੀਖਿਆ ਸਮੂਹ ਅਜ਼ਮਾਓ ਜਾਂ ਖੋਜ ਹਟਾਓ।';
+
+  @override
+  String get examsNoExamMatchTitle => 'ਇਸ ਖੋਜ ਨਾਲ ਕੋਈ ਪ੍ਰੀਖਿਆ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ।';
+
+  @override
+  String get examsNoExamMatchBody => 'ਛੋਟਾ ਪ੍ਰੀਖਿਆ ਨਾਮ ਅਜ਼ਮਾਓ ਜਾਂ ਖੋਜ ਹਟਾਓ।';
+
+  @override
+  String get examsCategoryUnavailableTitle => 'ਪ੍ਰੀਖਿਆ ਸ਼੍ਰੇਣੀ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get examsCategoryUnavailableBody =>
+      'ਪ੍ਰੀਖਿਆ ਪੰਨੇ ਤੋਂ ਸ਼੍ਰੇਣੀ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।';
+
+  @override
+  String get examsExamUnavailableTitle => 'ਪ੍ਰੀਖਿਆ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get examsExamUnavailableBody =>
+      'ਪ੍ਰੀਖਿਆ ਨੂੰ ਉਸਦੀ ਸ਼੍ਰੇਣੀ ਤੋਂ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।';
+
+  @override
+  String examsNoneInCategoryTitle(String category) {
+    return 'ਅਜੇ ਕੋਈ $category ਪ੍ਰੀਖਿਆ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹੈ।';
+  }
+
+  @override
+  String get examsNoneInCategoryBody =>
+      'ਨਵੀਆਂ ਪ੍ਰੀਖਿਆਵਾਂ ਪ੍ਰਕਾਸ਼ਿਤ ਹੁੰਦੇ ਹੀ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।';
+
+  @override
+  String get examsNoSeriesTitle => 'ਅਜੇ ਕੋਈ ਟੈਸਟ ਸੀਰੀਜ਼ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get examsNoSeriesBody =>
+      'ਇਸ ਪ੍ਰੀਖਿਆ ਦੀਆਂ ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ ਸੀਰੀਜ਼ ਇੱਥੇ ਆਪਣੇ ਆਪ ਦਿਖਣਗੀਆਂ।';
 }
