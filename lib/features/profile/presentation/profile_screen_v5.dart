@@ -11,6 +11,7 @@ import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/performance_analytics.dart';
 import '../../../l10n/l10n.dart';
+import '../../preferences/presentation/app_language_picker.dart';
 import '../../preferences/presentation/providers/app_language_providers.dart';
 import 'providers/analytics_providers.dart';
 
@@ -114,11 +115,7 @@ class ProfileScreen extends ConsumerWidget {
             language: language,
             appLanguage: ref.watch(appLanguageProvider).value ??
                 QuestionLanguage.english,
-            onAppLanguage: () => _chooseAppLanguage(
-              context,
-              ref,
-              ref.read(appLanguageProvider).value ?? QuestionLanguage.english,
-            ),
+            onAppLanguage: () => showAppLanguagePicker(context, ref),
             onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
             onResults: () => context.go('/results'),
@@ -127,29 +124,6 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _chooseAppLanguage(
-    BuildContext context,
-    WidgetRef ref,
-    QuestionLanguage current,
-  ) async {
-    final result = await showModalBottomSheet<(QuestionLanguage, bool)>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) => _AppLanguageSheet(current: current),
-    );
-    if (result == null || !context.mounted) return;
-    final (selected, alsoForQuestions) = result;
-    if (selected == current && !alsoForQuestions) return;
-    try {
-      await setAppLanguage(ref, selected, alsoForQuestions: alsoForQuestions);
-    } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.languageSaveFailed)),
-      );
-    }
   }
 
   Future<void> _chooseQuestionLanguage(
@@ -1377,87 +1351,4 @@ String _formatDate(DateTime value) {
   ];
   final local = value.toLocal();
   return '${local.day} ${months[local.month - 1]}';
-}
-
-
-class _AppLanguageSheet extends StatefulWidget {
-  const _AppLanguageSheet({required this.current});
-
-  final QuestionLanguage current;
-
-  @override
-  State<_AppLanguageSheet> createState() => _AppLanguageSheetState();
-}
-
-class _AppLanguageSheetState extends State<_AppLanguageSheet> {
-  late QuestionLanguage _selected = widget.current;
-  bool _alsoForQuestions = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md,
-          0,
-          AppSpacing.md,
-          AppSpacing.lg,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.appLanguage,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              l10n.appLanguageHelp,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            RadioGroup<QuestionLanguage>(
-              groupValue: _selected,
-              onChanged: (value) {
-                if (value != null) setState(() => _selected = value);
-              },
-              child: Column(
-                children: [
-                  for (final language in QuestionLanguage.values)
-                    RadioListTile<QuestionLanguage>(
-                      key: Key('app-language-${language.name}'),
-                      value: language,
-                      title: Text(language.label),
-                    ),
-                ],
-              ),
-            ),
-            SwitchListTile(
-              key: const Key('app-language-also-questions'),
-              value: _alsoForQuestions,
-              onChanged: (value) => setState(() => _alsoForQuestions = value),
-              title: Text(l10n.alsoUseForQuestions),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                key: const Key('app-language-save'),
-                onPressed: () =>
-                    Navigator.of(context).pop((_selected, _alsoForQuestions)),
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

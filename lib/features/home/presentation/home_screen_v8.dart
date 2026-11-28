@@ -38,9 +38,11 @@ import 'providers/official_exam_icons_provider.dart';
 import 'official_exam_icons_embedded.dart';
 import 'mobile_custom_home_section.dart';
 import '../../../l10n/l10n.dart';
+import '../../preferences/presentation/app_language_picker.dart';
 
-final homeV8SelectedExamCodesProvider =
-    Provider<AsyncValue<List<String>>>((ref) {
+final homeV8SelectedExamCodesProvider = Provider<AsyncValue<List<String>>>((
+  ref,
+) {
   final user = ref.watch(authStateChangesProvider).value;
   if (user == null) return const AsyncValue.data(<String>[]);
   return ref.watch(selectedExamCodesProvider);
@@ -98,16 +100,17 @@ class HomeScreen extends ConsumerWidget {
     final homeConfigAsync = ref.watch(mobileHomeConfigurationProvider);
     final canonicalCatalogAsync = ref.watch(examCatalogProvider);
     final officialExamIconUrls =
-        ref.watch(officialExamIconUrlsProvider).value ?? const <String, String>{};
+        ref.watch(officialExamIconUrlsProvider).value ??
+        const <String, String>{};
     final user = ref.watch(authStateChangesProvider).value;
     final notificationUnreadCount = user == null
         ? 0
         : (ref
-                .watch(mobileNotificationInboxProvider)
-                .value
-                ?.where((item) => item.isUnread)
-                .length ??
-            0);
+                  .watch(mobileNotificationInboxProvider)
+                  .value
+                  ?.where((item) => item.isUnread)
+                  .length ??
+              0);
     final currentTime = now?.call() ?? DateTime.now();
     final mobileAnalytics = ref.read(mobileAnalyticsClientProvider);
     final promotionExposureStore = ref.read(promotionExposureStoreProvider);
@@ -155,8 +158,9 @@ class HomeScreen extends ConsumerWidget {
     final examCategoriesSetting = homeConfig.settingFor('exam_categories');
     final featuredSeriesSetting = homeConfig.settingFor('featured_test_series');
     final continueLearningSetting = homeConfig.settingFor('continue_learning');
-    final recommendedLearningSetting =
-        homeConfig.settingFor('recommended_learning');
+    final recommendedLearningSetting = homeConfig.settingFor(
+      'recommended_learning',
+    );
     final currentAffairsSetting = homeConfig.settingFor('current_affairs');
     final todayGoalSetting = homeConfig.settingFor('today_goal');
     final heroSetting = homeConfig.settingFor('hero');
@@ -164,235 +168,237 @@ class HomeScreen extends ConsumerWidget {
     final configurableSections = <String, Widget>{
       'hero': heroSetting.isVisible
           ? Column(
-        children: [
-          if (homeConfig.heroSlides.isNotEmpty)
-            _ConfiguredHeroCarousel(
-              slides: homeConfig.heroSlides,
-              onImpression: (slide) => unawaited(
-                mobileAnalytics.track(
-                  'hero_impression',
-                  entityType: 'hero_slide',
-                  entityId: slide.id,
-                  placement: 'home',
-                ),
-              ),
-              onClick: (slide) => unawaited(
-                mobileAnalytics.track(
-                  'hero_click',
-                  entityType: 'hero_slide',
-                  entityId: slide.id,
-                  placement: 'home',
-                ),
-              ),
-            )
-          else
-            const Column(
               children: [
-                _HomePromoFallback(),
-                SizedBox(height: 6),
-                _HeroPageDots(),
+                if (homeConfig.heroSlides.isNotEmpty)
+                  _ConfiguredHeroCarousel(
+                    slides: homeConfig.heroSlides,
+                    onImpression: (slide) => unawaited(
+                      mobileAnalytics.track(
+                        'hero_impression',
+                        entityType: 'hero_slide',
+                        entityId: slide.id,
+                        placement: 'home',
+                      ),
+                    ),
+                    onClick: (slide) => unawaited(
+                      mobileAnalytics.track(
+                        'hero_click',
+                        entityType: 'hero_slide',
+                        entityId: slide.id,
+                        placement: 'home',
+                      ),
+                    ),
+                  )
+                else
+                  const Column(
+                    children: [
+                      _HomePromoFallback(),
+                      SizedBox(height: 6),
+                      _HeroPageDots(),
+                    ],
+                  ),
+                if (campaigns.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  PromotionCarousel(
+                    campaigns: campaigns,
+                    compact: true,
+                    onImpression: (campaign) {
+                      unawaited(
+                        promotionExposureStore.recordImpression(campaign),
+                      );
+                      unawaited(
+                        mobileAnalytics.track(
+                          'promotion_impression',
+                          entityType: 'promotion',
+                          entityId: campaign.id,
+                          placement: 'home',
+                        ),
+                      );
+                    },
+                    onAction: (campaign) => unawaited(
+                      mobileAnalytics.track(
+                        'promotion_click',
+                        entityType: 'promotion',
+                        entityId: campaign.id,
+                        placement: 'home',
+                      ),
+                    ),
+                    onDismiss: (campaign) {
+                      unawaited(promotionExposureStore.dismiss(campaign.id));
+                      unawaited(
+                        mobileAnalytics.track(
+                          'promotion_dismiss',
+                          entityType: 'promotion',
+                          entityId: campaign.id,
+                          placement: 'home',
+                        ),
+                      );
+                    },
+                  ),
+                ],
+                const SizedBox(height: 12),
+                _HomeSearchBar(onTap: () => context.go('/exams')),
+                const SizedBox(height: 16),
               ],
-            ),
-          if (campaigns.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            PromotionCarousel(
-              campaigns: campaigns,
-              compact: true,
-              onImpression: (campaign) {
-                unawaited(promotionExposureStore.recordImpression(campaign));
-                unawaited(
-                  mobileAnalytics.track(
-                    'promotion_impression',
-                    entityType: 'promotion',
-                    entityId: campaign.id,
-                    placement: 'home',
-                  ),
-                );
-              },
-              onAction: (campaign) => unawaited(
-                mobileAnalytics.track(
-                  'promotion_click',
-                  entityType: 'promotion',
-                  entityId: campaign.id,
-                  placement: 'home',
-                ),
-              ),
-              onDismiss: (campaign) {
-                unawaited(promotionExposureStore.dismiss(campaign.id));
-                unawaited(
-                  mobileAnalytics.track(
-                    'promotion_dismiss',
-                    entityType: 'promotion',
-                    entityId: campaign.id,
-                    placement: 'home',
-                  ),
-                );
-              },
-            ),
-          ],
-          const SizedBox(height: 12),
-          _HomeSearchBar(onTap: () => context.go('/exams')),
-          const SizedBox(height: 16),
-        ],
-      )
+            )
           : const SizedBox.shrink(),
       'exam_categories': examCategoriesSetting.isVisible
           ? Column(
-        children: [
-          _SectionTitle(
-            title: examCategoriesSetting.title.trim().isNotEmpty
-                ? examCategoriesSetting.title
-                : context.l10n.homeExamCategories,
-            action: context.l10n.homeSeeAll,
-            onAction: () => context.go('/exams'),
-            subtitle: examCategoriesSetting.subtitle,
-            iconName: examCategoriesSetting.iconName,
-            iconUrl: examCategoriesSetting.iconUrl,
-          ),
-          const SizedBox(height: 3),
-          canonicalCatalogAsync.when(
-            loading: () => homeExamFamilies.isEmpty
-                ? const _LoadingCard(height: 196)
-                : _ExamCategoriesGrid(
-                    families: homeExamFamilies,
-                    overrides: homeConfig.itemOverrides,
-                    officialIconUrls: officialExamIconUrls,
-                    layout: examCategoriesSetting.layout,
-                    columns: examCategoriesSetting.columns,
-                    onOpen: (family) => context.push(
-                      '/exam-category?family=' +
-                          Uri.encodeQueryComponent(family),
-                    ),
-                  ),
-            error: (error, stack) => homeExamFamilies.isEmpty
-                ? _ErrorCard(
-                    title: context.l10n.homeCategoriesFailed,
-                    onRetry: () => ref.invalidate(examCatalogProvider),
-                  )
-                : _ExamCategoriesGrid(
-                    families: homeExamFamilies,
-                    overrides: homeConfig.itemOverrides,
-                    officialIconUrls: officialExamIconUrls,
-                    layout: examCategoriesSetting.layout,
-                    columns: examCategoriesSetting.columns,
-                    onOpen: (family) => context.push(
-                      '/exam-category?family=' +
-                          Uri.encodeQueryComponent(family),
-                    ),
-                  ),
-            data: (_) => homeExamFamilies.isEmpty
-                ? _EmptyRecommendations(
-                    catalogueEmpty: true,
-                    emptyText: context.l10n.homeNoCategories,
-                    onBrowse: () => context.go('/exams'),
-                  )
-                : _ExamCategoriesGrid(
-                    families: homeExamFamilies,
-                    overrides: homeConfig.itemOverrides,
-                    officialIconUrls: officialExamIconUrls,
-                    layout: examCategoriesSetting.layout,
-                    columns: examCategoriesSetting.columns,
-                    onOpen: (family) => context.push(
-                      '/exam-category?family=' +
-                          Uri.encodeQueryComponent(family),
-                    ),
-                  ),
-          ),
-          const SizedBox(height: 8),
-        ],
-      )
+              children: [
+                _SectionTitle(
+                  title: examCategoriesSetting.title.trim().isNotEmpty
+                      ? examCategoriesSetting.title
+                      : context.l10n.homeExamCategories,
+                  action: context.l10n.homeSeeAll,
+                  onAction: () => context.go('/exams'),
+                  subtitle: examCategoriesSetting.subtitle,
+                  iconName: examCategoriesSetting.iconName,
+                  iconUrl: examCategoriesSetting.iconUrl,
+                ),
+                const SizedBox(height: 3),
+                canonicalCatalogAsync.when(
+                  loading: () => homeExamFamilies.isEmpty
+                      ? const _LoadingCard(height: 196)
+                      : _ExamCategoriesGrid(
+                          families: homeExamFamilies,
+                          overrides: homeConfig.itemOverrides,
+                          officialIconUrls: officialExamIconUrls,
+                          layout: examCategoriesSetting.layout,
+                          columns: examCategoriesSetting.columns,
+                          onOpen: (family) => context.push(
+                            '/exam-category?family=' +
+                                Uri.encodeQueryComponent(family),
+                          ),
+                        ),
+                  error: (error, stack) => homeExamFamilies.isEmpty
+                      ? _ErrorCard(
+                          title: context.l10n.homeCategoriesFailed,
+                          onRetry: () => ref.invalidate(examCatalogProvider),
+                        )
+                      : _ExamCategoriesGrid(
+                          families: homeExamFamilies,
+                          overrides: homeConfig.itemOverrides,
+                          officialIconUrls: officialExamIconUrls,
+                          layout: examCategoriesSetting.layout,
+                          columns: examCategoriesSetting.columns,
+                          onOpen: (family) => context.push(
+                            '/exam-category?family=' +
+                                Uri.encodeQueryComponent(family),
+                          ),
+                        ),
+                  data: (_) => homeExamFamilies.isEmpty
+                      ? _EmptyRecommendations(
+                          catalogueEmpty: true,
+                          emptyText: context.l10n.homeNoCategories,
+                          onBrowse: () => context.go('/exams'),
+                        )
+                      : _ExamCategoriesGrid(
+                          families: homeExamFamilies,
+                          overrides: homeConfig.itemOverrides,
+                          officialIconUrls: officialExamIconUrls,
+                          layout: examCategoriesSetting.layout,
+                          columns: examCategoriesSetting.columns,
+                          onOpen: (family) => context.push(
+                            '/exam-category?family=' +
+                                Uri.encodeQueryComponent(family),
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            )
           : const SizedBox.shrink(),
       'featured_test_series': featuredSeriesSetting.isVisible
           ? Column(
-        children: [
-          _SectionTitle(
-            title: featuredSeriesSetting.title.trim().isNotEmpty
-                ? featuredSeriesSetting.title
-                : context.l10n.homeFeaturedSeries,
-            action: context.l10n.homeSeeAll,
-            onAction: () => context.go('/exams'),
-            subtitle: featuredSeriesSetting.subtitle,
-            iconName: featuredSeriesSetting.iconName,
-            iconUrl: featuredSeriesSetting.iconUrl,
-          ),
-          const SizedBox(height: 6),
-          canonicalCatalogAsync.when(
-            loading: () => homeFeaturedSeries.isEmpty
-                ? const _LoadingCard(height: 194)
-                : _ConfiguredSeriesRail(
-                    series: homeFeaturedSeries,
-                    overrides: homeConfig.itemOverrides,
-                    layout: featuredSeriesSetting.layout,
-                    columns: featuredSeriesSetting.columns,
-                    onOpen: (series) => context.push(
-                      '/test-series?id=' +
-                          Uri.encodeQueryComponent(series.id),
-                    ),
-                  ),
-            error: (error, stack) => homeFeaturedSeries.isEmpty
-                ? _ErrorCard(
-                    title: context.l10n.homeSeriesFailed,
-                    onRetry: () => ref.invalidate(examCatalogProvider),
-                  )
-                : _ConfiguredSeriesRail(
-                    series: homeFeaturedSeries,
-                    overrides: homeConfig.itemOverrides,
-                    layout: featuredSeriesSetting.layout,
-                    columns: featuredSeriesSetting.columns,
-                    onOpen: (series) => context.push(
-                      '/test-series?id=' +
-                          Uri.encodeQueryComponent(series.id),
-                    ),
-                  ),
-            data: (_) => homeFeaturedSeries.isEmpty
-                ? _EmptyRecommendations(
-                    catalogueEmpty: true,
-                    onBrowse: () => context.go('/exams'),
-                  )
-                : _ConfiguredSeriesRail(
-                    series: homeFeaturedSeries,
-                    overrides: homeConfig.itemOverrides,
-                    layout: featuredSeriesSetting.layout,
-                    columns: featuredSeriesSetting.columns,
-                    onOpen: (series) => context.push(
-                      '/test-series?id=' +
-                          Uri.encodeQueryComponent(series.id),
-                    ),
-                  ),
-          ),
-          const SizedBox(height: 16),
-        ],
-      )
+              children: [
+                _SectionTitle(
+                  title: featuredSeriesSetting.title.trim().isNotEmpty
+                      ? featuredSeriesSetting.title
+                      : context.l10n.homeFeaturedSeries,
+                  action: context.l10n.homeSeeAll,
+                  onAction: () => context.go('/exams'),
+                  subtitle: featuredSeriesSetting.subtitle,
+                  iconName: featuredSeriesSetting.iconName,
+                  iconUrl: featuredSeriesSetting.iconUrl,
+                ),
+                const SizedBox(height: 6),
+                canonicalCatalogAsync.when(
+                  loading: () => homeFeaturedSeries.isEmpty
+                      ? const _LoadingCard(height: 194)
+                      : _ConfiguredSeriesRail(
+                          series: homeFeaturedSeries,
+                          overrides: homeConfig.itemOverrides,
+                          layout: featuredSeriesSetting.layout,
+                          columns: featuredSeriesSetting.columns,
+                          onOpen: (series) => context.push(
+                            '/test-series?id=' +
+                                Uri.encodeQueryComponent(series.id),
+                          ),
+                        ),
+                  error: (error, stack) => homeFeaturedSeries.isEmpty
+                      ? _ErrorCard(
+                          title: context.l10n.homeSeriesFailed,
+                          onRetry: () => ref.invalidate(examCatalogProvider),
+                        )
+                      : _ConfiguredSeriesRail(
+                          series: homeFeaturedSeries,
+                          overrides: homeConfig.itemOverrides,
+                          layout: featuredSeriesSetting.layout,
+                          columns: featuredSeriesSetting.columns,
+                          onOpen: (series) => context.push(
+                            '/test-series?id=' +
+                                Uri.encodeQueryComponent(series.id),
+                          ),
+                        ),
+                  data: (_) => homeFeaturedSeries.isEmpty
+                      ? _EmptyRecommendations(
+                          catalogueEmpty: true,
+                          onBrowse: () => context.go('/exams'),
+                        )
+                      : _ConfiguredSeriesRail(
+                          series: homeFeaturedSeries,
+                          overrides: homeConfig.itemOverrides,
+                          layout: featuredSeriesSetting.layout,
+                          columns: featuredSeriesSetting.columns,
+                          onOpen: (series) => context.push(
+                            '/test-series?id=' +
+                                Uri.encodeQueryComponent(series.id),
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            )
           : const SizedBox.shrink(),
       'continue_learning': continueLearningSetting.isVisible
           ? Column(
-        children: [
-          _SectionTitle(
-            title: continueLearningSetting.title.trim().isNotEmpty
-                ? continueLearningSetting.title
-                : context.l10n.homeContinueLearning,
-            action: context.l10n.homeSeeAll,
-            onAction: () => context.go('/learn'),
-            subtitle: continueLearningSetting.subtitle,
-            iconName: continueLearningSetting.iconName,
-            iconUrl: continueLearningSetting.iconUrl,
-          ),
-          const SizedBox(height: 6),
-          _ContinueLearningCard(
-            key: const Key('home-primary-action'),
-            state: actionState,
-            onOpen: (action) => _openAction(context, action),
-            onRetry: () {
-              ref
-                ..invalidate(inProgressExamsProvider)
-                ..invalidate(userResultsProvider)
-                ..invalidate(availableExamsProvider)
-                ..invalidate(dailyCompanionSnapshotProvider);
-            },
-          ),
-          const SizedBox(height: 16),
-        ],
-      )
+              children: [
+                _SectionTitle(
+                  title: continueLearningSetting.title.trim().isNotEmpty
+                      ? continueLearningSetting.title
+                      : context.l10n.homeContinueLearning,
+                  action: context.l10n.homeSeeAll,
+                  onAction: () => context.go('/learn'),
+                  subtitle: continueLearningSetting.subtitle,
+                  iconName: continueLearningSetting.iconName,
+                  iconUrl: continueLearningSetting.iconUrl,
+                ),
+                const SizedBox(height: 6),
+                _ContinueLearningCard(
+                  key: const Key('home-primary-action'),
+                  state: actionState,
+                  onOpen: (action) => _openAction(context, action),
+                  onRetry: () {
+                    ref
+                      ..invalidate(inProgressExamsProvider)
+                      ..invalidate(userResultsProvider)
+                      ..invalidate(availableExamsProvider)
+                      ..invalidate(dailyCompanionSnapshotProvider);
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+            )
           : const SizedBox.shrink(),
       'recommended_learning': recommendedLearningSetting.isVisible
           ? MobilePlannedContentSection(
@@ -457,44 +463,39 @@ class HomeScreen extends ConsumerWidget {
     return ColoredBox(
       color: const Color(0xFFF6F7F9),
       child: SafeArea(
-      child: RefreshIndicator(
-        onRefresh: () => _refreshAll(ref),
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                AppSpacing.sm,
-                16,
-                112,
+        child: RefreshIndicator(
+          onRefresh: () => _refreshAll(ref),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, AppSpacing.sm, 16, 112),
+                sliver: SliverList.list(
+                  children: [
+                    _HomeHeader(
+                      name:
+                          _displayName(user?.displayName, user?.email) ??
+                          context.l10n.homeStudent,
+                      greeting: _greeting(context, currentTime),
+                      dateLabel: formatWeekdayDayMonth(context, currentTime),
+                      photoUrl: user?.photoURL,
+                      onSearch: () => context.go('/exams'),
+                      onNotifications: () => context.push('/notifications'),
+                      notificationUnreadCount: notificationUnreadCount,
+                      onProfile: () => context.push('/profile'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    ...orderedSections,
+                  ],
+                ),
               ),
-              sliver: SliverList.list(
-                children: [
-                  _HomeHeader(
-                    name: _displayName(user?.displayName, user?.email) ??
-                        context.l10n.homeStudent,
-                    greeting: _greeting(context, currentTime),
-                    dateLabel: formatWeekdayDayMonth(context, currentTime),
-                    photoUrl: user?.photoURL,
-                    onSearch: () => context.go('/exams'),
-                    onNotifications: () => context.push('/notifications'),
-                    notificationUnreadCount: notificationUnreadCount,
-                    onProfile: () => context.push('/profile'),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  ...orderedSections,
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
-
 
 String _homeFamilyLabel(BuildContext context, MobileFeaturedExamFamily family) {
   final l10n = context.l10n;
@@ -507,7 +508,8 @@ String _homeFamilyLabel(BuildContext context, MobileFeaturedExamFamily family) {
   if (key.contains('defen') || key.contains('army') || key.contains('navy')) {
     return l10n.familyDefence;
   }
-  if (key.contains('pcs') || key.contains('state civil')) return l10n.familyStatePcs;
+  if (key.contains('pcs') || key.contains('state civil'))
+    return l10n.familyStatePcs;
   if (key.contains('other')) return l10n.familyOther;
   return family.name;
 }
@@ -569,8 +571,9 @@ List<MobileFeaturedExamFamily> _resolveCanonicalHomeFamilies({
   }
 
   resolved.sort((left, right) {
-    final priority =
-        _homeFamilyPriority(left).compareTo(_homeFamilyPriority(right));
+    final priority = _homeFamilyPriority(
+      left,
+    ).compareTo(_homeFamilyPriority(right));
     if (priority != 0) return priority;
     return left.name.toLowerCase().compareTo(right.name.toLowerCase());
   });
@@ -608,8 +611,9 @@ List<MobileFeaturedTestSeries> _resolveCanonicalHomeSeries({
           code: series.code,
           name: series.name,
           examName: series.examName,
-          testCount:
-              series.comingSoon ? series.testCount : series.liveTestCount,
+          testCount: series.comingSoon
+              ? series.testCount
+              : series.liveTestCount,
           questionCount: series.questionCount,
           durationSeconds: series.durationSeconds,
           totalMarks: series.totalMarks,
@@ -630,7 +634,8 @@ class _ConfiguredHeroCarousel extends StatefulWidget {
   final ValueChanged<MobileHeroSlide>? onClick;
 
   @override
-  State<_ConfiguredHeroCarousel> createState() => _ConfiguredHeroCarouselState();
+  State<_ConfiguredHeroCarousel> createState() =>
+      _ConfiguredHeroCarouselState();
 }
 
 class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
@@ -659,7 +664,9 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
       case 'test_series':
         final destination = slide.destinationValue.trim();
         if (destination.isNotEmpty) {
-          context.push('/test-series?id=${Uri.encodeQueryComponent(destination)}');
+          context.push(
+            '/test-series?id=${Uri.encodeQueryComponent(destination)}',
+          );
         } else {
           context.go('/exams');
         }
@@ -708,7 +715,8 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
             itemBuilder: (context, index) {
               final slide = slides[index];
               final hasImage = slide.imageUrl.trim().isNotEmpty;
-              final hasAction = slide.destinationType != 'none' &&
+              final hasAction =
+                  slide.destinationType != 'none' &&
                   (slide.destinationType != 'url' ||
                       slide.destinationValue.trim().isNotEmpty);
               return Padding(
@@ -745,12 +753,15 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(0xFFF7F7F1)
-                                      .withValues(alpha: .98),
-                                  const Color(0xFFF7F7F1)
-                                      .withValues(alpha: .86),
-                                  const Color(0xFFF7F7F1)
-                                      .withValues(alpha: .18),
+                                  const Color(
+                                    0xFFF7F7F1,
+                                  ).withValues(alpha: .98),
+                                  const Color(
+                                    0xFFF7F7F1,
+                                  ).withValues(alpha: .86),
+                                  const Color(
+                                    0xFFF7F7F1,
+                                  ).withValues(alpha: .18),
                                 ],
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
@@ -766,17 +777,21 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                   slide.title,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTypography.premiumHeading(
-                                    Theme.of(context).textTheme.headlineSmall,
-                                  ).copyWith(
-                                    color: const Color(0xFF0C131F),
-                                    height: 1.04,
-                                  ),
+                                  style:
+                                      AppTypography.premiumHeading(
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.headlineSmall,
+                                      ).copyWith(
+                                        color: const Color(0xFF0C131F),
+                                        height: 1.04,
+                                      ),
                                 ),
                                 if (slide.subtitle.trim().isNotEmpty) ...[
                                   const SizedBox(height: 7),
                                   SizedBox(
-                                    width: MediaQuery.sizeOf(context).width * .62,
+                                    width:
+                                        MediaQuery.sizeOf(context).width * .62,
                                     child: Text(
                                       slide.subtitle,
                                       maxLines: textScale > 1.3 ? 3 : 2,
@@ -895,12 +910,13 @@ class _ConfiguredSeriesRail extends StatelessWidget {
         final requestedColumns = columns <= 0 ? 2 : columns.clamp(1, 2).toInt();
         return LayoutBuilder(
           builder: (context, constraints) {
-            final effectiveColumns =
-                constraints.maxWidth < 330 ? 1 : requestedColumns;
+            final effectiveColumns = constraints.maxWidth < 330
+                ? 1
+                : requestedColumns;
             const gap = 8.0;
             final width =
                 (constraints.maxWidth - gap * (effectiveColumns - 1)) /
-                    effectiveColumns;
+                effectiveColumns;
             return Wrap(
               spacing: gap,
               runSpacing: gap,
@@ -920,16 +936,17 @@ class _ConfiguredSeriesRail extends StatelessWidget {
           children: [
             for (var index = 0; index < visibleSeries.length; index++) ...[
               SizedBox(height: 112, child: card(index, listMode: true)),
-              if (index != visibleSeries.length - 1)
-                const SizedBox(height: 8),
+              if (index != visibleSeries.length - 1) const SizedBox(height: 8),
             ],
           ],
         );
       default:
         return LayoutBuilder(
           builder: (context, constraints) {
-            final cardWidth =
-                ((constraints.maxWidth - 8) / 2).clamp(166.0, 220.0);
+            final cardWidth = ((constraints.maxWidth - 8) / 2).clamp(
+              166.0,
+              220.0,
+            );
             return SizedBox(
               height: 166,
               child: ListView.separated(
@@ -991,8 +1008,8 @@ class _ConfiguredSeriesCard extends StatelessWidget {
     final foreground = compact
         ? const Color(0xFF0C131F)
         : hasImage || !alternate
-            ? Colors.white
-            : const Color(0xFF152746);
+        ? Colors.white
+        : const Color(0xFF152746);
     final decoration = compact
         ? BoxDecoration(
             color: Colors.white,
@@ -1072,7 +1089,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                 maxLines: compact ? 2 : 2,
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.premiumHeading(
-                  compact ? theme.textTheme.titleSmall : theme.textTheme.titleLarge,
+                  compact
+                      ? theme.textTheme.titleSmall
+                      : theme.textTheme.titleLarge,
                 ).copyWith(color: foreground, height: 1.06),
               ),
             ),
@@ -1137,7 +1156,9 @@ class _ConfiguredSeriesCard extends StatelessWidget {
               Expanded(
                 child: _SeriesMetric(
                   icon: Icons.schedule_rounded,
-                  value: context.l10n.minutesShort((item.durationSeconds / 60).round()),
+                  value: context.l10n.minutesShort(
+                    (item.durationSeconds / 60).round(),
+                  ),
                   label: context.l10n.homeDuration,
                   light: alternate && !hasImage,
                 ),
@@ -1195,13 +1216,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                 ),
               Padding(
                 padding: EdgeInsets.all(compact ? 11 : 16),
-                child: listMode
-                    ? Row(
-                        children: [
-                          Expanded(child: copy),
-                        ],
-                      )
-                    : copy,
+                child: listMode ? Row(children: [Expanded(child: copy)]) : copy,
               ),
             ],
           ),
@@ -1228,11 +1243,7 @@ class _CompactSeriesMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(
-          icon,
-          size: 14,
-          color: foreground.withValues(alpha: .9),
-        ),
+        Icon(icon, size: 14, color: foreground.withValues(alpha: .9)),
         const SizedBox(height: 3),
         Text(
           value,
@@ -1357,10 +1368,7 @@ class _DefaultCanonicalSeriesCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.premiumHeading(
                           theme.textTheme.titleLarge,
-                        ).copyWith(
-                          color: foreground,
-                          height: 1.06,
-                        ),
+                        ).copyWith(color: foreground, height: 1.06),
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -1457,11 +1465,7 @@ class _HomePromoFallback extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: const LinearGradient(
-            colors: [
-              Color(0xFFE7EFE7),
-              Color(0xFFF7F7F1),
-              Color(0xFFE1EBE2),
-            ],
+            colors: [Color(0xFFE7EFE7), Color(0xFFF7F7F1), Color(0xFFE1EBE2)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
@@ -1477,12 +1481,7 @@ class _HomePromoFallback extends StatelessWidget {
               child: _HomeEducationArt(),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(
-                18,
-                16,
-                largeText ? 122 : 145,
-                14,
-              ),
+              padding: EdgeInsets.fromLTRB(18, 16, largeText ? 122 : 145, 14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1511,14 +1510,15 @@ class _HomePromoFallback extends StatelessWidget {
                     context.l10n.homeHeroTitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTypography.premiumHeading(
-                      Theme.of(context).textTheme.headlineSmall,
-                    ).copyWith(
-                      color: const Color(0xFF0C131F),
-                      fontSize: largeText ? 24 : 27,
-                      height: 1.0,
-                      letterSpacing: -.55,
-                    ),
+                    style:
+                        AppTypography.premiumHeading(
+                          Theme.of(context).textTheme.headlineSmall,
+                        ).copyWith(
+                          color: const Color(0xFF0C131F),
+                          fontSize: largeText ? 24 : 27,
+                          height: 1.0,
+                          letterSpacing: -.55,
+                        ),
                   ),
                   const Spacer(),
                   Text(
@@ -1526,12 +1526,11 @@ class _HomePromoFallback extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: const Color(0xFF58646F),
-                          height: 1.25,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      color: const Color(0xFF58646F),
+                      height: 1.25,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-
                 ],
               ),
             ),
@@ -1593,11 +1592,7 @@ class _HomeEducationArt extends StatelessWidget {
         const Positioned(
           right: 28,
           bottom: 78,
-          child: Icon(
-            Icons.school_rounded,
-            color: Color(0xFF173044),
-            size: 77,
-          ),
+          child: Icon(Icons.school_rounded, color: Color(0xFF173044), size: 77),
         ),
         Positioned(
           left: 8,
@@ -1647,11 +1642,7 @@ class _HomeSearchBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.search_rounded,
-                size: 23,
-                color: Color(0xFF607083),
-              ),
+              Icon(Icons.search_rounded, size: 23, color: Color(0xFF607083)),
               SizedBox(width: 11),
               Expanded(
                 child: Text(
@@ -1665,11 +1656,7 @@ class _HomeSearchBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(
-                Icons.tune_rounded,
-                size: 21,
-                color: Color(0xFF15806C),
-              ),
+              Icon(Icons.tune_rounded, size: 21, color: Color(0xFF15806C)),
             ],
           ),
         ),
@@ -1728,11 +1715,11 @@ class _HeroFeature extends StatelessWidget {
           textAlign: TextAlign.center,
           maxLines: 2,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Colors.white.withValues(alpha: .9),
-                fontSize: 8.8,
-                height: 1.1,
-                fontWeight: FontWeight.w700,
-              ),
+            color: Colors.white.withValues(alpha: .9),
+            fontSize: 8.8,
+            height: 1.1,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ],
     );
@@ -1792,10 +1779,7 @@ class _PunjabLandmarkPainter extends CustomPainter {
     final baseY = size.height * .77;
     final left = size.width * .55;
 
-    canvas.drawRect(
-      Rect.fromLTRB(left, baseY, size.width, size.height),
-      dark,
-    );
+    canvas.drawRect(Rect.fromLTRB(left, baseY, size.width, size.height), dark);
 
     void tower(double cx, double width, double height) {
       final bodyTop = baseY - height * .62;
@@ -1853,17 +1837,18 @@ class _PunjabLandmarkPainter extends CustomPainter {
     }
 
     final glow = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          const Color(0xFFFFD36B).withValues(alpha: .22),
-          Colors.transparent,
-        ],
-      ).createShader(
-        Rect.fromCircle(
-          center: Offset(size.width * .80, size.height * .38),
-          radius: size.width * .30,
-        ),
-      );
+      ..shader =
+          RadialGradient(
+            colors: [
+              const Color(0xFFFFD36B).withValues(alpha: .22),
+              Colors.transparent,
+            ],
+          ).createShader(
+            Rect.fromCircle(
+              center: Offset(size.width * .80, size.height * .38),
+              radius: size.width * .30,
+            ),
+          );
     canvas.drawCircle(
       Offset(size.width * .80, size.height * .38),
       size.width * .30,
@@ -1875,7 +1860,10 @@ class _PunjabLandmarkPainter extends CustomPainter {
   bool shouldRepaint(covariant _PunjabLandmarkPainter oldDelegate) => false;
 }
 
-IconData _homeIconFromName(String value, {IconData fallback = Icons.apps_rounded}) {
+IconData _homeIconFromName(
+  String value, {
+  IconData fallback = Icons.apps_rounded,
+}) {
   switch (value.trim().toLowerCase()) {
     case 'school':
     case 'teaching':
@@ -1966,78 +1954,110 @@ class _ExamCategoriesGrid extends StatelessWidget {
   ) {
     final key = (family.code + ' ' + family.name).toLowerCase();
     if (key.contains('punjab')) {
-      return (family.name, Icons.location_on_rounded,
-          const Color(0xFFFFEFEF), const Color(0xFFF04452));
+      return (
+        family.name,
+        Icons.location_on_rounded,
+        const Color(0xFFFFEFEF),
+        const Color(0xFFF04452),
+      );
     }
     if (key.contains('ssc') || key.contains('staff selection')) {
-      return (family.name, Icons.workspace_premium_rounded,
-          const Color(0xFFEAF8F2), const Color(0xFF11966F));
+      return (
+        family.name,
+        Icons.workspace_premium_rounded,
+        const Color(0xFFEAF8F2),
+        const Color(0xFF11966F),
+      );
     }
     if (key.contains('bank')) {
-      return (family.name, Icons.account_balance_rounded,
-          const Color(0xFFECF4FF), const Color(0xFF1672E8));
+      return (
+        family.name,
+        Icons.account_balance_rounded,
+        const Color(0xFFECF4FF),
+        const Color(0xFF1672E8),
+      );
     }
     if (key.contains('rail')) {
-      return (family.name, Icons.train_rounded,
-          const Color(0xFFF3EEFF), const Color(0xFF7248E8));
+      return (
+        family.name,
+        Icons.train_rounded,
+        const Color(0xFFF3EEFF),
+        const Color(0xFF7248E8),
+      );
     }
     if (key.contains('teach')) {
-      return (family.name, Icons.school_rounded,
-          const Color(0xFFFFF5E8), const Color(0xFFF28A19));
+      return (
+        family.name,
+        Icons.school_rounded,
+        const Color(0xFFFFF5E8),
+        const Color(0xFFF28A19),
+      );
     }
     if (key.contains('defen')) {
-      return (family.name, Icons.shield_rounded,
-          const Color(0xFFEAF8F2), const Color(0xFF159D73));
+      return (
+        family.name,
+        Icons.shield_rounded,
+        const Color(0xFFEAF8F2),
+        const Color(0xFF159D73),
+      );
     }
     if (key.contains('pcs') || key.contains('state')) {
-      return (family.name, Icons.apartment_rounded,
-          const Color(0xFFFFEEEE), const Color(0xFFF04452));
+      return (
+        family.name,
+        Icons.apartment_rounded,
+        const Color(0xFFFFEEEE),
+        const Color(0xFFF04452),
+      );
     }
-    return (family.name, Icons.grid_view_rounded,
-        const Color(0xFFF1F4F8), const Color(0xFF718096));
+    return (
+      family.name,
+      Icons.grid_view_rounded,
+      const Color(0xFFF1F4F8),
+      const Color(0xFF718096),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final items = families
-            .where((family) => !(overrides[family.id]?.hidden ?? false))
-            .take(12)
-            .map((family) {
-              final base = _visual(family);
-              final override = overrides[family.id];
-              final embeddedIcon = embeddedOfficialIconForFamily(
-                code: family.code,
-                name: family.name,
-              );
-              final storageIcon = officialIconForExamFamily(
-                code: family.code,
-                name: family.name,
-                urls: officialIconUrls,
-              );
-              return _ExamCategoryPresentation(
-                label: override?.title.trim().isNotEmpty == true
-                    ? override!.title
-                    : _homeFamilyLabel(context, family),
-                routeFamily: family.code.trim().isNotEmpty
-                    ? family.code
-                    : family.name,
-                subtitle: override?.subtitle ?? '',
-                badge: override?.badge ?? '',
-                icon: override?.iconName.trim().isNotEmpty == true
-                    ? _homeIconFromName(override!.iconName, fallback: base.$2)
-                    : base.$2,
-                background: base.$3,
-                foreground: base.$4,
-                iconUrl: storageIcon.isNotEmpty
-                    ? storageIcon
-                    : family.iconUrl.trim().isNotEmpty
-                        ? family.iconUrl
-                        : (override?.iconUrl ?? ''),
-                imageUrl: override?.imageUrl ?? '',
-                embeddedIconBase64: embeddedIcon,
-              );
-            })
-            .toList(growable: false);
+        .where((family) => !(overrides[family.id]?.hidden ?? false))
+        .take(12)
+        .map((family) {
+          final base = _visual(family);
+          final override = overrides[family.id];
+          final embeddedIcon = embeddedOfficialIconForFamily(
+            code: family.code,
+            name: family.name,
+          );
+          final storageIcon = officialIconForExamFamily(
+            code: family.code,
+            name: family.name,
+            urls: officialIconUrls,
+          );
+          return _ExamCategoryPresentation(
+            label: override?.title.trim().isNotEmpty == true
+                ? override!.title
+                : _homeFamilyLabel(context, family),
+            routeFamily: family.code.trim().isNotEmpty
+                ? family.code
+                : family.name,
+            subtitle: override?.subtitle ?? '',
+            badge: override?.badge ?? '',
+            icon: override?.iconName.trim().isNotEmpty == true
+                ? _homeIconFromName(override!.iconName, fallback: base.$2)
+                : base.$2,
+            background: base.$3,
+            foreground: base.$4,
+            iconUrl: storageIcon.isNotEmpty
+                ? storageIcon
+                : family.iconUrl.trim().isNotEmpty
+                ? family.iconUrl
+                : (override?.iconUrl ?? ''),
+            imageUrl: override?.imageUrl ?? '',
+            embeddedIconBase64: embeddedIcon,
+          );
+        })
+        .toList(growable: false);
 
     if (layout.trim().toLowerCase() == 'horizontal') {
       return SizedBox(
@@ -2063,11 +2083,12 @@ class _ExamCategoriesGrid extends StatelessWidget {
       builder: (context, constraints) {
         const gap = 8.0;
         final requestedColumns = columns <= 0 ? 4 : columns.clamp(2, 4).toInt();
-        final effectiveColumns =
-            constraints.maxWidth < 260 ? 2 : requestedColumns;
+        final effectiveColumns = constraints.maxWidth < 260
+            ? 2
+            : requestedColumns;
         final width =
             (constraints.maxWidth - gap * (effectiveColumns - 1)) /
-                effectiveColumns;
+            effectiveColumns;
         return Wrap(
           spacing: gap,
           runSpacing: gap,
@@ -2137,36 +2158,33 @@ class _ExamCategoryTile extends StatelessWidget {
                 Icon(item.icon, color: item.foreground, size: 36),
           )
         : item.imageUrl.trim().isNotEmpty
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  item.imageUrl,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                      Icon(item.icon, color: item.foreground, size: 30),
-                ),
-              )
-            : item.iconUrl.trim().isNotEmpty
-                ? Image.network(
-                    item.iconUrl,
-                    width: 42,
-                    height: 42,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        Icon(item.icon, color: item.foreground, size: 36),
-                  )
-                : Icon(item.icon, color: item.foreground, size: 36);
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              item.imageUrl,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) =>
+                  Icon(item.icon, color: item.foreground, size: 30),
+            ),
+          )
+        : item.iconUrl.trim().isNotEmpty
+        ? Image.network(
+            item.iconUrl,
+            width: 42,
+            height: 42,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                Icon(item.icon, color: item.foreground, size: 36),
+          )
+        : Icon(item.icon, color: item.foreground, size: 36);
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: radius,
-        border: Border.all(
-          color: const Color(0xFFE8EBEE),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFFE8EBEE), width: 1),
         boxShadow: const [
           BoxShadow(
             color: Color(0x090C131F),
@@ -2189,8 +2207,10 @@ class _ExamCategoryTile extends StatelessWidget {
                 if (item.badge.trim().isNotEmpty)
                   Container(
                     margin: const EdgeInsets.only(bottom: 6),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: .74),
                       borderRadius: BorderRadius.circular(999),
@@ -2209,10 +2229,7 @@ class _ExamCategoryTile extends StatelessWidget {
                 SizedBox(
                   width: 40,
                   height: 40,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: visual,
-                  ),
+                  child: FittedBox(fit: BoxFit.contain, child: visual),
                 ),
                 const SizedBox(height: 4),
                 FittedBox(
@@ -2300,8 +2317,7 @@ class _FeaturedSeriesCard extends StatelessWidget {
     final marks = exam.totalMarks == exam.totalMarks.roundToDouble()
         ? '${exam.totalMarks.round()}'
         : exam.totalMarks.toStringAsFixed(1);
-    final foreground =
-        alternate ? const Color(0xFF152746) : Colors.white;
+    final foreground = alternate ? const Color(0xFF152746) : Colors.white;
 
     return Material(
       color: Colors.transparent,
@@ -2383,10 +2399,7 @@ class _FeaturedSeriesCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: AppTypography.premiumHeading(
                           theme.textTheme.titleLarge,
-                        ).copyWith(
-                          color: foreground,
-                          height: 1.06,
-                        ),
+                        ).copyWith(color: foreground, height: 1.06),
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -2753,10 +2766,7 @@ class _TodayGoalCard extends StatelessWidget {
                     children: [
                       intro,
                       const SizedBox(height: 14),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: metrics,
-                      ),
+                      Align(alignment: Alignment.centerRight, child: metrics),
                     ],
                   );
                 }
@@ -2882,7 +2892,9 @@ _ActionState _resolveActionState({
   if (availableAsync.isLoading && availableTests.isEmpty) {
     return const _ActionState(loading: true);
   }
-  if (activeAsync.hasError && resultsAsync.hasError && availableAsync.hasError) {
+  if (activeAsync.hasError &&
+      resultsAsync.hasError &&
+      availableAsync.hasError) {
     return const _ActionState(error: true);
   }
   return _ActionState(action: revisionAware);
@@ -2926,17 +2938,21 @@ class _HomeHeader extends StatelessWidget {
         ),
         const SizedBox(width: 9),
         Flexible(
-          child: Text(
-            'Examtree',
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-            style: AppTypography.premiumHeading(
-              theme.textTheme.headlineSmall,
-            ).copyWith(
-              color: const Color(0xFF0C131F),
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.45,
+          // Shrinks the wordmark on narrow phones instead of cutting it off
+          // now that the header also holds the language switch.
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Examtree',
+              maxLines: 1,
+              softWrap: false,
+              style: AppTypography.premiumHeading(theme.textTheme.headlineSmall)
+                  .copyWith(
+                    color: const Color(0xFF0C131F),
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.45,
+                  ),
             ),
           ),
         ),
@@ -2946,6 +2962,7 @@ class _HomeHeader extends StatelessWidget {
     final actions = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const AppLanguageButton(),
         _HeaderButton(
           icon: Icons.search_rounded,
           tooltip: context.l10n.homeSearchTests,
@@ -3092,10 +3109,7 @@ class _ExamtreeMarkPainter extends CustomPainter {
 }
 
 class _NotificationButton extends StatelessWidget {
-  const _NotificationButton({
-    required this.onTap,
-    required this.unreadCount,
-  });
+  const _NotificationButton({required this.onTap, required this.unreadCount});
 
   final VoidCallback onTap;
   final int unreadCount;
@@ -3134,11 +3148,11 @@ class _NotificationButton extends StatelessWidget {
                 child: Text(
                   badgeLabel,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w900,
-                        height: 1,
-                      ),
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    height: 1,
+                  ),
                 ),
               ),
             ),
@@ -3347,9 +3361,9 @@ class _HeroMeta extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -3493,9 +3507,7 @@ class _SectionTitle extends StatelessWidget {
       title,
       style: AppTypography.premiumHeading(
         Theme.of(context).textTheme.titleLarge,
-      ).copyWith(
-        color: const Color(0xFF10264A),
-      ),
+      ).copyWith(color: const Color(0xFF10264A)),
     );
     final titleWidget = Row(
       mainAxisSize: MainAxisSize.min,
@@ -3541,10 +3553,7 @@ class _SectionTitle extends StatelessWidget {
         children: [
           titleWidget,
           const SizedBox(height: 2),
-          Align(
-            alignment: Alignment.centerRight,
-            child: actionWidget,
-          ),
+          Align(alignment: Alignment.centerRight, child: actionWidget),
         ],
       );
     }
@@ -3702,8 +3711,8 @@ class _ProgressCard extends StatelessWidget {
                       accuracy >= 75
                           ? context.l10n.homeStrongMomentum
                           : accuracy >= 55
-                              ? context.l10n.homeKeepConsistency
-                              : context.l10n.homeFocusAccuracy,
+                          ? context.l10n.homeKeepConsistency
+                          : context.l10n.homeFocusAccuracy,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
@@ -3766,7 +3775,9 @@ class _Metric extends StatelessWidget {
         Text(
           value,
           maxLines: 1,
-          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+          ),
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
@@ -3898,7 +3909,9 @@ class _ExamCard extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               _TinyMeta(
                 icon: Icons.schedule_rounded,
-                text: context.l10n.minutesShort((exam.durationInSeconds / 60).ceil()),
+                text: context.l10n.minutesShort(
+                  (exam.durationInSeconds / 60).ceil(),
+                ),
               ),
             ],
           ),
@@ -3925,9 +3938,9 @@ class _TinyMeta extends StatelessWidget {
         Text(
           text,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w600,
-              ),
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -4070,12 +4083,12 @@ class _HeroLoading extends StatelessWidget {
 }
 
 List<BoxShadow> _softShadow() => [
-      BoxShadow(
-        color: AppColors.shadow.withValues(alpha: 0.055),
-        blurRadius: 22,
-        offset: const Offset(0, 7),
-      ),
-    ];
+  BoxShadow(
+    color: AppColors.shadow.withValues(alpha: 0.055),
+    blurRadius: 22,
+    offset: const Offset(0, 7),
+  ),
+];
 
 List<String> _actionMetadata(BuildContext context, HomePrimaryAction action) {
   final l10n = context.l10n;
@@ -4100,12 +4113,12 @@ List<String> _actionMetadata(BuildContext context, HomePrimaryAction action) {
 }
 
 IconData _actionIcon(HomePrimaryActionKind kind) => switch (kind) {
-      HomePrimaryActionKind.resumeTest => Icons.play_arrow_rounded,
-      HomePrimaryActionKind.reviewResult => Icons.rate_review_rounded,
-      HomePrimaryActionKind.reviseDue => Icons.replay_circle_filled_rounded,
-      HomePrimaryActionKind.startTest => Icons.rocket_launch_rounded,
-      HomePrimaryActionKind.browseTests => Icons.explore_rounded,
-    };
+  HomePrimaryActionKind.resumeTest => Icons.play_arrow_rounded,
+  HomePrimaryActionKind.reviewResult => Icons.rate_review_rounded,
+  HomePrimaryActionKind.reviseDue => Icons.replay_circle_filled_rounded,
+  HomePrimaryActionKind.startTest => Icons.rocket_launch_rounded,
+  HomePrimaryActionKind.browseTests => Icons.explore_rounded,
+};
 
 void _openAction(BuildContext context, HomePrimaryAction action) {
   switch (action.kind) {
@@ -4141,4 +4154,3 @@ String _greeting(BuildContext context, DateTime now) {
   if (now.hour < 17) return l10n.homeGoodAfternoon;
   return l10n.homeGoodEvening;
 }
-
