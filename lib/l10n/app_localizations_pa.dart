@@ -2591,4 +2591,217 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get accountReauthBody =>
       'ਸੁਰੱਖਿਆ ਲਈ ਖਾਤਾ ਹਟਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਹਾਲ ਹੀ ਵਿੱਚ ਸਾਈਨ ਇਨ ਲਾਜ਼ਮੀ ਹੈ। ਦੁਬਾਰਾ ਸਾਈਨ ਇਨ ਕਰਨ ਤੋਂ ਬਾਅਦ ਤੁਸੀਂ ਇੱਥੇ ਹੀ ਵਾਪਸ ਆਓਗੇ।';
+
+  @override
+  String get mySeriesMyTestSeries => 'ਮੇਰੀ ਟੈਸਟ ਸੀਰੀਜ਼';
+
+  @override
+  String get mySeriesHelp => 'ਸਹਾਇਤਾ';
+
+  @override
+  String get mySeriesYouHavenTPurchasedAny =>
+      'ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਕੋਈ ਟੈਸਟ ਸੀਰੀਜ਼ ਨਹੀਂ ਖਰੀਦੀ';
+
+  @override
+  String get mySeriesGetFullLengthMockTests =>
+      'ਤਿਆਰੀ ਮਜ਼ਬੂਤ ਕਰਨ ਲਈ ਫੁੱਲ ਮੌਕ, ਸੈਕਸ਼ਨਲ ਟੈਸਟ, ਪਿਛਲੇ ਸਾਲ ਦੇ ਪੇਪਰ ਅਤੇ ਵਿਸਤ੍ਰਿਤ ਵਿਸ਼ਲੇਸ਼ਣ ਪਾਓ।';
+
+  @override
+  String get mySeriesYourAccessHasExpired => 'ਤੁਹਾਡਾ ਐਕਸੈਸ ਖ਼ਤਮ ਹੋ ਗਿਆ ਹੈ';
+
+  @override
+  String get mySeriesRenewToContinueTestsYour =>
+      'ਟੈਸਟ ਜਾਰੀ ਰੱਖਣ ਲਈ ਰੀਨਿਊ ਕਰੋ। ਤੁਹਾਡੀ ਪ੍ਰਗਤੀ ਅਤੇ ਵਿਸ਼ਲੇਸ਼ਣ ਸੁਰੱਖਿਅਤ ਹਨ।';
+
+  @override
+  String get mySeriesTestsAttempted => 'ਦਿੱਤੇ ਟੈਸਟ';
+
+  @override
+  String get mySeriesTopicTests => 'ਟੌਪਿਕ ਟੈਸਟ';
+
+  @override
+  String get mySeriesMySeries => 'ਮੇਰੀ ਸੀਰੀਜ਼';
+
+  @override
+  String get mySeriesDownloads => 'ਡਾਊਨਲੋਡ';
+
+  @override
+  String get mySeriesHistory => 'ਇਤਿਹਾਸ';
+
+  @override
+  String get mySeriesUnableToLoadYourTest =>
+      'ਤੁਹਾਡੀ ਟੈਸਟ ਸੀਰੀਜ਼ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ।';
+
+  @override
+  String get orderOrderDetails => 'ਆਰਡਰ ਵੇਰਵੇ';
+
+  @override
+  String get orderPaymentSuccessful => 'ਭੁਗਤਾਨ ਸਫਲ';
+
+  @override
+  String get orderYourTestSeriesIsNow => 'ਤੁਹਾਡੀ ਟੈਸਟ ਸੀਰੀਜ਼ ਹੁਣ ਚਾਲੂ ਹੈ!';
+
+  @override
+  String get orderTransactionDetails => 'ਲੈਣ-ਦੇਣ ਵੇਰਵੇ';
+
+  @override
+  String get orderOrderId => 'ਆਰਡਰ ID';
+
+  @override
+  String get orderTransactionId => 'ਲੈਣ-ਦੇਣ ID';
+
+  @override
+  String get orderStatus => 'ਸਥਿਤੀ';
+
+  @override
+  String get orderIncludedInYourAccess => 'ਤੁਹਾਡੇ ਐਕਸੈਸ ਵਿੱਚ ਸ਼ਾਮਲ';
+
+  @override
+  String get renewContinueYourPractice => 'ਆਪਣਾ ਅਭਿਆਸ ਜਾਰੀ ਰੱਖੋ';
+
+  @override
+  String get renewGetLatestUpdates => 'ਨਵੀਨਤਮ ਅੱਪਡੇਟ ਪਾਓ';
+
+  @override
+  String get renewKeepYourProgress => 'ਆਪਣੀ ਪ੍ਰਗਤੀ ਬਣਾਈ ਰੱਖੋ';
+
+  @override
+  String get renewDetailedSolutions => 'ਵਿਸਤ੍ਰਿਤ ਹੱਲ';
+
+  @override
+  String get storeBatchesAreNotPublishedYet => 'ਬੈਚ ਅਜੇ ਪ੍ਰਕਾਸ਼ਿਤ ਨਹੀਂ ਹਨ';
+
+  @override
+  String get storeExamtreeWillShowBatchesHere =>
+      'ਅਸਲ ਬੈਚ, ਸਮਾਂ-ਸਾਰਣੀ ਅਤੇ ਐਕਸੈਸ ਨਿਯਮ ਉਪਲਬਧ ਹੋਣ \'ਤੇ ਹੀ ExamTree ਇੱਥੇ ਬੈਚ ਦਿਖਾਵੇਗਾ।';
+
+  @override
+  String get storePreparationProducts => 'ਤਿਆਰੀ ਉਤਪਾਦ';
+
+  @override
+  String get storePublishedTestSeriesAndFuture =>
+      'ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ ਸੀਰੀਜ਼ ਅਤੇ ਅੱਗੇ ਦੇ ਬੈਚ, ਵੱਖ-ਵੱਖ।';
+
+  @override
+  String get storeTestSeries => 'ਟੈਸਟ ਸੀਰੀਜ਼';
+
+  @override
+  String get storeBatches => 'ਬੈਚ';
+
+  @override
+  String get storeStoreCatalogueUnavailable => 'ਸਟੋਰ ਸੂਚੀ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get storeExamtreeCouldNotLoadPublished =>
+      'ExamTree ਹੁਣੇ ਪ੍ਰਕਾਸ਼ਿਤ ਉਤਪਾਦ ਲੋਡ ਨਹੀਂ ਕਰ ਸਕਿਆ।';
+
+  @override
+  String get storeNoTestProductsOnSale => 'ਵਿਕਰੀ ਲਈ ਕੋਈ ਟੈਸਟ ਉਤਪਾਦ ਨਹੀਂ';
+
+  @override
+  String get storeThereAreNoActiveProducts =>
+      'ਪ੍ਰਕਾਸ਼ਿਤ ਸੂਚੀ ਵਿੱਚ ਅਜੇ ਕੋਈ ਚਾਲੂ ਉਤਪਾਦ ਨਹੀਂ ਹੈ। ਮੁਫ਼ਤ ਅਤੇ ਪਹਿਲਾਂ ਤੋਂ ਉਪਲਬਧ ਟੈਸਟ ਟੈਸਟ ਸੈਕਸ਼ਨ ਵਿੱਚ ਮਿਲਣਗੇ।';
+
+  @override
+  String get storeViewTests => 'ਟੈਸਟ ਦੇਖੋ';
+
+  @override
+  String get storePricesValidityAndAvailabilityCome =>
+      'ਕੀਮਤ, ਮਿਆਦ ਅਤੇ ਉਪਲਬਧਤਾ ਪ੍ਰਕਾਸ਼ਿਤ ExamTree ਸੂਚੀ ਤੋਂ ਆਉਂਦੀ ਹੈ। ਮੋਬਾਈਲ ਚੈੱਕਆਊਟ ਅਜੇ ਜੁੜਿਆ ਨਹੀਂ, ਇਸ ਲਈ ਇਹ ਸਕ੍ਰੀਨ ਖਰੀਦ ਨਹੀਂ ਕਰਦੀ।';
+
+  @override
+  String get learnSubReadyLessons => 'ਤਿਆਰ ਪਾਠ';
+
+  @override
+  String get learnSubChapters => 'ਅਧਿਆਇ';
+
+  @override
+  String get learnSubReading => 'ਪੜ੍ਹਾਈ';
+
+  @override
+  String get learnSubModuleUnavailable => 'ਮੋਡੀਊਲ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get learnSubChooseATopicArea => 'ਵਿਸ਼ਾ ਖੇਤਰ ਚੁਣੋ';
+
+  @override
+  String get learnSubOpenAnAreaToContinue =>
+      'ਸਿੱਖਣਾ ਅਤੇ ਅਭਿਆਸ ਜਾਰੀ ਰੱਖਣ ਲਈ ਕੋਈ ਖੇਤਰ ਖੋਲ੍ਹੋ।';
+
+  @override
+  String get learnSubUntimed => 'ਬਿਨਾਂ ਸਮਾਂ ਹੱਦ';
+
+  @override
+  String get learnSubComingSoon => 'ਜਲਦ ਆ ਰਿਹਾ ਹੈ';
+
+  @override
+  String get learnSubSubModuleUnavailable => 'ਉਪ-ਮੋਡੀਊਲ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get learnSubVocabulary => 'ਸ਼ਬਦਾਵਲੀ';
+
+  @override
+  String get learnSubBuildStrongerWordPowerWith =>
+      'ਕੇਂਦਰਿਤ ਅਭਿਆਸ ਨਾਲ ਸ਼ਬਦ-ਸ਼ਕਤੀ ਮਜ਼ਬੂਤ ਕਰੋ।';
+
+  @override
+  String get learnSubBuildVocabularyWithShortUntimed =>
+      'ਛੋਟੇ, ਬਿਨਾਂ ਸਮਾਂ ਹੱਦ ਵਾਲੇ ਸੈਸ਼ਨਾਂ ਨਾਲ ਸ਼ਬਦਾਵਲੀ ਵਧਾਓ। ਹਰ ਜਵਾਬ ਤੁਰੰਤ ਜਾਂਚਿਆ ਜਾਂਦਾ ਹੈ ਅਤੇ ਵਿਆਖਿਆ ਮਿਲਦੀ ਹੈ।';
+
+  @override
+  String get learnSubPracticeMappingForThisSub =>
+      'ਇਸ ਉਪ-ਮੋਡੀਊਲ ਦਾ ਅਭਿਆਸ Question Studio ਨਾਲ ਜੋੜਿਆ ਜਾ ਰਿਹਾ ਹੈ।';
+
+  @override
+  String get learnSubPolity => 'ਰਾਜ ਪ੍ਰਬੰਧ';
+
+  @override
+  String get learnSubIndianConstitutionInstitutionsAndGovernance =>
+      'ਭਾਰਤੀ ਸੰਵਿਧਾਨ, ਸੰਸਥਾਵਾਂ ਅਤੇ ਸ਼ਾਸਨ।';
+
+  @override
+  String get learnSubChooseAChapterToRead =>
+      'ਨੋਟਸ ਪੜ੍ਹਨ ਜਾਂ ਛੋਟਾ ਅਭਿਆਸ ਸੈਸ਼ਨ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਅਧਿਆਇ ਚੁਣੋ। ਹਰ ਸਵਾਲ ਤੋਂ ਬਾਅਦ ਜਵਾਬ ਅਤੇ ਵਿਆਖਿਆ ਤੁਰੰਤ ਦਿਖਦੀ ਹੈ।';
+
+  @override
+  String get learnSub1520QuestionsUntimed => '15–20 ਸਵਾਲ · ਬਿਨਾਂ ਸਮਾਂ ਹੱਦ';
+
+  @override
+  String get learnSubReviewLesson => 'ਪਾਠ ਦੇਖੋ';
+
+  @override
+  String get learnSubPracticeTopicUnavailable => 'ਅਭਿਆਸ ਵਿਸ਼ਾ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get learnSubPracticeQuestionsAreNotAvailable =>
+      'ਇਸ ਵਿਸ਼ੇ ਦੇ ਅਭਿਆਸ ਸਵਾਲ ਅਜੇ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।';
+
+  @override
+  String get learnSubUnableToLoadPracticeQuestions =>
+      'ਹੁਣੇ ਅਭਿਆਸ ਸਵਾਲ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ। ਤੁਹਾਡੀ ਪ੍ਰਗਤੀ ਸੁਰੱਖਿਅਤ ਹੈ।';
+
+  @override
+  String get learnSubSubmitPractice => 'ਅਭਿਆਸ ਸਬਮਿਟ ਕਰਨਾ ਹੈ?';
+
+  @override
+  String get learnSubKeepPracticing => 'ਅਭਿਆਸ ਜਾਰੀ ਰੱਖੋ';
+
+  @override
+  String get learnSubSubmit => 'ਸਬਮਿਟ ਕਰੋ';
+
+  @override
+  String get learnSubBack => 'ਵਾਪਸ';
+
+  @override
+  String get learnSubPracticeResult => 'ਅਭਿਆਸ ਨਤੀਜਾ';
+
+  @override
+  String get learnSubAllTopics => 'ਸਾਰੇ ਵਿਸ਼ੇ';
+
+  @override
+  String get learnSubSuggestedNextTopic => 'ਸੁਝਾਇਆ ਅਗਲਾ ਵਿਸ਼ਾ';
+
+  @override
+  String get learnSub20QuestionsUntimedInstantExplanations =>
+      '20 ਸਵਾਲ · ਬਿਨਾਂ ਸਮਾਂ ਹੱਦ · ਤੁਰੰਤ ਵਿਆਖਿਆ';
 }

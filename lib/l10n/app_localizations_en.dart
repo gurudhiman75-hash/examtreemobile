@@ -2600,4 +2600,216 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountReauthBody =>
       'For your security, account deletion requires a recent sign-in. You will return here after signing in again.';
+
+  @override
+  String get mySeriesMyTestSeries => 'My Test Series';
+
+  @override
+  String get mySeriesHelp => 'Help';
+
+  @override
+  String get mySeriesYouHavenTPurchasedAny =>
+      'You haven’t purchased any Test Series yet';
+
+  @override
+  String get mySeriesGetFullLengthMockTests =>
+      'Get full-length mock tests, sectional tests, previous year papers and detailed analysis to boost your preparation.';
+
+  @override
+  String get mySeriesYourAccessHasExpired => 'Your access has expired';
+
+  @override
+  String get mySeriesRenewToContinueTestsYour =>
+      'Renew to continue tests. Your progress and analytics are preserved.';
+
+  @override
+  String get mySeriesTestsAttempted => 'Tests Attempted';
+
+  @override
+  String get mySeriesTopicTests => 'Topic Tests';
+
+  @override
+  String get mySeriesMySeries => 'My Series';
+
+  @override
+  String get mySeriesDownloads => 'Downloads';
+
+  @override
+  String get mySeriesHistory => 'History';
+
+  @override
+  String get mySeriesUnableToLoadYourTest => 'Unable to load your test series.';
+
+  @override
+  String get orderOrderDetails => 'Order Details';
+
+  @override
+  String get orderPaymentSuccessful => 'Payment Successful';
+
+  @override
+  String get orderYourTestSeriesIsNow => 'Your Test Series is now active!';
+
+  @override
+  String get orderTransactionDetails => 'Transaction Details';
+
+  @override
+  String get orderOrderId => 'Order ID';
+
+  @override
+  String get orderTransactionId => 'Transaction ID';
+
+  @override
+  String get orderStatus => 'Status';
+
+  @override
+  String get orderIncludedInYourAccess => 'Included in your access';
+
+  @override
+  String get renewContinueYourPractice => 'Continue your practice';
+
+  @override
+  String get renewGetLatestUpdates => 'Get latest updates';
+
+  @override
+  String get renewKeepYourProgress => 'Keep your progress';
+
+  @override
+  String get renewDetailedSolutions => 'Detailed solutions';
+
+  @override
+  String get storeBatchesAreNotPublishedYet => 'Batches are not published yet';
+
+  @override
+  String get storeExamtreeWillShowBatchesHere =>
+      'ExamTree will show batches here only after real batch products, schedules and access rules are available.';
+
+  @override
+  String get storePreparationProducts => 'Preparation products';
+
+  @override
+  String get storePublishedTestSeriesAndFuture =>
+      'Published test series and future batches, clearly separated.';
+
+  @override
+  String get storeTestSeries => 'Test series';
+
+  @override
+  String get storeBatches => 'Batches';
+
+  @override
+  String get storeStoreCatalogueUnavailable => 'Store catalogue unavailable';
+
+  @override
+  String get storeExamtreeCouldNotLoadPublished =>
+      'ExamTree could not load published products right now.';
+
+  @override
+  String get storeNoTestProductsOnSale => 'No test products on sale';
+
+  @override
+  String get storeThereAreNoActiveProducts =>
+      'There are no active products in the published catalogue right now. Free and already-accessible tests remain available under Tests.';
+
+  @override
+  String get storeViewTests => 'View tests';
+
+  @override
+  String get storePricesValidityAndAvailabilityCome =>
+      'Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.';
+
+  @override
+  String get learnSubReadyLessons => 'Ready lessons';
+
+  @override
+  String get learnSubChapters => 'Chapters';
+
+  @override
+  String get learnSubReading => 'Reading';
+
+  @override
+  String get learnSubModuleUnavailable => 'Module unavailable';
+
+  @override
+  String get learnSubChooseATopicArea => 'Choose a topic area';
+
+  @override
+  String get learnSubOpenAnAreaToContinue =>
+      'Open an area to continue learning and practice.';
+
+  @override
+  String get learnSubUntimed => 'Untimed';
+
+  @override
+  String get learnSubComingSoon => 'Coming soon';
+
+  @override
+  String get learnSubSubModuleUnavailable => 'Sub-module unavailable';
+
+  @override
+  String get learnSubVocabulary => 'Vocabulary';
+
+  @override
+  String get learnSubBuildStrongerWordPowerWith =>
+      'Build stronger word power with focused practice.';
+
+  @override
+  String get learnSubBuildVocabularyWithShortUntimed =>
+      'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.';
+
+  @override
+  String get learnSubPracticeMappingForThisSub =>
+      'Practice mapping for this sub-module is being connected to Question Studio.';
+
+  @override
+  String get learnSubPolity => 'Polity';
+
+  @override
+  String get learnSubIndianConstitutionInstitutionsAndGovernance =>
+      'Indian Constitution, institutions and governance.';
+
+  @override
+  String get learnSubChooseAChapterToRead =>
+      'Choose a chapter to read the notes or start a short untimed practice session. Answers and explanations appear immediately after each question.';
+
+  @override
+  String get learnSub1520QuestionsUntimed => '15–20 questions · Untimed';
+
+  @override
+  String get learnSubReviewLesson => 'Review lesson';
+
+  @override
+  String get learnSubPracticeTopicUnavailable => 'Practice topic unavailable';
+
+  @override
+  String get learnSubPracticeQuestionsAreNotAvailable =>
+      'Practice questions are not available for this topic yet.';
+
+  @override
+  String get learnSubUnableToLoadPracticeQuestions =>
+      'Unable to load practice questions right now. Your Learn progress is safe.';
+
+  @override
+  String get learnSubSubmitPractice => 'Submit practice?';
+
+  @override
+  String get learnSubKeepPracticing => 'Keep practicing';
+
+  @override
+  String get learnSubSubmit => 'Submit';
+
+  @override
+  String get learnSubBack => 'Back';
+
+  @override
+  String get learnSubPracticeResult => 'Practice result';
+
+  @override
+  String get learnSubAllTopics => 'All topics';
+
+  @override
+  String get learnSubSuggestedNextTopic => 'Suggested next topic';
+
+  @override
+  String get learnSub20QuestionsUntimedInstantExplanations =>
+      '20 questions · Untimed · Instant explanations';
 }

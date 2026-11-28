@@ -12,6 +12,7 @@ import '../data/polity_learn_localizations.dart';
 import '../domain/learn_lesson.dart';
 import '../domain/learn_practice_models.dart';
 import 'providers/learn_practice_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class LearnSubmoduleScreen extends ConsumerWidget {
   const LearnSubmoduleScreen({super.key, required this.submoduleId});
@@ -22,8 +23,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final submodule = learnSubmoduleById(submoduleId);
     if (submodule == null) {
-      return const Scaffold(
-        body: Center(child: Text('Sub-module unavailable')),
+      return Scaffold(
+        body: Center(child: Text(context.l10n.learnSubSubModuleUnavailable)),
       );
     }
 
@@ -54,8 +55,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           ),
           children: [
             _SubmoduleOverview(
-              title: 'Vocabulary',
-              subtitle: 'Build stronger word power with focused practice.',
+              title: context.l10n.learnSubVocabulary,
+              subtitle: context.l10n.learnSubBuildStrongerWordPowerWith,
               topicIds: topics.map((topic) => topic.id).toList(growable: false),
               progressItems: progressItems,
               icon: Icons.translate_rounded,
@@ -64,7 +65,7 @@ class LearnSubmoduleScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.',
+              context.l10n.learnSubBuildVocabularyWithShortUntimed,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 height: 1.45,
@@ -91,11 +92,11 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           elevation: 0,
           scrolledUnderElevation: 0,
         ),
-        body: const Center(
+        body: Center(
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.lg),
             child: Text(
-              'Practice mapping for this sub-module is being connected to Question Studio.',
+              context.l10n.learnSubPracticeMappingForThisSub,
               textAlign: TextAlign.center,
             ),
           ),
@@ -125,8 +126,8 @@ class LearnSubmoduleScreen extends ConsumerWidget {
         ),
         children: [
           _SubmoduleOverview(
-            title: 'Polity',
-            subtitle: 'Indian Constitution, institutions and governance.',
+            title: context.l10n.learnSubPolity,
+            subtitle: context.l10n.learnSubIndianConstitutionInstitutionsAndGovernance,
             topicIds:
                 subject.lessons.map((lesson) => lesson.id).toList(growable: false),
             progressItems: progressItems,
@@ -136,7 +137,7 @@ class LearnSubmoduleScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Choose a chapter to read the notes or start a short untimed practice session. Answers and explanations appear immediately after each question.',
+            context.l10n.learnSubChooseAChapterToRead,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.45,
@@ -304,7 +305,7 @@ class _TopicCard extends ConsumerWidget {
     };
 
     final detail = switch (status) {
-      LearnPracticeStatus.notStarted => '15–20 questions · Untimed',
+      LearnPracticeStatus.notStarted => context.l10n.learnSub1520QuestionsUntimed,
       LearnPracticeStatus.inProgress =>
         '${progress!.currentQuestion} of ${progress.totalQuestions} answered',
       LearnPracticeStatus.completed =>
@@ -404,7 +405,7 @@ class _TopicCard extends ConsumerWidget {
                     onPressed: () => context.push(
                       '/learn-lesson?id=${Uri.encodeQueryComponent(lesson.id)}',
                     ),
-                    label: const Text('Review lesson'),
+                    label: Text(context.l10n.learnSubReviewLesson),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),

@@ -8,6 +8,7 @@ import '../../preferences/presentation/providers/question_language_providers.dar
 import '../data/learn_practice_catalog.dart';
 import '../data/polity_learn_localizations.dart';
 import 'providers/learn_practice_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class LearnPracticeResultScreen extends ConsumerWidget {
   const LearnPracticeResultScreen({
@@ -63,7 +64,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Practice result'),
+        title: Text(context.l10n.learnSubPracticeResult),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -165,7 +166,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                     }
                   },
                   icon: const Icon(Icons.replay_rounded),
-                  label: const Text('Retake'),
+                  label: Text(context.l10n.resultsRetake),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -181,7 +182,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                     textStyle: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                   icon: const Icon(Icons.grid_view_rounded),
-                  label: const Text('All topics'),
+                  label: Text(context.l10n.learnSubAllTopics),
                 ),
               ),
             ],
@@ -189,7 +190,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
           if (nextTopicId != null && nextTopicTitle != null) ...[
             const SizedBox(height: AppSpacing.xl),
             Text(
-              'Suggested next topic',
+              context.l10n.learnSubSuggestedNextTopic,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w900,
               ),
@@ -247,7 +248,7 @@ class LearnPracticeResultScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '20 questions · Untimed · Instant explanations',
+                                context.l10n.learnSub20QuestionsUntimedInstantExplanations,
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: const Color(0xFF718096),
                                 ),

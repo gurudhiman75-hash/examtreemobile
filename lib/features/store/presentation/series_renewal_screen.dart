@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../home/presentation/mobile_test_series_detail_screen.dart';
 import '../domain/series_purchase.dart';
 import 'series_purchase_shared.dart';
+import '../../../l10n/l10n.dart';
 
 class SeriesRenewalScreen extends ConsumerStatefulWidget {
   const SeriesRenewalScreen({super.key, required this.seriesId});
@@ -33,7 +34,7 @@ class _SeriesRenewalScreenState extends ConsumerState<SeriesRenewalScreen> {
           child: OutlinedButton.icon(
             onPressed: () => ref.invalidate(mobileTestSeriesDetailProvider(widget.seriesId)),
             icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Retry'),
+            label: Text(context.l10n.retry),
           ),
         ),
         data: (body) {
@@ -211,11 +212,11 @@ class _WhyRenew extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE4ECF6))),
-    child: const Column(children: [
-      _Reason(icon: Icons.bar_chart_rounded, title: 'Continue your practice', subtitle: 'Pick up from where you left off.'),
-      _Reason(icon: Icons.update_rounded, title: 'Get latest updates', subtitle: 'Access new tests and latest patterns.'),
-      _Reason(icon: Icons.trending_up_rounded, title: 'Keep your progress', subtitle: 'Attempts and analytics remain saved.'),
-      _Reason(icon: Icons.lightbulb_outline_rounded, title: 'Detailed solutions', subtitle: 'Keep learning with step-by-step explanations.'),
+    child: Column(children: [
+      _Reason(icon: Icons.bar_chart_rounded, title: context.l10n.renewContinueYourPractice, subtitle: 'Pick up from where you left off.'),
+      _Reason(icon: Icons.update_rounded, title: context.l10n.renewGetLatestUpdates, subtitle: 'Access new tests and latest patterns.'),
+      _Reason(icon: Icons.trending_up_rounded, title: context.l10n.renewKeepYourProgress, subtitle: 'Attempts and analytics remain saved.'),
+      _Reason(icon: Icons.lightbulb_outline_rounded, title: context.l10n.renewDetailedSolutions, subtitle: 'Keep learning with step-by-step explanations.'),
     ]),
   );
 }

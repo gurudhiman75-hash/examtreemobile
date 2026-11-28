@@ -4455,6 +4455,396 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For your security, account deletion requires a recent sign-in. You will return here after signing in again.'**
   String get accountReauthBody;
+
+  /// No description provided for @mySeriesMyTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'My Test Series'**
+  String get mySeriesMyTestSeries;
+
+  /// No description provided for @mySeriesHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get mySeriesHelp;
+
+  /// No description provided for @mySeriesYouHavenTPurchasedAny.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven’t purchased any Test Series yet'**
+  String get mySeriesYouHavenTPurchasedAny;
+
+  /// No description provided for @mySeriesGetFullLengthMockTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Get full-length mock tests, sectional tests, previous year papers and detailed analysis to boost your preparation.'**
+  String get mySeriesGetFullLengthMockTests;
+
+  /// No description provided for @mySeriesYourAccessHasExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access has expired'**
+  String get mySeriesYourAccessHasExpired;
+
+  /// No description provided for @mySeriesRenewToContinueTestsYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Renew to continue tests. Your progress and analytics are preserved.'**
+  String get mySeriesRenewToContinueTestsYour;
+
+  /// No description provided for @mySeriesTestsAttempted.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests Attempted'**
+  String get mySeriesTestsAttempted;
+
+  /// No description provided for @mySeriesTopicTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic Tests'**
+  String get mySeriesTopicTests;
+
+  /// No description provided for @mySeriesMySeries.
+  ///
+  /// In en, this message translates to:
+  /// **'My Series'**
+  String get mySeriesMySeries;
+
+  /// No description provided for @mySeriesDownloads.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads'**
+  String get mySeriesDownloads;
+
+  /// No description provided for @mySeriesHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get mySeriesHistory;
+
+  /// No description provided for @mySeriesUnableToLoadYourTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your test series.'**
+  String get mySeriesUnableToLoadYourTest;
+
+  /// No description provided for @orderOrderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get orderOrderDetails;
+
+  /// No description provided for @orderPaymentSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful'**
+  String get orderPaymentSuccessful;
+
+  /// No description provided for @orderYourTestSeriesIsNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Test Series is now active!'**
+  String get orderYourTestSeriesIsNow;
+
+  /// No description provided for @orderTransactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Details'**
+  String get orderTransactionDetails;
+
+  /// No description provided for @orderOrderId.
+  ///
+  /// In en, this message translates to:
+  /// **'Order ID'**
+  String get orderOrderId;
+
+  /// No description provided for @orderTransactionId.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction ID'**
+  String get orderTransactionId;
+
+  /// No description provided for @orderStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get orderStatus;
+
+  /// No description provided for @orderIncludedInYourAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Included in your access'**
+  String get orderIncludedInYourAccess;
+
+  /// No description provided for @renewContinueYourPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue your practice'**
+  String get renewContinueYourPractice;
+
+  /// No description provided for @renewGetLatestUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Get latest updates'**
+  String get renewGetLatestUpdates;
+
+  /// No description provided for @renewKeepYourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your progress'**
+  String get renewKeepYourProgress;
+
+  /// No description provided for @renewDetailedSolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed solutions'**
+  String get renewDetailedSolutions;
+
+  /// No description provided for @storeBatchesAreNotPublishedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Batches are not published yet'**
+  String get storeBatchesAreNotPublishedYet;
+
+  /// No description provided for @storeExamtreeWillShowBatchesHere.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree will show batches here only after real batch products, schedules and access rules are available.'**
+  String get storeExamtreeWillShowBatchesHere;
+
+  /// No description provided for @storePreparationProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation products'**
+  String get storePreparationProducts;
+
+  /// No description provided for @storePublishedTestSeriesAndFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Published test series and future batches, clearly separated.'**
+  String get storePublishedTestSeriesAndFuture;
+
+  /// No description provided for @storeTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Test series'**
+  String get storeTestSeries;
+
+  /// No description provided for @storeBatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Batches'**
+  String get storeBatches;
+
+  /// No description provided for @storeStoreCatalogueUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Store catalogue unavailable'**
+  String get storeStoreCatalogueUnavailable;
+
+  /// No description provided for @storeExamtreeCouldNotLoadPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree could not load published products right now.'**
+  String get storeExamtreeCouldNotLoadPublished;
+
+  /// No description provided for @storeNoTestProductsOnSale.
+  ///
+  /// In en, this message translates to:
+  /// **'No test products on sale'**
+  String get storeNoTestProductsOnSale;
+
+  /// No description provided for @storeThereAreNoActiveProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no active products in the published catalogue right now. Free and already-accessible tests remain available under Tests.'**
+  String get storeThereAreNoActiveProducts;
+
+  /// No description provided for @storeViewTests.
+  ///
+  /// In en, this message translates to:
+  /// **'View tests'**
+  String get storeViewTests;
+
+  /// No description provided for @storePricesValidityAndAvailabilityCome.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.'**
+  String get storePricesValidityAndAvailabilityCome;
+
+  /// No description provided for @learnSubReadyLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready lessons'**
+  String get learnSubReadyLessons;
+
+  /// No description provided for @learnSubChapters.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapters'**
+  String get learnSubChapters;
+
+  /// No description provided for @learnSubReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get learnSubReading;
+
+  /// No description provided for @learnSubModuleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Module unavailable'**
+  String get learnSubModuleUnavailable;
+
+  /// No description provided for @learnSubChooseATopicArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a topic area'**
+  String get learnSubChooseATopicArea;
+
+  /// No description provided for @learnSubOpenAnAreaToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an area to continue learning and practice.'**
+  String get learnSubOpenAnAreaToContinue;
+
+  /// No description provided for @learnSubUntimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Untimed'**
+  String get learnSubUntimed;
+
+  /// No description provided for @learnSubComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get learnSubComingSoon;
+
+  /// No description provided for @learnSubSubModuleUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-module unavailable'**
+  String get learnSubSubModuleUnavailable;
+
+  /// No description provided for @learnSubVocabulary.
+  ///
+  /// In en, this message translates to:
+  /// **'Vocabulary'**
+  String get learnSubVocabulary;
+
+  /// No description provided for @learnSubBuildStrongerWordPowerWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Build stronger word power with focused practice.'**
+  String get learnSubBuildStrongerWordPowerWith;
+
+  /// No description provided for @learnSubBuildVocabularyWithShortUntimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.'**
+  String get learnSubBuildVocabularyWithShortUntimed;
+
+  /// No description provided for @learnSubPracticeMappingForThisSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice mapping for this sub-module is being connected to Question Studio.'**
+  String get learnSubPracticeMappingForThisSub;
+
+  /// No description provided for @learnSubPolity.
+  ///
+  /// In en, this message translates to:
+  /// **'Polity'**
+  String get learnSubPolity;
+
+  /// No description provided for @learnSubIndianConstitutionInstitutionsAndGovernance.
+  ///
+  /// In en, this message translates to:
+  /// **'Indian Constitution, institutions and governance.'**
+  String get learnSubIndianConstitutionInstitutionsAndGovernance;
+
+  /// No description provided for @learnSubChooseAChapterToRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a chapter to read the notes or start a short untimed practice session. Answers and explanations appear immediately after each question.'**
+  String get learnSubChooseAChapterToRead;
+
+  /// No description provided for @learnSub1520QuestionsUntimed.
+  ///
+  /// In en, this message translates to:
+  /// **'15–20 questions · Untimed'**
+  String get learnSub1520QuestionsUntimed;
+
+  /// No description provided for @learnSubReviewLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Review lesson'**
+  String get learnSubReviewLesson;
+
+  /// No description provided for @learnSubPracticeTopicUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice topic unavailable'**
+  String get learnSubPracticeTopicUnavailable;
+
+  /// No description provided for @learnSubPracticeQuestionsAreNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice questions are not available for this topic yet.'**
+  String get learnSubPracticeQuestionsAreNotAvailable;
+
+  /// No description provided for @learnSubUnableToLoadPracticeQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load practice questions right now. Your Learn progress is safe.'**
+  String get learnSubUnableToLoadPracticeQuestions;
+
+  /// No description provided for @learnSubSubmitPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit practice?'**
+  String get learnSubSubmitPractice;
+
+  /// No description provided for @learnSubKeepPracticing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep practicing'**
+  String get learnSubKeepPracticing;
+
+  /// No description provided for @learnSubSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get learnSubSubmit;
+
+  /// No description provided for @learnSubBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get learnSubBack;
+
+  /// No description provided for @learnSubPracticeResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice result'**
+  String get learnSubPracticeResult;
+
+  /// No description provided for @learnSubAllTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'All topics'**
+  String get learnSubAllTopics;
+
+  /// No description provided for @learnSubSuggestedNextTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested next topic'**
+  String get learnSubSuggestedNextTopic;
+
+  /// No description provided for @learnSub20QuestionsUntimedInstantExplanations.
+  ///
+  /// In en, this message translates to:
+  /// **'20 questions · Untimed · Instant explanations'**
+  String get learnSub20QuestionsUntimedInstantExplanations;
 }
 
 class _AppLocalizationsDelegate

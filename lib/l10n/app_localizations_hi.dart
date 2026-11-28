@@ -2589,4 +2589,217 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get accountReauthBody =>
       'सुरक्षा के लिए खाता हटाने से पहले हाल में साइन इन ज़रूरी है। फिर से साइन इन करने के बाद आप यहीं लौटेंगे।';
+
+  @override
+  String get mySeriesMyTestSeries => 'मेरी टेस्ट सीरीज़';
+
+  @override
+  String get mySeriesHelp => 'सहायता';
+
+  @override
+  String get mySeriesYouHavenTPurchasedAny =>
+      'आपने अभी तक कोई टेस्ट सीरीज़ नहीं खरीदी';
+
+  @override
+  String get mySeriesGetFullLengthMockTests =>
+      'तैयारी मज़बूत करने के लिए फुल मॉक, सेक्शनल टेस्ट, पिछले वर्ष के पेपर और विस्तृत विश्लेषण पाएँ।';
+
+  @override
+  String get mySeriesYourAccessHasExpired => 'आपका एक्सेस समाप्त हो गया है';
+
+  @override
+  String get mySeriesRenewToContinueTestsYour =>
+      'टेस्ट जारी रखने के लिए रिन्यू करें। आपकी प्रगति और विश्लेषण सुरक्षित हैं।';
+
+  @override
+  String get mySeriesTestsAttempted => 'दिए गए टेस्ट';
+
+  @override
+  String get mySeriesTopicTests => 'टॉपिक टेस्ट';
+
+  @override
+  String get mySeriesMySeries => 'मेरी सीरीज़';
+
+  @override
+  String get mySeriesDownloads => 'डाउनलोड';
+
+  @override
+  String get mySeriesHistory => 'इतिहास';
+
+  @override
+  String get mySeriesUnableToLoadYourTest =>
+      'आपकी टेस्ट सीरीज़ लोड नहीं हो सकी।';
+
+  @override
+  String get orderOrderDetails => 'ऑर्डर विवरण';
+
+  @override
+  String get orderPaymentSuccessful => 'भुगतान सफल';
+
+  @override
+  String get orderYourTestSeriesIsNow => 'आपकी टेस्ट सीरीज़ अब सक्रिय है!';
+
+  @override
+  String get orderTransactionDetails => 'लेन-देन विवरण';
+
+  @override
+  String get orderOrderId => 'ऑर्डर ID';
+
+  @override
+  String get orderTransactionId => 'लेन-देन ID';
+
+  @override
+  String get orderStatus => 'स्थिति';
+
+  @override
+  String get orderIncludedInYourAccess => 'आपके एक्सेस में शामिल';
+
+  @override
+  String get renewContinueYourPractice => 'अपना अभ्यास जारी रखें';
+
+  @override
+  String get renewGetLatestUpdates => 'नवीनतम अपडेट पाएँ';
+
+  @override
+  String get renewKeepYourProgress => 'अपनी प्रगति बनाए रखें';
+
+  @override
+  String get renewDetailedSolutions => 'विस्तृत हल';
+
+  @override
+  String get storeBatchesAreNotPublishedYet => 'बैच अभी प्रकाशित नहीं हैं';
+
+  @override
+  String get storeExamtreeWillShowBatchesHere =>
+      'असली बैच, समय-सारणी और एक्सेस नियम उपलब्ध होने पर ही ExamTree यहाँ बैच दिखाएगा।';
+
+  @override
+  String get storePreparationProducts => 'तैयारी उत्पाद';
+
+  @override
+  String get storePublishedTestSeriesAndFuture =>
+      'प्रकाशित टेस्ट सीरीज़ और आगे के बैच, अलग-अलग।';
+
+  @override
+  String get storeTestSeries => 'टेस्ट सीरीज़';
+
+  @override
+  String get storeBatches => 'बैच';
+
+  @override
+  String get storeStoreCatalogueUnavailable => 'स्टोर सूची उपलब्ध नहीं';
+
+  @override
+  String get storeExamtreeCouldNotLoadPublished =>
+      'ExamTree अभी प्रकाशित उत्पाद लोड नहीं कर सका।';
+
+  @override
+  String get storeNoTestProductsOnSale => 'बिक्री के लिए कोई टेस्ट उत्पाद नहीं';
+
+  @override
+  String get storeThereAreNoActiveProducts =>
+      'प्रकाशित सूची में अभी कोई सक्रिय उत्पाद नहीं है। मुफ़्त और पहले से उपलब्ध टेस्ट टेस्ट सेक्शन में मिलेंगे।';
+
+  @override
+  String get storeViewTests => 'टेस्ट देखें';
+
+  @override
+  String get storePricesValidityAndAvailabilityCome =>
+      'कीमत, वैधता और उपलब्धता प्रकाशित ExamTree सूची से आती है। मोबाइल चेकआउट अभी जुड़ा नहीं है, इसलिए यह स्क्रीन खरीद नहीं करती।';
+
+  @override
+  String get learnSubReadyLessons => 'तैयार पाठ';
+
+  @override
+  String get learnSubChapters => 'अध्याय';
+
+  @override
+  String get learnSubReading => 'पढ़ाई';
+
+  @override
+  String get learnSubModuleUnavailable => 'मॉड्यूल उपलब्ध नहीं';
+
+  @override
+  String get learnSubChooseATopicArea => 'विषय क्षेत्र चुनें';
+
+  @override
+  String get learnSubOpenAnAreaToContinue =>
+      'सीखना और अभ्यास जारी रखने के लिए कोई क्षेत्र खोलें।';
+
+  @override
+  String get learnSubUntimed => 'बिना समय सीमा';
+
+  @override
+  String get learnSubComingSoon => 'जल्द आ रहा है';
+
+  @override
+  String get learnSubSubModuleUnavailable => 'उप-मॉड्यूल उपलब्ध नहीं';
+
+  @override
+  String get learnSubVocabulary => 'शब्दावली';
+
+  @override
+  String get learnSubBuildStrongerWordPowerWith =>
+      'केंद्रित अभ्यास से शब्द-शक्ति मज़बूत करें।';
+
+  @override
+  String get learnSubBuildVocabularyWithShortUntimed =>
+      'छोटे, बिना समय सीमा वाले सत्रों से शब्दावली बढ़ाएँ। हर उत्तर तुरंत जाँचा जाता है और व्याख्या मिलती है।';
+
+  @override
+  String get learnSubPracticeMappingForThisSub =>
+      'इस उप-मॉड्यूल का अभ्यास Question Studio से जोड़ा जा रहा है।';
+
+  @override
+  String get learnSubPolity => 'राजव्यवस्था';
+
+  @override
+  String get learnSubIndianConstitutionInstitutionsAndGovernance =>
+      'भारतीय संविधान, संस्थाएँ और शासन।';
+
+  @override
+  String get learnSubChooseAChapterToRead =>
+      'नोट्स पढ़ने या छोटा अभ्यास सत्र शुरू करने के लिए अध्याय चुनें। हर प्रश्न के बाद उत्तर और व्याख्या तुरंत दिखती है।';
+
+  @override
+  String get learnSub1520QuestionsUntimed => '15–20 प्रश्न · बिना समय सीमा';
+
+  @override
+  String get learnSubReviewLesson => 'पाठ देखें';
+
+  @override
+  String get learnSubPracticeTopicUnavailable => 'अभ्यास विषय उपलब्ध नहीं';
+
+  @override
+  String get learnSubPracticeQuestionsAreNotAvailable =>
+      'इस विषय के अभ्यास प्रश्न अभी उपलब्ध नहीं हैं।';
+
+  @override
+  String get learnSubUnableToLoadPracticeQuestions =>
+      'अभी अभ्यास प्रश्न लोड नहीं हो सके। आपकी प्रगति सुरक्षित है।';
+
+  @override
+  String get learnSubSubmitPractice => 'अभ्यास सबमिट करें?';
+
+  @override
+  String get learnSubKeepPracticing => 'अभ्यास जारी रखें';
+
+  @override
+  String get learnSubSubmit => 'सबमिट करें';
+
+  @override
+  String get learnSubBack => 'वापस';
+
+  @override
+  String get learnSubPracticeResult => 'अभ्यास परिणाम';
+
+  @override
+  String get learnSubAllTopics => 'सभी विषय';
+
+  @override
+  String get learnSubSuggestedNextTopic => 'सुझाया अगला विषय';
+
+  @override
+  String get learnSub20QuestionsUntimedInstantExplanations =>
+      '20 प्रश्न · बिना समय सीमा · तुरंत व्याख्या';
 }
