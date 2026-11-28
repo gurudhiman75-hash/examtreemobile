@@ -126,7 +126,7 @@ class ProfileSettingsScreen extends ConsumerWidget {
             children: [
               _SettingRow(
                 icon: Icons.download_outlined,
-                title: 'My Downloads',
+                title: 'Downloads & offline',
                 value: 'Offline resources',
                 onTap: () => context.push('/profile-downloads'),
               ),
@@ -332,34 +332,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ),
     );
   }
-}
-
-class ProfileDownloadsScreen extends StatelessWidget {
-  const ProfileDownloadsScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: const Color(0xFFF8FBFF),
-        appBar: _bar('My Downloads'),
-        body: const _EmptyPage(
-          icon: Icons.download_done_rounded,
-          title: 'No offline resources yet',
-          body: 'Downloaded notes and revision resources will appear here when offline downloads are available.',
-        ),
-      );
-}
-
-class ProfileBookmarksScreen extends StatelessWidget {
-  const ProfileBookmarksScreen({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: const Color(0xFFF8FBFF),
-        appBar: _bar('Bookmarks'),
-        body: const _EmptyPage(
-          icon: Icons.bookmark_outline_rounded,
-          title: 'No saved bookmarks yet',
-          body: 'Items you save for revision will appear here as bookmark support expands across Learn and tests.',
-        ),
-      );
 }
 
 class ProfileCouponsScreen extends StatelessWidget {

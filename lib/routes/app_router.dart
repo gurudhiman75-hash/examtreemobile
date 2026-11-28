@@ -30,6 +30,8 @@ import '../features/managed_pages/presentation/managed_mobile_page_screen.dart';
 import '../features/notifications/presentation/mobile_notifications_screen.dart';
 import '../features/profile/presentation/account_settings_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
+import '../features/bookmarks/presentation/bookmarks_screen.dart';
+import '../features/offline/presentation/offline_library_screen.dart';
 import '../features/profile/presentation/profile_auxiliary_screens.dart';
 import '../features/results/presentation/attempt_result_screen.dart';
 import '../features/results/presentation/results_screen.dart';
@@ -296,12 +298,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile-downloads',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const ProfileDownloadsScreen(),
+        builder: (context, state) => const OfflineLibraryScreen(),
       ),
       GoRoute(
         path: '/profile-bookmarks',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const ProfileBookmarksScreen(),
+        builder: (context, state) => const BookmarksScreen(),
       ),
       GoRoute(
         path: '/profile-coupons',

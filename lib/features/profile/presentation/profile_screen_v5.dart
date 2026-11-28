@@ -329,7 +329,7 @@ class _ProfileMenu extends StatelessWidget {
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.download_rounded,
-            title: 'My Downloads',
+            title: 'Downloads & offline',
             subtitle: 'Offline learning resources',
             onTap: onDownloads,
           ),
