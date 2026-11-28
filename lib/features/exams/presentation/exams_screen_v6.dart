@@ -7,6 +7,7 @@ import '../../../shared/widgets/network_failure_view.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../domain/exam_catalog.dart';
 import 'providers/exam_catalog_providers.dart';
+import '../../../l10n/l10n.dart';
 
 const _ink = Color(0xFF10264A);
 const _navy = Color(0xFF062D5C);
@@ -53,7 +54,7 @@ class _ExamsScreenState extends ConsumerState<ExamsScreen> {
             children: [
               NetworkFailureView(
                 error: error,
-                fallbackTitle: 'Unable to load exam categories',
+                fallbackTitle: context.l10n.examsCategoriesLoadFailed,
                 onRetry: () => ref.invalidate(examCatalogProvider),
               ),
             ],
@@ -105,14 +106,14 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
     final catalog = ref.watch(examCatalogProvider);
     return Scaffold(
       backgroundColor: _page,
-      appBar: _appBar('Exams'),
+      appBar: _appBar(context.l10n.examsTitle),
       body: SafeArea(
         top: false,
         child: catalog.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => NetworkFailureView(
             error: error,
-            fallbackTitle: 'Unable to load exams',
+            fallbackTitle: context.l10n.examsLoadFailed,
             onRetry: () => ref.invalidate(examCatalogProvider),
           ),
           data: (snapshot) {
@@ -152,7 +153,7 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                   const SizedBox(height: 14),
                   SearchBar(
                     controller: _searchController,
-                    hintText: 'Search ' + category.name + ' exams',
+                    hintText: context.l10n.examsSearchIn(category.name),
                     leading: const Icon(Icons.search_rounded),
                     elevation: const WidgetStatePropertyAll(0),
                     backgroundColor:
@@ -168,7 +169,7 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                     trailing: [
                       if (_query.isNotEmpty)
                         IconButton(
-                          tooltip: 'Clear search',
+                          tooltip: context.l10n.clearSearch,
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _query = '');
@@ -180,7 +181,7 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    category.name + ' Exams',
+                    context.l10n.examsCategoryExams(category.name),
                     style: const TextStyle(
                       color: _ink,
                       fontSize: 20,
@@ -189,8 +190,7 @@ class _ExamCategoryScreenState extends ConsumerState<ExamCategoryScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    filtered.length.toString() +
-                        (filtered.length == 1 ? ' exam available' : ' exams available'),
+                    context.l10n.examsAvailable(filtered.length),
                     style: const TextStyle(color: _muted, fontSize: 13),
                   ),
                   const SizedBox(height: 10),
@@ -232,14 +232,14 @@ class ExamSeriesScreen extends ConsumerWidget {
     final catalog = ref.watch(examCatalogProvider);
     return Scaffold(
       backgroundColor: _page,
-      appBar: _appBar('Test Series'),
+      appBar: _appBar(context.l10n.examsTestSeries),
       body: SafeArea(
         top: false,
         child: catalog.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => NetworkFailureView(
             error: error,
-            fallbackTitle: 'Unable to load test series',
+            fallbackTitle: context.l10n.examsSeriesLoadFailed,
             onRetry: () => ref.invalidate(examCatalogProvider),
           ),
           data: (snapshot) {
@@ -260,8 +260,8 @@ class ExamSeriesScreen extends ConsumerWidget {
                 children: [
                   _ExamHero(exam: exam, series: series),
                   const SizedBox(height: 18),
-                  const Text(
-                    'Available Test Series',
+                  Text(
+                    context.l10n.examsAvailableSeries,
                     style: TextStyle(
                       color: _ink,
                       fontSize: 20,
@@ -271,11 +271,8 @@ class ExamSeriesScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     series.isEmpty
-                        ? 'No active test series yet'
-                        : series.length.toString() +
-                            (series.length == 1
-                                ? ' series available'
-                                : ' series available'),
+                        ? context.l10n.examsNoActiveSeries
+                        : context.l10n.examsSeriesAvailable(series.length),
                     style: const TextStyle(color: _muted, fontSize: 13),
                   ),
                   const SizedBox(height: 10),
@@ -355,7 +352,7 @@ class _CategoryCatalogue extends StatelessWidget {
         SearchBar(
           key: const Key('exam-category-search'),
           controller: searchController,
-          hintText: 'Search exam categories',
+          hintText: context.l10n.examsSearchCategories,
           leading: const Icon(Icons.search_rounded),
           elevation: const WidgetStatePropertyAll(0),
           backgroundColor: const WidgetStatePropertyAll(Colors.white),
@@ -366,7 +363,7 @@ class _CategoryCatalogue extends StatelessWidget {
           trailing: [
             if (query.isNotEmpty)
               IconButton(
-                tooltip: 'Clear search',
+                tooltip: context.l10n.clearSearch,
                 onPressed: onClearSearch,
                 icon: const Icon(Icons.close_rounded),
               ),
@@ -374,8 +371,8 @@ class _CategoryCatalogue extends StatelessWidget {
           onChanged: onQueryChanged,
         ),
         const SizedBox(height: 20),
-        const Text(
-          'Exam Categories',
+        Text(
+          context.l10n.examsCategories,
           style: TextStyle(
             color: _ink,
             fontSize: 21,
@@ -384,8 +381,8 @@ class _CategoryCatalogue extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 3),
-        const Text(
-          'Choose a category to find the exam you are preparing for.',
+        Text(
+          context.l10n.examsChooseCategory,
           style: TextStyle(color: _muted, fontSize: 13),
         ),
         const SizedBox(height: 12),
@@ -467,8 +464,8 @@ class _CategoryHero extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 7),
-          const Text(
-            'Choose your exam path',
+          Text(
+            context.l10n.examsChoosePath,
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -478,8 +475,8 @@ class _CategoryHero extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 7),
-          const Text(
-            'Open a category, choose your exam and continue to its test series.',
+          Text(
+            context.l10n.examsChoosePathBody,
             style: TextStyle(color: Color(0xFFD8E6F5), height: 1.4),
           ),
           const SizedBox(height: 14),
@@ -489,15 +486,15 @@ class _CategoryHero extends StatelessWidget {
             children: [
               _HeroPill(
                 icon: Icons.grid_view_rounded,
-                text: categoryCount.toString() + ' categories',
+                text: context.l10n.examsCategoriesCount(categoryCount),
               ),
               _HeroPill(
                 icon: Icons.school_outlined,
-                text: totalExams.toString() + ' exams',
+                text: context.l10n.examsExamsCount(totalExams),
               ),
               _HeroPill(
                 icon: Icons.library_books_outlined,
-                text: seriesCount.toString() + ' series',
+                text: context.l10n.examsSeriesCount(seriesCount),
               ),
             ],
           ),
@@ -599,8 +596,7 @@ class _CategoryCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                examCount.toString() +
-                    (examCount == 1 ? ' exam' : ' exams'),
+                context.l10n.examsExamsCount(examCount),
                 style: const TextStyle(
                   color: Color(0xFF6F7E92),
                   fontSize: 12,
@@ -610,7 +606,7 @@ class _CategoryCard extends StatelessWidget {
               if (category.testCount > 0) ...[
                 const SizedBox(height: 5),
                 Text(
-                  category.testCount.toString() + ' live tests',
+                  context.l10n.examsLiveTests(category.testCount),
                   style: const TextStyle(
                     color: Color(0xFF11966F),
                     fontSize: 11,
@@ -672,11 +668,8 @@ class _FamilyHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  examCount.toString() +
-                      (examCount == 1 ? ' exam' : ' exams') +
-                      ' • ' +
-                      category.testCount.toString() +
-                      ' live tests',
+                  '${context.l10n.examsExamsCount(examCount)} • '
+                  '${context.l10n.examsLiveTests(category.testCount)}',
                   style: const TextStyle(
                     color: Color(0xFFD8E6F5),
                     fontWeight: FontWeight.w600,
@@ -761,11 +754,11 @@ class _ExamListCard extends StatelessWidget {
                       children: [
                         _MetaChip(
                           Icons.library_books_outlined,
-                          exam.seriesCount.toString() + ' series',
+                          context.l10n.examsSeriesCount(exam.seriesCount),
                         ),
                         _MetaChip(
                           Icons.assignment_outlined,
-                          exam.testCount.toString() + ' tests',
+                          context.l10n.examsTestsCount(exam.testCount),
                         ),
                         if (languageLabel.isNotEmpty)
                           _MetaChip(
@@ -793,8 +786,8 @@ class _ExamListCard extends StatelessWidget {
                         Icons.arrow_forward_rounded,
                         size: 17,
                       ),
-                      label: const Text(
-                        'View Test Series',
+                      label: Text(
+                        context.l10n.examsViewTestSeries,
                         style: TextStyle(fontWeight: FontWeight.w800),
                       ),
                     ),
@@ -869,10 +862,8 @@ class _ExamHero extends StatelessWidget {
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  series.length.toString() +
-                      ' test series • ' +
-                      liveTests.toString() +
-                      ' live tests',
+                  '${context.l10n.examsTestSeriesCount(series.length)} • '
+                  '${context.l10n.examsLiveTests(liveTests)}',
                   style: const TextStyle(
                     color: Color(0xFFD8E6F5),
                     fontWeight: FontWeight.w600,
@@ -989,18 +980,18 @@ class _SeriesCard extends StatelessWidget {
                         ? Icons.schedule_rounded
                         : Icons.assignment_outlined,
                     series.comingSoon
-                        ? 'No questions yet'
-                        : series.liveTestCount.toString() + ' tests',
+                        ? context.l10n.examsNoQuestionsYet
+                        : context.l10n.examsTestsCount(series.liveTestCount),
                   ),
                   if (series.fullLengthTestCount > 0)
                     _MetaChip(
                       Icons.description_outlined,
-                      series.fullLengthTestCount.toString() + ' full mocks',
+                      context.l10n.examsFullMocks(series.fullLengthTestCount),
                     ),
                   if (averageMinutes > 0)
                     _MetaChip(
                       Icons.timer_outlined,
-                      '~' + averageMinutes.toString() + ' min/test',
+                      context.l10n.examsMinPerTest(averageMinutes),
                     ),
                 ],
               ),
@@ -1018,7 +1009,9 @@ class _SeriesCard extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    series.comingSoon ? 'View Details' : 'View Series',
+                    series.comingSoon
+                        ? context.l10n.examsViewDetails
+                        : context.l10n.examsViewSeries,
                     style: const TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -1235,8 +1228,8 @@ class _CategoryLoading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        const Text(
-          'Exam Categories',
+        Text(
+          context.l10n.examsCategories,
           style: TextStyle(
             color: _ink,
             fontSize: 21,
@@ -1271,10 +1264,10 @@ class _EmptyCatalogue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.event_busy_outlined,
-      title: 'No exam categories are published yet.',
-      body: 'Pull down to check again.',
+      title: context.l10n.examsEmptyCatalogueTitle,
+      body: context.l10n.examsEmptyCatalogueBody,
     );
   }
 }
@@ -1284,10 +1277,10 @@ class _NoCategoryMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.search_off_rounded,
-      title: 'No exam category matches your search.',
-      body: 'Try another exam family or clear the search.',
+      title: context.l10n.examsNoCategoryMatchTitle,
+      body: context.l10n.examsNoCategoryMatchBody,
     );
   }
 }
@@ -1297,10 +1290,10 @@ class _NoExamMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.search_off_rounded,
-      title: 'No exams match this search.',
-      body: 'Try a shorter exam name or clear the search.',
+      title: context.l10n.examsNoExamMatchTitle,
+      body: context.l10n.examsNoExamMatchBody,
     );
   }
 }
@@ -1310,10 +1303,10 @@ class _MissingCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.folder_off_outlined,
-      title: 'Exam category unavailable',
-      body: 'Open the category again from the Exams page.',
+      title: context.l10n.examsCategoryUnavailableTitle,
+      body: context.l10n.examsCategoryUnavailableBody,
     );
   }
 }
@@ -1323,10 +1316,10 @@ class _MissingExam extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.school_outlined,
-      title: 'Exam unavailable',
-      body: 'Open the exam again from its category.',
+      title: context.l10n.examsExamUnavailableTitle,
+      body: context.l10n.examsExamUnavailableBody,
     );
   }
 }
@@ -1340,8 +1333,8 @@ class _EmptyFamily extends StatelessWidget {
   Widget build(BuildContext context) {
     return _CentredMessage(
       icon: Icons.event_busy_outlined,
-      title: 'No ' + categoryName + ' exams are published yet.',
-      body: 'New exams will appear here automatically when published.',
+      title: context.l10n.examsNoneInCategoryTitle(categoryName),
+      body: context.l10n.examsNoneInCategoryBody,
     );
   }
 }
@@ -1351,10 +1344,10 @@ class _EmptySeries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _CentredMessage(
+    return _CentredMessage(
       icon: Icons.library_books_outlined,
-      title: 'No test series available yet',
-      body: 'Published test series for this exam will appear here automatically.',
+      title: context.l10n.examsNoSeriesTitle,
+      body: context.l10n.examsNoSeriesBody,
     );
   }
 }

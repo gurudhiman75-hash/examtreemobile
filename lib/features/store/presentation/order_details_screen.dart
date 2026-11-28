@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/l10n.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({
@@ -19,8 +20,8 @@ class OrderDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
       appBar: AppBar(
-        title: const Text(
-          'Order Details',
+        title: Text(
+          context.l10n.orderOrderDetails,
           style: TextStyle(
             color: Color(0xFF081847),
             fontWeight: FontWeight.w900,
@@ -40,7 +41,7 @@ class OrderDetailsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: const Color(0xFFBFEBD6)),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 CircleAvatar(
                   radius: 24,
@@ -53,7 +54,7 @@ class OrderDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Payment Successful',
+                        context.l10n.orderPaymentSuccessful,
                         style: TextStyle(
                           color: Color(0xFF087653),
                           fontSize: 18,
@@ -62,7 +63,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        'Your Test Series is now active!',
+                        context.l10n.orderYourTestSeriesIsNow,
                         style: TextStyle(color: Color(0xFF4A7C6A)),
                       ),
                     ],
@@ -76,8 +77,8 @@ class OrderDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Transaction Details',
+                Text(
+                  context.l10n.orderTransactionDetails,
                   style: TextStyle(
                     color: Color(0xFF081847),
                     fontSize: 18,
@@ -85,14 +86,14 @@ class OrderDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _Row(label: 'Order ID', value: displayOrder),
+                _Row(label: context.l10n.orderOrderId, value: displayOrder),
                 const Divider(height: 24),
                 _Row(
-                  label: 'Transaction ID',
+                  label: context.l10n.orderTransactionId,
                   value: orderId.trim().isEmpty ? 'Confirmed by payment provider' : orderId,
                 ),
                 const Divider(height: 24),
-                const _Row(label: 'Status', value: 'Paid · Access activated'),
+                _Row(label: context.l10n.orderStatus, value: 'Paid · Access activated'),
               ],
             ),
           ),
@@ -100,9 +101,9 @@ class OrderDetailsScreen extends StatelessWidget {
           _Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'Included in your access',
+                  context.l10n.orderIncludedInYourAccess,
                   style: TextStyle(
                     color: Color(0xFF081847),
                     fontSize: 18,
@@ -132,11 +133,11 @@ class OrderDetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Go to My Test Series',
+                    context.l10n.readyGoMySeries,
                     style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
                   ),
                   SizedBox(width: 10),

@@ -10,6 +10,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../../companion/presentation/providers/daily_companion_providers.dart';
 import '../../exam_day/presentation/providers/exam_day_providers.dart';
+import '../../../l10n/l10n.dart';
 
 const _privacyPolicyUrl = 'https://sarbedutech.web.app/privacy';
 const _accountDeletionWebUrl =
@@ -61,7 +62,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
       );
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Account deletion could not be completed. Please try again.');
+      _showMessage(context.l10n.accountAccountDeletionCouldNotBe);
     } finally {
       if (mounted) setState(() => _deleting = false);
     }
@@ -108,19 +109,18 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
     final proceed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sign in again to continue'),
-        content: const Text(
-          'For your security, account deletion requires a recent sign-in. '
-          'You will return here after signing in again.',
+        title: Text(context.l10n.accountSignInAgainToContinue),
+        content: Text(
+          context.l10n.accountReauthBody,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.accountCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Sign in again'),
+            child: Text(context.l10n.accountSignInAgain),
           ),
         ],
       ),
@@ -144,7 +144,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
       barrierDismissible: false,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Delete your ExamTree account?'),
+          title: Text(context.l10n.accountDeleteYourExamtreeAccount),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -157,8 +157,8 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                   'required for legitimate record-keeping.',
                 ),
                 const SizedBox(height: AppSpacing.md),
-                const Text(
-                  'This cannot be undone. Type DELETE MY ACCOUNT to continue.',
+                Text(
+                  context.l10n.accountThisCannotBeUndoneType,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 TextField(
@@ -174,8 +174,8 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                       setDialogState(() => matches = next);
                     }
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Confirmation',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.accountConfirmation,
                     hintText: 'DELETE MY ACCOUNT',
                   ),
                 ),
@@ -185,7 +185,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Keep my account'),
+              child: Text(context.l10n.accountKeepMyAccount),
             ),
             FilledButton(
               key: const Key('account-delete-confirm-button'),
@@ -196,7 +196,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                 backgroundColor: Theme.of(context).colorScheme.error,
                 foregroundColor: Theme.of(context).colorScheme.onError,
               ),
-              child: const Text('Delete account'),
+              child: Text(context.l10n.accountDeleteAccount),
             ),
           ],
         ),
@@ -211,11 +211,11 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
         mode: LaunchMode.externalApplication,
       );
       if (!opened && mounted) {
-        _showMessage('This page could not be opened. Please try again later.');
+        _showMessage(context.l10n.accountThisPageCouldNotBe);
       }
     } catch (_) {
       if (mounted) {
-        _showMessage('This page could not be opened. Please try again later.');
+        _showMessage(context.l10n.accountThisPageCouldNotBe);
       }
     }
   }
@@ -231,7 +231,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Privacy & account'),
+        title: Text(context.l10n.profilePrivacy),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -255,7 +255,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             const _PrivacyHero(),
             const SizedBox(height: AppSpacing.xl),
             Text(
-              'Your learner data',
+              context.l10n.accountYourLearnerData,
               style: theme.textTheme.titleLarge?.copyWith(
                 color: const Color(0xFF10264A),
                 fontWeight: FontWeight.w900,
@@ -264,37 +264,37 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(
-              'Clear information about what ExamTree uses and where to read the full policy.',
+              context.l10n.accountClearInformationAboutWhatExamtree,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 height: 1.4,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            const _InfoCard(
+            _InfoCard(
               icon: Icons.auto_graph_outlined,
-              title: 'Learning activity',
+              title: context.l10n.accountLearningActivity,
               body:
-                  'ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.',
+                  context.l10n.accountExamtreeUsesYourAccountInformation,
             ),
             const SizedBox(height: AppSpacing.sm),
             _InfoCard(
               icon: Icons.shield_outlined,
-              title: 'Privacy policy',
+              title: context.l10n.accountPrivacyPolicy,
               body:
-                  'Read the production policy covering data use, retention, deletion and privacy contact details.',
+                  context.l10n.accountReadTheProductionPolicyCovering,
               actionKey: const Key('account-open-privacy-policy'),
-              actionLabel: 'Open privacy policy',
+              actionLabel: context.l10n.accountOpenPrivacyPolicy,
               onAction: () => _openExternalPage(_privacyPolicyUrl),
             ),
             const SizedBox(height: AppSpacing.sm),
             _InfoCard(
               icon: Icons.language_outlined,
-              title: 'Account deletion on the web',
+              title: context.l10n.accountAccountDeletionOnTheWeb,
               body:
-                  'You can also start an account-deletion request from ExamTree’s public web resource.',
+                  context.l10n.accountYouCanAlsoStartAn,
               actionKey: const Key('account-open-deletion-web'),
-              actionLabel: 'Open deletion page',
+              actionLabel: context.l10n.accountOpenDeletionPage,
               onAction: () => _openExternalPage(_accountDeletionWebUrl),
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -343,7 +343,7 @@ class _PrivacyHero extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
-          'Your privacy, your account',
+          context.l10n.accountYourPrivacyYourAccount,
           style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w900,
@@ -352,7 +352,7 @@ class _PrivacyHero extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Review how learner data is used and manage permanent account deletion.',
+          context.l10n.accountReviewHowLearnerDataIs,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: Colors.white.withValues(alpha: 0.84),
             height: 1.4,
@@ -526,7 +526,7 @@ class _DangerZone extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Delete account',
+            context.l10n.accountDeleteAccount,
             style: theme.textTheme.titleLarge?.copyWith(
               color: scheme.error,
               fontWeight: FontWeight.w900,
@@ -534,7 +534,7 @@ class _DangerZone extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Deleting your account permanently removes learner-owned attempts, results, profile data and active entitlements. An anonymized account record may remain solely where financial or security records must be retained.',
+            context.l10n.accountDeletingYourAccountPermanentlyRemoves,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,
               height: 1.45,
@@ -542,7 +542,7 @@ class _DangerZone extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'You will be asked to type DELETE MY ACCOUNT before anything is removed.',
+            context.l10n.accountYouWillBeAskedTo,
             style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurfaceVariant,
               fontWeight: FontWeight.w700,

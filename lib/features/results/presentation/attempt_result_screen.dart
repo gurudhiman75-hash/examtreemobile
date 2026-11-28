@@ -9,6 +9,7 @@ import '../domain/attempt_result_summary.dart';
 import 'providers/result_providers.dart';
 import 'review_retry_screen.dart' show shouldOfferRevisionAction;
 import 'widgets/result_charts.dart';
+import '../../../l10n/l10n.dart';
 
 /// Summary of one completed attempt: score, outcome split, section detail and
 /// charts. It sits in front of the question-by-question review.
@@ -26,7 +27,7 @@ class AttemptResultScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F1),
       appBar: AppBar(
-        title: const Text('Result'),
+        title: Text(context.l10n.resultTitle),
         backgroundColor: const Color(0xFFF7F7F1),
         foregroundColor: ResultPalette.ink,
         surfaceTintColor: Colors.transparent,
@@ -37,7 +38,7 @@ class AttemptResultScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => NetworkFailureView(
           error: error,
-          fallbackTitle: 'Unable to load this result',
+          fallbackTitle: context.l10n.resultLoadFailed,
           onRetry: () => ref.invalidate(resultProvider(resultId)),
         ),
         data: (result) => AttemptResultView(
@@ -142,10 +143,14 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final name =
-        result.testName.trim().isEmpty ? 'Test result' : result.testName;
+        result.testName.trim().isEmpty
+            ? context.l10n.resultTestResult
+            : result.testName;
     final facts = <String>[
-      if (result.totalQuestions > 0) '${result.totalQuestions} questions',
-      if (result.maxScore > 0) '${formatScore(result.maxScore)} marks',
+      if (result.totalQuestions > 0)
+        context.l10n.resultQuestionsCount(result.totalQuestions),
+      if (result.maxScore > 0)
+        context.l10n.resultMarks(formatScore(result.maxScore)),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,22 +197,32 @@ class _ScoreHero extends StatelessWidget {
 
     final metrics = <(String, String, String?)>[
       if (result.rank != null)
-        ('Rank', formatThousands(result.rank!), null),
+        (context.l10n.resultRank, formatThousands(result.rank!), null),
       (
-        'Accuracy',
+        context.l10n.resultAccuracy,
         formatPercent(summary.accuracy),
-        '${summary.correct} of ${summary.answered}',
+        context.l10n.resultXofY(summary.correct, summary.answered),
       ),
       if (summary.totalSeconds != null)
-        ('Time', formatMinutes(summary.totalSeconds!), 'spent')
+        (
+          context.l10n.resultTime,
+          formatMinutes(summary.totalSeconds!),
+          context.l10n.resultSpent,
+        )
       else
-        ('Attempted', '${summary.answered}', 'of ${summary.total}'),
+        (
+          context.l10n.resultAttempted,
+          '${summary.answered}',
+          context.l10n.resultOfTotal(summary.total),
+        ),
     ];
 
     return Semantics(
       container: true,
-      label: 'Score ${formatScore(result.rawScore)} out of '
-          '${formatScore(result.maxScore)}.',
+      label: context.l10n.resultScoreA11y(
+        formatScore(result.rawScore),
+        formatScore(result.maxScore),
+      ),
       child: Container(
         key: const Key('attempt-result-hero'),
         padding: const EdgeInsets.all(20),
@@ -384,8 +399,9 @@ class _DeltaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final up = delta >= 0;
-    final text = '${up ? '+' : '−'}${delta.abs().toStringAsFixed(1)} pts '
-        'vs your last attempt';
+    final text = context.l10n.resultDelta(
+      '${up ? '+' : '−'}${delta.abs().toStringAsFixed(1)}',
+    );
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -550,8 +566,8 @@ class _TrendCard extends StatelessWidget {
     final count = summary.trend.length;
     return _Card(
       key: const Key('attempt-result-trend'),
-      title: 'Your last $count attempts',
-      subtitle: 'Score as a percentage of the maximum.',
+      title: context.l10n.resultLastAttempts(count),
+      subtitle: context.l10n.resultTrendSubtitle,
       child: AttemptTrendChart(points: summary.trend),
     );
   }
@@ -567,13 +583,13 @@ class _OutcomeCard extends StatelessWidget {
     final total = summary.total;
     final skippedSection = summary.mostSkippedSection;
     final rows = <(Color, String, int)>[
-      (ResultPalette.correct, 'Correct', summary.correct),
-      (ResultPalette.wrong, 'Wrong', summary.wrong),
-      (ResultPalette.skipped, 'Skipped', summary.skipped),
+      (ResultPalette.correct, context.l10n.resultCorrect, summary.correct),
+      (ResultPalette.wrong, context.l10n.resultWrong, summary.wrong),
+      (ResultPalette.skipped, context.l10n.resultSkipped, summary.skipped),
     ];
     return _Card(
       key: const Key('attempt-result-outcome'),
-      title: 'How your $total questions went',
+      title: context.l10n.resultHowWent(total),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -646,13 +662,13 @@ class _OutcomeCard extends StatelessWidget {
                 TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Quickest win: ${skippedSection.name}. ',
+                      text: context.l10n.resultQuickestWin(skippedSection.name),
                       style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     TextSpan(
-                      text: 'You skipped ${skippedSection.skipped} '
-                          'question${skippedSection.skipped == 1 ? '' : 's'}'
-                          ' there, more than in any other section.',
+                      text: context.l10n.resultSkippedMost(
+                        skippedSection.skipped,
+                      ),
                     ),
                   ],
                 ),
@@ -681,7 +697,8 @@ class _SectionCard extends StatelessWidget {
     final total = section.total;
     final accuracy = section.accuracy;
     final chips = <String>[
-      if (accuracy != null) 'Accuracy ${formatPercent(accuracy)}',
+      if (accuracy != null)
+        context.l10n.resultAccuracyValue(formatPercent(accuracy)),
       if (section.seconds != null) formatMinutes(section.seconds!),
     ];
     return Container(
@@ -815,30 +832,42 @@ class _AccuracyTimeCard extends StatelessWidget {
       final accuracy = timeSection.accuracy;
       if (share != null) {
         sentences.add(
-          '${timeSection.name} took ${share.round()}% of your time'
-          '${accuracy == null ? '' : ' at ${accuracy.round()}% accuracy'}.',
+          accuracy == null
+              ? context.l10n.resultTimeShare(timeSection.name, share.round())
+              : context.l10n.resultTimeShareAccuracy(
+                  timeSection.name,
+                  share.round(),
+                  accuracy.round(),
+                ),
         );
       }
     }
     if (weakest != null && weakest != timeSection) {
       final share = weakest.timeShare(totalSeconds);
       sentences.add(
-        '${weakest.name} had your lowest accuracy, '
-        '${weakest.accuracy!.round()}%'
-        '${share == null ? '' : ', on ${share.round()}% of your time'}.',
+        share == null
+            ? context.l10n.resultLowestAccuracy(
+                weakest.name,
+                weakest.accuracy!.round(),
+              )
+            : context.l10n.resultLowestAccuracyShare(
+                weakest.name,
+                weakest.accuracy!.round(),
+                share.round(),
+              ),
       );
     }
     return _Card(
       key: const Key('attempt-result-accuracy-time'),
-      title: 'Accuracy vs time spent',
-      subtitle: 'Is your time going where your marks are?',
+      title: context.l10n.resultAccuracyVsTime,
+      subtitle: context.l10n.resultAccuracyVsTimeSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Legend(
             items: [
-              (_swatch(ResultPalette.navy), 'Accuracy'),
-              (_swatch(ResultPalette.amber), 'Share of your time'),
+              (_swatch(ResultPalette.navy), context.l10n.resultAccuracy),
+              (_swatch(ResultPalette.amber), context.l10n.resultShareOfTime),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -880,16 +909,16 @@ class _PacingCard extends StatelessWidget {
     final slowest = summary.slowestQuestion;
     return _Card(
       key: const Key('attempt-result-pacing'),
-      title: 'Time per question',
-      subtitle: 'One bar per question, in the order of the paper.',
+      title: context.l10n.resultTimePerQuestion,
+      subtitle: context.l10n.resultTimePerQuestionSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _Legend(
             items: [
-              (_swatch(ResultPalette.correct), 'Correct'),
-              (_swatch(ResultPalette.wrong), 'Wrong'),
-              (_swatch(ResultPalette.skippedOutline), 'Skipped'),
+              (_swatch(ResultPalette.correct), context.l10n.resultCorrect),
+              (_swatch(ResultPalette.wrong), context.l10n.resultWrong),
+              (_swatch(ResultPalette.skippedOutline), context.l10n.resultSkipped),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -897,8 +926,11 @@ class _PacingCard extends StatelessWidget {
           if (slowest != null) ...[
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Slowest question: ${slowest.section} Q${slowest.number} '
-              'at ${formatClock(slowest.seconds)}.',
+              context.l10n.resultSlowest(
+                slowest.section,
+                slowest.number,
+                formatClock(slowest.seconds),
+              ),
               style: const TextStyle(
                 fontSize: 14,
                 height: 1.45,
@@ -921,15 +953,15 @@ class _MapCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return _Card(
       key: const Key('attempt-result-map'),
-      title: 'Question map',
+      title: context.l10n.resultQuestionMap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _Legend(
+          _Legend(
             items: [
-              (OutcomeDot(outcome: QuestionOutcome.correct), 'Correct'),
-              (OutcomeDot(outcome: QuestionOutcome.wrong), 'Wrong'),
-              (OutcomeDot(outcome: QuestionOutcome.skipped), 'Skipped'),
+              (OutcomeDot(outcome: QuestionOutcome.correct), context.l10n.resultCorrect),
+              (OutcomeDot(outcome: QuestionOutcome.wrong), context.l10n.resultWrong),
+              (OutcomeDot(outcome: QuestionOutcome.skipped), context.l10n.resultSkipped),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -972,7 +1004,7 @@ class _Actions extends StatelessWidget {
           ),
           iconAlignment: IconAlignment.end,
           icon: const Icon(Icons.arrow_forward_rounded, size: 18),
-          label: const Text('Review solutions'),
+          label: Text(context.l10n.resultReviewSolutions),
         ),
         const SizedBox(height: 10),
         if (offerRevision)
@@ -980,7 +1012,7 @@ class _Actions extends StatelessWidget {
             key: const Key('attempt-result-revision'),
             onPressed: () => context.push('/quick-revision?minutes=5'),
             style: _outlined,
-            child: const Text('Revise mistakes (5 min)'),
+            child: Text(context.l10n.resultReviseMistakes),
           )
         else
           OutlinedButton(
@@ -989,7 +1021,7 @@ class _Actions extends StatelessWidget {
                 ? () => context.push('/exam-details', extra: result.examId.trim())
                 : null,
             style: _outlined,
-            child: const Text('Retake test'),
+            child: Text(context.l10n.resultRetake),
           ),
       ],
     );

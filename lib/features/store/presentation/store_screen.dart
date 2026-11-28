@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../domain/store_product.dart';
 import 'providers/store_providers.dart';
+import '../../../l10n/l10n.dart';
 
 enum StoreSection { tests, batches }
 
@@ -41,7 +42,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Store'),
+        title: Text(context.l10n.homeStore),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -86,12 +87,12 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                   onBrowseTests: () => context.go('/exams'),
                 )
               else
-                const _FoundationState(
+                _FoundationState(
                   key: Key('store-batches'),
                   icon: Icons.school_outlined,
-                  title: 'Batches are not published yet',
+                  title: context.l10n.storeBatchesAreNotPublishedYet,
                   description:
-                      'ExamTree will show batches here only after real batch products, schedules and access rules are available.',
+                      context.l10n.storeExamtreeWillShowBatchesHere,
                 ),
               const SizedBox(height: AppSpacing.lg),
               const _TrustNotice(),
@@ -137,7 +138,7 @@ class _StoreHero extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
-          'Preparation products',
+          context.l10n.storePreparationProducts,
           style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w900,
@@ -146,7 +147,7 @@ class _StoreHero extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Published test series and future batches, clearly separated.',
+          context.l10n.storePublishedTestSeriesAndFuture,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: Colors.white.withValues(alpha: 0.82),
             height: 1.35,
@@ -201,13 +202,13 @@ class _SectionSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final largeText = MediaQuery.textScalerOf(context).scale(1) > 1.5;
     final tests = _SectionButton(
-      label: 'Test series',
+      label: context.l10n.storeTestSeries,
       icon: Icons.assignment_turned_in_outlined,
       selected: value == StoreSection.tests,
       onTap: () => onChanged(StoreSection.tests),
     );
     final batches = _SectionButton(
-      label: 'Batches',
+      label: context.l10n.storeBatches,
       icon: Icons.school_outlined,
       selected: value == StoreSection.batches,
       onTap: () => onChanged(StoreSection.batches),
@@ -314,9 +315,9 @@ class _TestSeriesCatalog extends StatelessWidget {
       error: (error, stackTrace) => _FoundationState(
         icon: Icons.cloud_off_outlined,
         iconColor: Theme.of(context).colorScheme.error,
-        title: 'Store catalogue unavailable',
-        description: 'ExamTree could not load published products right now.',
-        actionLabel: 'Retry',
+        title: context.l10n.storeStoreCatalogueUnavailable,
+        description: context.l10n.storeExamtreeCouldNotLoadPublished,
+        actionLabel: context.l10n.retry,
         onAction: onRetry,
         secondaryActionLabel: 'Browse tests',
         onSecondaryAction: onBrowseTests,
@@ -325,10 +326,10 @@ class _TestSeriesCatalog extends StatelessWidget {
         if (items.isEmpty) {
           return _FoundationState(
             icon: Icons.inventory_2_outlined,
-            title: 'No test products on sale',
+            title: context.l10n.storeNoTestProductsOnSale,
             description:
-                'There are no active products in the published catalogue right now. Free and already-accessible tests remain available under Tests.',
-            actionLabel: 'Browse tests',
+                context.l10n.storeThereAreNoActiveProducts,
+            actionLabel: context.l10n.profileBrowseTests,
             onAction: onBrowseTests,
           );
         }
@@ -364,7 +365,7 @@ class _CatalogHeading extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Test series',
+          context.l10n.storeTestSeries,
           style: theme.textTheme.titleLarge?.copyWith(
             color: const Color(0xFF10264A),
             fontWeight: FontWeight.w900,
@@ -501,7 +502,7 @@ class _ProductCard extends StatelessWidget {
                       textStyle: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('View tests'),
+                    label: Text(context.l10n.storeViewTests),
                   ),
                 ],
               )
@@ -522,7 +523,7 @@ class _ProductCard extends StatelessWidget {
                       textStyle: const TextStyle(fontWeight: FontWeight.w800),
                     ),
                     icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('View tests'),
+                    label: Text(context.l10n.storeViewTests),
                   ),
                 ],
               ),
@@ -648,7 +649,7 @@ class _TrustNotice extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.',
+              context.l10n.storePricesValidityAndAvailabilityCome,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: const Color(0xFF526274),
                 height: 1.4,

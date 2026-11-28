@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../domain/auth_error_messages.dart';
 import 'providers/auth_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class PasswordRecoveryScreen extends ConsumerStatefulWidget {
   const PasswordRecoveryScreen({super.key, this.initialEmail = ''});
@@ -91,7 +92,7 @@ class _PasswordRecoveryScreenState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Reset password'),
+        title: Text(context.l10n.loginResetPassword),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -174,9 +175,9 @@ class _RecoveryForm extends StatelessWidget {
         children: [
           _RecoveryHeader(
             icon: Icons.lock_reset_rounded,
-            title: 'Recover your account',
+            title: context.l10n.loginRecoverYourAccount,
             message:
-                'Enter the email you use for ExamTree and we will send password-reset instructions.',
+                context.l10n.loginEnterTheEmailYouUse,
           ),
           const SizedBox(height: AppSpacing.xl),
           Material(
@@ -204,7 +205,7 @@ class _RecoveryForm extends StatelessWidget {
                       if (!isSending) onSend();
                     },
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: context.l10n.loginEmail,
                       prefixIcon: const Icon(Icons.email_outlined),
                       errorText: errorMessage,
                     ),
@@ -255,7 +256,7 @@ class _RecoveryForm extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    'For privacy, the confirmation screen does not reveal whether an email is registered.',
+                    context.l10n.loginForPrivacyTheConfirmationScreen,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
                       height: 1.4,
@@ -269,7 +270,7 @@ class _RecoveryForm extends StatelessWidget {
           TextButton.icon(
             onPressed: isSending ? null : onBackToLogin,
             icon: const Icon(Icons.arrow_back_rounded),
-            label: const Text('Back to sign in'),
+            label: Text(context.l10n.loginBackToSignIn),
           ),
         ],
       ),
@@ -383,7 +384,7 @@ class _SuccessState extends StatelessWidget {
         children: [
           _RecoveryHeader(
             icon: Icons.mark_email_read_rounded,
-            title: 'Check your email',
+            title: context.l10n.loginCheckYourEmail,
             message:
                 'If an ExamTree account exists for $email, password-reset instructions will arrive there shortly.',
           ),
@@ -406,7 +407,7 @@ class _SuccessState extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(
-                      'Check your spam folder too. For privacy, we do not confirm whether an email is registered.',
+                      context.l10n.loginCheckYourSpamFolderToo,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: const Color(0xFF237A50),
                         height: 1.45,
@@ -434,7 +435,7 @@ class _SuccessState extends StatelessWidget {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    const Expanded(child: Text('Sending another reset email…')),
+                    Expanded(child: Text(context.l10n.loginSendingAnotherResetEmail)),
                   ],
                 ),
               ),
@@ -456,7 +457,7 @@ class _SuccessState extends StatelessWidget {
               textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: const Icon(Icons.login_rounded),
-            label: const Text('Back to sign in'),
+            label: Text(context.l10n.loginBackToSignIn),
           ),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
@@ -467,7 +468,7 @@ class _SuccessState extends StatelessWidget {
               TextButton(
                 key: const Key('password-recovery-edit'),
                 onPressed: isSending ? null : onEditEmail,
-                child: const Text('Use another email'),
+                child: Text(context.l10n.loginUseAnotherEmail),
               ),
               TextButton(
                 key: const Key('password-recovery-resend'),

@@ -10,6 +10,8 @@ import '../../auth/presentation/providers/auth_providers.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/performance_analytics.dart';
+import '../../../l10n/l10n.dart';
+import '../../preferences/presentation/providers/app_language_providers.dart';
 import 'providers/analytics_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -53,9 +55,9 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'My Profile',
+                  context.l10n.profileMyProfile,
                   style: TextStyle(
                     color: Color(0xFF081847),
                     fontSize: 25,
@@ -66,7 +68,7 @@ class ProfileScreen extends ConsumerWidget {
               IconButton(
                 onPressed: () => context.push('/profile-settings'),
                 icon: const Icon(Icons.settings_outlined),
-                tooltip: 'Settings',
+                tooltip: context.l10n.profileSettings,
               ),
             ],
           ),
@@ -87,7 +89,7 @@ class ProfileScreen extends ConsumerWidget {
             loading: () => const _ProfileLoadingState(),
             error: (error, stackTrace) => NetworkFailureCard(
               error: error,
-              fallbackTitle: 'Unable to load your performance',
+              fallbackTitle: context.l10n.profileUnableToLoadYourPerformance,
               onRetry: () => ref.invalidate(performanceAnalyticsProvider),
             ),
             data: (analytics) => _PerformanceContent(
@@ -103,13 +105,20 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          const _SectionHeading(
-            title: 'Account',
-            subtitle: 'Preferences, privacy and this device session.',
+          _SectionHeading(
+            title: context.l10n.profileAccount,
+            subtitle: context.l10n.profilePreferencesPrivacyAndThisDevice,
           ),
           const SizedBox(height: AppSpacing.sm),
           _AccountActions(
             language: language,
+            appLanguage: ref.watch(appLanguageProvider).value ??
+                QuestionLanguage.english,
+            onAppLanguage: () => _chooseAppLanguage(
+              context,
+              ref,
+              ref.read(appLanguageProvider).value ?? QuestionLanguage.english,
+            ),
             onLanguage: () => _chooseQuestionLanguage(context, ref, language),
             onPrivacy: () => context.push('/account'),
             onResults: () => context.go('/results'),
@@ -118,6 +127,29 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _chooseAppLanguage(
+    BuildContext context,
+    WidgetRef ref,
+    QuestionLanguage current,
+  ) async {
+    final result = await showModalBottomSheet<(QuestionLanguage, bool)>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => _AppLanguageSheet(current: current),
+    );
+    if (result == null || !context.mounted) return;
+    final (selected, alsoForQuestions) = result;
+    if (selected == current && !alsoForQuestions) return;
+    try {
+      await setAppLanguage(ref, selected, alsoForQuestions: alsoForQuestions);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.languageSaveFailed)),
+      );
+    }
   }
 
   Future<void> _chooseQuestionLanguage(
@@ -141,14 +173,14 @@ class ProfileScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Question language',
+                context.l10n.questionLanguage,
                 style: Theme.of(sheetContext).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Used in tests, answer review and saved revision questions. English is used when a translation is unavailable.',
+                context.l10n.profileUsedInTestsAnswerReview,
                 style: Theme.of(sheetContext).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(sheetContext).colorScheme.onSurfaceVariant,
                     ),
@@ -174,8 +206,8 @@ class ProfileScreen extends ConsumerWidget {
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to save the question language on this device.'),
+        SnackBar(
+          content: Text(context.l10n.profileUnableToSaveTheQuestion),
         ),
       );
     }
@@ -217,7 +249,7 @@ class _IdentityHero extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Your profile',
+          context.l10n.profileYourProfile,
           style: theme.textTheme.labelMedium?.copyWith(
             color: const Color(0xFFFFD36B),
             fontWeight: FontWeight.w800,
@@ -322,50 +354,50 @@ class _ProfileMenu extends StatelessWidget {
         children: [
           _ProfileMenuRow(
             icon: Icons.insights_rounded,
-            title: 'My Progress',
-            subtitle: 'Accuracy, attempts and performance',
+            title: context.l10n.profileMyProgress,
+            subtitle: context.l10n.profileAccuracyAttemptsAndPerformance,
             onTap: onProgress,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.download_rounded,
-            title: 'Downloads & offline',
-            subtitle: 'Offline learning resources',
+            title: context.l10n.profileDownloads,
+            subtitle: context.l10n.profileOfflineLearningResources,
             onTap: onDownloads,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.bookmark_outline_rounded,
-            title: 'Bookmarks',
-            subtitle: 'Saved revision items',
+            title: context.l10n.profileBookmarks,
+            subtitle: context.l10n.profileSavedRevisionItems,
             onTap: onBookmarks,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.history_rounded,
-            title: 'Test History',
-            subtitle: 'Completed attempts and results',
+            title: context.l10n.profileTestHistory,
+            subtitle: context.l10n.profileCompletedAttemptsAndResults,
             onTap: onHistory,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.local_offer_outlined,
-            title: 'Coupons & Offers',
-            subtitle: 'Apply discounts during checkout',
+            title: context.l10n.profileCouponsOffers,
+            subtitle: context.l10n.profileApplyDiscountsDuringCheckout,
             onTap: onCoupons,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.edit_outlined,
-            title: 'Edit Profile',
-            subtitle: 'Update your learner name',
+            title: context.l10n.profileEditProfile,
+            subtitle: context.l10n.profileUpdateYourLearnerName,
             onTap: onEdit,
           ),
           const Divider(height: 1),
           _ProfileMenuRow(
             icon: Icons.support_agent_rounded,
-            title: 'Help & Support',
-            subtitle: 'Common questions and account help',
+            title: context.l10n.profileHelpSupport,
+            subtitle: context.l10n.profileCommonQuestionsAndAccountHelp,
             onTap: onHelp,
           ),
         ],
@@ -445,11 +477,11 @@ class _PerformanceContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionHeading(
-          title: 'Performance',
-          subtitle: 'Your completed-test signals at a glance.',
+          title: context.l10n.profilePerformance,
+          subtitle: context.l10n.profileYourCompletedTestSignalsAt,
           trailing: TextButton(
             onPressed: onOpenResults,
-            child: const Text('Full history'),
+            child: Text(context.l10n.profileFullHistory),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -462,9 +494,9 @@ class _PerformanceContent extends StatelessWidget {
         ),
         if (analytics.scoreTrend.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xl),
-          const _SectionHeading(
-            title: 'Recent trend',
-            subtitle: 'Your latest completed tests.',
+          _SectionHeading(
+            title: context.l10n.profileRecentTrend,
+            subtitle: context.l10n.profileYourLatestCompletedTests,
           ),
           const SizedBox(height: AppSpacing.sm),
           _RecentTrend(analytics: analytics),
@@ -486,19 +518,19 @@ class _PerformanceHero extends StatelessWidget {
     final metrics = <({String value, String label, IconData icon})>[
       (
         value: '${analytics.totalTestsAttempted}',
-        label: 'Tests',
+        label: context.l10n.homeTests,
         icon: Icons.assignment_turned_in_outlined,
       ),
       (
         value: '${_formatPercent(analytics.averageAccuracy)}%',
-        label: 'Accuracy',
+        label: context.l10n.resultAccuracy,
         icon: Icons.track_changes_rounded,
       ),
       (
         value: analytics.hasTimingData
             ? _formatDuration(analytics.averageTimePerQuestion)
             : '—',
-        label: 'Avg time',
+        label: context.l10n.profileAvgTime,
         icon: Icons.timer_outlined,
       ),
     ];
@@ -529,7 +561,7 @@ class _PerformanceHero extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Average score',
+                      context.l10n.resultsAverageScore,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w700,
@@ -676,7 +708,7 @@ class _FocusSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'What to focus on',
+                context.l10n.profileWhatToFocusOn,
                 style: theme.textTheme.titleLarge?.copyWith(
                   color: const Color(0xFF10264A),
                   fontWeight: FontWeight.w900,
@@ -690,10 +722,10 @@ class _FocusSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         if (strongest == null && weakest == null)
-          const _SoftMessage(
+          _SoftMessage(
             icon: Icons.insights_outlined,
             text:
-                'Section detail will appear after reviewed questions are available.',
+                context.l10n.profileSectionDetailWillAppearAfter,
           )
         else
           LayoutBuilder(
@@ -702,7 +734,7 @@ class _FocusSection extends StatelessWidget {
               final cards = <Widget>[
                 if (strongest != null)
                   _SectionSignal(
-                    label: 'Strongest',
+                    label: context.l10n.profileStrongest,
                     section: strongest,
                     icon: Icons.trending_up_rounded,
                     foreground: AppColors.onMintContainer,
@@ -710,7 +742,7 @@ class _FocusSection extends StatelessWidget {
                   ),
                 if (weakest != null)
                   _SectionSignal(
-                    label: 'Needs attention',
+                    label: context.l10n.profileNeedsAttention,
                     section: weakest,
                     icon: Icons.flag_outlined,
                     foreground: AppColors.onAmberContainer,
@@ -745,7 +777,7 @@ class _FocusSection extends StatelessWidget {
             final results = OutlinedButton.icon(
               onPressed: onOpenResults,
               icon: const Icon(Icons.history_rounded),
-              label: const Text('Results'),
+              label: Text(context.l10n.navResults),
             );
             final review = onReviewLatest == null
                 ? null
@@ -753,7 +785,7 @@ class _FocusSection extends StatelessWidget {
                     key: const Key('profile-review-latest'),
                     onPressed: onReviewLatest,
                     icon: const Icon(Icons.fact_check_outlined),
-                    label: const Text('Review latest'),
+                    label: Text(context.l10n.profileReviewLatest),
                   );
             if (stacked) {
               return Column(
@@ -1006,7 +1038,7 @@ class _EmptyPerformance extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Your performance starts with your first test',
+            context.l10n.profileYourPerformanceStartsWithYour,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w900,
@@ -1014,7 +1046,7 @@ class _EmptyPerformance extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Complete a test to build score, accuracy, section and trend insights here.',
+            context.l10n.profileCompleteATestToBuild,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -1033,7 +1065,7 @@ class _EmptyPerformance extends StatelessWidget {
               textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: const Icon(Icons.assignment_outlined),
-            label: const Text('Browse tests'),
+            label: Text(context.l10n.profileBrowseTests),
           ),
         ],
       ),
@@ -1101,6 +1133,8 @@ class _SectionHeading extends StatelessWidget {
 class _AccountActions extends StatelessWidget {
   const _AccountActions({
     required this.language,
+    required this.appLanguage,
+    required this.onAppLanguage,
     required this.onLanguage,
     required this.onPrivacy,
     required this.onResults,
@@ -1108,6 +1142,8 @@ class _AccountActions extends StatelessWidget {
   });
 
   final QuestionLanguage language;
+  final QuestionLanguage appLanguage;
+  final VoidCallback onAppLanguage;
   final VoidCallback onLanguage;
   final VoidCallback onPrivacy;
   final VoidCallback onResults;
@@ -1126,11 +1162,21 @@ class _AccountActions extends StatelessWidget {
       child: Column(
         children: [
           _AccountRow(
+            key: const Key('profile-app-language'),
+            icon: Icons.language_rounded,
+            iconBackground: AppColors.skyContainer,
+            iconForeground: AppColors.onSkyContainer,
+            title: context.l10n.appLanguage,
+            subtitle: appLanguage.label,
+            onTap: onAppLanguage,
+          ),
+          const Divider(height: 1),
+          _AccountRow(
             key: const Key('profile-question-language'),
             icon: Icons.translate_rounded,
             iconBackground: AppColors.skyContainer,
             iconForeground: AppColors.onSkyContainer,
-            title: 'Question language',
+            title: context.l10n.questionLanguage,
             subtitle: language.label,
             onTap: onLanguage,
           ),
@@ -1140,8 +1186,8 @@ class _AccountActions extends StatelessWidget {
             icon: Icons.privacy_tip_outlined,
             iconBackground: AppColors.primaryContainer,
             iconForeground: AppColors.onPrimaryContainer,
-            title: 'Privacy & account',
-            subtitle: 'Account controls and privacy settings',
+            title: context.l10n.profilePrivacy,
+            subtitle: context.l10n.profilePrivacySubtitle,
             onTap: onPrivacy,
           ),
           const Divider(height: 1),
@@ -1149,8 +1195,8 @@ class _AccountActions extends StatelessWidget {
             icon: Icons.history_rounded,
             iconBackground: AppColors.mintContainer,
             iconForeground: AppColors.onMintContainer,
-            title: 'My results',
-            subtitle: 'Search and review completed attempts',
+            title: context.l10n.profileMyResults,
+            subtitle: context.l10n.profileSearchAndReviewCompletedAttempts,
             onTap: onResults,
           ),
           const Divider(height: 1),
@@ -1158,8 +1204,8 @@ class _AccountActions extends StatelessWidget {
             icon: Icons.logout_rounded,
             iconBackground: AppColors.errorContainer,
             iconForeground: AppColors.error,
-            title: 'Sign out',
-            subtitle: 'End this device session',
+            title: context.l10n.profileSignOut,
+            subtitle: context.l10n.profileEndThisDeviceSession,
             onTap: onLogout,
             destructive: true,
           ),
@@ -1331,4 +1377,87 @@ String _formatDate(DateTime value) {
   ];
   final local = value.toLocal();
   return '${local.day} ${months[local.month - 1]}';
+}
+
+
+class _AppLanguageSheet extends StatefulWidget {
+  const _AppLanguageSheet({required this.current});
+
+  final QuestionLanguage current;
+
+  @override
+  State<_AppLanguageSheet> createState() => _AppLanguageSheetState();
+}
+
+class _AppLanguageSheetState extends State<_AppLanguageSheet> {
+  late QuestionLanguage _selected = widget.current;
+  bool _alsoForQuestions = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          0,
+          AppSpacing.md,
+          AppSpacing.lg,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.appLanguage,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              l10n.appLanguageHelp,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            RadioGroup<QuestionLanguage>(
+              groupValue: _selected,
+              onChanged: (value) {
+                if (value != null) setState(() => _selected = value);
+              },
+              child: Column(
+                children: [
+                  for (final language in QuestionLanguage.values)
+                    RadioListTile<QuestionLanguage>(
+                      key: Key('app-language-${language.name}'),
+                      value: language,
+                      title: Text(language.label),
+                    ),
+                ],
+              ),
+            ),
+            SwitchListTile(
+              key: const Key('app-language-also-questions'),
+              value: _alsoForQuestions,
+              onChanged: (value) => setState(() => _alsoForQuestions = value),
+              title: Text(l10n.alsoUseForQuestions),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                key: const Key('app-language-save'),
+                onPressed: () =>
+                    Navigator.of(context).pop((_selected, _alsoForQuestions)),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

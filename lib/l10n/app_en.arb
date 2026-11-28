@@ -1,0 +1,1425 @@
+{
+  "@@locale": "en",
+  "navHome": "Home",
+  "navLearn": "Learn",
+  "navTests": "Tests",
+  "navCurrentAffairs": "Current Affairs",
+  "navResults": "Results",
+  "navProfile": "Profile",
+  "navMenu": "Menu",
+  "appLanguage": "App language",
+  "appLanguageHelp": "Used for menus, buttons and screen text. Some screens are still in English while translation is completed.",
+  "alsoUseForQuestions": "Show questions in this language too",
+  "questionLanguage": "Question language",
+  "languageSaveFailed": "Unable to save the language on this device.",
+  "bookmarksTitle": "Bookmarks",
+  "bookmarksCount": "{count, plural, =1{1 saved question · on this device} other{{count} saved questions · on this device}}",
+  "@bookmarksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookmarksAll": "All",
+  "bookmarksEmptyTitle": "No saved questions yet",
+  "bookmarksEmptyBody": "While reviewing a test, tap the bookmark icon on any question to save it here with its solution.",
+  "bookmarkRemoved": "This bookmark was removed.",
+  "savedQuestion": "Saved question",
+  "removeBookmark": "Remove bookmark",
+  "bookmarkQuestion": "Bookmark this question",
+  "savedToBookmarks": "Saved to Bookmarks",
+  "removedFromBookmarks": "Removed from Bookmarks",
+  "bookmarkSaveFailed": "Could not save this question. Try again.",
+  "view": "View",
+  "solution": "Solution",
+  "correctAnswer": "Correct answer",
+  "yourAnswer": "Your answer",
+  "correctYourAnswer": "Correct · your answer",
+  "savedToday": "Saved today",
+  "savedYesterday": "Saved yesterday",
+  "savedDaysAgo": "Saved {days} days ago",
+  "@savedDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineTitle": "Downloads & offline",
+  "offlineIntro": "Available without internet on this phone",
+  "offlineSavedQuestions": "Saved questions",
+  "offlineSavedQuestionsEmpty": "Bookmark questions while reviewing a test",
+  "offlineSavedQuestionsCount": "{count, plural, =1{1 question with solutions} other{{count} questions with solutions}}",
+  "@offlineSavedQuestionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineRevision": "Revision queue",
+  "offlineRevisionEmpty": "Questions you get wrong are added here for revision",
+  "offlineRevisionCount": "{count, plural, =1{1 question from your past mistakes} other{{count} questions from your past mistakes}}",
+  "@offlineRevisionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offlineTestsTitle": "Tests need a connection to start and submit",
+  "offlineTestsBody": "If your connection drops during a test, your answers stay saved on this phone and you can continue when you are back online. Full tests and notes cannot be downloaded yet.",
+  "profileDownloads": "Downloads & offline",
+  "profileBookmarks": "Bookmarks",
+  "profilePrivacy": "Privacy & account",
+  "profilePrivacySubtitle": "Account controls and privacy settings",
+  "retry": "Retry",
+  "attemptNoQuestions": "No questions available",
+  "attemptSignInRequired": "Sign in required. Redirecting...",
+  "attemptPurchaseRequired": "Purchase required to access this test.",
+  "attemptLoadFailed": "Unable to load test: {error}",
+  "@attemptLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "attemptRecoveredLocal": "Unsynced progress was recovered from this device. Syncing it to ExamTree now.",
+  "attemptRestoredServer": "Saved progress restored from ExamTree.",
+  "attemptTenMinutes": "10 minutes remaining",
+  "attemptFiveMinutes": "5 minutes remaining",
+  "attemptOneMinute": "1 minute remaining. Finish your review now.",
+  "attemptSecondsRemaining": "{seconds} seconds remaining",
+  "@attemptSecondsRemaining": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptTimeOverSubmitting": "Time is over. Your test is being submitted.",
+  "attemptChangedElsewhere": "This test changed on another device. The latest server progress was loaded.",
+  "attemptSavedNotSynced": "Progress is saved on this device but has not reached ExamTree yet.",
+  "attemptTimeOverRetry": "Time is over. Your answers are safe on this device; reconnect and retry submission.",
+  "attemptSubmitFailed": "Unable to submit right now. Your answers remain saved; try again.",
+  "attemptStillOpen": "The test remains open because the latest progress could not be saved.",
+  "attemptPreparing": "Preparing your secure test session...",
+  "attemptUnableToStart": "Unable to start test",
+  "attemptSessionNotCreated": "The attempt session could not be created.",
+  "tryAgain": "Try Again",
+  "attemptTimeExpiredSubmitting": "Time expired — submitting your test",
+  "attemptSubmittingTest": "Submitting your test",
+  "attemptLockedPending": "Time expired. Answers are locked and submission is pending.",
+  "attemptRetrySubmit": "Retry submit",
+  "attemptSaveAnswer": "Save answer",
+  "attemptSaveNext": "Save & next",
+  "attemptPaletteLeft": "Palette · {count} left",
+  "@attemptPaletteLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptSubmitting": "Submitting…",
+  "attemptSubmitTest": "Submit test",
+  "attemptQuestionOf": "Question {number} of {total}",
+  "@attemptQuestionOf": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptNotSavedRetry": "Progress not saved. Retry.",
+  "attemptSavingProgress": "Saving progress",
+  "attemptSaveExit": "Save and exit",
+  "attemptQuestionNumber": "Question {number}",
+  "@attemptQuestionNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptMarkedForReview": "Marked for review",
+  "attemptOptionLabel": "Option {letter}: {text}",
+  "@attemptOptionLabel": {
+    "placeholders": {
+      "letter": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "attemptPrevious": "Previous",
+  "attemptClear": "Clear",
+  "attemptReview": "Review",
+  "attemptSubmitQuestion": "Submit test?",
+  "attemptUnansweredLeft": "{count, plural, =1{1 unanswered question is still left. You can review it before submitting.} other{{count} unanswered questions are still left. You can review them before submitting.}}",
+  "@attemptUnansweredLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "attemptCannotChange": "After submission, answers cannot be changed.",
+  "attemptReviewUnanswered": "Review unanswered",
+  "attemptSubmitNow": "Submit now",
+  "attemptContinueTest": "Continue test",
+  "attemptAnswered": "Answered",
+  "attemptUnanswered": "Unanswered",
+  "attemptAnsweredMarked": "Answered + marked",
+  "attemptSyncNeededTitle": "Progress still needs to sync",
+  "attemptSyncNeededBody": "Your latest answers are safe on this device, but they have not reached ExamTree yet. Retry saving before leaving.",
+  "attemptSavingTitle": "Saving your progress",
+  "attemptSavingBody": "ExamTree is still saving your latest changes. Keep the test open until this save finishes.",
+  "attemptLeaveTitle": "Save and leave test?",
+  "attemptLeaveBody": "Your attempt will stay active and can be resumed later from this device or the ExamTree website.",
+  "attemptRetrySave": "Retry save",
+  "attemptSaveLeave": "Save and leave",
+  "attemptStay": "Stay",
+  "attemptSavingEllipsis": "Saving progress…",
+  "attemptWaitingSync": "Saved on this device. Waiting to sync with ExamTree.",
+  "attemptNotSyncedYet": "Latest changes are safe on this device but not synced yet.",
+  "paletteTitle": "Question palette",
+  "paletteClose": "Close palette",
+  "paletteMarked": "Marked",
+  "paletteUnansweredCount": "Unanswered {count}",
+  "@paletteUnansweredCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paletteMarkedCount": "Marked {count}",
+  "@paletteMarkedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paletteHint": "Tap a number to jump directly to that question.",
+  "paletteNoMatch": "No questions match this filter.",
+  "paletteShowAll": "Show all questions",
+  "resultTitle": "Result",
+  "resultLoadFailed": "Unable to load this result",
+  "resultTestResult": "Test result",
+  "resultQuestionsCount": "{count} questions",
+  "@resultQuestionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultMarks": "{marks} marks",
+  "@resultMarks": {
+    "placeholders": {
+      "marks": {
+        "type": "String"
+      }
+    }
+  },
+  "resultRank": "Rank",
+  "resultAccuracy": "Accuracy",
+  "resultXofY": "{x} of {y}",
+  "@resultXofY": {
+    "placeholders": {
+      "x": {
+        "type": "int"
+      },
+      "y": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTime": "Time",
+  "resultSpent": "spent",
+  "resultAttempted": "Attempted",
+  "resultOfTotal": "of {total}",
+  "@resultOfTotal": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultScoreA11y": "Score {score} out of {max}.",
+  "@resultScoreA11y": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "resultDelta": "{delta} pts vs your last attempt",
+  "@resultDelta": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "resultLastAttempts": "Your last {count} attempts",
+  "@resultLastAttempts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTrendSubtitle": "Score as a percentage of the maximum.",
+  "resultCorrect": "Correct",
+  "resultWrong": "Wrong",
+  "resultSkipped": "Skipped",
+  "resultHowWent": "How your {total} questions went",
+  "@resultHowWent": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resultQuickestWin": "Quickest win: {section}. ",
+  "@resultQuickestWin": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "resultSkippedMost": "{count, plural, =1{You skipped 1 question there, more than in any other section.} other{You skipped {count} questions there, more than in any other section.}}",
+  "@resultSkippedMost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultAccuracyValue": "Accuracy {value}",
+  "@resultAccuracyValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultTimeShare": "{section} took {share}% of your time.",
+  "@resultTimeShare": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "share": {
+        "type": "int"
+      }
+    }
+  },
+  "resultTimeShareAccuracy": "{section} took {share}% of your time at {accuracy}% accuracy.",
+  "@resultTimeShareAccuracy": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "share": {
+        "type": "int"
+      },
+      "accuracy": {
+        "type": "int"
+      }
+    }
+  },
+  "resultLowestAccuracy": "{section} had your lowest accuracy, {accuracy}%.",
+  "@resultLowestAccuracy": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "accuracy": {
+        "type": "int"
+      }
+    }
+  },
+  "resultLowestAccuracyShare": "{section} had your lowest accuracy, {accuracy}%, on {share}% of your time.",
+  "@resultLowestAccuracyShare": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "accuracy": {
+        "type": "int"
+      },
+      "share": {
+        "type": "int"
+      }
+    }
+  },
+  "resultAccuracyVsTime": "Accuracy vs time spent",
+  "resultAccuracyVsTimeSubtitle": "Is your time going where your marks are?",
+  "resultShareOfTime": "Share of your time",
+  "resultTimePerQuestion": "Time per question",
+  "resultTimePerQuestionSubtitle": "One bar per question, in the order of the paper.",
+  "resultSlowest": "Slowest question: {section} Q{number} at {time}.",
+  "@resultSlowest": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resultQuestionMap": "Question map",
+  "resultReviewSolutions": "Review solutions",
+  "resultReviseMistakes": "Revise mistakes (5 min)",
+  "resultRetake": "Retake test",
+  "resultsHistoryLoadFailed": "Unable to load your attempt history",
+  "resultsSearchHint": "Search tests or exam categories",
+  "clearSearch": "Clear search",
+  "resultsAttemptHistory": "Attempt history",
+  "resultsAverageScore": "Average score",
+  "resultsAttemptsCompleted": "{count, plural, =1{1 attempt completed} other{{count} attempts completed}}",
+  "@resultsAttemptsCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsBestScore": "Best score",
+  "resultsFindAttempt": "Find an attempt",
+  "resultsFindHint": "Review mistakes before deciding what to retake.",
+  "reset": "Reset",
+  "resultsAllExams": "All exams",
+  "resultsSort": "Sort results",
+  "resultsSortNewest": "Newest",
+  "resultsSortHighestScore": "Highest score",
+  "resultsSortHighestAccuracy": "Highest accuracy",
+  "resultsReviewMistakes": "Review mistakes",
+  "resultsReviewAnswers": "Review answers",
+  "resultsRetake": "Retake",
+  "resultsAccuracyPct": "{value}% accuracy",
+  "@resultsAccuracyPct": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsCorrectCount": "{count} correct",
+  "@resultsCorrectCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsIncorrectCount": "{count} incorrect",
+  "@resultsIncorrectCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsSkippedCount": "{count} skipped",
+  "@resultsSkippedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultsScorePercentA11y": "Score {value} percent",
+  "@resultsScorePercentA11y": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "resultsEmptyTitle": "No completed attempts yet",
+  "resultsEmptyBody": "Complete your first test to unlock score history, accuracy and answer review.",
+  "resultsExploreTests": "Explore tests",
+  "resultsNoMatchTitle": "No attempts match these filters",
+  "resultsNoMatchBody": "Try another test name, category or sort order.",
+  "resultsResetFilters": "Reset filters",
+  "dateUnavailable": "Date unavailable",
+  "examsCategoriesLoadFailed": "Unable to load exam categories",
+  "examsTitle": "Exams",
+  "examsLoadFailed": "Unable to load exams",
+  "examsSearchIn": "Search {category} exams",
+  "@examsSearchIn": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsCategoryExams": "{category} Exams",
+  "@examsCategoryExams": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsAvailable": "{count, plural, =1{1 exam available} other{{count} exams available}}",
+  "@examsAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestSeries": "Test Series",
+  "examsSeriesLoadFailed": "Unable to load test series",
+  "examsAvailableSeries": "Available Test Series",
+  "examsNoActiveSeries": "No active test series yet",
+  "examsSeriesAvailable": "{count} series available",
+  "@examsSeriesAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsSearchCategories": "Search exam categories",
+  "examsCategories": "Exam Categories",
+  "examsChooseCategory": "Choose a category to find the exam you are preparing for.",
+  "examsChoosePath": "Choose your exam path",
+  "examsChoosePathBody": "Open a category, choose your exam and continue to its test series.",
+  "examsCategoriesCount": "{count} categories",
+  "@examsCategoriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsExamsCount": "{count, plural, =1{1 exam} other{{count} exams}}",
+  "@examsExamsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsSeriesCount": "{count} series",
+  "@examsSeriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsLiveTests": "{count} live tests",
+  "@examsLiveTests": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestsCount": "{count} tests",
+  "@examsTestsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsTestSeriesCount": "{count} test series",
+  "@examsTestSeriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsFullMocks": "{count} full mocks",
+  "@examsFullMocks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "examsMinPerTest": "~{minutes} min/test",
+  "@examsMinPerTest": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "examsViewTestSeries": "View Test Series",
+  "examsNoQuestionsYet": "No questions yet",
+  "examsViewDetails": "View Details",
+  "examsViewSeries": "View Series",
+  "examsEmptyCatalogueTitle": "No exam categories are published yet.",
+  "examsEmptyCatalogueBody": "Pull down to check again.",
+  "examsNoCategoryMatchTitle": "No exam category matches your search.",
+  "examsNoCategoryMatchBody": "Try another exam family or clear the search.",
+  "examsNoExamMatchTitle": "No exams match this search.",
+  "examsNoExamMatchBody": "Try a shorter exam name or clear the search.",
+  "examsCategoryUnavailableTitle": "Exam category unavailable",
+  "examsCategoryUnavailableBody": "Open the category again from the Exams page.",
+  "examsExamUnavailableTitle": "Exam unavailable",
+  "examsExamUnavailableBody": "Open the exam again from its category.",
+  "examsNoneInCategoryTitle": "No {category} exams are published yet.",
+  "@examsNoneInCategoryTitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "examsNoneInCategoryBody": "New exams will appear here automatically when published.",
+  "examsNoSeriesTitle": "No test series available yet",
+  "examsNoSeriesBody": "Published test series for this exam will appear here automatically.",
+  "learnCurrentAffairs": "Current affairs",
+  "learnCurrentAffairsSubtitle": "Fresh published updates for quick revision.",
+  "learnFreePractice": "Free practice",
+  "learnFreePracticeSubtitle": "Turn reading into an immediate test session.",
+  "learnAllTests": "All tests",
+  "learnNotes": "Notes & formula sheets",
+  "learnNotesSubtitle": "Focused material published for your exams.",
+  "learnHeroTitle": "Learn for your exams",
+  "learnHeroBody": "Current affairs, notes and free practice selected from what is actually published for you.",
+  "learnArticle": "Article",
+  "learnMinFree": "{minutes} min · Free",
+  "@learnMinFree": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "learnLoadFailed": "Unable to load free learning",
+  "learnEmpty": "No free learning resources are published yet. Published material will appear here automatically.",
+  "learnPartialRefresh": "Some learning content could not be refreshed. The items shown above are still available.",
+  "learnOpenFailed": "This resource could not be opened.",
+  "learnSelectedExams": "Selected exams",
+  "homeExamCategories": "Exam Categories",
+  "homeSeeAll": "See All",
+  "homeCategoriesFailed": "Exam categories could not be loaded",
+  "homeNoCategories": "No exam categories are published right now.",
+  "homeFeaturedSeries": "Featured Test Series",
+  "homeSeriesFailed": "Test series could not be loaded",
+  "homeContinueLearning": "Continue Learning",
+  "homeRecommendedLearning": "Recommended Learning",
+  "homeCurrentAffairs": "Current Affairs",
+  "homeProgressUnavailable": "Progress is temporarily unavailable",
+  "familyPunjab": "Punjab Govt.",
+  "familyBanking": "Banking",
+  "familyRailway": "Railway",
+  "familyTeaching": "Teaching",
+  "familyDefence": "Defence",
+  "familyStatePcs": "State PCS",
+  "familyOther": "Other Exams",
+  "homeExplore": "Explore",
+  "homeTests": "Tests",
+  "homeMins": "Mins",
+  "homeMarks": "Marks",
+  "homeQuestions": "Questions",
+  "homeDuration": "Duration",
+  "minutesShort": "{minutes} min",
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "homeHeroTitle": "Your Preparation\nStarts Here",
+  "homeHeroBody": "Mock tests, learning and exam-focused practice in one place.",
+  "homeSearchHint": "Search exams, test series, topics...",
+  "homeContinueUnavailable": "Continue learning is temporarily unavailable",
+  "homeKeepGoing": "Keep Going!",
+  "homeTestsCompleted": "{count, plural, =1{1 test completed so far.} other{{count} tests completed so far.}}",
+  "@homeTestsCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSearchTests": "Search tests",
+  "homeOpenProfile": "Open profile",
+  "homeNotificationsUnreadA11y": "Notifications, {count} unread",
+  "@homeNotificationsUnreadA11y": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNotificationsNoneA11y": "Notifications, no unread updates",
+  "homeNotificationsUnread": "Notifications ({count} unread)",
+  "@homeNotificationsUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNotifications": "Notifications",
+  "homeNextActionFailed": "Your next action could not be prepared",
+  "homeLearn": "Learn",
+  "homeRevision": "Revision",
+  "homeStore": "Store",
+  "homeStrongMomentum": "Strong momentum",
+  "homeKeepConsistency": "Keep building consistency",
+  "homeFocusAccuracy": "Focus on accuracy first",
+  "homeAvgScore": "Avg score",
+  "homePerQuestion": "Per question",
+  "homeQs": "{count} Qs",
+  "@homeQs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeNoTests": "No tests are published right now.",
+  "homeCaughtUp": "You are caught up on current recommendations.",
+  "homeBrowse": "Browse",
+  "homeScorePct": "{value}% score",
+  "@homeScorePct": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "homeAccuracyPct": "{value}% accuracy",
+  "@homeAccuracyPct": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "homeDue": "{count} due",
+  "@homeDue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeStudent": "Student",
+  "homeGoodMorning": "Good morning",
+  "homeGoodAfternoon": "Good afternoon",
+  "homeGoodEvening": "Good evening",
+  "storeEnterCoupon": "Enter a coupon code first.",
+  "storeCouponApplied": "Coupon applied • Save {amount}",
+  "@storeCouponApplied": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeChoosePlan": "Choose Plan",
+  "storePlansFailed": "Unable to load plans",
+  "storeAlreadyActive": "This test series is already active.",
+  "storeOpenTestSeries": "Open Test Series",
+  "storeNoPlan": "No purchase plan is available right now.",
+  "storePremiumFree": "{premium} premium tests • {free} free",
+  "@storePremiumFree": {
+    "placeholders": {
+      "premium": {
+        "type": "int"
+      },
+      "free": {
+        "type": "int"
+      }
+    }
+  },
+  "storeChooseAccessPlan": "Choose your access plan",
+  "storePublishedOnly": "Only currently published plans are shown.",
+  "storeHaveCoupon": "Have a coupon?",
+  "storeCouponHint": "Enter coupon code",
+  "storeApply": "Apply",
+  "storeSelectedPlan": "Selected plan",
+  "continueLabel": "Continue",
+  "storeTestsIncluded": "{count} series tests included",
+  "@storeTestsIncluded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storePercentOff": "{percent}% OFF",
+  "@storePercentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "storeOpenPaymentFailed": "Unable to open secure payment.",
+  "storeIncompleteConfirmation": "Payment returned incomplete confirmation details. Please verify again.",
+  "storePaymentNotCompleted": "Payment was not completed.",
+  "storeContinueWallet": "Continue in your wallet to complete payment.",
+  "storeContinueInWallet": "Continue in {wallet} to complete payment.",
+  "@storeContinueInWallet": {
+    "placeholders": {
+      "wallet": {
+        "type": "String"
+      }
+    }
+  },
+  "storeActivationProcessing": "Payment was received but activation is still processing. Tap Verify Payment.",
+  "storeCheckout": "Checkout",
+  "storeCheckoutFailed": "Unable to load checkout",
+  "storePlanUnavailable": "This plan is no longer available.",
+  "storeReviewPay": "Review & Pay",
+  "storeCouponRevalidate": "Coupon could not be revalidated. Go back and apply it again.",
+  "storeVerifyPayment": "Verify Payment",
+  "storePayAmount": "Pay {amount}",
+  "@storePayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeOrderSummary": "Order Summary",
+  "storeAccess": "{validity} access",
+  "@storeAccess": {
+    "placeholders": {
+      "validity": {
+        "type": "String"
+      }
+    }
+  },
+  "storePlanPrice": "Plan price",
+  "storeCouponDiscount": "Coupon discount",
+  "storeTotalPayable": "Total Payable",
+  "storeUpiCards": "UPI, Cards & More",
+  "storeRazorpayBody": "Choose UPI, card, net banking or wallet in secure Razorpay Checkout.",
+  "storeCouponSaved": "{code} applied • You save {amount}",
+  "@storeCouponSaved": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeActivating": "Activating your test series…",
+  "storeKeepOpen": "Please keep this screen open while we verify your payment.",
+  "storeRazorpayNote": "Payment is processed securely by Razorpay. Examtree never stores your card or UPI credentials.",
+  "validityAsPublished": "Validity as published",
+  "validityMonths": "{count} Months",
+  "@validityMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "validityDays": "{count} Days",
+  "@validityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paySuccessTitle": "Payment Successful!",
+  "paySuccessBody": "Your test series has been unlocked and is ready for your preparation.",
+  "payAccessActive": "Access Active",
+  "payActive": "Active",
+  "payMockTests": "Mock Tests",
+  "payMockTestsBody": "Full access to your purchased series",
+  "payAnalysis": "Detailed Analysis",
+  "payAnalysisBody": "Track attempts, accuracy and progress",
+  "payBilingual": "Bilingual Content",
+  "payBilingualBody": "Use supported languages throughout the series",
+  "paySolutions": "Detailed Solutions",
+  "paySolutionsBody": "Review explanations after every attempt",
+  "paySafe": "Your Progress is Safe",
+  "paySafeBody": "Attempts, analytics and bookmarks are preserved with your access.",
+  "payStart": "Start Learning Now",
+  "payStartBody": "Continue from where you left off and keep your preparation on track.",
+  "payOrder": "Order",
+  "payViewReceipt": "View Receipt",
+  "readyTitle": "You’re All Set!",
+  "readyBody": "Your ExamTree test series is active and ready to use.",
+  "readyOpen": "Open your Test Series",
+  "readyOpenBody": "Your purchased series now appears in My Test Series.",
+  "readyChoose": "Choose a test",
+  "readyChooseBody": "Start with a full mock, sectional, PYQ or topic-wise test.",
+  "readyTrack": "Track your performance",
+  "readyTrackBody": "Review scores, accuracy, attempts and progress from your Profile.",
+  "readyGoMySeries": "Go to My Test Series",
+  "readyViewOrder": "View Order Details",
+  "seriesLockedTitle": "This Test is Locked",
+  "seriesFreeAvailable": "{count, plural, =1{1 free test is available in this series.} other{{count} free tests are available in this series.}}",
+  "@seriesFreeAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesTryFree": "Try Free Test",
+  "seriesViewPlansUnlock": "View Plans & Unlock",
+  "seriesMaybeLater": "Maybe Later",
+  "seriesStructuredPractice": "Structured mock-test practice for {exam}.",
+  "@seriesStructuredPractice": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesComingSoon": "COMING SOON",
+  "seriesActive": "ACTIVE",
+  "seriesUnavailable": "UNAVAILABLE",
+  "seriesInPreparation": "Content in preparation",
+  "seriesPercentComplete": "{percent}% complete",
+  "@seriesPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesTestsFraction": "{done}/{total} tests",
+  "@seriesTestsFraction": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesPracticeTime": "Practice time",
+  "seriesProgress": "Progress",
+  "seriesTabOverview": "Overview",
+  "seriesTabTestList": "Test List",
+  "seriesTabSyllabus": "Syllabus",
+  "seriesTabPattern": "Exam Pattern",
+  "seriesTabReviews": "Reviews",
+  "seriesTabFaqs": "FAQs",
+  "seriesSequential": "Sequential progression",
+  "seriesScoreGated": "Score-gated progression",
+  "seriesOpenProgression": "Open progression",
+  "seriesAbout": "About this series",
+  "seriesOrganisedFor": "This series is organised for structured {exam} practice.",
+  "@seriesOrganisedFor": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesIncluded": "What’s included",
+  "seriesRequired": "{count} required",
+  "@seriesRequired": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesWhyChoose": "Why choose this series",
+  "seriesWhyProgress": "Progress tracking",
+  "seriesWhyProgressBody": "Completed tests and your next eligible test stay visible.",
+  "seriesWhyUnlock": "Clear unlock rules",
+  "seriesWhyUnlockBody": "Scheduled and progression-based locks are shown before you open a test.",
+  "seriesWhyInstructions": "Instructions before attempt",
+  "seriesWhyInstructionsBody": "Each unlocked test opens its details and instructions before the timer starts.",
+  "seriesNoTests": "No tests are currently available in this series.",
+  "seriesTypeCountA11y": "{label}, {count} tests",
+  "@seriesTypeCountA11y": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesNoPattern": "No test pattern is available yet.",
+  "seriesPattern": "Series pattern",
+  "seriesMinTotal": "{minutes} min total",
+  "@seriesMinTotal": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesBreakdown": "Test-wise breakdown",
+  "seriesSyllabusBody": "Complete topic-wise preparation coverage for {exam}. Test groups below are derived from the published series catalogue.",
+  "@seriesSyllabusBody": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesSyllabusEmpty": "Syllabus will appear as tests are published.",
+  "seriesPublishedTestsQuestions": "{tests} published tests · {questions} questions",
+  "@seriesPublishedTestsQuestions": {
+    "placeholders": {
+      "tests": {
+        "type": "int"
+      },
+      "questions": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesReviewsEmpty": "Learner reviews will appear here when published reviews are available.",
+  "seriesStudentReviews": "Student Reviews",
+  "seriesRatedReviews": "{count, plural, =1{1 rated review} other{{count} rated reviews}}",
+  "@seriesRatedReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "faqIncludedQ": "What is included in this test series?",
+  "faqIncludedA": "{tests} published tests with {questions} total questions, subject to the live catalogue and your access plan.",
+  "@faqIncludedA": {
+    "placeholders": {
+      "tests": {
+        "type": "int"
+      },
+      "questions": {
+        "type": "int"
+      }
+    }
+  },
+  "faqExplanationsQ": "Are explanations available?",
+  "faqExplanationsA": "Completed attempts can be reviewed with the explanation and analysis supported by the test.",
+  "faqMultipleQ": "Can I attempt a test multiple times?",
+  "faqMultipleA": "Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.",
+  "faqLanguageQ": "Can I change the question language?",
+  "faqLanguageA": "Supported languages are shown before starting the test. Availability depends on the published question content.",
+  "faqExpiryQ": "What happens when my access expires?",
+  "faqExpiryA": "You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.",
+  "faqPreviousQ": "Where can I see my previous attempts?",
+  "faqPreviousA": "Use My Test Series, Profile or Results to revisit completed attempts and performance information.",
+  "seriesYourProgress": "Your series progress",
+  "seriesCompletedOf": "{done} of {total} tests completed",
+  "@seriesCompletedOf": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "typeFullTitle": "Full Length Mock Tests",
+  "typeFullSubtitle": "Latest pattern full syllabus tests",
+  "typeSectionalTitle": "Sectional Tests",
+  "typeSectionalSubtitle": "Subject-wise practice tests",
+  "typeTopicTitle": "Topic-wise Tests",
+  "typeTopicSubtitle": "Focused practice on important topics",
+  "typePyqTitle": "Previous Year Papers",
+  "typePyqSubtitle": "Previous exam papers with review",
+  "typeFullTab": "Full",
+  "typeSectionalTab": "Sectional",
+  "typeTopicTab": "Topic-wise",
+  "typePyqTab": "PYQs",
+  "seriesStateCompleted": "Completed",
+  "seriesStatePremium": "Premium",
+  "seriesStateReady": "Ready",
+  "seriesStateLocked": "Locked",
+  "seriesOptional": "Optional",
+  "seriesRequiredTag": "Required",
+  "seriesBestScore": "Best score: {score}",
+  "@seriesBestScore": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesOpenAgain": "Open test again",
+  "seriesViewInstructions": "View instructions",
+  "seriesUnlockPremium": "Unlock premium tests",
+  "seriesProgressLabel": "Series progress",
+  "seriesStatus": "Series status",
+  "seriesUpNext": "Up next",
+  "seriesPremiumRequired": "Premium access required",
+  "seriesFromPrice": "From {price}",
+  "@seriesFromPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesAllCompleted": "All tests completed",
+  "seriesNoneAvailable": "No test is available yet",
+  "seriesViewPlans": "View Plans",
+  "seriesReviewTests": "Review Tests",
+  "seriesOpenTest": "Open Test",
+  "seriesLoadFailed": "Test series could not be loaded.",
+  "seriesCheckConnection": "Check your connection and try again.",
+  "loginLetSBuildYourExam": "Let’s build your exam success",
+  "loginMasterConceptsPracticeSmarterGet": "Master concepts. Practice smarter. Get real results.",
+  "loginPracticeTheWayRealExams": "Practice the way real exams ask",
+  "loginUseFocusedMockTestsAnd": "Use focused mock tests and detailed solutions to turn preparation into exam readiness.",
+  "loginKnowWhatToReviseNext": "Know what to revise next",
+  "loginContinueWhereYouLeftOff": "Continue where you left off and use your progress to keep revision targeted.",
+  "loginTooManyVerificationAttemptsPlease": "Too many verification attempts. Please wait a little and try again.",
+  "loginSmsVerificationIsTemporarilyUnavailable": "SMS verification is temporarily unavailable. Please try again later.",
+  "loginThisExamtreeBuildIsNot": "This ExamTree build is not authorized for phone sign-in.",
+  "loginPhoneVerificationCouldNotBe": "Phone verification could not be confirmed. Please try again.",
+  "loginCouldNotReachTheVerification": "Could not reach the verification service. Check your connection and try again.",
+  "loginThisVerificationSessionHasExpired": "This verification session has expired. Request a new OTP.",
+  "loginPhoneSignInIsNot": "Phone sign-in is not enabled for this ExamTree build.",
+  "loginGoogleSignInIsTemporarily": "Google sign-in is temporarily unavailable. Please try again later.",
+  "loginThisEmailAlreadyHasAn": "This email already has an ExamTree sign-in method. Sign in with that method first, then try Google again.",
+  "loginGoogleDidNotProvideA": "Google did not provide a verified email for this account.",
+  "loginGoogleSignInCouldNot": "Google sign-in could not reach the service. Check your connection and try again.",
+  "loginAppleSignInWasCanceled": "Apple sign-in was canceled. Please try again.",
+  "loginAppleSignInIsTemporarily": "Apple sign-in is temporarily unavailable. Please try again later.",
+  "loginThisEmailAlreadyHasAn2": "This email already has an ExamTree sign-in method. Sign in with that method first, then try Apple again.",
+  "loginAppleDidNotProvideA": "Apple did not provide a usable verified email for this account.",
+  "loginAppleSignInCouldNot": "Apple sign-in could not reach the service. Check your connection and try again.",
+  "loginResetPassword": "Reset password",
+  "loginRecoverYourAccount": "Recover your account",
+  "loginEnterTheEmailYouUse": "Enter the email you use for ExamTree and we will send password-reset instructions.",
+  "loginEmail": "Email",
+  "loginForPrivacyTheConfirmationScreen": "For privacy, the confirmation screen does not reveal whether an email is registered.",
+  "loginBackToSignIn": "Back to sign in",
+  "loginCheckYourEmail": "Check your email",
+  "loginCheckYourSpamFolderToo": "Check your spam folder too. For privacy, we do not confirm whether an email is registered.",
+  "loginSendingAnotherResetEmail": "Sending another reset email…",
+  "loginUseAnotherEmail": "Use another email",
+  "loginEnterAValidEmailAddress": "Enter a valid email address.",
+  "loginEnterYourPassword": "Enter your password.",
+  "loginPreparingSignIn": "Preparing sign-in…",
+  "loginUnableToSignInPlease": "Unable to sign in. Please try again.",
+  "loginEnterAValidMobileNumber": "Enter a valid mobile number.",
+  "loginTheOtpYouEnteredIs": "The OTP you entered is incorrect.",
+  "loginUnableToVerifyThisMobile": "Unable to verify this mobile number. Please try again.",
+  "loginEnterAValid10Digit": "Enter a valid 10-digit mobile number.",
+  "loginSendingOtp": "Sending OTP…",
+  "loginUnableToSendTheOtp": "Unable to send the OTP. Please try again.",
+  "loginRequestANewOtpFirst": "Request a new OTP first.",
+  "loginEnterThe6DigitOtp": "Enter the 6-digit OTP.",
+  "loginVerifyingOtp": "Verifying OTP…",
+  "loginUnableToVerifyTheOtp": "Unable to verify the OTP. Please try again.",
+  "loginSendingANewOtp": "Sending a new OTP…",
+  "loginUnableToResendTheOtp": "Unable to resend the OTP. Please try again.",
+  "loginPreparingGoogleSignIn": "Preparing Google sign-in…",
+  "loginGoogleSignInWasCanceled": "Google sign-in was canceled. Please try again.",
+  "loginGoogleSignInCouldNot2": "Google sign-in could not be completed. Please try again.",
+  "loginUnableToSignInWith": "Unable to sign in with Google. Please try again.",
+  "loginPreparingAppleSignIn": "Preparing Apple sign-in…",
+  "loginAppleSignInCouldNot2": "Apple sign-in could not be completed. Please try again.",
+  "loginUnableToSignInWith2": "Unable to sign in with Apple. Please try again.",
+  "loginEnterYourName": "Enter your name.",
+  "loginNameMustBe80Characters": "Name must be 80 characters or fewer.",
+  "loginUseAtLeast6Characters": "Use at least 6 characters for your password.",
+  "loginPasswordsDoNotMatch": "Passwords do not match.",
+  "loginPreparingAccountSetup": "Preparing account setup…",
+  "loginUnableToCreateYourAccount": "Unable to create your account. Please try again.",
+  "authCreateYourExamtreeAccount": "Create your ExamTree account",
+  "authSetUpYourAccountAnd": "Set up your account and keep your preparation synced.",
+  "authSecureSignInYourProgress": "Secure sign-in. Your progress stays synced.",
+  "authLoginWithMobileNumber": "Login with Mobile Number",
+  "authWeLlSendYouA": "We’ll send you a one-time password (OTP)",
+  "authEnterMobileNumber": "Enter mobile number",
+  "authGetOtp": "Get OTP",
+  "authEnterOtp": "Enter OTP",
+  "authChange": "Change",
+  "authVerifyContinue": "Verify & Continue",
+  "authContinueWithGoogle": "Continue with Google",
+  "authContinueWithEmail": "Continue with Email",
+  "authContinueWithApple": "Continue with Apple",
+  "authSignInWithEmail": "Sign in with Email",
+  "authName": "Name",
+  "authPassword": "Password",
+  "authConfirmPassword": "Confirm password",
+  "authForgotPassword": "Forgot password?",
+  "caThisCurrentAffairsItemCould": "This current-affairs item could not be opened.",
+  "caUnableToLoadCurrentAffairs": "Unable to load current affairs",
+  "caLatestUpdates": "Latest updates",
+  "caStayReadyForWhatChanged": "Stay ready for what changed.",
+  "caReadPublishedUpdatesInYour": "Read published updates in your preferred language and keep exam-relevant developments close at hand.",
+  "caNoCurrentAffairsArePublished": "No current affairs are published yet.",
+  "caNewPublishedUpdatesWillAppear": "New published updates will appear here automatically.",
+  "caNoPublishedItemsMatchThis": "No published items match this format yet.",
+  "myExamsMyExams": "My exams",
+  "myExamsUnableToLoadYourExam": "Unable to load your exam catalogue",
+  "myExamsMyExamsUpdated": "My exams updated.",
+  "myExamsUnableToSaveYourSelected": "Unable to save your selected exams.",
+  "myExamsSearchExamsOrExamFamilies": "Search exams or exam families",
+  "myExamsChooseWhatYouArePreparing": "Choose what you are preparing for",
+  "myExamsExamtreeWillUseTheseChoices": "ExamTree will use these choices to organise tests, free material and relevant updates. You can change them anytime.",
+  "myExamsClearSelection": "Clear selection",
+  "myExamsNoExamsMatchThatSearch": "No exams match that search.",
+  "myExamsTryTheExamNameCode": "Try the exam name, code, or exam family.",
+  "dailyStudyPlanSavedButNotifications": "Study plan saved, but notifications are disabled.",
+  "dailyUnableToSaveTheStudy": "Unable to save the study plan.",
+  "dailyDailyCompanion": "Daily Companion",
+  "dailyRefresh": "Refresh",
+  "dailyQuickRevision": "Quick revision",
+  "dailyStudyPlan": "Study plan",
+  "dailyKeepYourDailyTargetAnd": "Keep your daily target and local reminder realistic.",
+  "dailyDailyCompanionIsUnavailable": "Daily Companion is unavailable",
+  "dailyYourSavedRevisionQueueIs": "Your saved revision queue is still on this device. Try loading it again.",
+  "dailyRetryDailyCompanion": "Retry Daily Companion",
+  "dailyTodaySRevision": "Today’s revision",
+  "dailyExamDayMode": "Exam-Day Mode",
+  "dailyCountdownLogisticsChecklistAndLocal": "Countdown, logistics checklist and local reminders",
+  "dailyCompleteTestsToBuildA": "Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.",
+  "dailyMyStudyPlan": "My study plan",
+  "dailySetARealisticDailyReview": "Set a realistic daily review target and an optional local reminder.",
+  "dailyLocalStudyReminder": "Local study reminder",
+  "dailyChangeReminderTime": "Change reminder time",
+  "dailyDecreaseDailyQuestionGoal": "Decrease daily question goal",
+  "dailyIncreaseDailyQuestionGoal": "Increase daily question goal",
+  "dailyDailyQuestionGoal": "Daily question goal",
+  "revisionUnableToSaveThisReview": "Unable to save this review.",
+  "revisionRevisionQueueUnavailable": "Revision queue unavailable",
+  "revisionTryLoadingYourSavedRevision": "Try loading your saved revision questions again.",
+  "revisionReviewTheQuestion": "Review the question",
+  "revisionShowAnswer": "Show answer",
+  "revisionRecallFirstRevealTheStored": "Recall first. Reveal the stored answer when you’re ready.",
+  "revisionCompareThisWithTheReasoning": "Compare this with the reasoning you recalled.",
+  "revisionHowWellDidYouRemember": "How well did you remember this?",
+  "revisionChooseGotItIfYou": "Choose “Got it” if you could explain the answer now. Choose “Review again” to bring it back sooner.",
+  "revisionReviewAgain": "Review again",
+  "revisionGotIt": "Got it",
+  "notifAllNotificationsMarkedAsRead": "All notifications marked as read.",
+  "notifUnableToMarkNotificationsAs": "Unable to mark notifications as read.",
+  "notifMarkAllRead": "Mark all read",
+  "notifImportantUpdatesInOnePlace": "Important updates, in one place.",
+  "notifExamRemindersLearningUpdatesAnd": "Exam reminders, learning updates and test announcements stay easy to find.",
+  "notifOpenLink": "Open link",
+  "notifNoNotificationsYet": "No notifications yet",
+  "notifImportantExamtreeUpdatesWillAppear": "Important ExamTree updates will appear here when there is something worth your attention.",
+  "notifUnableToLoadNotifications": "Unable to load notifications",
+  "notifTryAgain": "Try again",
+  "profileMyProfile": "My Profile",
+  "profileSettings": "Settings",
+  "profileUnableToLoadYourPerformance": "Unable to load your performance",
+  "profileAccount": "Account",
+  "profilePreferencesPrivacyAndThisDevice": "Preferences, privacy and this device session.",
+  "profileUsedInTestsAnswerReview": "Used in tests, answer review and saved revision questions. English is used when a translation is unavailable.",
+  "profileUnableToSaveTheQuestion": "Unable to save the question language on this device.",
+  "profileYourProfile": "Your profile",
+  "profileMyProgress": "My Progress",
+  "profileAccuracyAttemptsAndPerformance": "Accuracy, attempts and performance",
+  "profileOfflineLearningResources": "Offline learning resources",
+  "profileSavedRevisionItems": "Saved revision items",
+  "profileTestHistory": "Test History",
+  "profileCompletedAttemptsAndResults": "Completed attempts and results",
+  "profileCouponsOffers": "Coupons & Offers",
+  "profileApplyDiscountsDuringCheckout": "Apply discounts during checkout",
+  "profileEditProfile": "Edit Profile",
+  "profileUpdateYourLearnerName": "Update your learner name",
+  "profileHelpSupport": "Help & Support",
+  "profileCommonQuestionsAndAccountHelp": "Common questions and account help",
+  "profilePerformance": "Performance",
+  "profileYourCompletedTestSignalsAt": "Your completed-test signals at a glance.",
+  "profileFullHistory": "Full history",
+  "profileRecentTrend": "Recent trend",
+  "profileYourLatestCompletedTests": "Your latest completed tests.",
+  "profileAvgTime": "Avg time",
+  "profileWhatToFocusOn": "What to focus on",
+  "profileSectionDetailWillAppearAfter": "Section detail will appear after reviewed questions are available.",
+  "profileStrongest": "Strongest",
+  "profileNeedsAttention": "Needs attention",
+  "profileReviewLatest": "Review latest",
+  "profileYourPerformanceStartsWithYour": "Your performance starts with your first test",
+  "profileCompleteATestToBuild": "Complete a test to build score, accuracy, section and trend insights here.",
+  "profileBrowseTests": "Browse tests",
+  "profileMyResults": "My results",
+  "profileSearchAndReviewCompletedAttempts": "Search and review completed attempts",
+  "profileSignOut": "Sign out",
+  "profileEndThisDeviceSession": "End this device session",
+  "auxYourProgressStartsWithYour": "Your progress starts with your first test",
+  "auxCompleteAMockOrPractice": "Complete a mock or practice test to build accuracy, score and section insights here.",
+  "auxOverallAccuracy": "Overall Accuracy",
+  "auxAverageScore": "Average Score",
+  "auxAppPreferences": "App Preferences",
+  "auxLanguage": "Language",
+  "auxLearning": "Learning",
+  "auxProfileUpdated": "Profile updated.",
+  "auxUnableToUpdateYourProfile": "Unable to update your profile right now.",
+  "auxVerifiedContact": "Verified contact",
+  "auxEmailAndPhoneChangesRequire": "Email and phone changes require verification and are managed through your sign-in account.",
+  "auxApplyCouponsAtCheckout": "Apply coupons at checkout",
+  "auxAvailableCouponCodesCanBe": "Available coupon codes can be entered when choosing or renewing a test-series plan.",
+  "auxExploreTestSeries": "Explore Test Series",
+  "accountAccountDeletionCouldNotBe": "Account deletion could not be completed. Please try again.",
+  "accountSignInAgainToContinue": "Sign in again to continue",
+  "accountYouWillReturnHereAfter": "You will return here after signing in again.",
+  "accountCancel": "Cancel",
+  "accountSignInAgain": "Sign in again",
+  "accountDeleteYourExamtreeAccount": "Delete your ExamTree account?",
+  "accountThisCannotBeUndoneType": "This cannot be undone. Type DELETE MY ACCOUNT to continue.",
+  "accountConfirmation": "Confirmation",
+  "accountKeepMyAccount": "Keep my account",
+  "accountDeleteAccount": "Delete account",
+  "accountThisPageCouldNotBe": "This page could not be opened. Please try again later.",
+  "accountYourLearnerData": "Your learner data",
+  "accountClearInformationAboutWhatExamtree": "Clear information about what ExamTree uses and where to read the full policy.",
+  "accountLearningActivity": "Learning activity",
+  "accountExamtreeUsesYourAccountInformation": "ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.",
+  "accountPrivacyPolicy": "Privacy policy",
+  "accountReadTheProductionPolicyCovering": "Read the production policy covering data use, retention, deletion and privacy contact details.",
+  "accountOpenPrivacyPolicy": "Open privacy policy",
+  "accountAccountDeletionOnTheWeb": "Account deletion on the web",
+  "accountYouCanAlsoStartAn": "You can also start an account-deletion request from ExamTree’s public web resource.",
+  "accountOpenDeletionPage": "Open deletion page",
+  "accountYourPrivacyYourAccount": "Your privacy, your account",
+  "accountReviewHowLearnerDataIs": "Review how learner data is used and manage permanent account deletion.",
+  "accountDeletingYourAccountPermanentlyRemoves": "Deleting your account permanently removes learner-owned attempts, results, profile data and active entitlements. An anonymized account record may remain solely where financial or security records must be retained.",
+  "accountYouWillBeAskedTo": "You will be asked to type DELETE MY ACCOUNT before anything is removed.",
+  "examDayExamTargetSavedButNotification": "Exam target saved, but notification permission is disabled.",
+  "examDayUnableToSaveTheExam": "Unable to save the exam target.",
+  "examDayUnableToUpdateTheChecklist": "Unable to update the checklist.",
+  "examDayAddChecklistItem": "Add checklist item",
+  "examDayEGBusTicketSaved": "e.g. Bus ticket saved offline",
+  "examDayAdd": "Add",
+  "examDayRemoveExamTarget": "Remove exam target?",
+  "examDayThisRemovesTheLocalCountdown": "This removes the local countdown, checklist and scheduled exam-day reminders from this device. Test history is unchanged.",
+  "examDayRemoveTarget": "Remove target",
+  "examDayUnableToRemoveTheExam": "Unable to remove the exam target.",
+  "examDayEditTarget": "Edit target",
+  "examDayExamDayModeIsUnavailable": "Exam-Day Mode is unavailable",
+  "examDayTryLoadingYourSavedTarget": "Try loading your saved target again.",
+  "examDayRetryExamDayMode": "Retry Exam-Day Mode",
+  "examDaySetOneActiveExamTarget": "Set one active exam target",
+  "examDayKeepAPrivateCountdownLogistics": "Keep a private countdown, logistics checklist and optional local reminders on this phone.",
+  "examDaySetExamTarget": "Set exam target",
+  "examDayYouProvideTheExamDetails": "You provide the exam details",
+  "examDayExamtreeDoesNotInventExam": "ExamTree does not invent exam dates, reporting times, venues or readiness scores. Always verify saved details against the official notice or admit card.",
+  "examDayReportingCountdown": "Reporting countdown",
+  "examDayUsefulNow": "Useful now",
+  "examDayKeepTheLastMileActions": "Keep the last-mile actions focused and familiar.",
+  "examDaySavedLogistics": "Saved logistics",
+  "examDayOnlyTheDetailsYouEntered": "Only the details you entered for this target.",
+  "examDayEdit": "Edit",
+  "examDayOfficialInstructionsRemainAuthoritative": "Official instructions remain authoritative",
+  "examDayThisChecklistIsAPersonal": "This checklist is a personal aid. Always use the official notice or admit card for reporting time, documents, permitted items and venue rules.",
+  "examDayExam": "Exam",
+  "examDayReporting": "Reporting",
+  "examDayVenueNote": "Venue note",
+  "examDayExamDayChecklist": "Exam-day checklist",
+  "examDayRemoveCustomItem": "Remove custom item",
+  "examDayAddMyOwnItem": "Add my own item",
+  "examDayChooseAFutureExamDate": "Choose a future exam date and time.",
+  "examDayReportingTimeMustBeBefore": "Reporting time must be before the exam time.",
+  "examDaySaveOnlyTheDetailsYou": "Save only the details you want available on this device.",
+  "examDayExamName": "Exam name",
+  "examDayEGSscCglTier": "e.g. SSC CGL Tier I",
+  "examDayExamDate": "Exam date",
+  "examDayExamTime": "Exam time",
+  "examDayReportingTimeOptional": "Reporting time (optional)",
+  "examDayClearReportingTime": "Clear reporting time",
+  "examDayVenueNoteOptional": "Venue note (optional)",
+  "examDaySaveTheVenueOrAddress": "Save the venue or address exactly as you want to remember it",
+  "examDayExamDayReminders": "Exam-day reminders",
+  "examDayRequestLocalNotificationsAbout24": "Request local notifications about 24 hours and 2 hours before the saved reporting or exam time.",
+  "examDaySaveExamTarget": "Save exam target",
+  "accountReauthBody": "For your security, account deletion requires a recent sign-in. You will return here after signing in again.",
+  "mySeriesMyTestSeries": "My Test Series",
+  "mySeriesHelp": "Help",
+  "mySeriesYouHavenTPurchasedAny": "You haven’t purchased any Test Series yet",
+  "mySeriesGetFullLengthMockTests": "Get full-length mock tests, sectional tests, previous year papers and detailed analysis to boost your preparation.",
+  "mySeriesYourAccessHasExpired": "Your access has expired",
+  "mySeriesRenewToContinueTestsYour": "Renew to continue tests. Your progress and analytics are preserved.",
+  "mySeriesTestsAttempted": "Tests Attempted",
+  "mySeriesTopicTests": "Topic Tests",
+  "mySeriesMySeries": "My Series",
+  "mySeriesDownloads": "Downloads",
+  "mySeriesHistory": "History",
+  "mySeriesUnableToLoadYourTest": "Unable to load your test series.",
+  "orderOrderDetails": "Order Details",
+  "orderPaymentSuccessful": "Payment Successful",
+  "orderYourTestSeriesIsNow": "Your Test Series is now active!",
+  "orderTransactionDetails": "Transaction Details",
+  "orderOrderId": "Order ID",
+  "orderTransactionId": "Transaction ID",
+  "orderStatus": "Status",
+  "orderIncludedInYourAccess": "Included in your access",
+  "renewContinueYourPractice": "Continue your practice",
+  "renewGetLatestUpdates": "Get latest updates",
+  "renewKeepYourProgress": "Keep your progress",
+  "renewDetailedSolutions": "Detailed solutions",
+  "storeBatchesAreNotPublishedYet": "Batches are not published yet",
+  "storeExamtreeWillShowBatchesHere": "ExamTree will show batches here only after real batch products, schedules and access rules are available.",
+  "storePreparationProducts": "Preparation products",
+  "storePublishedTestSeriesAndFuture": "Published test series and future batches, clearly separated.",
+  "storeTestSeries": "Test series",
+  "storeBatches": "Batches",
+  "storeStoreCatalogueUnavailable": "Store catalogue unavailable",
+  "storeExamtreeCouldNotLoadPublished": "ExamTree could not load published products right now.",
+  "storeNoTestProductsOnSale": "No test products on sale",
+  "storeThereAreNoActiveProducts": "There are no active products in the published catalogue right now. Free and already-accessible tests remain available under Tests.",
+  "storeViewTests": "View tests",
+  "storePricesValidityAndAvailabilityCome": "Prices, validity and availability come from the published ExamTree catalogue. Mobile checkout is not connected yet, so this screen does not create a purchase action.",
+  "learnSubReadyLessons": "Ready lessons",
+  "learnSubChapters": "Chapters",
+  "learnSubReading": "Reading",
+  "learnSubModuleUnavailable": "Module unavailable",
+  "learnSubChooseATopicArea": "Choose a topic area",
+  "learnSubOpenAnAreaToContinue": "Open an area to continue learning and practice.",
+  "learnSubUntimed": "Untimed",
+  "learnSubComingSoon": "Coming soon",
+  "learnSubSubModuleUnavailable": "Sub-module unavailable",
+  "learnSubVocabulary": "Vocabulary",
+  "learnSubBuildStrongerWordPowerWith": "Build stronger word power with focused practice.",
+  "learnSubBuildVocabularyWithShortUntimed": "Build vocabulary with short untimed sessions. Every answer is checked immediately and followed by an explanation.",
+  "learnSubPracticeMappingForThisSub": "Practice mapping for this sub-module is being connected to Question Studio.",
+  "learnSubPolity": "Polity",
+  "learnSubIndianConstitutionInstitutionsAndGovernance": "Indian Constitution, institutions and governance.",
+  "learnSubChooseAChapterToRead": "Choose a chapter to read the notes or start a short untimed practice session. Answers and explanations appear immediately after each question.",
+  "learnSub1520QuestionsUntimed": "15–20 questions · Untimed",
+  "learnSubReviewLesson": "Review lesson",
+  "learnSubPracticeTopicUnavailable": "Practice topic unavailable",
+  "learnSubPracticeQuestionsAreNotAvailable": "Practice questions are not available for this topic yet.",
+  "learnSubUnableToLoadPracticeQuestions": "Unable to load practice questions right now. Your Learn progress is safe.",
+  "learnSubSubmitPractice": "Submit practice?",
+  "learnSubKeepPracticing": "Keep practicing",
+  "learnSubSubmit": "Submit",
+  "learnSubBack": "Back",
+  "learnSubPracticeResult": "Practice result",
+  "learnSubAllTopics": "All topics",
+  "learnSubSuggestedNextTopic": "Suggested next topic",
+  "learnSub20QuestionsUntimedInstantExplanations": "20 questions · Untimed · Instant explanations"
+}

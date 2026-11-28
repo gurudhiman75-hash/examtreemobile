@@ -6,6 +6,7 @@ import '../../../shared/widgets/skeleton.dart';
 import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/question_bookmark.dart';
+import '../../../l10n/l10n.dart';
 import 'providers/bookmark_providers.dart';
 
 const _ink = Color(0xFF10264A);
@@ -31,7 +32,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
     return Scaffold(
       backgroundColor: _page,
       appBar: AppBar(
-        title: const Text('Bookmarks'),
+        title: Text(context.l10n.bookmarksTitle),
         backgroundColor: _page,
         foregroundColor: _ink,
         surfaceTintColor: Colors.transparent,
@@ -51,7 +52,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
             children: [
               Text(
-                '${items.length} saved ${items.length == 1 ? 'question' : 'questions'} · on this device',
+                context.l10n.bookmarksCount(items.length),
                 style: const TextStyle(
                   color: _muted,
                   fontSize: 13,
@@ -66,7 +67,7 @@ class _BookmarksScreenState extends ConsumerState<BookmarksScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       _SectionChip(
-                        label: 'All',
+                        label: context.l10n.bookmarksAll,
                         selected: selected == null,
                         onTap: () => setState(() => _section = null),
                       ),
@@ -180,7 +181,7 @@ class _BookmarkCard extends ConsumerWidget {
               Text(
                 [
                   if (bookmark.testName.trim().isNotEmpty) bookmark.testName,
-                  _savedLabel(bookmark.savedAt),
+                  _savedLabel(context, bookmark.savedAt),
                 ].join(' · '),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -209,7 +210,7 @@ class BookmarkDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: _page,
       appBar: AppBar(
-        title: const Text('Saved question'),
+        title: Text(context.l10n.savedQuestion),
         backgroundColor: _page,
         foregroundColor: _ink,
         surfaceTintColor: Colors.transparent,
@@ -217,7 +218,7 @@ class BookmarkDetailScreen extends ConsumerWidget {
           if (bookmark != null)
             IconButton(
               key: const Key('bookmark-remove'),
-              tooltip: 'Remove bookmark',
+              tooltip: context.l10n.removeBookmark,
               icon: const Icon(Icons.bookmark_remove_outlined),
               onPressed: () async {
                 await ref
@@ -229,7 +230,7 @@ class BookmarkDetailScreen extends ConsumerWidget {
         ],
       ),
       body: bookmark == null
-          ? const _BookmarksEmpty(message: 'This bookmark was removed.')
+          ? _BookmarksEmpty(message: context.l10n.bookmarkRemoved)
           : _QuestionBody(
               bookmark: bookmark,
               question: localizeResultQuestion(bookmark.question, language),
@@ -294,9 +295,9 @@ class _QuestionBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Solution',
-                  style: TextStyle(
+                Text(
+                  context.l10n.solution,
+                  style: const TextStyle(
                     color: _ink,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -341,10 +342,11 @@ class _OptionRow extends StatelessWidget {
         : wrongPick
         ? const Color(0xFF9F1239)
         : _border;
+    final l10n = context.l10n;
     final tag = correct
-        ? (yours ? 'Correct · your answer' : 'Correct answer')
+        ? (yours ? l10n.correctYourAnswer : l10n.correctAnswer)
         : wrongPick
-        ? 'Your answer'
+        ? l10n.yourAnswer
         : null;
     return Container(
       padding: const EdgeInsets.all(12),
@@ -412,7 +414,7 @@ class _BookmarksEmpty extends StatelessWidget {
             const Icon(Icons.bookmark_outline_rounded, size: 48, color: _navy),
             const SizedBox(height: 12),
             Text(
-              message ?? 'No saved questions yet',
+              message ?? context.l10n.bookmarksEmptyTitle,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: _ink,
@@ -422,10 +424,14 @@ class _BookmarksEmpty extends StatelessWidget {
             ),
             if (message == null) ...[
               const SizedBox(height: 8),
-              const Text(
-                'While reviewing a test, tap the bookmark icon on any question to save it here with its solution.',
+              Text(
+                context.l10n.bookmarksEmptyBody,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _muted, fontSize: 14, height: 1.45),
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 14,
+                  height: 1.45,
+                ),
               ),
             ],
           ],
@@ -457,29 +463,16 @@ class _BookmarksLoading extends StatelessWidget {
   }
 }
 
-String _savedLabel(DateTime savedAt) {
+String _savedLabel(BuildContext context, DateTime savedAt) {
+  final l10n = context.l10n;
   final now = DateTime.now();
   final days = DateTime(
     now.year,
     now.month,
     now.day,
   ).difference(DateTime(savedAt.year, savedAt.month, savedAt.day)).inDays;
-  if (days <= 0) return 'Saved today';
-  if (days == 1) return 'Saved yesterday';
-  if (days < 7) return 'Saved $days days ago';
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return 'Saved ${savedAt.day} ${months[savedAt.month - 1]}';
+  if (days <= 0) return l10n.savedToday;
+  if (days == 1) return l10n.savedYesterday;
+  if (days < 7) return l10n.savedDaysAgo(days);
+  return formatDayMonth(context, savedAt, withYear: false);
 }

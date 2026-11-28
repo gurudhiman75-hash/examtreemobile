@@ -10,6 +10,7 @@ import '../../promotions/presentation/widgets/promotion_carousel.dart';
 import '../domain/auth_error_messages.dart';
 import 'providers/auth_providers.dart';
 import 'widgets/auth_entry_view.dart';
+import '../../../l10n/l10n.dart';
 
 const _loginFallbackCampaigns = <PromotionCampaign>[
   PromotionCampaign(
@@ -86,15 +87,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final password = _passwordController.text;
 
     if (!AuthErrorMessages.isValidEmail(email)) {
-      _showMessage('Enter a valid email address.');
+      _showMessage(context.l10n.loginEnterAValidEmailAddress);
       return;
     }
     if (password.isEmpty) {
-      _showMessage('Enter your password.');
+      _showMessage(context.l10n.loginEnterYourPassword);
       return;
     }
 
-    _beginLoading('Preparing sign-in…');
+    _beginLoading(context.l10n.loginPreparingSignIn);
     try {
       await ref.read(authControllerProvider).signInWithEmailAndPassword(
             email,
@@ -117,7 +118,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage('${error.message} Please try again.');
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to sign in. Please try again.');
+      _showMessage(context.l10n.loginUnableToSignInPlease);
     } finally {
       _endLoading();
     }
@@ -131,23 +132,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   String _phoneErrorMessage(FirebaseAuthException error) {
     return switch (error.code) {
-      'invalid-phone-number' => 'Enter a valid mobile number.',
+      'invalid-phone-number' => context.l10n.loginEnterAValidMobileNumber,
       'too-many-requests' =>
-        'Too many verification attempts. Please wait a little and try again.',
+        context.l10n.loginTooManyVerificationAttemptsPlease,
       'quota-exceeded' =>
-        'SMS verification is temporarily unavailable. Please try again later.',
+        context.l10n.loginSmsVerificationIsTemporarilyUnavailable,
       'app-not-authorized' =>
-        'This ExamTree build is not authorized for phone sign-in.',
+        context.l10n.loginThisExamtreeBuildIsNot,
       'captcha-check-failed' =>
-        'Phone verification could not be confirmed. Please try again.',
+        context.l10n.loginPhoneVerificationCouldNotBe,
       'network-request-failed' =>
-        'Could not reach the verification service. Check your connection and try again.',
+        context.l10n.loginCouldNotReachTheVerification,
       'session-expired' =>
-        'This verification session has expired. Request a new OTP.',
-      'invalid-verification-code' => 'The OTP you entered is incorrect.',
+        context.l10n.loginThisVerificationSessionHasExpired,
+      'invalid-verification-code' => context.l10n.loginTheOtpYouEnteredIs,
       'operation-not-allowed' =>
-        'Phone sign-in is not enabled for this ExamTree build.',
-      _ => 'Unable to verify this mobile number. Please try again.',
+        context.l10n.loginPhoneSignInIsNot,
+      _ => context.l10n.loginUnableToVerifyThisMobile,
     };
   }
 
@@ -155,11 +156,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (_isLoading) return;
     final phoneNumber = _normalizedIndianPhone();
     if (phoneNumber == null) {
-      _showMessage('Enter a valid 10-digit mobile number.');
+      _showMessage(context.l10n.loginEnterAValid10Digit);
       return;
     }
 
-    _beginLoading('Sending OTP…');
+    _beginLoading(context.l10n.loginSendingOtp);
     try {
       final result = await ref.read(authControllerProvider).startPhoneVerification(
             phoneNumber,
@@ -180,7 +181,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to send the OTP. Please try again.');
+      _showMessage(context.l10n.loginUnableToSendTheOtp);
     } finally {
       _endLoading();
     }
@@ -190,17 +191,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (_isLoading) return;
     final session = _phoneVerificationSession;
     if (session == null) {
-      _showMessage('Request a new OTP first.');
+      _showMessage(context.l10n.loginRequestANewOtpFirst);
       return;
     }
 
     final code = _otpController.text.replaceAll(RegExp(r'\D'), '');
     if (code.length != 6) {
-      _showMessage('Enter the 6-digit OTP.');
+      _showMessage(context.l10n.loginEnterThe6DigitOtp);
       return;
     }
 
-    _beginLoading('Verifying OTP…');
+    _beginLoading(context.l10n.loginVerifyingOtp);
     try {
       await ref.read(authControllerProvider).confirmPhoneVerification(
             session: session,
@@ -215,7 +216,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to verify the OTP. Please try again.');
+      _showMessage(context.l10n.loginUnableToVerifyTheOtp);
     } finally {
       _endLoading();
     }
@@ -229,7 +230,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    _beginLoading('Sending a new OTP…');
+    _beginLoading(context.l10n.loginSendingANewOtp);
     try {
       final result = await ref.read(authControllerProvider).startPhoneVerification(
             session.phoneNumber,
@@ -249,7 +250,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(_phoneErrorMessage(error));
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to resend the OTP. Please try again.');
+      _showMessage(context.l10n.loginUnableToResendTheOtp);
     } finally {
       _endLoading();
     }
@@ -265,7 +266,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
-    _beginLoading('Preparing Google sign-in…');
+    _beginLoading(context.l10n.loginPreparingGoogleSignIn);
     try {
       await ref.read(authControllerProvider).signInWithGoogle(
             onSetupStage: _onSetupStage,
@@ -276,22 +277,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } on GoogleSignInException catch (error) {
       if (!mounted) return;
       if (error.code == GoogleSignInExceptionCode.canceled) {
-        _showMessage('Google sign-in was canceled. Please try again.');
+        _showMessage(context.l10n.loginGoogleSignInWasCanceled);
         return;
       }
-      _showMessage('Google sign-in could not be completed. Please try again.');
+      _showMessage(context.l10n.loginGoogleSignInCouldNot2);
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
       final message = switch (error.code) {
         'operation-not-allowed' =>
-          'Google sign-in is temporarily unavailable. Please try again later.',
+          context.l10n.loginGoogleSignInIsTemporarily,
         'account-exists-with-different-credential' =>
-          'This email already has an ExamTree sign-in method. Sign in with that method first, then try Google again.',
+          context.l10n.loginThisEmailAlreadyHasAn,
         'google-email-unverified' =>
-          'Google did not provide a verified email for this account.',
+          context.l10n.loginGoogleDidNotProvideA,
         'network-request-failed' =>
-          'Google sign-in could not reach the service. Check your connection and try again.',
-        _ => 'Google sign-in could not be completed. Please try again.',
+          context.l10n.loginGoogleSignInCouldNot,
+        _ => context.l10n.loginGoogleSignInCouldNot2,
       };
       _showMessage(message);
     } on AuthProfileSyncException catch (error) {
@@ -299,7 +300,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to sign in with Google. Please try again.');
+      _showMessage(context.l10n.loginUnableToSignInWith);
     } finally {
       _endLoading();
     }
@@ -307,7 +308,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
-    _beginLoading('Preparing Apple sign-in…');
+    _beginLoading(context.l10n.loginPreparingAppleSignIn);
     try {
       await ref.read(authControllerProvider).signInWithApple(
             onSetupStage: _onSetupStage,
@@ -319,16 +320,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       final message = switch (error.code) {
         'web-context-cancelled' || 'canceled' =>
-          'Apple sign-in was canceled. Please try again.',
+          context.l10n.loginAppleSignInWasCanceled,
         'operation-not-allowed' =>
-          'Apple sign-in is temporarily unavailable. Please try again later.',
+          context.l10n.loginAppleSignInIsTemporarily,
         'account-exists-with-different-credential' =>
-          'This email already has an ExamTree sign-in method. Sign in with that method first, then try Apple again.',
+          context.l10n.loginThisEmailAlreadyHasAn2,
         'apple-email-unavailable' =>
-          'Apple did not provide a usable verified email for this account.',
+          context.l10n.loginAppleDidNotProvideA,
         'network-request-failed' =>
-          'Apple sign-in could not reach the service. Check your connection and try again.',
-        _ => 'Apple sign-in could not be completed. Please try again.',
+          context.l10n.loginAppleSignInCouldNot,
+        _ => context.l10n.loginAppleSignInCouldNot2,
       };
       _showMessage(message);
     } on AuthProfileSyncException catch (error) {
@@ -336,7 +337,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to sign in with Apple. Please try again.');
+      _showMessage(context.l10n.loginUnableToSignInWith2);
     } finally {
       _endLoading();
     }
@@ -351,27 +352,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final confirmation = _confirmPasswordController.text;
 
     if (name.length < 2) {
-      _showMessage('Enter your name.');
+      _showMessage(context.l10n.loginEnterYourName);
       return;
     }
     if (name.length > 80) {
-      _showMessage('Name must be 80 characters or fewer.');
+      _showMessage(context.l10n.loginNameMustBe80Characters);
       return;
     }
     if (!AuthErrorMessages.isValidEmail(email)) {
-      _showMessage('Enter a valid email address.');
+      _showMessage(context.l10n.loginEnterAValidEmailAddress);
       return;
     }
     if (password.length < 6) {
-      _showMessage('Use at least 6 characters for your password.');
+      _showMessage(context.l10n.loginUseAtLeast6Characters);
       return;
     }
     if (password != confirmation) {
-      _showMessage('Passwords do not match.');
+      _showMessage(context.l10n.loginPasswordsDoNotMatch);
       return;
     }
 
-    _beginLoading('Preparing account setup…');
+    _beginLoading(context.l10n.loginPreparingAccountSetup);
     try {
       await ref.read(authControllerProvider).registerWithEmailAndPassword(
             displayName: name,
@@ -395,7 +396,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showMessage(error.message);
     } catch (_) {
       if (!mounted) return;
-      _showMessage('Unable to create your account. Please try again.');
+      _showMessage(context.l10n.loginUnableToCreateYourAccount);
     } finally {
       _endLoading();
     }

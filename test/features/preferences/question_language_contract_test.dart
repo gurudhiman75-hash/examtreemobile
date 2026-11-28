@@ -26,19 +26,25 @@ void main() {
     expect(results, contains('localizeResult(result, language)'));
     expect(profileEntry, contains("export 'profile_screen_v5.dart';"));
     expect(profile, contains("Key('profile-question-language')"));
-    expect(profile, contains("title: 'Question language'"));
+    expect(profile, contains('title: context.l10n.questionLanguage'));
     expect(profile, contains('subtitle: language.label'));
-    expect(profile, contains('English is used when a translation is unavailable.'));
+    expect(
+      File('lib/l10n/app_en.arb').readAsStringSync(),
+      contains('English is used when a translation is unavailable.'),
+    );
     expect(preference, contains('return QuestionLanguage.english;'));
   });
 
-  test('question language stays a device preference rather than learner data', () {
-    final store = File(
-      'lib/features/preferences/data/local_question_language_store.dart',
-    ).readAsStringSync();
+  test(
+    'question language stays a device preference rather than learner data',
+    () {
+      final store = File(
+        'lib/features/preferences/data/local_question_language_store.dart',
+      ).readAsStringSync();
 
-    expect(store, contains("'examtree_preferences.db'"));
-    expect(store, contains("'question_language'"));
-    expect(store, isNot(contains('user_id')));
-  });
+      expect(store, contains("'examtree_preferences.db'"));
+      expect(store, contains("'question_language'"));
+      expect(store, isNot(contains('user_id')));
+    },
+  );
 }

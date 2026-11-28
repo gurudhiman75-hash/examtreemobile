@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/l10n.dart';
 
 class AccessReadyScreen extends StatelessWidget {
   const AccessReadyScreen({
@@ -44,8 +45,8 @@ class AccessReadyScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'You’re All Set!',
+            Text(
+              context.l10n.readyTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF081847),
@@ -54,8 +55,8 @@ class AccessReadyScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Your ExamTree test series is active and ready to use.',
+            Text(
+              context.l10n.readyBody,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF60759B),
@@ -64,25 +65,25 @@ class AccessReadyScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const _StepCard(
+            _StepCard(
               number: '1',
               icon: Icons.fact_check_outlined,
-              title: 'Open your Test Series',
-              body: 'Your purchased series now appears in My Test Series.',
+              title: context.l10n.readyOpen,
+              body: context.l10n.readyOpenBody,
             ),
             const SizedBox(height: 10),
-            const _StepCard(
+            _StepCard(
               number: '2',
               icon: Icons.play_circle_outline_rounded,
-              title: 'Choose a test',
-              body: 'Start with a full mock, sectional, PYQ or topic-wise test.',
+              title: context.l10n.readyChoose,
+              body: context.l10n.readyChooseBody,
             ),
             const SizedBox(height: 10),
-            const _StepCard(
+            _StepCard(
               number: '3',
               icon: Icons.insights_outlined,
-              title: 'Track your performance',
-              body: 'Review scores, accuracy, attempts and progress from your Profile.',
+              title: context.l10n.readyTrack,
+              body: context.l10n.readyTrackBody,
             ),
             const SizedBox(height: 22),
             SizedBox(
@@ -99,11 +100,11 @@ class AccessReadyScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Go to My Test Series',
+                      context.l10n.readyGoMySeries,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
@@ -130,8 +131,8 @@ class AccessReadyScreen extends StatelessWidget {
                   ).toString(),
                 ),
                 icon: const Icon(Icons.receipt_long_outlined),
-                label: const Text(
-                  'View Order Details',
+                label: Text(
+                  context.l10n.readyViewOrder,
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: OutlinedButton.styleFrom(

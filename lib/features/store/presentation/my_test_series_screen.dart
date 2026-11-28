@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../home/presentation/mobile_test_series_detail_screen.dart';
 import '../domain/series_purchase.dart';
+import '../../../l10n/l10n.dart';
 
 class MyTestSeriesScreen extends ConsumerWidget {
   const MyTestSeriesScreen({super.key, this.seriesId});
@@ -16,8 +17,8 @@ class MyTestSeriesScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
       appBar: AppBar(
-        title: const Text(
-          'My Test Series',
+        title: Text(
+          context.l10n.mySeriesMyTestSeries,
           style: TextStyle(
             color: Color(0xFF081847),
             fontWeight: FontWeight.w900,
@@ -30,7 +31,7 @@ class MyTestSeriesScreen extends ConsumerWidget {
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.help_outline_rounded),
-            tooltip: 'Help',
+            tooltip: context.l10n.mySeriesHelp,
           ),
         ],
       ),
@@ -75,8 +76,8 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          const Text(
-            'You haven’t purchased any Test Series yet',
+          Text(
+            context.l10n.mySeriesYouHavenTPurchasedAny,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF081847),
@@ -86,8 +87,8 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
-            'Get full-length mock tests, sectional tests, previous year papers and detailed analysis to boost your preparation.',
+          Text(
+            context.l10n.mySeriesGetFullLengthMockTests,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF60759B),
@@ -116,11 +117,11 @@ class _EmptyState extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Explore Test Series',
+                    context.l10n.auxExploreTestSeries,
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
                   ),
                   SizedBox(width: 10),
@@ -184,12 +185,12 @@ class _PurchasedSeries extends StatelessWidget {
                   child: Icon(Icons.lock_clock_rounded, color: Color(0xFFC2413A)),
                 ),
                 const SizedBox(width: 10),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Your access has expired',
+                        context.l10n.mySeriesYourAccessHasExpired,
                         style: TextStyle(
                           color: Color(0xFF9F312B),
                           fontWeight: FontWeight.w900,
@@ -197,7 +198,7 @@ class _PurchasedSeries extends StatelessWidget {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        'Renew to continue tests. Your progress and analytics are preserved.',
+                        context.l10n.mySeriesRenewToContinueTestsYour,
                         style: TextStyle(
                           color: Color(0xFF9A5A55),
                           fontSize: 12,
@@ -314,8 +315,8 @@ class _PurchasedSeries extends StatelessWidget {
               const SizedBox(height: 18),
               Row(
                 children: [
-                  const Text(
-                    'Tests Attempted',
+                  Text(
+                    context.l10n.mySeriesTestsAttempted,
                     style: TextStyle(
                       color: Color(0xFF526A92),
                       fontWeight: FontWeight.w700,
@@ -352,23 +353,23 @@ class _PurchasedSeries extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              const Row(
+              Row(
                 children: [
                   _MiniStat(
                     icon: Icons.description_rounded,
-                    label: 'Mock Tests',
+                    label: context.l10n.payMockTests,
                   ),
                   _MiniStat(
                     icon: Icons.bar_chart_rounded,
-                    label: 'Sectional',
+                    label: context.l10n.typeSectionalTab,
                   ),
                   _MiniStat(
                     icon: Icons.emoji_events_outlined,
-                    label: 'PYQs',
+                    label: context.l10n.typePyqTab,
                   ),
                   _MiniStat(
                     icon: Icons.topic_outlined,
-                    label: 'Topic Tests',
+                    label: context.l10n.mySeriesTopicTests,
                   ),
                 ],
               ),
@@ -386,8 +387,8 @@ class _PurchasedSeries extends StatelessWidget {
                         foregroundColor: const Color(0xFF073A6A),
                         side: const BorderSide(color: Color(0xFF073A6A)),
                       ),
-                      child: const Text(
-                        'View Details',
+                      child: Text(
+                        context.l10n.examsViewDetails,
                         style: TextStyle(fontWeight: FontWeight.w900),
                       ),
                     ),
@@ -448,10 +449,10 @@ class _TopTabs extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const _Tab(label: 'My Series', active: true),
-          _Tab(label: 'Downloads', onTap: onDownloads),
-          _Tab(label: 'Bookmarks', onTap: onBookmarks),
-          _Tab(label: 'History', onTap: onHistory),
+          _Tab(label: context.l10n.mySeriesMySeries, active: true),
+          _Tab(label: context.l10n.mySeriesDownloads, onTap: onDownloads),
+          _Tab(label: context.l10n.profileBookmarks, onTap: onBookmarks),
+          _Tab(label: context.l10n.mySeriesHistory, onTap: onHistory),
         ],
       );
 }
@@ -572,8 +573,8 @@ class _LoadError extends StatelessWidget {
               const Icon(Icons.cloud_off_rounded,
                   size: 48, color: Color(0xFF6B7FA4)),
               const SizedBox(height: 12),
-              const Text(
-                'Unable to load your test series.',
+              Text(
+                context.l10n.mySeriesUnableToLoadYourTest,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF10264A),
@@ -581,7 +582,7 @@ class _LoadError extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
+              OutlinedButton(onPressed: onRetry, child: Text(context.l10n.retry)),
             ],
           ),
         ),

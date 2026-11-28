@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/l10n.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({
@@ -46,8 +47,8 @@ class PaymentSuccessScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 26),
-            const Text(
-              'Payment Successful!',
+            Text(
+              context.l10n.paySuccessTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF1118A8),
@@ -56,8 +57,8 @@ class PaymentSuccessScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Your test series has been unlocked and is ready for your preparation.',
+            Text(
+              context.l10n.paySuccessBody,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF3563D8),
@@ -69,14 +70,14 @@ class PaymentSuccessScreen extends StatelessWidget {
             _Card(
               child: Column(
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Icon(Icons.verified_rounded,
                           color: Color(0xFF13A875), size: 25),
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'Access Active',
+                          context.l10n.payAccessActive,
                           style: TextStyle(
                             color: Color(0xFF081847),
                             fontWeight: FontWeight.w900,
@@ -84,31 +85,31 @@ class PaymentSuccessScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      _Pill(label: 'Active'),
+                      _Pill(label: context.l10n.payActive),
                     ],
                   ),
                   const SizedBox(height: 14),
                   const Divider(height: 1),
                   const SizedBox(height: 14),
-                  const _Feature(
+                  _Feature(
                     icon: Icons.description_rounded,
-                    title: 'Mock Tests',
-                    subtitle: 'Full access to your purchased series',
+                    title: context.l10n.payMockTests,
+                    subtitle: context.l10n.payMockTestsBody,
                   ),
-                  const _Feature(
+                  _Feature(
                     icon: Icons.bar_chart_rounded,
-                    title: 'Detailed Analysis',
-                    subtitle: 'Track attempts, accuracy and progress',
+                    title: context.l10n.payAnalysis,
+                    subtitle: context.l10n.payAnalysisBody,
                   ),
-                  const _Feature(
+                  _Feature(
                     icon: Icons.language_rounded,
-                    title: 'Bilingual Content',
-                    subtitle: 'Use supported languages throughout the series',
+                    title: context.l10n.payBilingual,
+                    subtitle: context.l10n.payBilingualBody,
                   ),
-                  const _Feature(
+                  _Feature(
                     icon: Icons.lightbulb_outline_rounded,
-                    title: 'Detailed Solutions',
-                    subtitle: 'Review explanations after every attempt',
+                    title: context.l10n.paySolutions,
+                    subtitle: context.l10n.paySolutionsBody,
                   ),
                 ],
               ),
@@ -117,18 +118,18 @@ class PaymentSuccessScreen extends StatelessWidget {
             _Card(
               child: Column(
                 children: [
-                  const _Feature(
+                  _Feature(
                     icon: Icons.shield_outlined,
-                    title: 'Your Progress is Safe',
+                    title: context.l10n.paySafe,
                     subtitle:
-                        'Attempts, analytics and bookmarks are preserved with your access.',
+                        context.l10n.paySafeBody,
                   ),
                   const Divider(height: 20),
-                  const _Feature(
+                  _Feature(
                     icon: Icons.workspace_premium_outlined,
-                    title: 'Start Learning Now',
+                    title: context.l10n.payStart,
                     subtitle:
-                        'Continue from where you left off and keep your preparation on track.',
+                        context.l10n.payStartBody,
                   ),
                   if (orderLabel.trim().isNotEmpty) ...[
                     const Divider(height: 20),
@@ -137,8 +138,8 @@ class PaymentSuccessScreen extends StatelessWidget {
                         const Icon(Icons.receipt_long_rounded,
                             color: Color(0xFF1A73E8)),
                         const SizedBox(width: 10),
-                        const Text(
-                          'Order',
+                        Text(
+                          context.l10n.payOrder,
                           style: TextStyle(color: Color(0xFF60759B)),
                         ),
                         const Spacer(),
@@ -180,11 +181,11 @@ class PaymentSuccessScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue',
+                      context.l10n.continueLabel,
                       style:
                           TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
                     ),
@@ -209,8 +210,8 @@ class PaymentSuccessScreen extends StatelessWidget {
                   ).toString(),
                 ),
                 icon: const Icon(Icons.receipt_long_outlined),
-                label: const Text(
-                  'View Receipt',
+                label: Text(
+                  context.l10n.payViewReceipt,
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
                 style: OutlinedButton.styleFrom(

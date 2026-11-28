@@ -9,6 +9,7 @@ import '../data/polity_learn_localizations.dart';
 import '../domain/learn_lesson.dart';
 import '../domain/learn_ui_copy.dart';
 import 'learn_language_selector.dart';
+import '../../../l10n/l10n.dart';
 
 class LearnCourseScreen extends ConsumerWidget {
   const LearnCourseScreen({super.key, required this.subjectCode});
@@ -226,7 +227,7 @@ class _CourseStats extends StatelessWidget {
           child: _CourseMetric(
             icon: Icons.menu_book_rounded,
             value: subject.readyLessonCount.toString(),
-            label: 'Ready lessons',
+            label: context.l10n.learnSubReadyLessons,
           ),
         ),
         const SizedBox(width: 8),
@@ -234,7 +235,7 @@ class _CourseStats extends StatelessWidget {
           child: _CourseMetric(
             icon: Icons.layers_rounded,
             value: subject.lessons.length.toString(),
-            label: 'Chapters',
+            label: context.l10n.learnSubChapters,
           ),
         ),
         const SizedBox(width: 8),
@@ -242,7 +243,7 @@ class _CourseStats extends StatelessWidget {
           child: _CourseMetric(
             icon: Icons.schedule_rounded,
             value: totalMinutes.toString() + ' min',
-            label: 'Reading',
+            label: context.l10n.learnSubReading,
           ),
         ),
       ],

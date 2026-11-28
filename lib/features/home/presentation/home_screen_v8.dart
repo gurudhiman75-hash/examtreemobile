@@ -37,6 +37,7 @@ import 'mobile_home_providers.dart';
 import 'providers/official_exam_icons_provider.dart';
 import 'official_exam_icons_embedded.dart';
 import 'mobile_custom_home_section.dart';
+import '../../../l10n/l10n.dart';
 
 final homeV8SelectedExamCodesProvider =
     Provider<AsyncValue<List<String>>>((ref) {
@@ -241,8 +242,8 @@ class HomeScreen extends ConsumerWidget {
           _SectionTitle(
             title: examCategoriesSetting.title.trim().isNotEmpty
                 ? examCategoriesSetting.title
-                : 'Exam Categories',
-            action: 'See All',
+                : context.l10n.homeExamCategories,
+            action: context.l10n.homeSeeAll,
             onAction: () => context.go('/exams'),
             subtitle: examCategoriesSetting.subtitle,
             iconName: examCategoriesSetting.iconName,
@@ -265,7 +266,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
             error: (error, stack) => homeExamFamilies.isEmpty
                 ? _ErrorCard(
-                    title: 'Exam categories could not be loaded',
+                    title: context.l10n.homeCategoriesFailed,
                     onRetry: () => ref.invalidate(examCatalogProvider),
                   )
                 : _ExamCategoriesGrid(
@@ -282,7 +283,7 @@ class HomeScreen extends ConsumerWidget {
             data: (_) => homeExamFamilies.isEmpty
                 ? _EmptyRecommendations(
                     catalogueEmpty: true,
-                    emptyText: 'No exam categories are published right now.',
+                    emptyText: context.l10n.homeNoCategories,
                     onBrowse: () => context.go('/exams'),
                   )
                 : _ExamCategoriesGrid(
@@ -307,8 +308,8 @@ class HomeScreen extends ConsumerWidget {
           _SectionTitle(
             title: featuredSeriesSetting.title.trim().isNotEmpty
                 ? featuredSeriesSetting.title
-                : 'Featured Test Series',
-            action: 'See All',
+                : context.l10n.homeFeaturedSeries,
+            action: context.l10n.homeSeeAll,
             onAction: () => context.go('/exams'),
             subtitle: featuredSeriesSetting.subtitle,
             iconName: featuredSeriesSetting.iconName,
@@ -330,7 +331,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
             error: (error, stack) => homeFeaturedSeries.isEmpty
                 ? _ErrorCard(
-                    title: 'Test series could not be loaded',
+                    title: context.l10n.homeSeriesFailed,
                     onRetry: () => ref.invalidate(examCatalogProvider),
                   )
                 : _ConfiguredSeriesRail(
@@ -369,8 +370,8 @@ class HomeScreen extends ConsumerWidget {
           _SectionTitle(
             title: continueLearningSetting.title.trim().isNotEmpty
                 ? continueLearningSetting.title
-                : 'Continue Learning',
-            action: 'See All',
+                : context.l10n.homeContinueLearning,
+            action: context.l10n.homeSeeAll,
             onAction: () => context.go('/learn'),
             subtitle: continueLearningSetting.subtitle,
             iconName: continueLearningSetting.iconName,
@@ -398,7 +399,7 @@ class HomeScreen extends ConsumerWidget {
               slotKey: 'home_learn',
               title: recommendedLearningSetting.title.trim().isNotEmpty
                   ? recommendedLearningSetting.title
-                  : 'Recommended Learning',
+                  : context.l10n.homeRecommendedLearning,
               subtitle: recommendedLearningSetting.subtitle,
               iconName: recommendedLearningSetting.iconName,
               iconUrl: recommendedLearningSetting.iconUrl,
@@ -409,7 +410,7 @@ class HomeScreen extends ConsumerWidget {
               slotKey: 'home_current_affairs',
               title: currentAffairsSetting.title.trim().isNotEmpty
                   ? currentAffairsSetting.title
-                  : 'Current Affairs',
+                  : context.l10n.homeCurrentAffairs,
               subtitle: currentAffairsSetting.subtitle,
               iconName: currentAffairsSetting.iconName,
               iconUrl: currentAffairsSetting.iconUrl,
@@ -422,7 +423,7 @@ class HomeScreen extends ConsumerWidget {
                   title: todayGoalSetting.title.trim().isNotEmpty
                       ? todayGoalSetting.title
                       : "Today's Goal",
-                  action: 'See All',
+                  action: context.l10n.homeSeeAll,
                   onAction: () => context.push('/profile'),
                   subtitle: todayGoalSetting.subtitle,
                   iconName: todayGoalSetting.iconName,
@@ -432,7 +433,7 @@ class HomeScreen extends ConsumerWidget {
                 analyticsAsync.when(
                   loading: () => const _LoadingCard(height: 112),
                   error: (error, stack) => _ErrorCard(
-                    title: 'Progress is temporarily unavailable',
+                    title: context.l10n.homeProgressUnavailable,
                     onRetry: () => ref.invalidate(userAnalyticsProvider),
                   ),
                   data: (analytics) => _TodayGoalCard(
@@ -471,9 +472,10 @@ class HomeScreen extends ConsumerWidget {
               sliver: SliverList.list(
                 children: [
                   _HomeHeader(
-                    name: _displayName(user?.displayName, user?.email),
-                    greeting: _greeting(currentTime),
-                    dateLabel: _dateLabel(currentTime),
+                    name: _displayName(user?.displayName, user?.email) ??
+                        context.l10n.homeStudent,
+                    greeting: _greeting(context, currentTime),
+                    dateLabel: formatWeekdayDayMonth(context, currentTime),
                     photoUrl: user?.photoURL,
                     onSearch: () => context.go('/exams'),
                     onNotifications: () => context.push('/notifications'),
@@ -494,18 +496,19 @@ class HomeScreen extends ConsumerWidget {
 }
 
 
-String _homeFamilyLabel(MobileFeaturedExamFamily family) {
+String _homeFamilyLabel(BuildContext context, MobileFeaturedExamFamily family) {
+  final l10n = context.l10n;
   final key = (family.code + ' ' + family.name).toLowerCase();
-  if (key.contains('punjab')) return 'Punjab Govt.';
+  if (key.contains('punjab')) return l10n.familyPunjab;
   if (key.contains('ssc') || key.contains('staff selection')) return 'SSC';
-  if (key.contains('bank')) return 'Banking';
-  if (key.contains('rail')) return 'Railway';
-  if (key.contains('teach')) return 'Teaching';
+  if (key.contains('bank')) return l10n.familyBanking;
+  if (key.contains('rail')) return l10n.familyRailway;
+  if (key.contains('teach')) return l10n.familyTeaching;
   if (key.contains('defen') || key.contains('army') || key.contains('navy')) {
-    return 'Defence';
+    return l10n.familyDefence;
   }
-  if (key.contains('pcs') || key.contains('state civil')) return 'State PCS';
-  if (key.contains('other')) return 'Other Exams';
+  if (key.contains('pcs') || key.contains('state civil')) return l10n.familyStatePcs;
+  if (key.contains('other')) return l10n.familyOther;
   return family.name;
 }
 
@@ -802,7 +805,7 @@ class _ConfiguredHeroCarouselState extends State<_ConfiguredHeroCarousel> {
                                     ),
                                     child: Text(
                                       slide.ctaLabel.trim().isEmpty
-                                          ? 'Explore'
+                                          ? context.l10n.homeExplore
                                           : slide.ctaLabel,
                                       style: Theme.of(context)
                                           .textTheme
@@ -1094,7 +1097,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                 child: _CompactSeriesMetric(
                   icon: Icons.description_outlined,
                   value: item.testCount > 0 ? item.testCount.toString() : '—',
-                  label: 'Tests',
+                  label: context.l10n.homeTests,
                   foreground: foreground,
                 ),
               ),
@@ -1104,7 +1107,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                   value: item.durationSeconds > 0
                       ? (item.durationSeconds / 60).round().toString()
                       : '—',
-                  label: 'Mins',
+                  label: context.l10n.homeMins,
                   foreground: foreground,
                 ),
               ),
@@ -1114,7 +1117,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                   value: item.totalMarks > 0
                       ? _formatSeriesMarks(item.totalMarks)
                       : '—',
-                  label: 'Marks',
+                  label: context.l10n.homeMarks,
                   foreground: foreground,
                 ),
               ),
@@ -1127,15 +1130,15 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                 child: _SeriesMetric(
                   icon: Icons.quiz_outlined,
                   value: '${item.questionCount}',
-                  label: 'Questions',
+                  label: context.l10n.homeQuestions,
                   light: alternate && !hasImage,
                 ),
               ),
               Expanded(
                 child: _SeriesMetric(
                   icon: Icons.schedule_rounded,
-                  value: '${(item.durationSeconds / 60).round()} min',
-                  label: 'Duration',
+                  value: context.l10n.minutesShort((item.durationSeconds / 60).round()),
+                  label: context.l10n.homeDuration,
                   light: alternate && !hasImage,
                 ),
               ),
@@ -1143,7 +1146,7 @@ class _ConfiguredSeriesCard extends StatelessWidget {
                 child: _SeriesMetric(
                   icon: Icons.emoji_events_outlined,
                   value: _formatSeriesMarks(item.totalMarks),
-                  label: 'Marks',
+                  label: context.l10n.homeMarks,
                   light: alternate && !hasImage,
                 ),
               ),
@@ -1377,15 +1380,15 @@ class _DefaultCanonicalSeriesCard extends StatelessWidget {
                           child: _SeriesMetric(
                             icon: Icons.quiz_outlined,
                             value: item.questionCount.toString(),
-                            label: 'Questions',
+                            label: context.l10n.homeQuestions,
                             light: alternate,
                           ),
                         ),
                         Expanded(
                           child: _SeriesMetric(
                             icon: Icons.schedule_rounded,
-                            value: durationMinutes.toString() + ' min',
-                            label: 'Duration',
+                            value: context.l10n.minutesShort(durationMinutes),
+                            label: context.l10n.homeDuration,
                             light: alternate,
                           ),
                         ),
@@ -1393,7 +1396,7 @@ class _DefaultCanonicalSeriesCard extends StatelessWidget {
                           child: _SeriesMetric(
                             icon: Icons.emoji_events_outlined,
                             value: marks,
-                            label: 'Marks',
+                            label: context.l10n.homeMarks,
                             light: alternate,
                           ),
                         ),
@@ -1505,7 +1508,7 @@ class _HomePromoFallback extends StatelessWidget {
                   ),
                   const SizedBox(height: 7),
                   Text(
-                    'Your Preparation\nStarts Here',
+                    context.l10n.homeHeroTitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.premiumHeading(
@@ -1519,7 +1522,7 @@ class _HomePromoFallback extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    'Mock tests, learning and exam-focused practice in one place.',
+                    context.l10n.homeHeroBody,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1642,7 +1645,7 @@ class _HomeSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(28),
             border: Border.all(color: const Color(0xFFE8EBEE)),
           ),
-          child: const Row(
+          child: Row(
             children: [
               Icon(
                 Icons.search_rounded,
@@ -1652,7 +1655,7 @@ class _HomeSearchBar extends StatelessWidget {
               SizedBox(width: 11),
               Expanded(
                 child: Text(
-                  'Search exams, test series, topics...',
+                  context.l10n.homeSearchHint,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -2014,7 +2017,7 @@ class _ExamCategoriesGrid extends StatelessWidget {
               return _ExamCategoryPresentation(
                 label: override?.title.trim().isNotEmpty == true
                     ? override!.title
-                    : _homeFamilyLabel(family),
+                    : _homeFamilyLabel(context, family),
                 routeFamily: family.code.trim().isNotEmpty
                     ? family.code
                     : family.name,
@@ -2403,15 +2406,15 @@ class _FeaturedSeriesCard extends StatelessWidget {
                           child: _SeriesMetric(
                             icon: Icons.quiz_outlined,
                             value: '${exam.totalQuestions}',
-                            label: 'Questions',
+                            label: context.l10n.homeQuestions,
                             light: alternate,
                           ),
                         ),
                         Expanded(
                           child: _SeriesMetric(
                             icon: Icons.schedule_rounded,
-                            value: '$durationMinutes min',
-                            label: 'Duration',
+                            value: context.l10n.minutesShort(durationMinutes),
+                            label: context.l10n.homeDuration,
                             light: alternate,
                           ),
                         ),
@@ -2419,7 +2422,7 @@ class _FeaturedSeriesCard extends StatelessWidget {
                           child: _SeriesMetric(
                             icon: Icons.emoji_events_outlined,
                             value: marks,
-                            label: 'Marks',
+                            label: context.l10n.homeMarks,
                             light: alternate,
                           ),
                         ),
@@ -2531,7 +2534,7 @@ class _ContinueLearningCard extends StatelessWidget {
     if (state.loading) return const _LoadingCard(height: 104);
     if (state.error || state.action == null) {
       return _ErrorCard(
-        title: 'Continue learning is temporarily unavailable',
+        title: context.l10n.homeContinueUnavailable,
         onRetry: onRetry,
       );
     }
@@ -2685,7 +2688,7 @@ class _TodayGoalCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Keep Going!',
+                context.l10n.homeKeepGoing,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w900,
                   color: const Color(0xFF10264A),
@@ -2693,7 +2696,7 @@ class _TodayGoalCard extends StatelessWidget {
               ),
               const SizedBox(height: 3),
               Text(
-                '${analytics.totalTestsAttempted} tests completed so far.',
+                context.l10n.homeTestsCompleted(analytics.totalTestsAttempted),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -2711,10 +2714,10 @@ class _TodayGoalCard extends StatelessWidget {
       children: [
         _GoalMetric(
           value: '${analytics.totalTestsAttempted}',
-          label: 'Tests',
+          label: context.l10n.homeTests,
         ),
         const _GoalDivider(),
-        _GoalMetric(value: '$accuracy%', label: 'Accuracy'),
+        _GoalMetric(value: '$accuracy%', label: context.l10n.resultAccuracy),
       ],
     );
 
@@ -2945,7 +2948,7 @@ class _HomeHeader extends StatelessWidget {
       children: [
         _HeaderButton(
           icon: Icons.search_rounded,
-          tooltip: 'Search tests',
+          tooltip: context.l10n.homeSearchTests,
           onTap: onSearch,
         ),
         const SizedBox(width: 2),
@@ -2956,7 +2959,7 @@ class _HomeHeader extends StatelessWidget {
         const SizedBox(width: 7),
         Semantics(
           button: true,
-          label: 'Open profile',
+          label: context.l10n.homeOpenProfile,
           child: InkWell(
             onTap: onProfile,
             customBorder: const CircleBorder(),
@@ -3103,16 +3106,16 @@ class _NotificationButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: unreadCount > 0
-          ? 'Notifications, $unreadCount unread'
-          : 'Notifications, no unread updates',
+          ? context.l10n.homeNotificationsUnreadA11y(unreadCount)
+          : context.l10n.homeNotificationsNoneA11y,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           _HeaderButton(
             icon: Icons.notifications_none_rounded,
             tooltip: unreadCount > 0
-                ? 'Notifications ($unreadCount unread)'
-                : 'Notifications',
+                ? context.l10n.homeNotificationsUnread(unreadCount)
+                : context.l10n.homeNotifications,
             onTap: onTap,
           ),
           if (unreadCount > 0)
@@ -3188,14 +3191,14 @@ class _NextActionHero extends StatelessWidget {
     if (state.loading) return const _HeroLoading();
     if (state.error) {
       return _ErrorCard(
-        title: 'Your next action could not be prepared',
+        title: context.l10n.homeNextActionFailed,
         onRetry: onRetry,
       );
     }
 
     final action = state.action!;
     final theme = Theme.of(context);
-    final metadata = _actionMetadata(action);
+    final metadata = _actionMetadata(context, action);
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -3372,7 +3375,7 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           child: _QuickAction(
             icon: Icons.assignment_rounded,
-            label: 'Tests',
+            label: context.l10n.homeTests,
             background: AppColors.skyContainer,
             foreground: AppColors.onSkyContainer,
             onTap: onTests,
@@ -3382,7 +3385,7 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           child: _QuickAction(
             icon: Icons.menu_book_rounded,
-            label: 'Learn',
+            label: context.l10n.homeLearn,
             background: AppColors.mintContainer,
             foreground: AppColors.onMintContainer,
             onTap: onLearn,
@@ -3392,7 +3395,7 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           child: _QuickAction(
             icon: Icons.replay_circle_filled_rounded,
-            label: 'Revision',
+            label: context.l10n.homeRevision,
             background: AppColors.amberContainer,
             foreground: AppColors.onAmberContainer,
             onTap: onRevision,
@@ -3402,7 +3405,7 @@ class _QuickActions extends StatelessWidget {
         Expanded(
           child: _QuickAction(
             icon: Icons.shopping_bag_rounded,
-            label: 'Store',
+            label: context.l10n.homeStore,
             background: AppColors.tertiaryContainer,
             foreground: AppColors.onTertiaryContainer,
             onTap: onStore,
@@ -3688,7 +3691,7 @@ class _ProgressCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Accuracy',
+                      context.l10n.resultAccuracy,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w700,
@@ -3697,10 +3700,10 @@ class _ProgressCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       accuracy >= 75
-                          ? 'Strong momentum'
+                          ? context.l10n.homeStrongMomentum
                           : accuracy >= 55
-                              ? 'Keep building consistency'
-                              : 'Focus on accuracy first',
+                              ? context.l10n.homeKeepConsistency
+                              : context.l10n.homeFocusAccuracy,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w900,
                       ),
@@ -3724,21 +3727,21 @@ class _ProgressCard extends StatelessWidget {
               Expanded(
                 child: _Metric(
                   value: '${analytics.totalTestsAttempted}',
-                  label: 'Tests',
+                  label: context.l10n.homeTests,
                 ),
               ),
               _VerticalMetricDivider(),
               Expanded(
                 child: _Metric(
                   value: '${analytics.averageScore.round()}%',
-                  label: 'Avg score',
+                  label: context.l10n.homeAvgScore,
                 ),
               ),
               _VerticalMetricDivider(),
               Expanded(
                 child: _Metric(
                   value: '${analytics.averageTimePerQuestion}s',
-                  label: 'Per question',
+                  label: context.l10n.homePerQuestion,
                 ),
               ),
             ],
@@ -3890,12 +3893,12 @@ class _ExamCard extends StatelessWidget {
             children: [
               _TinyMeta(
                 icon: Icons.quiz_outlined,
-                text: '${exam.totalQuestions} Qs',
+                text: context.l10n.homeQs(exam.totalQuestions),
               ),
               const SizedBox(width: AppSpacing.md),
               _TinyMeta(
                 icon: Icons.schedule_rounded,
-                text: '${(exam.durationInSeconds / 60).ceil()} min',
+                text: context.l10n.minutesShort((exam.durationInSeconds / 60).ceil()),
               ),
             ],
           ),
@@ -3981,7 +3984,7 @@ class _ErrorCard extends StatelessWidget {
           const Icon(Icons.cloud_off_rounded, color: AppColors.error),
           const SizedBox(width: AppSpacing.md),
           Expanded(child: Text(title)),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
+          TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
         ],
       ),
     );
@@ -4020,11 +4023,11 @@ class _EmptyRecommendations extends StatelessWidget {
           Expanded(
             child: Text(
               catalogueEmpty
-                  ? (emptyText ?? 'No tests are published right now.')
-                  : 'You are caught up on current recommendations.',
+                  ? (emptyText ?? context.l10n.homeNoTests)
+                  : context.l10n.homeCaughtUp,
             ),
           ),
-          TextButton(onPressed: onBrowse, child: const Text('Browse')),
+          TextButton(onPressed: onBrowse, child: Text(context.l10n.homeBrowse)),
         ],
       ),
     );
@@ -4074,23 +4077,24 @@ List<BoxShadow> _softShadow() => [
       ),
     ];
 
-List<String> _actionMetadata(HomePrimaryAction action) {
+List<String> _actionMetadata(BuildContext context, HomePrimaryAction action) {
+  final l10n = context.l10n;
   final exam = action.exam;
   if (exam != null) {
     return [
-      '${exam.totalQuestions} questions',
-      '${(exam.durationInSeconds / 60).ceil()} min',
+      l10n.resultQuestionsCount(exam.totalQuestions),
+      l10n.minutesShort((exam.durationInSeconds / 60).ceil()),
     ];
   }
   final result = action.result;
   if (result != null) {
     return [
-      '${result.percentageScore.round()}% score',
-      '${result.accuracy.round()}% accuracy',
+      l10n.homeScorePct(result.percentageScore.round()),
+      l10n.homeAccuracyPct(result.accuracy.round()),
     ];
   }
   if (action.dueRevisionCount > 0) {
-    return ['${action.dueRevisionCount} due'];
+    return [l10n.homeDue(action.dueRevisionCount)];
   }
   return const [];
 }
@@ -4123,43 +4127,18 @@ void _openAction(BuildContext context, HomePrimaryAction action) {
   }
 }
 
-String _displayName(String? displayName, String? email) {
+String? _displayName(String? displayName, String? email) {
   final name = displayName?.trim();
   if (name != null && name.isNotEmpty) return name.split(RegExp(r'\s+')).first;
   final localPart = email?.split('@').first.trim();
   if (localPart != null && localPart.isNotEmpty) return localPart;
-  return 'Student';
+  return null;
 }
 
-String _greeting(DateTime now) {
-  if (now.hour < 12) return 'Good morning';
-  if (now.hour < 17) return 'Good afternoon';
-  return 'Good evening';
+String _greeting(BuildContext context, DateTime now) {
+  final l10n = context.l10n;
+  if (now.hour < 12) return l10n.homeGoodMorning;
+  if (now.hour < 17) return l10n.homeGoodAfternoon;
+  return l10n.homeGoodEvening;
 }
 
-String _dateLabel(DateTime now) {
-  const weekdays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return '${weekdays[now.weekday - 1]}, ${now.day} ${months[now.month - 1]}';
-}

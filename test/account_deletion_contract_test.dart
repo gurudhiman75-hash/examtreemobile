@@ -79,7 +79,11 @@ void main() {
 
       expect(profileEntry, contains("export 'profile_screen_v5.dart';"));
       expect(profile, contains("context.push('/account')"));
-      expect(profile, contains('Privacy & account'));
+      expect(profile, contains('context.l10n.profilePrivacy'));
+      expect(
+        File('lib/l10n/app_en.arb').readAsStringSync(),
+        contains('"profilePrivacy": "Privacy & account"'),
+      );
       expect(router, contains("path: '/account'"));
       expect(account, contains('account-delete-confirmation-field'));
       expect(account, contains('account-delete-confirm-button'));

@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class QuickRevisionScreen extends ConsumerStatefulWidget {
   const QuickRevisionScreen({super.key, required this.minutes});
@@ -51,7 +52,7 @@ class _QuickRevisionScreenState extends ConsumerState<QuickRevisionScreen> {
       if (!mounted) return;
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to save this review.')),
+        SnackBar(content: Text(context.l10n.revisionUnableToSaveThisReview)),
       );
     }
   }
@@ -148,7 +149,7 @@ class _RevisionErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Revision queue unavailable',
+              context.l10n.revisionRevisionQueueUnavailable,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w900,
@@ -156,7 +157,7 @@ class _RevisionErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Try loading your saved revision questions again.',
+              context.l10n.revisionTryLoadingYourSavedRevision,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -167,7 +168,7 @@ class _RevisionErrorState extends StatelessWidget {
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: Text(context.l10n.retry),
             ),
           ],
         ),
@@ -305,7 +306,7 @@ class _RevisionSessionBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
         Text(
-          'Review the question',
+          context.l10n.revisionReviewTheQuestion,
           style: theme.textTheme.labelLarge?.copyWith(
             color: const Color(0xFF0B3A6F),
             fontWeight: FontWeight.w900,
@@ -348,7 +349,7 @@ class _RevisionSessionBody extends StatelessWidget {
               textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
             icon: const Icon(Icons.visibility_outlined),
-            label: const Text('Show answer'),
+            label: Text(context.l10n.revisionShowAnswer),
           )
         else ...[
           _ExplanationCard(explanation: item.explanation),
@@ -477,7 +478,7 @@ class _SessionHeaderCopy extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
-          'Recall first. Reveal the stored answer when you’re ready.',
+          context.l10n.revisionRecallFirstRevealTheStored,
           style: theme.textTheme.bodySmall?.copyWith(
             color: Colors.white.withValues(alpha: 0.84),
             height: 1.35,
@@ -713,7 +714,7 @@ class _ExplanationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
-                      'Compare this with the reasoning you recalled.',
+                      context.l10n.revisionCompareThisWithTheReasoning,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
@@ -761,7 +762,7 @@ class _RecallPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'How well did you remember this?',
+            context.l10n.revisionHowWellDidYouRemember,
             style: theme.textTheme.titleMedium?.copyWith(
               color: const Color(0xFF10264A),
               fontWeight: FontWeight.w900,
@@ -769,7 +770,7 @@ class _RecallPanel extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Choose “Got it” if you could explain the answer now. Choose “Review again” to bring it back sooner.',
+            context.l10n.revisionChooseGotItIfYou,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.45,
@@ -810,7 +811,7 @@ class _OutcomeActions extends StatelessWidget {
       key: const Key('quick-revision-review-again'),
       onPressed: saving ? null : onReviewAgain,
       icon: const Icon(Icons.replay_rounded),
-      label: const Text('Review again'),
+      label: Text(context.l10n.revisionReviewAgain),
     );
     final remembered = FilledButton.icon(
       key: const Key('quick-revision-got-it'),
@@ -824,7 +825,7 @@ class _OutcomeActions extends StatelessWidget {
         textStyle: const TextStyle(fontWeight: FontWeight.w900),
       ),
       icon: const Icon(Icons.check_rounded),
-      label: const Text('Got it'),
+      label: Text(context.l10n.revisionGotIt),
     );
 
     if (textScale >= 1.5) {

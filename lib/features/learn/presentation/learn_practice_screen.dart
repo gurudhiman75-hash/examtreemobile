@@ -11,6 +11,7 @@ import '../domain/learn_lesson.dart';
 import '../domain/learn_practice_models.dart';
 import '../domain/learn_practice_question.dart';
 import 'providers/learn_practice_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class LearnPracticeScreen extends ConsumerWidget {
   const LearnPracticeScreen({
@@ -44,8 +45,8 @@ class LearnPracticeScreen extends ConsumerWidget {
         standaloneTopic?.practiceTags ?? lesson?.practiceTags ?? const <String>[];
 
     if (title == null) {
-      return const Scaffold(
-        body: Center(child: Text('Practice topic unavailable')),
+      return Scaffold(
+        body: Center(child: Text(context.l10n.learnSubPracticeTopicUnavailable)),
       );
     }
 
@@ -73,7 +74,7 @@ class LearnPracticeScreen extends ConsumerWidget {
           return _PracticeLoadFailure(
             title: title,
             message:
-                'Practice questions are not available for this topic yet.',
+                context.l10n.learnSubPracticeQuestionsAreNotAvailable,
             onRetry: () => ref.invalidate(
               learnPracticeQuestionsProvider(request),
             ),
@@ -114,11 +115,11 @@ class _PracticeLoadFailure extends StatelessWidget {
               const SizedBox(height: AppSpacing.md),
               Text(
                 message ??
-                    'Unable to load practice questions right now. Your Learn progress is safe.',
+                    context.l10n.learnSubUnableToLoadPracticeQuestions,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.md),
-              FilledButton(onPressed: onRetry, child: const Text('Try again')),
+              FilledButton(onPressed: onRetry, child: Text(context.l10n.notifTryAgain)),
             ],
           ),
         ),
@@ -257,7 +258,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
     final shouldSubmit = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Submit practice?'),
+        title: Text(context.l10n.learnSubSubmitPractice),
         content: Text(
           answered == widget.questions.length
               ? 'You have answered all questions. Submit and view your result?'
@@ -266,11 +267,11 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Keep practicing'),
+            child: Text(context.l10n.learnSubKeepPracticing),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Submit'),
+            child: Text(context.l10n.learnSubSubmit),
           ),
         ],
       ),
@@ -326,7 +327,7 @@ class _LearnPracticeRunnerState extends ConsumerState<_LearnPracticeRunner> {
         scrolledUnderElevation: 0,
         leading: IconButton(
           key: const Key('learn-practice-back'),
-          tooltip: 'Back',
+          tooltip: context.l10n.learnSubBack,
           onPressed: leavePractice,
           icon: const Icon(Icons.arrow_back_rounded),
         ),

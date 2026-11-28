@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../data/learn_module_catalog.dart';
 import '../domain/learn_practice_models.dart';
+import '../../../l10n/l10n.dart';
 
 class LearnModuleScreen extends StatelessWidget {
   const LearnModuleScreen({super.key, required this.moduleId});
@@ -14,7 +15,7 @@ class LearnModuleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final module = learnModuleById(moduleId);
     if (module == null) {
-      return const Scaffold(body: Center(child: Text('Module unavailable')));
+      return Scaffold(body: Center(child: Text(context.l10n.learnSubModuleUnavailable)));
     }
     final visual = _visualFor(module.id);
 
@@ -34,8 +35,8 @@ class LearnModuleScreen extends StatelessWidget {
           _ModuleHero(module: module, visual: visual),
           const SizedBox(height: 18),
           _SectionHeader(
-            title: 'Choose a topic area',
-            subtitle: 'Open an area to continue learning and practice.',
+            title: context.l10n.learnSubChooseATopicArea,
+            subtitle: context.l10n.learnSubOpenAnAreaToContinue,
             count: module.submodules.length,
           ),
           const SizedBox(height: 10),
@@ -160,9 +161,9 @@ class _ModuleHero extends StatelessWidget {
                     label: '${module.submodules.length} areas',
                   ),
                   const SizedBox(width: 8),
-                  const _HeroPill(
+                  _HeroPill(
                     icon: Icons.schedule_rounded,
-                    label: 'Untimed',
+                    label: context.l10n.learnSubUntimed,
                   ),
                 ],
               ),
@@ -363,7 +364,7 @@ class _SubmoduleCard extends StatelessWidget {
                       if (!available) ...[
                         const SizedBox(height: 5),
                         Text(
-                          'Coming soon',
+                          context.l10n.learnSubComingSoon,
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: const Color(0xFF9A7A35),
                             fontWeight: FontWeight.w800,

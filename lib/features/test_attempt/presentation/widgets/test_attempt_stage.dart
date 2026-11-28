@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/l10n.dart';
 
 class TestAttemptStage extends StatelessWidget {
   const TestAttemptStage({
@@ -86,7 +87,7 @@ class TestAttemptStage extends StatelessWidget {
               ),
             ),
             Text(
-              'Question $questionNumber of $totalQuestions',
+              context.l10n.attemptQuestionOf(questionNumber, totalQuestions),
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w700,
@@ -122,8 +123,8 @@ class TestAttemptStage extends StatelessWidget {
           if (syncing || syncFailed)
             IconButton(
               tooltip: syncFailed
-                  ? 'Progress not saved. Retry.'
-                  : 'Saving progress',
+                  ? context.l10n.attemptNotSavedRetry
+                  : context.l10n.attemptSavingProgress,
               onPressed: syncFailed ? onRetrySync : null,
               icon: syncing
                   ? const SizedBox.square(
@@ -133,7 +134,7 @@ class TestAttemptStage extends StatelessWidget {
                   : const Icon(Icons.cloud_off_outlined),
             ),
           IconButton(
-            tooltip: 'Save and exit',
+            tooltip: context.l10n.attemptSaveExit,
             onPressed: onExit,
             icon: const Icon(Icons.close_rounded),
           ),
@@ -180,12 +181,12 @@ class TestAttemptStage extends StatelessWidget {
                         children: [
                           _QuestionBadge(
                             icon: Icons.quiz_outlined,
-                            label: 'Question $questionNumber',
+                            label: context.l10n.attemptQuestionNumber(questionNumber),
                           ),
                           if (markedForReview)
-                            const _QuestionBadge(
+                            _QuestionBadge(
                               icon: Icons.bookmark_rounded,
-                              label: 'Marked for review',
+                              label: context.l10n.attemptMarkedForReview,
                               emphasized: true,
                             ),
                         ],
@@ -309,7 +310,10 @@ class _AttemptOption extends StatelessWidget {
       button: true,
       selected: selected,
       enabled: enabled,
-      label: 'Option ${String.fromCharCode(65 + index)}: $text',
+      label: context.l10n.attemptOptionLabel(
+        String.fromCharCode(65 + index),
+        text,
+      ),
       child: Material(
         key: Key('test-attempt-option-$index'),
         color: background,
@@ -414,19 +418,19 @@ class _AttemptActions extends StatelessWidget {
       key: const Key('test-attempt-previous'),
       onPressed: locked ? null : onPrevious,
       icon: const Icon(Icons.arrow_back_rounded, size: 19),
-      label: const Text('Previous'),
+      label: Text(context.l10n.attemptPrevious),
     );
     final clear = TextButton.icon(
       key: const Key('test-attempt-clear'),
       onPressed: locked ? null : onClear,
       icon: const Icon(Icons.backspace_outlined, size: 18),
-      label: const Text('Clear'),
+      label: Text(context.l10n.attemptClear),
     );
     final review = TextButton.icon(
       key: const Key('test-attempt-review'),
       onPressed: locked ? null : onMarkReview,
       icon: const Icon(Icons.bookmark_border_rounded, size: 19),
-      label: const Text('Review'),
+      label: Text(context.l10n.attemptReview),
     );
 
     return Material(

@@ -8,6 +8,7 @@ import '../domain/series_purchase.dart';
 import 'providers/store_providers.dart';
 import '../../../shared/widgets/skeleton.dart';
 import 'series_purchase_shared.dart';
+import '../../../l10n/l10n.dart';
 
 class SeriesPlansScreen extends ConsumerStatefulWidget {
   const SeriesPlansScreen({super.key, required this.seriesId});
@@ -33,7 +34,7 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
   Future<void> _apply(SeriesPurchasePlan plan) async {
     final code = _coupon.text.trim().toUpperCase();
     if (code.isEmpty) {
-      setState(() => _message = 'Enter a coupon code first.');
+      setState(() => _message = context.l10n.storeEnterCoupon);
       return;
     }
     setState(() {
@@ -49,8 +50,9 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
       if (!mounted) return;
       setState(() {
         _quote = quote;
-        _message = 'Coupon applied • Save ' +
-            formatSeriesMoney(quote.discountMinor, quote.currency);
+        _message = context.l10n.storeCouponApplied(
+          formatSeriesMoney(quote.discountMinor, quote.currency),
+        );
       });
     } on StoreCatalogException catch (error) {
       if (!mounted) return;
@@ -65,7 +67,7 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
     final detail = ref.watch(mobileTestSeriesDetailProvider(widget.seriesId));
     return Scaffold(
       backgroundColor: purchasePage,
-      appBar: purchaseAppBar('Choose Plan'),
+      appBar: purchaseAppBar(context.l10n.storeChoosePlan),
       body: detail.when(
         loading: () => const SkeletonShimmer(
           child: Padding(
@@ -85,8 +87,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
         ),
         error: (_, __) => PurchaseState(
           icon: Icons.cloud_off_outlined,
-          title: 'Unable to load plans',
-          action: 'Retry',
+          title: context.l10n.storePlansFailed,
+          action: context.l10n.retry,
           onAction: () =>
               ref.invalidate(mobileTestSeriesDetailProvider(widget.seriesId)),
         ),
@@ -97,17 +99,17 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
             return PurchaseState(
               icon: Icons.verified_rounded,
               iconColor: const Color(0xFF10996F),
-              title: 'This test series is already active.',
-              action: 'Open Test Series',
+              title: context.l10n.storeAlreadyActive,
+              action: context.l10n.storeOpenTestSeries,
               onAction: () => context.go(
                 '/test-series?id=' + Uri.encodeQueryComponent(widget.seriesId),
               ),
             );
           }
           if (commerce.plans.isEmpty) {
-            return const PurchaseState(
+            return PurchaseState(
               icon: Icons.inventory_2_outlined,
-              title: 'No purchase plan is available right now.',
+              title: context.l10n.storeNoPlan,
             );
           }
 
@@ -126,14 +128,14 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                     PurchaseHero(
                       eyebrow: info.examName,
                       title: info.name,
-                      subtitle: commerce.premiumTestCount.toString() +
-                          ' premium tests • ' +
-                          commerce.freeTestCount.toString() +
-                          ' free',
+                      subtitle: context.l10n.storePremiumFree(
+                        commerce.premiumTestCount,
+                        commerce.freeTestCount,
+                      ),
                     ),
                     const SizedBox(height: 18),
-                    const Text(
-                      'Choose your access plan',
+                    Text(
+                      context.l10n.storeChooseAccessPlan,
                       style: TextStyle(
                         color: Color(0xFF10264A),
                         fontSize: 20,
@@ -141,8 +143,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Only currently published plans are shown.',
+                    Text(
+                      context.l10n.storePublishedOnly,
                       style: TextStyle(color: purchaseMuted, fontSize: 12),
                     ),
                     const SizedBox(height: 12),
@@ -165,8 +167,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Have a coupon?',
+                          Text(
+                            context.l10n.storeHaveCoupon,
                             style: TextStyle(
                               color: Color(0xFF10264A),
                               fontWeight: FontWeight.w900,
@@ -181,8 +183,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                                   textCapitalization:
                                       TextCapitalization.characters,
                                   enabled: !_applying,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Enter coupon code',
+                                  decoration: InputDecoration(
+                                    hintText: context.l10n.storeCouponHint,
                                     isDense: true,
                                     border: OutlineInputBorder(),
                                   ),
@@ -200,7 +202,7 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                                           strokeWidth: 2,
                                         ),
                                       )
-                                    : const Text('Apply'),
+                                    : Text(context.l10n.storeApply),
                               ),
                             ],
                           ),
@@ -241,8 +243,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Selected plan',
+                            Text(
+                              context.l10n.storeSelectedPlan,
                               style: TextStyle(
                                 color: Color(0xFFAFC5DC),
                                 fontSize: 10,
@@ -283,8 +285,8 @@ class _SeriesPlansScreenState extends ConsumerState<SeriesPlansScreen> {
                           foregroundColor: Colors.white,
                           minimumSize: const Size(132, 46),
                         ),
-                        child: const Text(
-                          'Continue',
+                        child: Text(
+                          context.l10n.continueLabel,
                           style: TextStyle(fontWeight: FontWeight.w900),
                         ),
                       ),
@@ -342,7 +344,7 @@ class _PlanCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      validityLabel(plan.validityDays),
+                      validityLabel(context, plan.validityDays),
                       style: const TextStyle(
                         color: Color(0xFF10264A),
                         fontWeight: FontWeight.w900,
@@ -362,8 +364,7 @@ class _PlanCard extends StatelessWidget {
                     if (plan.seriesCoveredTestCount > 0) ...[
                       const SizedBox(height: 5),
                       Text(
-                        plan.seriesCoveredTestCount.toString() +
-                            ' series tests included',
+                        context.l10n.storeTestsIncluded(plan.seriesCoveredTestCount),
                         style: const TextStyle(
                           color: Color(0xFF10996F),
                           fontSize: 11,
@@ -403,7 +404,7 @@ class _PlanCard extends StatelessWidget {
                     ),
                   if (plan.discountPercent > 0)
                     Text(
-                      plan.discountPercent.toString() + '% OFF',
+                      context.l10n.storePercentOff(plan.discountPercent),
                       style: const TextStyle(
                         color: Color(0xFF10996F),
                         fontSize: 10,
