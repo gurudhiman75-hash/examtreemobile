@@ -2170,4 +2170,423 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notifTryAgain => 'फिर से कोशिश करें';
+
+  @override
+  String get profileMyProfile => 'मेरी प्रोफ़ाइल';
+
+  @override
+  String get profileSettings => 'सेटिंग';
+
+  @override
+  String get profileUnableToLoadYourPerformance =>
+      'आपका प्रदर्शन लोड नहीं हो सका';
+
+  @override
+  String get profileAccount => 'खाता';
+
+  @override
+  String get profilePreferencesPrivacyAndThisDevice =>
+      'पसंद, गोपनीयता और इस डिवाइस का सत्र।';
+
+  @override
+  String get profileUsedInTestsAnswerReview =>
+      'टेस्ट, उत्तर समीक्षा और सेव दोहराव प्रश्नों में उपयोग होती है। अनुवाद न होने पर अंग्रेज़ी दिखती है।';
+
+  @override
+  String get profileUnableToSaveTheQuestion =>
+      'इस डिवाइस पर प्रश्नों की भाषा सेव नहीं हो सकी।';
+
+  @override
+  String get profileYourProfile => 'आपकी प्रोफ़ाइल';
+
+  @override
+  String get profileMyProgress => 'मेरी प्रगति';
+
+  @override
+  String get profileAccuracyAttemptsAndPerformance =>
+      'सटीकता, प्रयास और प्रदर्शन';
+
+  @override
+  String get profileOfflineLearningResources => 'ऑफ़लाइन सामग्री';
+
+  @override
+  String get profileSavedRevisionItems => 'सेव किए दोहराव आइटम';
+
+  @override
+  String get profileTestHistory => 'टेस्ट इतिहास';
+
+  @override
+  String get profileCompletedAttemptsAndResults => 'पूरे प्रयास और परिणाम';
+
+  @override
+  String get profileCouponsOffers => 'कूपन और ऑफ़र';
+
+  @override
+  String get profileApplyDiscountsDuringCheckout => 'चेकआउट पर छूट लगाएँ';
+
+  @override
+  String get profileEditProfile => 'प्रोफ़ाइल बदलें';
+
+  @override
+  String get profileUpdateYourLearnerName => 'अपना नाम अपडेट करें';
+
+  @override
+  String get profileHelpSupport => 'सहायता';
+
+  @override
+  String get profileCommonQuestionsAndAccountHelp => 'आम सवाल और खाता सहायता';
+
+  @override
+  String get profilePerformance => 'प्रदर्शन';
+
+  @override
+  String get profileYourCompletedTestSignalsAt => 'आपके पूरे टेस्ट की झलक।';
+
+  @override
+  String get profileFullHistory => 'पूरा इतिहास';
+
+  @override
+  String get profileRecentTrend => 'हाल का रुझान';
+
+  @override
+  String get profileYourLatestCompletedTests => 'आपके हाल के पूरे टेस्ट।';
+
+  @override
+  String get profileAvgTime => 'औसत समय';
+
+  @override
+  String get profileWhatToFocusOn => 'किस पर ध्यान दें';
+
+  @override
+  String get profileSectionDetailWillAppearAfter =>
+      'प्रश्नों की समीक्षा उपलब्ध होने पर सेक्शन विवरण दिखेगा।';
+
+  @override
+  String get profileStrongest => 'सबसे मज़बूत';
+
+  @override
+  String get profileNeedsAttention => 'ध्यान चाहिए';
+
+  @override
+  String get profileReviewLatest => 'नवीनतम देखें';
+
+  @override
+  String get profileYourPerformanceStartsWithYour =>
+      'आपका प्रदर्शन पहले टेस्ट से शुरू होता है';
+
+  @override
+  String get profileCompleteATestToBuild =>
+      'स्कोर, सटीकता, सेक्शन और रुझान देखने के लिए एक टेस्ट पूरा करें।';
+
+  @override
+  String get profileBrowseTests => 'टेस्ट देखें';
+
+  @override
+  String get profileMyResults => 'मेरे परिणाम';
+
+  @override
+  String get profileSearchAndReviewCompletedAttempts =>
+      'पूरे प्रयास खोजें और देखें';
+
+  @override
+  String get profileSignOut => 'साइन आउट';
+
+  @override
+  String get profileEndThisDeviceSession => 'इस डिवाइस का सत्र समाप्त करें';
+
+  @override
+  String get auxYourProgressStartsWithYour =>
+      'आपकी प्रगति पहले टेस्ट से शुरू होती है';
+
+  @override
+  String get auxCompleteAMockOrPractice =>
+      'सटीकता, स्कोर और सेक्शन जानकारी के लिए कोई मॉक या अभ्यास टेस्ट पूरा करें।';
+
+  @override
+  String get auxOverallAccuracy => 'कुल सटीकता';
+
+  @override
+  String get auxAverageScore => 'औसत स्कोर';
+
+  @override
+  String get auxAppPreferences => 'ऐप पसंद';
+
+  @override
+  String get auxLanguage => 'भाषा';
+
+  @override
+  String get auxLearning => 'पढ़ाई';
+
+  @override
+  String get auxProfileUpdated => 'प्रोफ़ाइल अपडेट हुई।';
+
+  @override
+  String get auxUnableToUpdateYourProfile =>
+      'अभी आपकी प्रोफ़ाइल अपडेट नहीं हो सकी।';
+
+  @override
+  String get auxVerifiedContact => 'सत्यापित संपर्क';
+
+  @override
+  String get auxEmailAndPhoneChangesRequire =>
+      'ईमेल और फ़ोन बदलने के लिए सत्यापन ज़रूरी है; ये आपके साइन-इन खाते से बदलते हैं।';
+
+  @override
+  String get auxApplyCouponsAtCheckout => 'चेकआउट पर कूपन लगाएँ';
+
+  @override
+  String get auxAvailableCouponCodesCanBe =>
+      'टेस्ट सीरीज़ प्लान चुनते या रिन्यू करते समय कूपन कोड डाले जा सकते हैं।';
+
+  @override
+  String get auxExploreTestSeries => 'टेस्ट सीरीज़ देखें';
+
+  @override
+  String get accountAccountDeletionCouldNotBe =>
+      'खाता हटाना पूरा नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get accountSignInAgainToContinue =>
+      'जारी रखने के लिए फिर से साइन इन करें';
+
+  @override
+  String get accountYouWillReturnHereAfter =>
+      'फिर से साइन इन करने के बाद आप यहीं लौटेंगे।';
+
+  @override
+  String get accountCancel => 'रद्द करें';
+
+  @override
+  String get accountSignInAgain => 'फिर से साइन इन करें';
+
+  @override
+  String get accountDeleteYourExamtreeAccount => 'अपना ExamTree खाता हटाएँ?';
+
+  @override
+  String get accountThisCannotBeUndoneType =>
+      'यह वापस नहीं होगा। जारी रखने के लिए DELETE MY ACCOUNT लिखें।';
+
+  @override
+  String get accountConfirmation => 'पुष्टि';
+
+  @override
+  String get accountKeepMyAccount => 'मेरा खाता रखें';
+
+  @override
+  String get accountDeleteAccount => 'खाता हटाएँ';
+
+  @override
+  String get accountThisPageCouldNotBe =>
+      'यह पेज नहीं खुल सका। बाद में फिर से कोशिश करें।';
+
+  @override
+  String get accountYourLearnerData => 'आपका डेटा';
+
+  @override
+  String get accountClearInformationAboutWhatExamtree =>
+      'ExamTree क्या इस्तेमाल करता है और पूरी नीति कहाँ पढ़ें, इसकी साफ़ जानकारी।';
+
+  @override
+  String get accountLearningActivity => 'पढ़ाई गतिविधि';
+
+  @override
+  String get accountExamtreeUsesYourAccountInformation =>
+      'ExamTree आपकी खाता जानकारी से आपको पहचानता है, टेस्ट प्रयास सेव करता है, परिणाम दिखाता है और विश्लेषण देता है। विज्ञापन के लिए हमें आपके उत्तरों की ज़रूरत नहीं है।';
+
+  @override
+  String get accountPrivacyPolicy => 'गोपनीयता नीति';
+
+  @override
+  String get accountReadTheProductionPolicyCovering =>
+      'डेटा उपयोग, रखरखाव, हटाने और गोपनीयता संपर्क की पूरी नीति पढ़ें।';
+
+  @override
+  String get accountOpenPrivacyPolicy => 'गोपनीयता नीति खोलें';
+
+  @override
+  String get accountAccountDeletionOnTheWeb => 'वेब पर खाता हटाना';
+
+  @override
+  String get accountYouCanAlsoStartAn =>
+      'आप ExamTree के सार्वजनिक वेब पेज से भी खाता हटाने का अनुरोध कर सकते हैं।';
+
+  @override
+  String get accountOpenDeletionPage => 'हटाने वाला पेज खोलें';
+
+  @override
+  String get accountYourPrivacyYourAccount => 'आपकी गोपनीयता, आपका खाता';
+
+  @override
+  String get accountReviewHowLearnerDataIs =>
+      'देखें आपका डेटा कैसे इस्तेमाल होता है और खाता स्थायी रूप से हटाने का प्रबंधन करें।';
+
+  @override
+  String get accountDeletingYourAccountPermanentlyRemoves =>
+      'खाता हटाने से आपके प्रयास, परिणाम, प्रोफ़ाइल डेटा और सक्रिय एक्सेस स्थायी रूप से हट जाते हैं। जहाँ वित्तीय या सुरक्षा रिकॉर्ड रखना ज़रूरी है, वहाँ सिर्फ़ एक गुमनाम रिकॉर्ड रह सकता है।';
+
+  @override
+  String get accountYouWillBeAskedTo =>
+      'कुछ भी हटाने से पहले आपसे DELETE MY ACCOUNT लिखने को कहा जाएगा।';
+
+  @override
+  String get examDayExamTargetSavedButNotification =>
+      'परीक्षा लक्ष्य सेव हुआ, पर सूचना अनुमति बंद है।';
+
+  @override
+  String get examDayUnableToSaveTheExam => 'परीक्षा लक्ष्य सेव नहीं हो सका।';
+
+  @override
+  String get examDayUnableToUpdateTheChecklist => 'चेकलिस्ट अपडेट नहीं हो सकी।';
+
+  @override
+  String get examDayAddChecklistItem => 'चेकलिस्ट आइटम जोड़ें';
+
+  @override
+  String get examDayEGBusTicketSaved => 'जैसे: बस टिकट ऑफ़लाइन सेव';
+
+  @override
+  String get examDayAdd => 'जोड़ें';
+
+  @override
+  String get examDayRemoveExamTarget => 'परीक्षा लक्ष्य हटाएँ?';
+
+  @override
+  String get examDayThisRemovesTheLocalCountdown =>
+      'इससे इस डिवाइस से उलटी गिनती, चेकलिस्ट और परीक्षा-दिवस रिमाइंडर हट जाएँगे। टेस्ट इतिहास नहीं बदलेगा।';
+
+  @override
+  String get examDayRemoveTarget => 'लक्ष्य हटाएँ';
+
+  @override
+  String get examDayUnableToRemoveTheExam =>
+      'परीक्षा लक्ष्य हटाया नहीं जा सका।';
+
+  @override
+  String get examDayEditTarget => 'लक्ष्य बदलें';
+
+  @override
+  String get examDayExamDayModeIsUnavailable =>
+      'परीक्षा-दिवस मोड उपलब्ध नहीं है';
+
+  @override
+  String get examDayTryLoadingYourSavedTarget =>
+      'अपना सेव लक्ष्य फिर से लोड करें।';
+
+  @override
+  String get examDayRetryExamDayMode => 'परीक्षा-दिवस मोड फिर से लोड करें';
+
+  @override
+  String get examDaySetOneActiveExamTarget =>
+      'एक सक्रिय परीक्षा लक्ष्य सेट करें';
+
+  @override
+  String get examDayKeepAPrivateCountdownLogistics =>
+      'इस फ़ोन पर निजी उलटी गिनती, तैयारी चेकलिस्ट और वैकल्पिक रिमाइंडर रखें।';
+
+  @override
+  String get examDaySetExamTarget => 'परीक्षा लक्ष्य सेट करें';
+
+  @override
+  String get examDayYouProvideTheExamDetails => 'परीक्षा विवरण आप देते हैं';
+
+  @override
+  String get examDayExamtreeDoesNotInventExam =>
+      'ExamTree परीक्षा की तारीख, रिपोर्टिंग समय, केंद्र या तैयारी स्कोर नहीं बनाता। सेव विवरण हमेशा आधिकारिक सूचना या एडमिट कार्ड से मिलाएँ।';
+
+  @override
+  String get examDayReportingCountdown => 'रिपोर्टिंग उलटी गिनती';
+
+  @override
+  String get examDayUsefulNow => 'अभी काम का';
+
+  @override
+  String get examDayKeepTheLastMileActions =>
+      'आखिरी तैयारी केंद्रित और जानी-पहचानी रखें।';
+
+  @override
+  String get examDaySavedLogistics => 'सेव विवरण';
+
+  @override
+  String get examDayOnlyTheDetailsYouEntered =>
+      'सिर्फ़ वही विवरण जो आपने इस लक्ष्य के लिए डाले।';
+
+  @override
+  String get examDayEdit => 'बदलें';
+
+  @override
+  String get examDayOfficialInstructionsRemainAuthoritative =>
+      'आधिकारिक निर्देश ही मान्य हैं';
+
+  @override
+  String get examDayThisChecklistIsAPersonal =>
+      'यह चेकलिस्ट निजी मदद है। रिपोर्टिंग समय, दस्तावेज़, अनुमत सामान और केंद्र नियमों के लिए हमेशा आधिकारिक सूचना या एडमिट कार्ड देखें।';
+
+  @override
+  String get examDayExam => 'परीक्षा';
+
+  @override
+  String get examDayReporting => 'रिपोर्टिंग';
+
+  @override
+  String get examDayVenueNote => 'केंद्र नोट';
+
+  @override
+  String get examDayExamDayChecklist => 'परीक्षा-दिवस चेकलिस्ट';
+
+  @override
+  String get examDayRemoveCustomItem => 'अपना आइटम हटाएँ';
+
+  @override
+  String get examDayAddMyOwnItem => 'अपना आइटम जोड़ें';
+
+  @override
+  String get examDayChooseAFutureExamDate =>
+      'आगे की परीक्षा तारीख और समय चुनें।';
+
+  @override
+  String get examDayReportingTimeMustBeBefore =>
+      'रिपोर्टिंग समय परीक्षा समय से पहले होना चाहिए।';
+
+  @override
+  String get examDaySaveOnlyTheDetailsYou =>
+      'सिर्फ़ वही विवरण सेव करें जो आप इस डिवाइस पर चाहते हैं।';
+
+  @override
+  String get examDayExamName => 'परीक्षा का नाम';
+
+  @override
+  String get examDayEGSscCglTier => 'जैसे: SSC CGL Tier I';
+
+  @override
+  String get examDayExamDate => 'परीक्षा तारीख';
+
+  @override
+  String get examDayExamTime => 'परीक्षा समय';
+
+  @override
+  String get examDayReportingTimeOptional => 'रिपोर्टिंग समय (वैकल्पिक)';
+
+  @override
+  String get examDayClearReportingTime => 'रिपोर्टिंग समय हटाएँ';
+
+  @override
+  String get examDayVenueNoteOptional => 'केंद्र नोट (वैकल्पिक)';
+
+  @override
+  String get examDaySaveTheVenueOrAddress =>
+      'केंद्र या पता वैसे ही सेव करें जैसे याद रखना है';
+
+  @override
+  String get examDayExamDayReminders => 'परीक्षा-दिवस रिमाइंडर';
+
+  @override
+  String get examDayRequestLocalNotificationsAbout24 =>
+      'सेव रिपोर्टिंग या परीक्षा समय से लगभग 24 घंटे और 2 घंटे पहले सूचनाएँ पाएँ।';
+
+  @override
+  String get examDaySaveExamTarget => 'परीक्षा लक्ष्य सेव करें';
+
+  @override
+  String get accountReauthBody =>
+      'सुरक्षा के लिए खाता हटाने से पहले हाल में साइन इन ज़रूरी है। फिर से साइन इन करने के बाद आप यहीं लौटेंगे।';
 }

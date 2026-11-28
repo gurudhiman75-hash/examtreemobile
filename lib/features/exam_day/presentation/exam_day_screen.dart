@@ -9,6 +9,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/exam_day_mode.dart';
 import 'providers/exam_day_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class ExamDayScreen extends ConsumerStatefulWidget {
   const ExamDayScreen({super.key});
@@ -52,9 +53,9 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
       ref.invalidate(examDayTargetProvider);
       if (mounted && target.remindersEnabled && !reminderReady) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Exam target saved, but notification permission is disabled.',
+              context.l10n.examDayExamTargetSavedButNotification,
             ),
           ),
         );
@@ -62,7 +63,7 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to save the exam target.')),
+          SnackBar(content: Text(context.l10n.examDayUnableToSaveTheExam)),
         );
       }
     }
@@ -80,7 +81,7 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to update the checklist.')),
+          SnackBar(content: Text(context.l10n.examDayUnableToUpdateTheChecklist)),
         );
       }
     }
@@ -101,13 +102,13 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     final label = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Add checklist item'),
+        title: Text(context.l10n.examDayAddChecklistItem),
         content: TextField(
           controller: controller,
           autofocus: true,
           maxLength: 100,
-          decoration: const InputDecoration(
-            hintText: 'e.g. Bus ticket saved offline',
+          decoration: InputDecoration(
+            hintText: context.l10n.examDayEGBusTicketSaved,
           ),
           textInputAction: TextInputAction.done,
           onSubmitted: (value) => Navigator.of(context).pop(value.trim()),
@@ -115,11 +116,11 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.accountCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: const Text('Add'),
+            child: Text(context.l10n.examDayAdd),
           ),
         ],
       ),
@@ -156,18 +157,18 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove exam target?'),
-        content: const Text(
-          'This removes the local countdown, checklist and scheduled exam-day reminders from this device. Test history is unchanged.',
+        title: Text(context.l10n.examDayRemoveExamTarget),
+        content: Text(
+          context.l10n.examDayThisRemovesTheLocalCountdown,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.accountCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Remove target'),
+            child: Text(context.l10n.examDayRemoveTarget),
           ),
         ],
       ),
@@ -182,7 +183,7 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to remove the exam target.')),
+          SnackBar(content: Text(context.l10n.examDayUnableToRemoveTheExam)),
         );
       }
     }
@@ -196,7 +197,7 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFBFCFE),
       appBar: AppBar(
-        title: const Text('Exam-Day Mode'),
+        title: Text(context.l10n.dailyExamDayMode),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -214,14 +215,14 @@ class _ExamDayScreenState extends ConsumerState<ExamDayScreen> {
                           if (value == 'edit') _editTarget(target);
                           if (value == 'remove') _deleteTarget();
                         },
-                        itemBuilder: (context) => const [
+                        itemBuilder: (context) => [
                           PopupMenuItem(
                             value: 'edit',
-                            child: Text('Edit target'),
+                            child: Text(context.l10n.examDayEditTarget),
                           ),
                           PopupMenuItem(
                             value: 'remove',
-                            child: Text('Remove target'),
+                            child: Text(context.l10n.examDayRemoveTarget),
                           ),
                         ],
                       ),
@@ -324,7 +325,7 @@ class _ExamDayErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Exam-Day Mode is unavailable',
+              context.l10n.examDayExamDayModeIsUnavailable,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w900,
@@ -332,7 +333,7 @@ class _ExamDayErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Try loading your saved target again.',
+              context.l10n.examDayTryLoadingYourSavedTarget,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -350,7 +351,7 @@ class _ExamDayErrorState extends StatelessWidget {
                 textStyle: const TextStyle(fontWeight: FontWeight.w900),
               ),
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry Exam-Day Mode'),
+              label: Text(context.l10n.examDayRetryExamDayMode),
             ),
           ],
         ),
@@ -409,7 +410,7 @@ class _EmptyExamDay extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               Text(
-                'Set one active exam target',
+                context.l10n.examDaySetOneActiveExamTarget,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
@@ -419,7 +420,7 @@ class _EmptyExamDay extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Keep a private countdown, logistics checklist and optional local reminders on this phone.',
+                context.l10n.examDayKeepAPrivateCountdownLogistics,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withValues(alpha: 0.86),
@@ -433,7 +434,7 @@ class _EmptyExamDay extends StatelessWidget {
         FilledButton.icon(
           onPressed: onCreate,
           icon: const Icon(Icons.add_rounded),
-          label: const Text('Set exam target'),
+          label: Text(context.l10n.examDaySetExamTarget),
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(50),
             backgroundColor: const Color(0xFF073A6A),
@@ -445,11 +446,11 @@ class _EmptyExamDay extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        const _InfoPanel(
+        _InfoPanel(
           icon: Icons.verified_user_outlined,
-          title: 'You provide the exam details',
+          title: context.l10n.examDayYouProvideTheExamDetails,
           body:
-              'ExamTree does not invent exam dates, reporting times, venues or readiness scores. Always verify saved details against the official notice or admit card.',
+              context.l10n.examDayExamtreeDoesNotInventExam,
           background: AppColors.mintContainer,
           foreground: AppColors.onMintContainer,
         ),
@@ -495,7 +496,7 @@ class _ExamDayBody extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           _InfoPanel(
             icon: Icons.directions_walk_outlined,
-            title: 'Reporting countdown',
+            title: context.l10n.examDayReportingCountdown,
             body:
                 '${examCountdownLabel(reporting, now)} until your saved reporting time.',
             background: AppColors.skyContainer,
@@ -503,20 +504,20 @@ class _ExamDayBody extends StatelessWidget {
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
-        const _SectionHeader(
-          title: 'Useful now',
-          subtitle: 'Keep the last-mile actions focused and familiar.',
+        _SectionHeader(
+          title: context.l10n.examDayUsefulNow,
+          subtitle: context.l10n.examDayKeepTheLastMileActions,
         ),
         const SizedBox(height: AppSpacing.sm),
         const _QuickActions(),
         const SizedBox(height: AppSpacing.xl),
         _SectionHeader(
-          title: 'Saved logistics',
-          subtitle: 'Only the details you entered for this target.',
+          title: context.l10n.examDaySavedLogistics,
+          subtitle: context.l10n.examDayOnlyTheDetailsYouEntered,
           trailing: TextButton.icon(
             onPressed: onEdit,
             icon: const Icon(Icons.edit_outlined, size: 18),
-            label: const Text('Edit'),
+            label: Text(context.l10n.examDayEdit),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -543,11 +544,11 @@ class _ExamDayBody extends StatelessWidget {
           foreground: AppColors.onPrimaryContainer,
         ),
         const SizedBox(height: AppSpacing.sm),
-        const _InfoPanel(
+        _InfoPanel(
           icon: Icons.verified_user_outlined,
-          title: 'Official instructions remain authoritative',
+          title: context.l10n.examDayOfficialInstructionsRemainAuthoritative,
           body:
-              'This checklist is a personal aid. Always use the official notice or admit card for reporting time, documents, permitted items and venue rules.',
+              context.l10n.examDayThisChecklistIsAPersonal,
           background: AppColors.mintContainer,
           foreground: AppColors.onMintContainer,
         ),
@@ -688,7 +689,7 @@ class _QuickActions extends StatelessWidget {
       FilledButton.tonalIcon(
         onPressed: () => context.push('/daily'),
         icon: const Icon(Icons.auto_awesome_rounded),
-        label: const Text('Daily Companion'),
+        label: Text(context.l10n.dailyDailyCompanion),
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFFEAF2FB),
           foregroundColor: const Color(0xFF0B3A6F),
@@ -697,7 +698,7 @@ class _QuickActions extends StatelessWidget {
       FilledButton.tonalIcon(
         onPressed: () => context.go('/exams'),
         icon: const Icon(Icons.assignment_outlined),
-        label: const Text('Tests'),
+        label: Text(context.l10n.homeTests),
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFFEAF2FB),
           foregroundColor: const Color(0xFF0B3A6F),
@@ -803,14 +804,14 @@ class _LogisticsCard extends StatelessWidget {
           children: [
             _LogisticsRow(
               icon: Icons.schedule_outlined,
-              label: 'Exam',
+              label: context.l10n.examDayExam,
               value: _formatDateTime(target.examAt),
             ),
             if (target.reportingAt != null) ...[
               const Divider(height: AppSpacing.lg),
               _LogisticsRow(
                 icon: Icons.login_rounded,
-                label: 'Reporting',
+                label: context.l10n.examDayReporting,
                 value: _formatDateTime(target.reportingAt!),
               ),
             ],
@@ -818,7 +819,7 @@ class _LogisticsCard extends StatelessWidget {
               const Divider(height: AppSpacing.lg),
               _LogisticsRow(
                 icon: Icons.location_on_outlined,
-                label: 'Venue note',
+                label: context.l10n.examDayVenueNote,
                 value: target.venue.trim(),
               ),
             ],
@@ -932,7 +933,7 @@ class _ChecklistCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Exam-day checklist',
+                        context.l10n.examDayExamDayChecklist,
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: const Color(0xFF10264A),
                           fontWeight: FontWeight.w900,
@@ -990,7 +991,7 @@ class _ChecklistCard extends StatelessWidget {
                 controlAffinity: ListTileControlAffinity.leading,
                 secondary: target.checklist[index].isCustom
                     ? IconButton(
-                        tooltip: 'Remove custom item',
+                        tooltip: context.l10n.examDayRemoveCustomItem,
                         onPressed: () => onRemove(target.checklist[index]),
                         icon: const Icon(Icons.delete_outline_rounded),
                       )
@@ -1001,7 +1002,7 @@ class _ChecklistCard extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Add my own item'),
+              label: Text(context.l10n.examDayAddMyOwnItem),
             ),
           ],
         ),
@@ -1176,14 +1177,14 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
     final now = DateTime.now();
     if (!_examAt.isAfter(now)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Choose a future exam date and time.')),
+        SnackBar(content: Text(context.l10n.examDayChooseAFutureExamDate)),
       );
       return;
     }
     if (_reportingAt != null && !_reportingAt!.isBefore(_examAt)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reporting time must be before the exam time.'),
+        SnackBar(
+          content: Text(context.l10n.examDayReportingTimeMustBeBefore),
         ),
       );
       return;
@@ -1229,7 +1230,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
           ),
           children: [
             Text(
-              'Save only the details you want available on this device.',
+              context.l10n.examDaySaveOnlyTheDetailsYou,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -1239,9 +1240,9 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
               controller: _nameController,
               maxLength: 80,
               textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'Exam name',
-                hintText: 'e.g. SSC CGL Tier I',
+              decoration: InputDecoration(
+                labelText: context.l10n.examDayExamName,
+                hintText: context.l10n.examDayEGSscCglTier,
               ),
               validator: (value) => value == null || value.trim().isEmpty
                   ? 'Enter the exam name.'
@@ -1259,7 +1260,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                 children: [
                   ListTile(
                     leading: const Icon(Icons.calendar_month_outlined),
-                    title: const Text('Exam date'),
+                    title: Text(context.l10n.examDayExamDate),
                     subtitle: Text(_formatDate(_examAt)),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: _pickExamDate,
@@ -1267,7 +1268,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.schedule_outlined),
-                    title: const Text('Exam time'),
+                    title: Text(context.l10n.examDayExamTime),
                     subtitle: Text(_formatTime(_examAt)),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: _pickExamTime,
@@ -1275,7 +1276,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(Icons.login_rounded),
-                    title: const Text('Reporting time (optional)'),
+                    title: Text(context.l10n.examDayReportingTimeOptional),
                     subtitle: Text(
                       _reportingAt == null
                           ? 'Not set'
@@ -1284,7 +1285,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                     trailing: _reportingAt == null
                         ? const Icon(Icons.add_rounded)
                         : IconButton(
-                            tooltip: 'Clear reporting time',
+                            tooltip: context.l10n.examDayClearReportingTime,
                             onPressed: () => setState(() => _reportingAt = null),
                             icon: const Icon(Icons.close_rounded),
                           ),
@@ -1298,10 +1299,10 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
               controller: _venueController,
               maxLength: 160,
               maxLines: 2,
-              decoration: const InputDecoration(
-                labelText: 'Venue note (optional)',
+              decoration: InputDecoration(
+                labelText: context.l10n.examDayVenueNoteOptional,
                 hintText:
-                    'Save the venue or address exactly as you want to remember it',
+                    context.l10n.examDaySaveTheVenueOrAddress,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -1312,9 +1313,9 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
                 value: _remindersEnabled,
                 onChanged: (value) =>
                     setState(() => _remindersEnabled = value),
-                title: const Text('Exam-day reminders'),
-                subtitle: const Text(
-                  'Request local notifications about 24 hours and 2 hours before the saved reporting or exam time.',
+                title: Text(context.l10n.examDayExamDayReminders),
+                subtitle: Text(
+                  context.l10n.examDayRequestLocalNotificationsAbout24,
                 ),
               ),
             ),
@@ -1322,7 +1323,7 @@ class _ExamDayEditorScreenState extends State<_ExamDayEditorScreen> {
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save_outlined),
-              label: const Text('Save exam target'),
+              label: Text(context.l10n.examDaySaveExamTarget),
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(54),
               ),

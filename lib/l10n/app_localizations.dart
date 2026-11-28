@@ -3705,6 +3705,756 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get notifTryAgain;
+
+  /// No description provided for @profileMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get profileMyProfile;
+
+  /// No description provided for @profileSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get profileSettings;
+
+  /// No description provided for @profileUnableToLoadYourPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your performance'**
+  String get profileUnableToLoadYourPerformance;
+
+  /// No description provided for @profileAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get profileAccount;
+
+  /// No description provided for @profilePreferencesPrivacyAndThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences, privacy and this device session.'**
+  String get profilePreferencesPrivacyAndThisDevice;
+
+  /// No description provided for @profileUsedInTestsAnswerReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Used in tests, answer review and saved revision questions. English is used when a translation is unavailable.'**
+  String get profileUsedInTestsAnswerReview;
+
+  /// No description provided for @profileUnableToSaveTheQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save the question language on this device.'**
+  String get profileUnableToSaveTheQuestion;
+
+  /// No description provided for @profileYourProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile'**
+  String get profileYourProfile;
+
+  /// No description provided for @profileMyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'My Progress'**
+  String get profileMyProgress;
+
+  /// No description provided for @profileAccuracyAttemptsAndPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy, attempts and performance'**
+  String get profileAccuracyAttemptsAndPerformance;
+
+  /// No description provided for @profileOfflineLearningResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline learning resources'**
+  String get profileOfflineLearningResources;
+
+  /// No description provided for @profileSavedRevisionItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved revision items'**
+  String get profileSavedRevisionItems;
+
+  /// No description provided for @profileTestHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Test History'**
+  String get profileTestHistory;
+
+  /// No description provided for @profileCompletedAttemptsAndResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed attempts and results'**
+  String get profileCompletedAttemptsAndResults;
+
+  /// No description provided for @profileCouponsOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupons & Offers'**
+  String get profileCouponsOffers;
+
+  /// No description provided for @profileApplyDiscountsDuringCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply discounts during checkout'**
+  String get profileApplyDiscountsDuringCheckout;
+
+  /// No description provided for @profileEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profileEditProfile;
+
+  /// No description provided for @profileUpdateYourLearnerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your learner name'**
+  String get profileUpdateYourLearnerName;
+
+  /// No description provided for @profileHelpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get profileHelpSupport;
+
+  /// No description provided for @profileCommonQuestionsAndAccountHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Common questions and account help'**
+  String get profileCommonQuestionsAndAccountHelp;
+
+  /// No description provided for @profilePerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance'**
+  String get profilePerformance;
+
+  /// No description provided for @profileYourCompletedTestSignalsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Your completed-test signals at a glance.'**
+  String get profileYourCompletedTestSignalsAt;
+
+  /// No description provided for @profileFullHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Full history'**
+  String get profileFullHistory;
+
+  /// No description provided for @profileRecentTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent trend'**
+  String get profileRecentTrend;
+
+  /// No description provided for @profileYourLatestCompletedTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Your latest completed tests.'**
+  String get profileYourLatestCompletedTests;
+
+  /// No description provided for @profileAvgTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg time'**
+  String get profileAvgTime;
+
+  /// No description provided for @profileWhatToFocusOn.
+  ///
+  /// In en, this message translates to:
+  /// **'What to focus on'**
+  String get profileWhatToFocusOn;
+
+  /// No description provided for @profileSectionDetailWillAppearAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Section detail will appear after reviewed questions are available.'**
+  String get profileSectionDetailWillAppearAfter;
+
+  /// No description provided for @profileStrongest.
+  ///
+  /// In en, this message translates to:
+  /// **'Strongest'**
+  String get profileStrongest;
+
+  /// No description provided for @profileNeedsAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get profileNeedsAttention;
+
+  /// No description provided for @profileReviewLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Review latest'**
+  String get profileReviewLatest;
+
+  /// No description provided for @profileYourPerformanceStartsWithYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Your performance starts with your first test'**
+  String get profileYourPerformanceStartsWithYour;
+
+  /// No description provided for @profileCompleteATestToBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete a test to build score, accuracy, section and trend insights here.'**
+  String get profileCompleteATestToBuild;
+
+  /// No description provided for @profileBrowseTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse tests'**
+  String get profileBrowseTests;
+
+  /// No description provided for @profileMyResults.
+  ///
+  /// In en, this message translates to:
+  /// **'My results'**
+  String get profileMyResults;
+
+  /// No description provided for @profileSearchAndReviewCompletedAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search and review completed attempts'**
+  String get profileSearchAndReviewCompletedAttempts;
+
+  /// No description provided for @profileSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get profileSignOut;
+
+  /// No description provided for @profileEndThisDeviceSession.
+  ///
+  /// In en, this message translates to:
+  /// **'End this device session'**
+  String get profileEndThisDeviceSession;
+
+  /// No description provided for @auxYourProgressStartsWithYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Your progress starts with your first test'**
+  String get auxYourProgressStartsWithYour;
+
+  /// No description provided for @auxCompleteAMockOrPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete a mock or practice test to build accuracy, score and section insights here.'**
+  String get auxCompleteAMockOrPractice;
+
+  /// No description provided for @auxOverallAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall Accuracy'**
+  String get auxOverallAccuracy;
+
+  /// No description provided for @auxAverageScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Score'**
+  String get auxAverageScore;
+
+  /// No description provided for @auxAppPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'App Preferences'**
+  String get auxAppPreferences;
+
+  /// No description provided for @auxLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get auxLanguage;
+
+  /// No description provided for @auxLearning.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning'**
+  String get auxLearning;
+
+  /// No description provided for @auxProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated.'**
+  String get auxProfileUpdated;
+
+  /// No description provided for @auxUnableToUpdateYourProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update your profile right now.'**
+  String get auxUnableToUpdateYourProfile;
+
+  /// No description provided for @auxVerifiedContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified contact'**
+  String get auxVerifiedContact;
+
+  /// No description provided for @auxEmailAndPhoneChangesRequire.
+  ///
+  /// In en, this message translates to:
+  /// **'Email and phone changes require verification and are managed through your sign-in account.'**
+  String get auxEmailAndPhoneChangesRequire;
+
+  /// No description provided for @auxApplyCouponsAtCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply coupons at checkout'**
+  String get auxApplyCouponsAtCheckout;
+
+  /// No description provided for @auxAvailableCouponCodesCanBe.
+  ///
+  /// In en, this message translates to:
+  /// **'Available coupon codes can be entered when choosing or renewing a test-series plan.'**
+  String get auxAvailableCouponCodesCanBe;
+
+  /// No description provided for @auxExploreTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Test Series'**
+  String get auxExploreTestSeries;
+
+  /// No description provided for @accountAccountDeletionCouldNotBe.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion could not be completed. Please try again.'**
+  String get accountAccountDeletionCouldNotBe;
+
+  /// No description provided for @accountSignInAgainToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in again to continue'**
+  String get accountSignInAgainToContinue;
+
+  /// No description provided for @accountYouWillReturnHereAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'You will return here after signing in again.'**
+  String get accountYouWillReturnHereAfter;
+
+  /// No description provided for @accountCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get accountCancel;
+
+  /// No description provided for @accountSignInAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in again'**
+  String get accountSignInAgain;
+
+  /// No description provided for @accountDeleteYourExamtreeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your ExamTree account?'**
+  String get accountDeleteYourExamtreeAccount;
+
+  /// No description provided for @accountThisCannotBeUndoneType.
+  ///
+  /// In en, this message translates to:
+  /// **'This cannot be undone. Type DELETE MY ACCOUNT to continue.'**
+  String get accountThisCannotBeUndoneType;
+
+  /// No description provided for @accountConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation'**
+  String get accountConfirmation;
+
+  /// No description provided for @accountKeepMyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep my account'**
+  String get accountKeepMyAccount;
+
+  /// No description provided for @accountDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get accountDeleteAccount;
+
+  /// No description provided for @accountThisPageCouldNotBe.
+  ///
+  /// In en, this message translates to:
+  /// **'This page could not be opened. Please try again later.'**
+  String get accountThisPageCouldNotBe;
+
+  /// No description provided for @accountYourLearnerData.
+  ///
+  /// In en, this message translates to:
+  /// **'Your learner data'**
+  String get accountYourLearnerData;
+
+  /// No description provided for @accountClearInformationAboutWhatExamtree.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear information about what ExamTree uses and where to read the full policy.'**
+  String get accountClearInformationAboutWhatExamtree;
+
+  /// No description provided for @accountLearningActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning activity'**
+  String get accountLearningActivity;
+
+  /// No description provided for @accountExamtreeUsesYourAccountInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.'**
+  String get accountExamtreeUsesYourAccountInformation;
+
+  /// No description provided for @accountPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get accountPrivacyPolicy;
+
+  /// No description provided for @accountReadTheProductionPolicyCovering.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the production policy covering data use, retention, deletion and privacy contact details.'**
+  String get accountReadTheProductionPolicyCovering;
+
+  /// No description provided for @accountOpenPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Open privacy policy'**
+  String get accountOpenPrivacyPolicy;
+
+  /// No description provided for @accountAccountDeletionOnTheWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion on the web'**
+  String get accountAccountDeletionOnTheWeb;
+
+  /// No description provided for @accountYouCanAlsoStartAn.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also start an account-deletion request from ExamTree’s public web resource.'**
+  String get accountYouCanAlsoStartAn;
+
+  /// No description provided for @accountOpenDeletionPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open deletion page'**
+  String get accountOpenDeletionPage;
+
+  /// No description provided for @accountYourPrivacyYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Your privacy, your account'**
+  String get accountYourPrivacyYourAccount;
+
+  /// No description provided for @accountReviewHowLearnerDataIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Review how learner data is used and manage permanent account deletion.'**
+  String get accountReviewHowLearnerDataIs;
+
+  /// No description provided for @accountDeletingYourAccountPermanentlyRemoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account permanently removes learner-owned attempts, results, profile data and active entitlements. An anonymized account record may remain solely where financial or security records must be retained.'**
+  String get accountDeletingYourAccountPermanentlyRemoves;
+
+  /// No description provided for @accountYouWillBeAskedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be asked to type DELETE MY ACCOUNT before anything is removed.'**
+  String get accountYouWillBeAskedTo;
+
+  /// No description provided for @examDayExamTargetSavedButNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam target saved, but notification permission is disabled.'**
+  String get examDayExamTargetSavedButNotification;
+
+  /// No description provided for @examDayUnableToSaveTheExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save the exam target.'**
+  String get examDayUnableToSaveTheExam;
+
+  /// No description provided for @examDayUnableToUpdateTheChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update the checklist.'**
+  String get examDayUnableToUpdateTheChecklist;
+
+  /// No description provided for @examDayAddChecklistItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add checklist item'**
+  String get examDayAddChecklistItem;
+
+  /// No description provided for @examDayEGBusTicketSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Bus ticket saved offline'**
+  String get examDayEGBusTicketSaved;
+
+  /// No description provided for @examDayAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get examDayAdd;
+
+  /// No description provided for @examDayRemoveExamTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove exam target?'**
+  String get examDayRemoveExamTarget;
+
+  /// No description provided for @examDayThisRemovesTheLocalCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes the local countdown, checklist and scheduled exam-day reminders from this device. Test history is unchanged.'**
+  String get examDayThisRemovesTheLocalCountdown;
+
+  /// No description provided for @examDayRemoveTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove target'**
+  String get examDayRemoveTarget;
+
+  /// No description provided for @examDayUnableToRemoveTheExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to remove the exam target.'**
+  String get examDayUnableToRemoveTheExam;
+
+  /// No description provided for @examDayEditTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit target'**
+  String get examDayEditTarget;
+
+  /// No description provided for @examDayExamDayModeIsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam-Day Mode is unavailable'**
+  String get examDayExamDayModeIsUnavailable;
+
+  /// No description provided for @examDayTryLoadingYourSavedTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Try loading your saved target again.'**
+  String get examDayTryLoadingYourSavedTarget;
+
+  /// No description provided for @examDayRetryExamDayMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Exam-Day Mode'**
+  String get examDayRetryExamDayMode;
+
+  /// No description provided for @examDaySetOneActiveExamTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Set one active exam target'**
+  String get examDaySetOneActiveExamTarget;
+
+  /// No description provided for @examDayKeepAPrivateCountdownLogistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a private countdown, logistics checklist and optional local reminders on this phone.'**
+  String get examDayKeepAPrivateCountdownLogistics;
+
+  /// No description provided for @examDaySetExamTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Set exam target'**
+  String get examDaySetExamTarget;
+
+  /// No description provided for @examDayYouProvideTheExamDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'You provide the exam details'**
+  String get examDayYouProvideTheExamDetails;
+
+  /// No description provided for @examDayExamtreeDoesNotInventExam.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree does not invent exam dates, reporting times, venues or readiness scores. Always verify saved details against the official notice or admit card.'**
+  String get examDayExamtreeDoesNotInventExam;
+
+  /// No description provided for @examDayReportingCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting countdown'**
+  String get examDayReportingCountdown;
+
+  /// No description provided for @examDayUsefulNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Useful now'**
+  String get examDayUsefulNow;
+
+  /// No description provided for @examDayKeepTheLastMileActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the last-mile actions focused and familiar.'**
+  String get examDayKeepTheLastMileActions;
+
+  /// No description provided for @examDaySavedLogistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved logistics'**
+  String get examDaySavedLogistics;
+
+  /// No description provided for @examDayOnlyTheDetailsYouEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the details you entered for this target.'**
+  String get examDayOnlyTheDetailsYouEntered;
+
+  /// No description provided for @examDayEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get examDayEdit;
+
+  /// No description provided for @examDayOfficialInstructionsRemainAuthoritative.
+  ///
+  /// In en, this message translates to:
+  /// **'Official instructions remain authoritative'**
+  String get examDayOfficialInstructionsRemainAuthoritative;
+
+  /// No description provided for @examDayThisChecklistIsAPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'This checklist is a personal aid. Always use the official notice or admit card for reporting time, documents, permitted items and venue rules.'**
+  String get examDayThisChecklistIsAPersonal;
+
+  /// No description provided for @examDayExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam'**
+  String get examDayExam;
+
+  /// No description provided for @examDayReporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting'**
+  String get examDayReporting;
+
+  /// No description provided for @examDayVenueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue note'**
+  String get examDayVenueNote;
+
+  /// No description provided for @examDayExamDayChecklist.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam-day checklist'**
+  String get examDayExamDayChecklist;
+
+  /// No description provided for @examDayRemoveCustomItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove custom item'**
+  String get examDayRemoveCustomItem;
+
+  /// No description provided for @examDayAddMyOwnItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add my own item'**
+  String get examDayAddMyOwnItem;
+
+  /// No description provided for @examDayChooseAFutureExamDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a future exam date and time.'**
+  String get examDayChooseAFutureExamDate;
+
+  /// No description provided for @examDayReportingTimeMustBeBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting time must be before the exam time.'**
+  String get examDayReportingTimeMustBeBefore;
+
+  /// No description provided for @examDaySaveOnlyTheDetailsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Save only the details you want available on this device.'**
+  String get examDaySaveOnlyTheDetailsYou;
+
+  /// No description provided for @examDayExamName.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam name'**
+  String get examDayExamName;
+
+  /// No description provided for @examDayEGSscCglTier.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. SSC CGL Tier I'**
+  String get examDayEGSscCglTier;
+
+  /// No description provided for @examDayExamDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam date'**
+  String get examDayExamDate;
+
+  /// No description provided for @examDayExamTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam time'**
+  String get examDayExamTime;
+
+  /// No description provided for @examDayReportingTimeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting time (optional)'**
+  String get examDayReportingTimeOptional;
+
+  /// No description provided for @examDayClearReportingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear reporting time'**
+  String get examDayClearReportingTime;
+
+  /// No description provided for @examDayVenueNoteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue note (optional)'**
+  String get examDayVenueNoteOptional;
+
+  /// No description provided for @examDaySaveTheVenueOrAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the venue or address exactly as you want to remember it'**
+  String get examDaySaveTheVenueOrAddress;
+
+  /// No description provided for @examDayExamDayReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam-day reminders'**
+  String get examDayExamDayReminders;
+
+  /// No description provided for @examDayRequestLocalNotificationsAbout24.
+  ///
+  /// In en, this message translates to:
+  /// **'Request local notifications about 24 hours and 2 hours before the saved reporting or exam time.'**
+  String get examDayRequestLocalNotificationsAbout24;
+
+  /// No description provided for @examDaySaveExamTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Save exam target'**
+  String get examDaySaveExamTarget;
+
+  /// No description provided for @accountReauthBody.
+  ///
+  /// In en, this message translates to:
+  /// **'For your security, account deletion requires a recent sign-in. You will return here after signing in again.'**
+  String get accountReauthBody;
 }
 
 class _AppLocalizationsDelegate

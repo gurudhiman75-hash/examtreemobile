@@ -7,6 +7,7 @@ import '../../preferences/domain/question_language.dart';
 import '../../preferences/presentation/providers/question_language_providers.dart';
 import '../domain/performance_analytics.dart';
 import 'providers/analytics_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class ProfileProgressScreen extends ConsumerWidget {
   const ProfileProgressScreen({super.key});
@@ -16,7 +17,7 @@ class ProfileProgressScreen extends ConsumerWidget {
     final analytics = ref.watch(performanceAnalyticsProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
-      appBar: _bar('My Progress'),
+      appBar: _bar(context.l10n.profileMyProgress),
       body: analytics.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => _Retry(
@@ -38,8 +39,8 @@ class _ProgressBody extends StatelessWidget {
     if (value.totalTestsAttempted == 0) {
       return _EmptyPage(
         icon: Icons.insights_outlined,
-        title: 'Your progress starts with your first test',
-        body: 'Complete a mock or practice test to build accuracy, score and section insights here.',
+        title: context.l10n.auxYourProgressStartsWithYour,
+        body: context.l10n.auxCompleteAMockOrPractice,
         action: 'Browse Tests',
         onAction: () => context.go('/exams'),
       );
@@ -50,17 +51,17 @@ class _ProgressBody extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _Metric(value: _pct(value.averageAccuracy), label: 'Overall Accuracy', icon: Icons.track_changes_rounded)),
+            Expanded(child: _Metric(value: _pct(value.averageAccuracy), label: context.l10n.auxOverallAccuracy, icon: Icons.track_changes_rounded)),
             const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalQuestions.toString(), label: 'Questions', icon: Icons.quiz_outlined)),
+            Expanded(child: _Metric(value: value.totalQuestions.toString(), label: context.l10n.homeQuestions, icon: Icons.quiz_outlined)),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _Metric(value: _pct(value.averageScore), label: 'Average Score', icon: Icons.bar_chart_rounded)),
+            Expanded(child: _Metric(value: _pct(value.averageScore), label: context.l10n.auxAverageScore, icon: Icons.bar_chart_rounded)),
             const SizedBox(width: 10),
-            Expanded(child: _Metric(value: value.totalTestsAttempted.toString(), label: 'Tests', icon: Icons.fact_check_outlined)),
+            Expanded(child: _Metric(value: value.totalTestsAttempted.toString(), label: context.l10n.homeTests, icon: Icons.fact_check_outlined)),
           ],
         ),
         const SizedBox(height: 22),
@@ -93,22 +94,22 @@ class ProfileSettingsScreen extends ConsumerWidget {
     final language = ref.watch(questionLanguageProvider).value ?? QuestionLanguage.english;
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
-      appBar: _bar('Settings'),
+      appBar: _bar(context.l10n.profileSettings),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
         children: [
-          const _SectionLabel('App Preferences'),
+          _SectionLabel(context.l10n.auxAppPreferences),
           _SettingsCard(
             children: [
               _SettingRow(
                 icon: Icons.translate_rounded,
-                title: 'Language',
+                title: context.l10n.auxLanguage,
                 value: language.label,
                 onTap: () => _chooseLanguage(context, ref, language),
               ),
               _SettingRow(
                 icon: Icons.notifications_outlined,
-                title: 'Notifications',
+                title: context.l10n.homeNotifications,
                 value: 'Device settings',
                 onTap: () => context.push('/notifications'),
               ),
@@ -121,24 +122,24 @@ class ProfileSettingsScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const _SectionLabel('Learning'),
+          _SectionLabel(context.l10n.auxLearning),
           _SettingsCard(
             children: [
               _SettingRow(
                 icon: Icons.download_outlined,
-                title: 'Downloads & offline',
+                title: context.l10n.profileDownloads,
                 value: 'Offline resources',
                 onTap: () => context.push('/profile-downloads'),
               ),
               _SettingRow(
                 icon: Icons.history_rounded,
-                title: 'Test History',
+                title: context.l10n.profileTestHistory,
                 value: 'Results',
                 onTap: () => context.go('/results'),
               ),
               _SettingRow(
                 icon: Icons.help_outline_rounded,
-                title: 'Help & Support',
+                title: context.l10n.profileHelpSupport,
                 value: 'Get help',
                 onTap: () => context.push('/profile-help'),
               ),
@@ -200,7 +201,7 @@ class ProfileHelpScreen extends StatelessWidget {
     ];
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
-      appBar: _bar('Help & Support'),
+      appBar: _bar(context.l10n.profileHelpSupport),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
         children: [
@@ -271,11 +272,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       await ref.read(firebaseAuthProvider).currentUser?.reload();
       ref.invalidate(authStateChangesProvider);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.auxProfileUpdated)));
       Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Unable to update your profile right now.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.auxUnableToUpdateYourProfile)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -315,17 +316,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           TextField(
             controller: _name,
             textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(labelText: 'Name', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: context.l10n.authName, border: OutlineInputBorder()),
           ),
           const SizedBox(height: 14),
           TextField(
             controller: TextEditingController(text: contact),
             enabled: false,
-            decoration: const InputDecoration(labelText: 'Verified contact', border: OutlineInputBorder()),
+            decoration: InputDecoration(labelText: context.l10n.auxVerifiedContact, border: OutlineInputBorder()),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Email and phone changes require verification and are managed through your sign-in account.',
+          Text(
+            context.l10n.auxEmailAndPhoneChangesRequire,
             style: TextStyle(color: Color(0xFF718096), fontSize: 12, height: 1.4),
           ),
         ],
@@ -339,12 +340,12 @@ class ProfileCouponsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: const Color(0xFFF8FBFF),
-        appBar: _bar('Coupons & Offers'),
+        appBar: _bar(context.l10n.profileCouponsOffers),
         body: _EmptyPage(
           icon: Icons.local_offer_outlined,
-          title: 'Apply coupons at checkout',
-          body: 'Available coupon codes can be entered when choosing or renewing a test-series plan.',
-          action: 'Explore Test Series',
+          title: context.l10n.auxApplyCouponsAtCheckout,
+          body: context.l10n.auxAvailableCouponCodesCanBe,
+          action: context.l10n.auxExploreTestSeries,
           onAction: () => context.go('/exams'),
         ),
       );
@@ -484,7 +485,7 @@ class _Retry extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text(text),
           const SizedBox(height: 12),
-          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
+          OutlinedButton(onPressed: onRetry, child: Text(context.l10n.retry)),
         ]),
       );
 }

@@ -2178,4 +2178,426 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifTryAgain => 'Try again';
+
+  @override
+  String get profileMyProfile => 'My Profile';
+
+  @override
+  String get profileSettings => 'Settings';
+
+  @override
+  String get profileUnableToLoadYourPerformance =>
+      'Unable to load your performance';
+
+  @override
+  String get profileAccount => 'Account';
+
+  @override
+  String get profilePreferencesPrivacyAndThisDevice =>
+      'Preferences, privacy and this device session.';
+
+  @override
+  String get profileUsedInTestsAnswerReview =>
+      'Used in tests, answer review and saved revision questions. English is used when a translation is unavailable.';
+
+  @override
+  String get profileUnableToSaveTheQuestion =>
+      'Unable to save the question language on this device.';
+
+  @override
+  String get profileYourProfile => 'Your profile';
+
+  @override
+  String get profileMyProgress => 'My Progress';
+
+  @override
+  String get profileAccuracyAttemptsAndPerformance =>
+      'Accuracy, attempts and performance';
+
+  @override
+  String get profileOfflineLearningResources => 'Offline learning resources';
+
+  @override
+  String get profileSavedRevisionItems => 'Saved revision items';
+
+  @override
+  String get profileTestHistory => 'Test History';
+
+  @override
+  String get profileCompletedAttemptsAndResults =>
+      'Completed attempts and results';
+
+  @override
+  String get profileCouponsOffers => 'Coupons & Offers';
+
+  @override
+  String get profileApplyDiscountsDuringCheckout =>
+      'Apply discounts during checkout';
+
+  @override
+  String get profileEditProfile => 'Edit Profile';
+
+  @override
+  String get profileUpdateYourLearnerName => 'Update your learner name';
+
+  @override
+  String get profileHelpSupport => 'Help & Support';
+
+  @override
+  String get profileCommonQuestionsAndAccountHelp =>
+      'Common questions and account help';
+
+  @override
+  String get profilePerformance => 'Performance';
+
+  @override
+  String get profileYourCompletedTestSignalsAt =>
+      'Your completed-test signals at a glance.';
+
+  @override
+  String get profileFullHistory => 'Full history';
+
+  @override
+  String get profileRecentTrend => 'Recent trend';
+
+  @override
+  String get profileYourLatestCompletedTests => 'Your latest completed tests.';
+
+  @override
+  String get profileAvgTime => 'Avg time';
+
+  @override
+  String get profileWhatToFocusOn => 'What to focus on';
+
+  @override
+  String get profileSectionDetailWillAppearAfter =>
+      'Section detail will appear after reviewed questions are available.';
+
+  @override
+  String get profileStrongest => 'Strongest';
+
+  @override
+  String get profileNeedsAttention => 'Needs attention';
+
+  @override
+  String get profileReviewLatest => 'Review latest';
+
+  @override
+  String get profileYourPerformanceStartsWithYour =>
+      'Your performance starts with your first test';
+
+  @override
+  String get profileCompleteATestToBuild =>
+      'Complete a test to build score, accuracy, section and trend insights here.';
+
+  @override
+  String get profileBrowseTests => 'Browse tests';
+
+  @override
+  String get profileMyResults => 'My results';
+
+  @override
+  String get profileSearchAndReviewCompletedAttempts =>
+      'Search and review completed attempts';
+
+  @override
+  String get profileSignOut => 'Sign out';
+
+  @override
+  String get profileEndThisDeviceSession => 'End this device session';
+
+  @override
+  String get auxYourProgressStartsWithYour =>
+      'Your progress starts with your first test';
+
+  @override
+  String get auxCompleteAMockOrPractice =>
+      'Complete a mock or practice test to build accuracy, score and section insights here.';
+
+  @override
+  String get auxOverallAccuracy => 'Overall Accuracy';
+
+  @override
+  String get auxAverageScore => 'Average Score';
+
+  @override
+  String get auxAppPreferences => 'App Preferences';
+
+  @override
+  String get auxLanguage => 'Language';
+
+  @override
+  String get auxLearning => 'Learning';
+
+  @override
+  String get auxProfileUpdated => 'Profile updated.';
+
+  @override
+  String get auxUnableToUpdateYourProfile =>
+      'Unable to update your profile right now.';
+
+  @override
+  String get auxVerifiedContact => 'Verified contact';
+
+  @override
+  String get auxEmailAndPhoneChangesRequire =>
+      'Email and phone changes require verification and are managed through your sign-in account.';
+
+  @override
+  String get auxApplyCouponsAtCheckout => 'Apply coupons at checkout';
+
+  @override
+  String get auxAvailableCouponCodesCanBe =>
+      'Available coupon codes can be entered when choosing or renewing a test-series plan.';
+
+  @override
+  String get auxExploreTestSeries => 'Explore Test Series';
+
+  @override
+  String get accountAccountDeletionCouldNotBe =>
+      'Account deletion could not be completed. Please try again.';
+
+  @override
+  String get accountSignInAgainToContinue => 'Sign in again to continue';
+
+  @override
+  String get accountYouWillReturnHereAfter =>
+      'You will return here after signing in again.';
+
+  @override
+  String get accountCancel => 'Cancel';
+
+  @override
+  String get accountSignInAgain => 'Sign in again';
+
+  @override
+  String get accountDeleteYourExamtreeAccount =>
+      'Delete your ExamTree account?';
+
+  @override
+  String get accountThisCannotBeUndoneType =>
+      'This cannot be undone. Type DELETE MY ACCOUNT to continue.';
+
+  @override
+  String get accountConfirmation => 'Confirmation';
+
+  @override
+  String get accountKeepMyAccount => 'Keep my account';
+
+  @override
+  String get accountDeleteAccount => 'Delete account';
+
+  @override
+  String get accountThisPageCouldNotBe =>
+      'This page could not be opened. Please try again later.';
+
+  @override
+  String get accountYourLearnerData => 'Your learner data';
+
+  @override
+  String get accountClearInformationAboutWhatExamtree =>
+      'Clear information about what ExamTree uses and where to read the full policy.';
+
+  @override
+  String get accountLearningActivity => 'Learning activity';
+
+  @override
+  String get accountExamtreeUsesYourAccountInformation =>
+      'ExamTree uses your account information to authenticate you, save test attempts, show results and provide learning analytics. We do not need your question answers for advertising.';
+
+  @override
+  String get accountPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get accountReadTheProductionPolicyCovering =>
+      'Read the production policy covering data use, retention, deletion and privacy contact details.';
+
+  @override
+  String get accountOpenPrivacyPolicy => 'Open privacy policy';
+
+  @override
+  String get accountAccountDeletionOnTheWeb => 'Account deletion on the web';
+
+  @override
+  String get accountYouCanAlsoStartAn =>
+      'You can also start an account-deletion request from ExamTree’s public web resource.';
+
+  @override
+  String get accountOpenDeletionPage => 'Open deletion page';
+
+  @override
+  String get accountYourPrivacyYourAccount => 'Your privacy, your account';
+
+  @override
+  String get accountReviewHowLearnerDataIs =>
+      'Review how learner data is used and manage permanent account deletion.';
+
+  @override
+  String get accountDeletingYourAccountPermanentlyRemoves =>
+      'Deleting your account permanently removes learner-owned attempts, results, profile data and active entitlements. An anonymized account record may remain solely where financial or security records must be retained.';
+
+  @override
+  String get accountYouWillBeAskedTo =>
+      'You will be asked to type DELETE MY ACCOUNT before anything is removed.';
+
+  @override
+  String get examDayExamTargetSavedButNotification =>
+      'Exam target saved, but notification permission is disabled.';
+
+  @override
+  String get examDayUnableToSaveTheExam => 'Unable to save the exam target.';
+
+  @override
+  String get examDayUnableToUpdateTheChecklist =>
+      'Unable to update the checklist.';
+
+  @override
+  String get examDayAddChecklistItem => 'Add checklist item';
+
+  @override
+  String get examDayEGBusTicketSaved => 'e.g. Bus ticket saved offline';
+
+  @override
+  String get examDayAdd => 'Add';
+
+  @override
+  String get examDayRemoveExamTarget => 'Remove exam target?';
+
+  @override
+  String get examDayThisRemovesTheLocalCountdown =>
+      'This removes the local countdown, checklist and scheduled exam-day reminders from this device. Test history is unchanged.';
+
+  @override
+  String get examDayRemoveTarget => 'Remove target';
+
+  @override
+  String get examDayUnableToRemoveTheExam =>
+      'Unable to remove the exam target.';
+
+  @override
+  String get examDayEditTarget => 'Edit target';
+
+  @override
+  String get examDayExamDayModeIsUnavailable => 'Exam-Day Mode is unavailable';
+
+  @override
+  String get examDayTryLoadingYourSavedTarget =>
+      'Try loading your saved target again.';
+
+  @override
+  String get examDayRetryExamDayMode => 'Retry Exam-Day Mode';
+
+  @override
+  String get examDaySetOneActiveExamTarget => 'Set one active exam target';
+
+  @override
+  String get examDayKeepAPrivateCountdownLogistics =>
+      'Keep a private countdown, logistics checklist and optional local reminders on this phone.';
+
+  @override
+  String get examDaySetExamTarget => 'Set exam target';
+
+  @override
+  String get examDayYouProvideTheExamDetails => 'You provide the exam details';
+
+  @override
+  String get examDayExamtreeDoesNotInventExam =>
+      'ExamTree does not invent exam dates, reporting times, venues or readiness scores. Always verify saved details against the official notice or admit card.';
+
+  @override
+  String get examDayReportingCountdown => 'Reporting countdown';
+
+  @override
+  String get examDayUsefulNow => 'Useful now';
+
+  @override
+  String get examDayKeepTheLastMileActions =>
+      'Keep the last-mile actions focused and familiar.';
+
+  @override
+  String get examDaySavedLogistics => 'Saved logistics';
+
+  @override
+  String get examDayOnlyTheDetailsYouEntered =>
+      'Only the details you entered for this target.';
+
+  @override
+  String get examDayEdit => 'Edit';
+
+  @override
+  String get examDayOfficialInstructionsRemainAuthoritative =>
+      'Official instructions remain authoritative';
+
+  @override
+  String get examDayThisChecklistIsAPersonal =>
+      'This checklist is a personal aid. Always use the official notice or admit card for reporting time, documents, permitted items and venue rules.';
+
+  @override
+  String get examDayExam => 'Exam';
+
+  @override
+  String get examDayReporting => 'Reporting';
+
+  @override
+  String get examDayVenueNote => 'Venue note';
+
+  @override
+  String get examDayExamDayChecklist => 'Exam-day checklist';
+
+  @override
+  String get examDayRemoveCustomItem => 'Remove custom item';
+
+  @override
+  String get examDayAddMyOwnItem => 'Add my own item';
+
+  @override
+  String get examDayChooseAFutureExamDate =>
+      'Choose a future exam date and time.';
+
+  @override
+  String get examDayReportingTimeMustBeBefore =>
+      'Reporting time must be before the exam time.';
+
+  @override
+  String get examDaySaveOnlyTheDetailsYou =>
+      'Save only the details you want available on this device.';
+
+  @override
+  String get examDayExamName => 'Exam name';
+
+  @override
+  String get examDayEGSscCglTier => 'e.g. SSC CGL Tier I';
+
+  @override
+  String get examDayExamDate => 'Exam date';
+
+  @override
+  String get examDayExamTime => 'Exam time';
+
+  @override
+  String get examDayReportingTimeOptional => 'Reporting time (optional)';
+
+  @override
+  String get examDayClearReportingTime => 'Clear reporting time';
+
+  @override
+  String get examDayVenueNoteOptional => 'Venue note (optional)';
+
+  @override
+  String get examDaySaveTheVenueOrAddress =>
+      'Save the venue or address exactly as you want to remember it';
+
+  @override
+  String get examDayExamDayReminders => 'Exam-day reminders';
+
+  @override
+  String get examDayRequestLocalNotificationsAbout24 =>
+      'Request local notifications about 24 hours and 2 hours before the saved reporting or exam time.';
+
+  @override
+  String get examDaySaveExamTarget => 'Save exam target';
+
+  @override
+  String get accountReauthBody =>
+      'For your security, account deletion requires a recent sign-in. You will return here after signing in again.';
 }

@@ -31,7 +31,13 @@ void main() {
     final source = File(
       'lib/features/exam_day/presentation/exam_day_screen.dart',
     ).readAsStringSync();
-    expect(source, contains('Official instructions remain authoritative'));
-    expect(source, contains('not an academic readiness score'));
+    expect(
+      source + File('lib/l10n/app_en.arb').readAsStringSync(),
+      contains('Official instructions remain authoritative'),
+    );
+    expect(
+      source + File('lib/l10n/app_en.arb').readAsStringSync(),
+      contains('not an academic readiness score'),
+    );
   });
 }
