@@ -2871,6 +2871,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check your connection and try again.'**
   String get seriesCheckConnection;
+
+  /// No description provided for @loginLetSBuildYourExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Let’s build your exam success'**
+  String get loginLetSBuildYourExam;
+
+  /// No description provided for @loginMasterConceptsPracticeSmarterGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Master concepts. Practice smarter. Get real results.'**
+  String get loginMasterConceptsPracticeSmarterGet;
+
+  /// No description provided for @loginPracticeTheWayRealExams.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice the way real exams ask'**
+  String get loginPracticeTheWayRealExams;
+
+  /// No description provided for @loginUseFocusedMockTestsAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Use focused mock tests and detailed solutions to turn preparation into exam readiness.'**
+  String get loginUseFocusedMockTestsAnd;
+
+  /// No description provided for @loginKnowWhatToReviseNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Know what to revise next'**
+  String get loginKnowWhatToReviseNext;
+
+  /// No description provided for @loginContinueWhereYouLeftOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue where you left off and use your progress to keep revision targeted.'**
+  String get loginContinueWhereYouLeftOff;
+
+  /// No description provided for @loginTooManyVerificationAttemptsPlease.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many verification attempts. Please wait a little and try again.'**
+  String get loginTooManyVerificationAttemptsPlease;
+
+  /// No description provided for @loginSmsVerificationIsTemporarilyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS verification is temporarily unavailable. Please try again later.'**
+  String get loginSmsVerificationIsTemporarilyUnavailable;
+
+  /// No description provided for @loginThisExamtreeBuildIsNot.
+  ///
+  /// In en, this message translates to:
+  /// **'This ExamTree build is not authorized for phone sign-in.'**
+  String get loginThisExamtreeBuildIsNot;
+
+  /// No description provided for @loginPhoneVerificationCouldNotBe.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone verification could not be confirmed. Please try again.'**
+  String get loginPhoneVerificationCouldNotBe;
+
+  /// No description provided for @loginCouldNotReachTheVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the verification service. Check your connection and try again.'**
+  String get loginCouldNotReachTheVerification;
+
+  /// No description provided for @loginThisVerificationSessionHasExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This verification session has expired. Request a new OTP.'**
+  String get loginThisVerificationSessionHasExpired;
+
+  /// No description provided for @loginPhoneSignInIsNot.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone sign-in is not enabled for this ExamTree build.'**
+  String get loginPhoneSignInIsNot;
+
+  /// No description provided for @loginGoogleSignInIsTemporarily.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in is temporarily unavailable. Please try again later.'**
+  String get loginGoogleSignInIsTemporarily;
+
+  /// No description provided for @loginThisEmailAlreadyHasAn.
+  ///
+  /// In en, this message translates to:
+  /// **'This email already has an ExamTree sign-in method. Sign in with that method first, then try Google again.'**
+  String get loginThisEmailAlreadyHasAn;
+
+  /// No description provided for @loginGoogleDidNotProvideA.
+  ///
+  /// In en, this message translates to:
+  /// **'Google did not provide a verified email for this account.'**
+  String get loginGoogleDidNotProvideA;
+
+  /// No description provided for @loginGoogleSignInCouldNot.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in could not reach the service. Check your connection and try again.'**
+  String get loginGoogleSignInCouldNot;
+
+  /// No description provided for @loginAppleSignInWasCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in was canceled. Please try again.'**
+  String get loginAppleSignInWasCanceled;
+
+  /// No description provided for @loginAppleSignInIsTemporarily.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in is temporarily unavailable. Please try again later.'**
+  String get loginAppleSignInIsTemporarily;
+
+  /// No description provided for @loginThisEmailAlreadyHasAn2.
+  ///
+  /// In en, this message translates to:
+  /// **'This email already has an ExamTree sign-in method. Sign in with that method first, then try Apple again.'**
+  String get loginThisEmailAlreadyHasAn2;
+
+  /// No description provided for @loginAppleDidNotProvideA.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple did not provide a usable verified email for this account.'**
+  String get loginAppleDidNotProvideA;
+
+  /// No description provided for @loginAppleSignInCouldNot.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in could not reach the service. Check your connection and try again.'**
+  String get loginAppleSignInCouldNot;
+
+  /// No description provided for @loginResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get loginResetPassword;
+
+  /// No description provided for @loginRecoverYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover your account'**
+  String get loginRecoverYourAccount;
+
+  /// No description provided for @loginEnterTheEmailYouUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email you use for ExamTree and we will send password-reset instructions.'**
+  String get loginEnterTheEmailYouUse;
+
+  /// No description provided for @loginEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get loginEmail;
+
+  /// No description provided for @loginForPrivacyTheConfirmationScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'For privacy, the confirmation screen does not reveal whether an email is registered.'**
+  String get loginForPrivacyTheConfirmationScreen;
+
+  /// No description provided for @loginBackToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get loginBackToSignIn;
+
+  /// No description provided for @loginCheckYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get loginCheckYourEmail;
+
+  /// No description provided for @loginCheckYourSpamFolderToo.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your spam folder too. For privacy, we do not confirm whether an email is registered.'**
+  String get loginCheckYourSpamFolderToo;
+
+  /// No description provided for @loginSendingAnotherResetEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending another reset email…'**
+  String get loginSendingAnotherResetEmail;
+
+  /// No description provided for @loginUseAnotherEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another email'**
+  String get loginUseAnotherEmail;
+
+  /// No description provided for @loginEnterAValidEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get loginEnterAValidEmailAddress;
+
+  /// No description provided for @loginEnterYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password.'**
+  String get loginEnterYourPassword;
+
+  /// No description provided for @loginPreparingSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing sign-in…'**
+  String get loginPreparingSignIn;
+
+  /// No description provided for @loginUnableToSignInPlease.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to sign in. Please try again.'**
+  String get loginUnableToSignInPlease;
+
+  /// No description provided for @loginEnterAValidMobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid mobile number.'**
+  String get loginEnterAValidMobileNumber;
+
+  /// No description provided for @loginTheOtpYouEnteredIs.
+  ///
+  /// In en, this message translates to:
+  /// **'The OTP you entered is incorrect.'**
+  String get loginTheOtpYouEnteredIs;
+
+  /// No description provided for @loginUnableToVerifyThisMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify this mobile number. Please try again.'**
+  String get loginUnableToVerifyThisMobile;
+
+  /// No description provided for @loginEnterAValid10Digit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 10-digit mobile number.'**
+  String get loginEnterAValid10Digit;
+
+  /// No description provided for @loginSendingOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending OTP…'**
+  String get loginSendingOtp;
+
+  /// No description provided for @loginUnableToSendTheOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to send the OTP. Please try again.'**
+  String get loginUnableToSendTheOtp;
+
+  /// No description provided for @loginRequestANewOtpFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a new OTP first.'**
+  String get loginRequestANewOtpFirst;
+
+  /// No description provided for @loginEnterThe6DigitOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit OTP.'**
+  String get loginEnterThe6DigitOtp;
+
+  /// No description provided for @loginVerifyingOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying OTP…'**
+  String get loginVerifyingOtp;
+
+  /// No description provided for @loginUnableToVerifyTheOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify the OTP. Please try again.'**
+  String get loginUnableToVerifyTheOtp;
+
+  /// No description provided for @loginSendingANewOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending a new OTP…'**
+  String get loginSendingANewOtp;
+
+  /// No description provided for @loginUnableToResendTheOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to resend the OTP. Please try again.'**
+  String get loginUnableToResendTheOtp;
+
+  /// No description provided for @loginPreparingGoogleSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing Google sign-in…'**
+  String get loginPreparingGoogleSignIn;
+
+  /// No description provided for @loginGoogleSignInWasCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in was canceled. Please try again.'**
+  String get loginGoogleSignInWasCanceled;
+
+  /// No description provided for @loginGoogleSignInCouldNot2.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in could not be completed. Please try again.'**
+  String get loginGoogleSignInCouldNot2;
+
+  /// No description provided for @loginUnableToSignInWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to sign in with Google. Please try again.'**
+  String get loginUnableToSignInWith;
+
+  /// No description provided for @loginPreparingAppleSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing Apple sign-in…'**
+  String get loginPreparingAppleSignIn;
+
+  /// No description provided for @loginAppleSignInCouldNot2.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple sign-in could not be completed. Please try again.'**
+  String get loginAppleSignInCouldNot2;
+
+  /// No description provided for @loginUnableToSignInWith2.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to sign in with Apple. Please try again.'**
+  String get loginUnableToSignInWith2;
+
+  /// No description provided for @loginEnterYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name.'**
+  String get loginEnterYourName;
+
+  /// No description provided for @loginNameMustBe80Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be 80 characters or fewer.'**
+  String get loginNameMustBe80Characters;
+
+  /// No description provided for @loginUseAtLeast6Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 6 characters for your password.'**
+  String get loginUseAtLeast6Characters;
+
+  /// No description provided for @loginPasswordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get loginPasswordsDoNotMatch;
+
+  /// No description provided for @loginPreparingAccountSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing account setup…'**
+  String get loginPreparingAccountSetup;
+
+  /// No description provided for @loginUnableToCreateYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to create your account. Please try again.'**
+  String get loginUnableToCreateYourAccount;
+
+  /// No description provided for @authCreateYourExamtreeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your ExamTree account'**
+  String get authCreateYourExamtreeAccount;
+
+  /// No description provided for @authSetUpYourAccountAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your account and keep your preparation synced.'**
+  String get authSetUpYourAccountAnd;
+
+  /// No description provided for @authSecureSignInYourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure sign-in. Your progress stays synced.'**
+  String get authSecureSignInYourProgress;
+
+  /// No description provided for @authLoginWithMobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Mobile Number'**
+  String get authLoginWithMobileNumber;
+
+  /// No description provided for @authWeLlSendYouA.
+  ///
+  /// In en, this message translates to:
+  /// **'We’ll send you a one-time password (OTP)'**
+  String get authWeLlSendYouA;
+
+  /// No description provided for @authEnterMobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter mobile number'**
+  String get authEnterMobileNumber;
+
+  /// No description provided for @authGetOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Get OTP'**
+  String get authGetOtp;
+
+  /// No description provided for @authEnterOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP'**
+  String get authEnterOtp;
+
+  /// No description provided for @authChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get authChange;
+
+  /// No description provided for @authVerifyContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify & Continue'**
+  String get authVerifyContinue;
+
+  /// No description provided for @authContinueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get authContinueWithGoogle;
+
+  /// No description provided for @authContinueWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Email'**
+  String get authContinueWithEmail;
+
+  /// No description provided for @authContinueWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authContinueWithApple;
+
+  /// No description provided for @authSignInWithEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Email'**
+  String get authSignInWithEmail;
+
+  /// No description provided for @authName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get authName;
+
+  /// No description provided for @authPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPassword;
+
+  /// No description provided for @authConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get authConfirmPassword;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get authForgotPassword;
 }
 
 class _AppLocalizationsDelegate

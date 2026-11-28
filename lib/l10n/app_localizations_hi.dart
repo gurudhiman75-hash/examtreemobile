@@ -1691,4 +1691,278 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get seriesCheckConnection => 'इंटरनेट जाँचें और फिर से कोशिश करें।';
+
+  @override
+  String get loginLetSBuildYourExam => 'आइए आपकी परीक्षा सफलता बनाएँ';
+
+  @override
+  String get loginMasterConceptsPracticeSmarterGet =>
+      'कॉन्सेप्ट समझें। समझदारी से अभ्यास करें। असली नतीजे पाएँ।';
+
+  @override
+  String get loginPracticeTheWayRealExams =>
+      'वैसे ही अभ्यास करें जैसे असली परीक्षा पूछती है';
+
+  @override
+  String get loginUseFocusedMockTestsAnd =>
+      'केंद्रित मॉक टेस्ट और विस्तृत हल से तैयारी को परीक्षा की तैयारी में बदलें।';
+
+  @override
+  String get loginKnowWhatToReviseNext => 'जानें आगे क्या दोहराना है';
+
+  @override
+  String get loginContinueWhereYouLeftOff =>
+      'जहाँ छोड़ा था वहीं से जारी रखें और अपनी प्रगति से दोहराव को सही दिशा दें।';
+
+  @override
+  String get loginTooManyVerificationAttemptsPlease =>
+      'बहुत ज़्यादा प्रयास हो गए। थोड़ा रुककर फिर से कोशिश करें।';
+
+  @override
+  String get loginSmsVerificationIsTemporarilyUnavailable =>
+      'SMS सत्यापन अभी उपलब्ध नहीं है। बाद में फिर से कोशिश करें।';
+
+  @override
+  String get loginThisExamtreeBuildIsNot =>
+      'यह ExamTree संस्करण फ़ोन साइन-इन के लिए अधिकृत नहीं है।';
+
+  @override
+  String get loginPhoneVerificationCouldNotBe =>
+      'फ़ोन सत्यापन की पुष्टि नहीं हो सकी। फिर से कोशिश करें।';
+
+  @override
+  String get loginCouldNotReachTheVerification =>
+      'सत्यापन सेवा तक नहीं पहुँच सके। इंटरनेट जाँचें और फिर से कोशिश करें।';
+
+  @override
+  String get loginThisVerificationSessionHasExpired =>
+      'यह सत्यापन सत्र समाप्त हो गया है। नया OTP मँगाएँ।';
+
+  @override
+  String get loginPhoneSignInIsNot =>
+      'इस ExamTree संस्करण में फ़ोन साइन-इन चालू नहीं है।';
+
+  @override
+  String get loginGoogleSignInIsTemporarily =>
+      'Google साइन-इन अभी उपलब्ध नहीं है। बाद में फिर से कोशिश करें।';
+
+  @override
+  String get loginThisEmailAlreadyHasAn =>
+      'इस ईमेल का ExamTree साइन-इन तरीका पहले से है। पहले उस तरीके से साइन इन करें, फिर Google दोबारा आज़माएँ।';
+
+  @override
+  String get loginGoogleDidNotProvideA =>
+      'Google ने इस खाते के लिए सत्यापित ईमेल नहीं दिया।';
+
+  @override
+  String get loginGoogleSignInCouldNot =>
+      'Google साइन-इन सेवा तक नहीं पहुँच सका। इंटरनेट जाँचें और फिर से कोशिश करें।';
+
+  @override
+  String get loginAppleSignInWasCanceled =>
+      'Apple साइन-इन रद्द हुआ। फिर से कोशिश करें।';
+
+  @override
+  String get loginAppleSignInIsTemporarily =>
+      'Apple साइन-इन अभी उपलब्ध नहीं है। बाद में फिर से कोशिश करें।';
+
+  @override
+  String get loginThisEmailAlreadyHasAn2 =>
+      'इस ईमेल का ExamTree साइन-इन तरीका पहले से है। पहले उस तरीके से साइन इन करें, फिर Apple दोबारा आज़माएँ।';
+
+  @override
+  String get loginAppleDidNotProvideA =>
+      'Apple ने इस खाते के लिए उपयोगी सत्यापित ईमेल नहीं दिया।';
+
+  @override
+  String get loginAppleSignInCouldNot =>
+      'Apple साइन-इन सेवा तक नहीं पहुँच सका। इंटरनेट जाँचें और फिर से कोशिश करें।';
+
+  @override
+  String get loginResetPassword => 'पासवर्ड रीसेट करें';
+
+  @override
+  String get loginRecoverYourAccount => 'अपना खाता वापस पाएँ';
+
+  @override
+  String get loginEnterTheEmailYouUse =>
+      'ExamTree के लिए इस्तेमाल किया ईमेल डालें, हम पासवर्ड रीसेट निर्देश भेजेंगे।';
+
+  @override
+  String get loginEmail => 'ईमेल';
+
+  @override
+  String get loginForPrivacyTheConfirmationScreen =>
+      'गोपनीयता के लिए, पुष्टि स्क्रीन यह नहीं बताती कि ईमेल पंजीकृत है या नहीं।';
+
+  @override
+  String get loginBackToSignIn => 'साइन इन पर वापस जाएँ';
+
+  @override
+  String get loginCheckYourEmail => 'अपना ईमेल देखें';
+
+  @override
+  String get loginCheckYourSpamFolderToo =>
+      'स्पैम फ़ोल्डर भी देखें। गोपनीयता के लिए हम नहीं बताते कि ईमेल पंजीकृत है या नहीं।';
+
+  @override
+  String get loginSendingAnotherResetEmail =>
+      'एक और रीसेट ईमेल भेजा जा रहा है…';
+
+  @override
+  String get loginUseAnotherEmail => 'दूसरा ईमेल इस्तेमाल करें';
+
+  @override
+  String get loginEnterAValidEmailAddress => 'सही ईमेल पता डालें।';
+
+  @override
+  String get loginEnterYourPassword => 'अपना पासवर्ड डालें।';
+
+  @override
+  String get loginPreparingSignIn => 'साइन-इन तैयार हो रहा है…';
+
+  @override
+  String get loginUnableToSignInPlease =>
+      'साइन इन नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginEnterAValidMobileNumber => 'सही मोबाइल नंबर डालें।';
+
+  @override
+  String get loginTheOtpYouEnteredIs => 'आपका डाला OTP गलत है।';
+
+  @override
+  String get loginUnableToVerifyThisMobile =>
+      'यह मोबाइल नंबर सत्यापित नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginEnterAValid10Digit => 'सही 10 अंकों का मोबाइल नंबर डालें।';
+
+  @override
+  String get loginSendingOtp => 'OTP भेजा जा रहा है…';
+
+  @override
+  String get loginUnableToSendTheOtp =>
+      'OTP नहीं भेजा जा सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginRequestANewOtpFirst => 'पहले नया OTP मँगाएँ।';
+
+  @override
+  String get loginEnterThe6DigitOtp => '6 अंकों का OTP डालें।';
+
+  @override
+  String get loginVerifyingOtp => 'OTP सत्यापित हो रहा है…';
+
+  @override
+  String get loginUnableToVerifyTheOtp =>
+      'OTP सत्यापित नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginSendingANewOtp => 'नया OTP भेजा जा रहा है…';
+
+  @override
+  String get loginUnableToResendTheOtp =>
+      'OTP दोबारा नहीं भेजा जा सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginPreparingGoogleSignIn => 'Google साइन-इन तैयार हो रहा है…';
+
+  @override
+  String get loginGoogleSignInWasCanceled =>
+      'Google साइन-इन रद्द हुआ। फिर से कोशिश करें।';
+
+  @override
+  String get loginGoogleSignInCouldNot2 =>
+      'Google साइन-इन पूरा नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginUnableToSignInWith =>
+      'Google से साइन इन नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginPreparingAppleSignIn => 'Apple साइन-इन तैयार हो रहा है…';
+
+  @override
+  String get loginAppleSignInCouldNot2 =>
+      'Apple साइन-इन पूरा नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginUnableToSignInWith2 =>
+      'Apple से साइन इन नहीं हो सका। फिर से कोशिश करें।';
+
+  @override
+  String get loginEnterYourName => 'अपना नाम डालें।';
+
+  @override
+  String get loginNameMustBe80Characters =>
+      'नाम 80 अक्षरों या कम का होना चाहिए।';
+
+  @override
+  String get loginUseAtLeast6Characters => 'पासवर्ड में कम से कम 6 अक्षर रखें।';
+
+  @override
+  String get loginPasswordsDoNotMatch => 'पासवर्ड मेल नहीं खाते।';
+
+  @override
+  String get loginPreparingAccountSetup => 'खाता बनाने की तैयारी हो रही है…';
+
+  @override
+  String get loginUnableToCreateYourAccount =>
+      'आपका खाता नहीं बन सका। फिर से कोशिश करें।';
+
+  @override
+  String get authCreateYourExamtreeAccount => 'अपना ExamTree खाता बनाएँ';
+
+  @override
+  String get authSetUpYourAccountAnd => 'खाता बनाएँ और अपनी तैयारी सिंक रखें।';
+
+  @override
+  String get authSecureSignInYourProgress =>
+      'सुरक्षित साइन-इन। आपकी प्रगति सिंक रहती है।';
+
+  @override
+  String get authLoginWithMobileNumber => 'मोबाइल नंबर से लॉगिन करें';
+
+  @override
+  String get authWeLlSendYouA => 'हम आपको एक बार का पासवर्ड (OTP) भेजेंगे';
+
+  @override
+  String get authEnterMobileNumber => 'मोबाइल नंबर डालें';
+
+  @override
+  String get authGetOtp => 'OTP पाएँ';
+
+  @override
+  String get authEnterOtp => 'OTP डालें';
+
+  @override
+  String get authChange => 'बदलें';
+
+  @override
+  String get authVerifyContinue => 'सत्यापित करें और जारी रखें';
+
+  @override
+  String get authContinueWithGoogle => 'Google से जारी रखें';
+
+  @override
+  String get authContinueWithEmail => 'ईमेल से जारी रखें';
+
+  @override
+  String get authContinueWithApple => 'Apple से जारी रखें';
+
+  @override
+  String get authSignInWithEmail => 'ईमेल से साइन इन करें';
+
+  @override
+  String get authName => 'नाम';
+
+  @override
+  String get authPassword => 'पासवर्ड';
+
+  @override
+  String get authConfirmPassword => 'पासवर्ड की पुष्टि करें';
+
+  @override
+  String get authForgotPassword => 'पासवर्ड भूल गए?';
 }

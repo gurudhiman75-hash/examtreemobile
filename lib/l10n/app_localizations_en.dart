@@ -1697,4 +1697,278 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get seriesCheckConnection => 'Check your connection and try again.';
+
+  @override
+  String get loginLetSBuildYourExam => 'Let’s build your exam success';
+
+  @override
+  String get loginMasterConceptsPracticeSmarterGet =>
+      'Master concepts. Practice smarter. Get real results.';
+
+  @override
+  String get loginPracticeTheWayRealExams => 'Practice the way real exams ask';
+
+  @override
+  String get loginUseFocusedMockTestsAnd =>
+      'Use focused mock tests and detailed solutions to turn preparation into exam readiness.';
+
+  @override
+  String get loginKnowWhatToReviseNext => 'Know what to revise next';
+
+  @override
+  String get loginContinueWhereYouLeftOff =>
+      'Continue where you left off and use your progress to keep revision targeted.';
+
+  @override
+  String get loginTooManyVerificationAttemptsPlease =>
+      'Too many verification attempts. Please wait a little and try again.';
+
+  @override
+  String get loginSmsVerificationIsTemporarilyUnavailable =>
+      'SMS verification is temporarily unavailable. Please try again later.';
+
+  @override
+  String get loginThisExamtreeBuildIsNot =>
+      'This ExamTree build is not authorized for phone sign-in.';
+
+  @override
+  String get loginPhoneVerificationCouldNotBe =>
+      'Phone verification could not be confirmed. Please try again.';
+
+  @override
+  String get loginCouldNotReachTheVerification =>
+      'Could not reach the verification service. Check your connection and try again.';
+
+  @override
+  String get loginThisVerificationSessionHasExpired =>
+      'This verification session has expired. Request a new OTP.';
+
+  @override
+  String get loginPhoneSignInIsNot =>
+      'Phone sign-in is not enabled for this ExamTree build.';
+
+  @override
+  String get loginGoogleSignInIsTemporarily =>
+      'Google sign-in is temporarily unavailable. Please try again later.';
+
+  @override
+  String get loginThisEmailAlreadyHasAn =>
+      'This email already has an ExamTree sign-in method. Sign in with that method first, then try Google again.';
+
+  @override
+  String get loginGoogleDidNotProvideA =>
+      'Google did not provide a verified email for this account.';
+
+  @override
+  String get loginGoogleSignInCouldNot =>
+      'Google sign-in could not reach the service. Check your connection and try again.';
+
+  @override
+  String get loginAppleSignInWasCanceled =>
+      'Apple sign-in was canceled. Please try again.';
+
+  @override
+  String get loginAppleSignInIsTemporarily =>
+      'Apple sign-in is temporarily unavailable. Please try again later.';
+
+  @override
+  String get loginThisEmailAlreadyHasAn2 =>
+      'This email already has an ExamTree sign-in method. Sign in with that method first, then try Apple again.';
+
+  @override
+  String get loginAppleDidNotProvideA =>
+      'Apple did not provide a usable verified email for this account.';
+
+  @override
+  String get loginAppleSignInCouldNot =>
+      'Apple sign-in could not reach the service. Check your connection and try again.';
+
+  @override
+  String get loginResetPassword => 'Reset password';
+
+  @override
+  String get loginRecoverYourAccount => 'Recover your account';
+
+  @override
+  String get loginEnterTheEmailYouUse =>
+      'Enter the email you use for ExamTree and we will send password-reset instructions.';
+
+  @override
+  String get loginEmail => 'Email';
+
+  @override
+  String get loginForPrivacyTheConfirmationScreen =>
+      'For privacy, the confirmation screen does not reveal whether an email is registered.';
+
+  @override
+  String get loginBackToSignIn => 'Back to sign in';
+
+  @override
+  String get loginCheckYourEmail => 'Check your email';
+
+  @override
+  String get loginCheckYourSpamFolderToo =>
+      'Check your spam folder too. For privacy, we do not confirm whether an email is registered.';
+
+  @override
+  String get loginSendingAnotherResetEmail => 'Sending another reset email…';
+
+  @override
+  String get loginUseAnotherEmail => 'Use another email';
+
+  @override
+  String get loginEnterAValidEmailAddress => 'Enter a valid email address.';
+
+  @override
+  String get loginEnterYourPassword => 'Enter your password.';
+
+  @override
+  String get loginPreparingSignIn => 'Preparing sign-in…';
+
+  @override
+  String get loginUnableToSignInPlease =>
+      'Unable to sign in. Please try again.';
+
+  @override
+  String get loginEnterAValidMobileNumber => 'Enter a valid mobile number.';
+
+  @override
+  String get loginTheOtpYouEnteredIs => 'The OTP you entered is incorrect.';
+
+  @override
+  String get loginUnableToVerifyThisMobile =>
+      'Unable to verify this mobile number. Please try again.';
+
+  @override
+  String get loginEnterAValid10Digit => 'Enter a valid 10-digit mobile number.';
+
+  @override
+  String get loginSendingOtp => 'Sending OTP…';
+
+  @override
+  String get loginUnableToSendTheOtp =>
+      'Unable to send the OTP. Please try again.';
+
+  @override
+  String get loginRequestANewOtpFirst => 'Request a new OTP first.';
+
+  @override
+  String get loginEnterThe6DigitOtp => 'Enter the 6-digit OTP.';
+
+  @override
+  String get loginVerifyingOtp => 'Verifying OTP…';
+
+  @override
+  String get loginUnableToVerifyTheOtp =>
+      'Unable to verify the OTP. Please try again.';
+
+  @override
+  String get loginSendingANewOtp => 'Sending a new OTP…';
+
+  @override
+  String get loginUnableToResendTheOtp =>
+      'Unable to resend the OTP. Please try again.';
+
+  @override
+  String get loginPreparingGoogleSignIn => 'Preparing Google sign-in…';
+
+  @override
+  String get loginGoogleSignInWasCanceled =>
+      'Google sign-in was canceled. Please try again.';
+
+  @override
+  String get loginGoogleSignInCouldNot2 =>
+      'Google sign-in could not be completed. Please try again.';
+
+  @override
+  String get loginUnableToSignInWith =>
+      'Unable to sign in with Google. Please try again.';
+
+  @override
+  String get loginPreparingAppleSignIn => 'Preparing Apple sign-in…';
+
+  @override
+  String get loginAppleSignInCouldNot2 =>
+      'Apple sign-in could not be completed. Please try again.';
+
+  @override
+  String get loginUnableToSignInWith2 =>
+      'Unable to sign in with Apple. Please try again.';
+
+  @override
+  String get loginEnterYourName => 'Enter your name.';
+
+  @override
+  String get loginNameMustBe80Characters =>
+      'Name must be 80 characters or fewer.';
+
+  @override
+  String get loginUseAtLeast6Characters =>
+      'Use at least 6 characters for your password.';
+
+  @override
+  String get loginPasswordsDoNotMatch => 'Passwords do not match.';
+
+  @override
+  String get loginPreparingAccountSetup => 'Preparing account setup…';
+
+  @override
+  String get loginUnableToCreateYourAccount =>
+      'Unable to create your account. Please try again.';
+
+  @override
+  String get authCreateYourExamtreeAccount => 'Create your ExamTree account';
+
+  @override
+  String get authSetUpYourAccountAnd =>
+      'Set up your account and keep your preparation synced.';
+
+  @override
+  String get authSecureSignInYourProgress =>
+      'Secure sign-in. Your progress stays synced.';
+
+  @override
+  String get authLoginWithMobileNumber => 'Login with Mobile Number';
+
+  @override
+  String get authWeLlSendYouA => 'We’ll send you a one-time password (OTP)';
+
+  @override
+  String get authEnterMobileNumber => 'Enter mobile number';
+
+  @override
+  String get authGetOtp => 'Get OTP';
+
+  @override
+  String get authEnterOtp => 'Enter OTP';
+
+  @override
+  String get authChange => 'Change';
+
+  @override
+  String get authVerifyContinue => 'Verify & Continue';
+
+  @override
+  String get authContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get authContinueWithEmail => 'Continue with Email';
+
+  @override
+  String get authContinueWithApple => 'Continue with Apple';
+
+  @override
+  String get authSignInWithEmail => 'Sign in with Email';
+
+  @override
+  String get authName => 'Name';
+
+  @override
+  String get authPassword => 'Password';
+
+  @override
+  String get authConfirmPassword => 'Confirm password';
+
+  @override
+  String get authForgotPassword => 'Forgot password?';
 }

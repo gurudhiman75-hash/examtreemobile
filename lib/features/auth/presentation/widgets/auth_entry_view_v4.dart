@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/l10n.dart';
 
 class AuthEntryView extends StatefulWidget {
   const AuthEntryView({
@@ -156,7 +157,7 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                           ],
                         ] else ...[
                           Text(
-                            'Create your ExamTree account',
+                            context.l10n.authCreateYourExamtreeAccount,
                             style: theme.textTheme.headlineSmall?.copyWith(
                               color: const Color(0xFF0B2343),
                               fontWeight: FontWeight.w900,
@@ -165,7 +166,7 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Set up your account and keep your preparation synced.',
+                            context.l10n.authSetUpYourAccountAnd,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: const Color(0xFF6C788B),
                               height: 1.35,
@@ -216,7 +217,7 @@ class _AuthEntryViewState extends State<AuthEntryView> {
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
-                                'Secure sign-in. Your progress stays synced.',
+                                context.l10n.authSecureSignInYourProgress,
                                 textAlign: TextAlign.center,
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: scheme.onSurfaceVariant,
@@ -300,7 +301,7 @@ class _MobileLoginCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Login with Mobile Number',
+            context.l10n.authLoginWithMobileNumber,
             style: theme.textTheme.titleMedium?.copyWith(
               color: const Color(0xFF0B2343),
               fontWeight: FontWeight.w900,
@@ -309,7 +310,7 @@ class _MobileLoginCard extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            'We’ll send you a one-time password (OTP)',
+            context.l10n.authWeLlSendYouA,
             style: theme.textTheme.bodySmall?.copyWith(
               color: const Color(0xFF6E7B90),
             ),
@@ -357,8 +358,8 @@ class _MobileLoginCard extends StatelessWidget {
                     onSubmitted: (_) {
                       if (!isLoading) onContinue();
                     },
-                    decoration: const InputDecoration(
-                      hintText: 'Enter mobile number',
+                    decoration: InputDecoration(
+                      hintText: context.l10n.authEnterMobileNumber,
                       border: InputBorder.none,
                       isDense: true,
                     ),
@@ -386,10 +387,10 @@ class _MobileLoginCard extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Get OTP'),
+                Text(context.l10n.authGetOtp),
                 SizedBox(width: 8),
                 Icon(Icons.arrow_forward_rounded, size: 18),
               ],
@@ -516,7 +517,7 @@ class _OtpVerificationCardState extends State<_OtpVerificationCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Enter OTP',
+                      context.l10n.authEnterOtp,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: const Color(0xFF0B2343),
                         fontWeight: FontWeight.w900,
@@ -540,7 +541,7 @@ class _OtpVerificationCardState extends State<_OtpVerificationCard> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   foregroundColor: const Color(0xFFB2770D),
                 ),
-                child: const Text('Change'),
+                child: Text(context.l10n.authChange),
               ),
             ],
           ),
@@ -606,10 +607,10 @@ class _OtpVerificationCardState extends State<_OtpVerificationCard> {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Verify & Continue'),
+                Text(context.l10n.authVerifyContinue),
                 SizedBox(width: 8),
                 Icon(Icons.arrow_forward_rounded, size: 18),
               ],
@@ -659,7 +660,7 @@ class _CompactAlternativeRow extends StatelessWidget {
         _CompactAuthButton(
           key: const Key('auth-google'),
           icon: const _GoogleMark(),
-          tooltip: 'Continue with Google',
+          tooltip: context.l10n.authContinueWithGoogle,
           onPressed: isLoading ? null : onGoogle,
         ),
         const SizedBox(width: 12),
@@ -670,7 +671,7 @@ class _CompactAlternativeRow extends StatelessWidget {
             color: Color(0xFF153B69),
             size: 21,
           ),
-          tooltip: 'Continue with Email',
+          tooltip: context.l10n.authContinueWithEmail,
           onPressed: isLoading ? null : onEmail,
         ),
         if (showApple) ...[
@@ -678,7 +679,7 @@ class _CompactAlternativeRow extends StatelessWidget {
           _CompactAuthButton(
             key: const Key('auth-apple'),
             icon: const Icon(Icons.apple, color: Colors.black, size: 22),
-            tooltip: 'Continue with Apple',
+            tooltip: context.l10n.authContinueWithApple,
             onPressed: isLoading ? null : onApple,
           ),
         ],
@@ -792,7 +793,7 @@ class _EmailPanel extends StatelessWidget {
         children: [
           if (!registering)
             Text(
-              'Sign in with Email',
+              context.l10n.authSignInWithEmail,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: const Color(0xFF0B2343),
                     fontWeight: FontWeight.w900,
@@ -807,7 +808,7 @@ class _EmailPanel extends StatelessWidget {
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
               decoration: _decoration(
-                label: 'Name',
+                label: context.l10n.authName,
                 icon: Icons.person_outline_rounded,
               ),
             ),
@@ -821,7 +822,7 @@ class _EmailPanel extends StatelessWidget {
             autofillHints: const [AutofillHints.email],
             autocorrect: false,
             decoration: _decoration(
-              label: 'Email',
+              label: context.l10n.loginEmail,
               icon: Icons.mail_outline_rounded,
             ),
           ),
@@ -839,7 +840,7 @@ class _EmailPanel extends StatelessWidget {
               if (!isLoading && !registering) onSubmit();
             },
             decoration: _decoration(
-              label: 'Password',
+              label: context.l10n.authPassword,
               icon: Icons.lock_outline_rounded,
               helper: registering ? 'Use at least 6 characters.' : null,
               suffix: IconButton(
@@ -865,7 +866,7 @@ class _EmailPanel extends StatelessWidget {
                 if (!isLoading) onSubmit();
               },
               decoration: _decoration(
-                label: 'Confirm password',
+                label: context.l10n.authConfirmPassword,
                 icon: Icons.lock_reset_rounded,
               ),
             ),
@@ -882,7 +883,7 @@ class _EmailPanel extends StatelessWidget {
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: const Text('Forgot password?'),
+                child: Text(context.l10n.authForgotPassword),
               ),
             ),
           ],
