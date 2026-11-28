@@ -24,8 +24,9 @@ void main() {
       expect(source, isNot(contains('error.message!.trim()')));
       expect(source, isNot(contains(r'Unable to sign in with Google: $error')));
       expect(source, isNot(contains(r'Google sign-in failed (${error.code}):')));
+      expect(source, contains('context.l10n.loginGoogleSignInCouldNot2'));
       expect(
-        source,
+        File('lib/l10n/app_en.arb').readAsStringSync(),
         contains('Google sign-in could not be completed. Please try again.'),
       );
     });

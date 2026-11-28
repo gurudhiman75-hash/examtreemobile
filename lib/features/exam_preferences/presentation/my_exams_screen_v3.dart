@@ -7,6 +7,7 @@ import '../../../shared/widgets/network_failure_view.dart';
 import '../data/exam_preferences_repository.dart';
 import '../domain/exam_preferences.dart';
 import 'providers/exam_preferences_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class MyExamsScreen extends ConsumerWidget {
   const MyExamsScreen({super.key});
@@ -16,7 +17,7 @@ class MyExamsScreen extends ConsumerWidget {
     final snapshotAsync = ref.watch(examPreferenceSnapshotProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My exams'),
+        title: Text(context.l10n.myExamsMyExams),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -32,7 +33,7 @@ class MyExamsScreen extends ConsumerWidget {
           loading: () => const _LoadingState(),
           error: (error, stackTrace) => NetworkFailureView(
             error: error,
-            fallbackTitle: 'Unable to load your exam catalogue',
+            fallbackTitle: context.l10n.myExamsUnableToLoadYourExam,
             onRetry: () => ref.invalidate(examPreferenceSnapshotProvider),
           ),
           data: (snapshot) => _ExamPreferenceEditor(
@@ -130,7 +131,7 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
       ref.invalidate(examPreferenceSnapshotProvider);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('My exams updated.')),
+        SnackBar(content: Text(context.l10n.myExamsMyExamsUpdated)),
       );
     } on ExamPreferencesException catch (error) {
       if (!mounted) return;
@@ -140,7 +141,7 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unable to save your selected exams.')),
+        SnackBar(content: Text(context.l10n.myExamsUnableToSaveYourSelected)),
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -203,12 +204,12 @@ class _ExamPreferenceEditorState extends ConsumerState<_ExamPreferenceEditor> {
                 child: SearchBar(
                 key: const Key('my-exams-search'),
                 controller: _searchController,
-                hintText: 'Search exams or exam families',
+                hintText: context.l10n.myExamsSearchExamsOrExamFamilies,
                 leading: const Icon(Icons.search_rounded),
                 trailing: [
                   if (_query.isNotEmpty)
                     IconButton(
-                      tooltip: 'Clear search',
+                      tooltip: context.l10n.clearSearch,
                       onPressed: () {
                         _searchController.clear();
                         setState(() => _query = '');
@@ -324,7 +325,7 @@ class _PreparationHero extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Choose what you are preparing for',
+            context.l10n.myExamsChooseWhatYouArePreparing,
             style: theme.textTheme.headlineSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w900,
@@ -333,7 +334,7 @@ class _PreparationHero extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'ExamTree will use these choices to organise tests, free material and relevant updates. You can change them anytime.',
+            context.l10n.myExamsExamtreeWillUseTheseChoices,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.white.withValues(alpha: 0.82),
               height: 1.45,
@@ -351,7 +352,7 @@ class _PreparationHero extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: TextButton(
                       onPressed: onClear,
-                      child: const Text('Clear selection'),
+                      child: Text(context.l10n.myExamsClearSelection),
                     ),
                   ),
                 ],
@@ -369,7 +370,7 @@ class _PreparationHero extends StatelessWidget {
                 if (onClear != null)
                   TextButton(
                     onPressed: onClear,
-                    child: const Text('Clear'),
+                    child: Text(context.l10n.attemptClear),
                   ),
               ],
             ),
@@ -872,7 +873,7 @@ class _EmptySearch extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'No exams match that search.',
+            context.l10n.myExamsNoExamsMatchThatSearch,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w800,
@@ -880,7 +881,7 @@ class _EmptySearch extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Try the exam name, code, or exam family.',
+            context.l10n.myExamsTryTheExamNameCode,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,

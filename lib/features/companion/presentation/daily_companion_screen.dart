@@ -8,6 +8,7 @@ import '../../auth/presentation/providers/auth_providers.dart';
 import '../domain/daily_companion.dart';
 import 'providers/daily_companion_providers.dart';
 import 'quick_revision_screen.dart';
+import '../../../l10n/l10n.dart';
 
 class DailyCompanionScreen extends ConsumerWidget {
   const DailyCompanionScreen({super.key});
@@ -26,15 +27,15 @@ class DailyCompanionScreen extends ConsumerWidget {
       ref.invalidate(dailyCompanionSnapshotProvider);
       if (context.mounted && settings.reminderEnabled && !ready) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Study plan saved, but notifications are disabled.'),
+          SnackBar(
+            content: Text(context.l10n.dailyStudyPlanSavedButNotifications),
           ),
         );
       }
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to save the study plan.')),
+          SnackBar(content: Text(context.l10n.dailyUnableToSaveTheStudy)),
         );
       }
     }
@@ -56,7 +57,7 @@ class DailyCompanionScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFBFCFE),
       appBar: AppBar(
-        title: const Text('Daily Companion'),
+        title: Text(context.l10n.dailyDailyCompanion),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -71,7 +72,7 @@ class DailyCompanionScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: context.l10n.dailyRefresh,
             onPressed: () => ref.invalidate(dailyCompanionSnapshotProvider),
             icon: const Icon(Icons.sync_rounded),
           ),
@@ -104,7 +105,7 @@ class DailyCompanionScreen extends ConsumerWidget {
                 _TodayHero(snapshot: snapshot, dueCount: due.length),
                 const SizedBox(height: AppSpacing.lg),
                 _SectionHeader(
-                  title: 'Quick revision',
+                  title: context.l10n.dailyQuickRevision,
                   subtitle: due.isEmpty
                       ? 'Nothing is due right now.'
                       : 'Choose a focused session from questions due now.',
@@ -118,7 +119,7 @@ class DailyCompanionScreen extends ConsumerWidget {
                 _ExamDayLink(onTap: () => context.push('/exam-day')),
                 const SizedBox(height: AppSpacing.xl),
                 _SectionHeader(
-                  title: 'Revision queue',
+                  title: context.l10n.offlineRevision,
                   subtitle: due.isEmpty
                       ? '${snapshot.items.length} saved questions · nothing due now'
                       : '${due.length} due now · ${snapshot.items.length} saved',
@@ -134,9 +135,9 @@ class DailyCompanionScreen extends ConsumerWidget {
                         ),
                       ),
                 const SizedBox(height: AppSpacing.xl),
-                const _SectionHeader(
-                  title: 'Study plan',
-                  subtitle: 'Keep your daily target and local reminder realistic.',
+                _SectionHeader(
+                  title: context.l10n.dailyStudyPlan,
+                  subtitle: context.l10n.dailyKeepYourDailyTargetAnd,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 _StudyPlanCard(
@@ -224,7 +225,7 @@ class _DailyErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Daily Companion is unavailable',
+              context.l10n.dailyDailyCompanionIsUnavailable,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w900,
@@ -232,7 +233,7 @@ class _DailyErrorState extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Your saved revision queue is still on this device. Try loading it again.',
+              context.l10n.dailyYourSavedRevisionQueueIs,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -251,7 +252,7 @@ class _DailyErrorState extends StatelessWidget {
                 textStyle: const TextStyle(fontWeight: FontWeight.w900),
               ),
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry Daily Companion'),
+              label: Text(context.l10n.dailyRetryDailyCompanion),
             ),
           ],
         ),
@@ -288,7 +289,7 @@ class _TodayHero extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Today’s revision',
+          context.l10n.dailyTodaySRevision,
           style: theme.textTheme.headlineSmall?.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w900,
@@ -529,7 +530,7 @@ class _ExamDayLink extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Exam-Day Mode',
+                      context.l10n.dailyExamDayMode,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: const Color(0xFF10264A),
                         fontWeight: FontWeight.w900,
@@ -537,7 +538,7 @@ class _ExamDayLink extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
-                      'Countdown, logistics checklist and local reminders',
+                      context.l10n.dailyCountdownLogisticsChecklistAndLocal,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: const Color(0xFF526274),
                         height: 1.35,
@@ -583,7 +584,7 @@ class _EmptyRevisionQueue extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.',
+              context.l10n.dailyCompleteTestsToBuildA,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: const Color(0xFF526274),
                 height: 1.45,
@@ -748,7 +749,7 @@ class _StudyPlanCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'My study plan',
+                        context.l10n.dailyMyStudyPlan,
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: const Color(0xFF10264A),
                           fontWeight: FontWeight.w900,
@@ -757,7 +758,7 @@ class _StudyPlanCard extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
-                        'Set a realistic daily review target and an optional local reminder.',
+                        context.l10n.dailySetARealisticDailyReview,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                           height: 1.35,
@@ -778,7 +779,7 @@ class _StudyPlanCard extends StatelessWidget {
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(
-                'Local study reminder',
+                context.l10n.dailyLocalStudyReminder,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -814,7 +815,7 @@ class _StudyPlanCard extends StatelessWidget {
                   }
                 },
                 icon: const Icon(Icons.schedule_rounded),
-                label: const Text('Change reminder time'),
+                label: Text(context.l10n.dailyChangeReminderTime),
               ),
             ],
           ],
@@ -842,7 +843,7 @@ class _GoalControl extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton.outlined(
-          tooltip: 'Decrease daily question goal',
+          tooltip: context.l10n.dailyDecreaseDailyQuestionGoal,
           onPressed: settings.dailyQuestionGoal > 1
               ? () => onChanged(
                     settings.copyWith(
@@ -865,7 +866,7 @@ class _GoalControl extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.sm),
         IconButton.outlined(
-          tooltip: 'Increase daily question goal',
+          tooltip: context.l10n.dailyIncreaseDailyQuestionGoal,
           onPressed: settings.dailyQuestionGoal < 100
               ? () => onChanged(
                     settings.copyWith(
@@ -879,7 +880,7 @@ class _GoalControl extends StatelessWidget {
     );
 
     final label = Text(
-      'Daily question goal',
+      context.l10n.dailyDailyQuestionGoal,
       style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
     );
 

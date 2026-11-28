@@ -1971,4 +1971,211 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authForgotPassword => 'Forgot password?';
+
+  @override
+  String get caThisCurrentAffairsItemCould =>
+      'This current-affairs item could not be opened.';
+
+  @override
+  String get caUnableToLoadCurrentAffairs => 'Unable to load current affairs';
+
+  @override
+  String get caLatestUpdates => 'Latest updates';
+
+  @override
+  String get caStayReadyForWhatChanged => 'Stay ready for what changed.';
+
+  @override
+  String get caReadPublishedUpdatesInYour =>
+      'Read published updates in your preferred language and keep exam-relevant developments close at hand.';
+
+  @override
+  String get caNoCurrentAffairsArePublished =>
+      'No current affairs are published yet.';
+
+  @override
+  String get caNewPublishedUpdatesWillAppear =>
+      'New published updates will appear here automatically.';
+
+  @override
+  String get caNoPublishedItemsMatchThis =>
+      'No published items match this format yet.';
+
+  @override
+  String get myExamsMyExams => 'My exams';
+
+  @override
+  String get myExamsUnableToLoadYourExam =>
+      'Unable to load your exam catalogue';
+
+  @override
+  String get myExamsMyExamsUpdated => 'My exams updated.';
+
+  @override
+  String get myExamsUnableToSaveYourSelected =>
+      'Unable to save your selected exams.';
+
+  @override
+  String get myExamsSearchExamsOrExamFamilies =>
+      'Search exams or exam families';
+
+  @override
+  String get myExamsChooseWhatYouArePreparing =>
+      'Choose what you are preparing for';
+
+  @override
+  String get myExamsExamtreeWillUseTheseChoices =>
+      'ExamTree will use these choices to organise tests, free material and relevant updates. You can change them anytime.';
+
+  @override
+  String get myExamsClearSelection => 'Clear selection';
+
+  @override
+  String get myExamsNoExamsMatchThatSearch => 'No exams match that search.';
+
+  @override
+  String get myExamsTryTheExamNameCode =>
+      'Try the exam name, code, or exam family.';
+
+  @override
+  String get dailyStudyPlanSavedButNotifications =>
+      'Study plan saved, but notifications are disabled.';
+
+  @override
+  String get dailyUnableToSaveTheStudy => 'Unable to save the study plan.';
+
+  @override
+  String get dailyDailyCompanion => 'Daily Companion';
+
+  @override
+  String get dailyRefresh => 'Refresh';
+
+  @override
+  String get dailyQuickRevision => 'Quick revision';
+
+  @override
+  String get dailyStudyPlan => 'Study plan';
+
+  @override
+  String get dailyKeepYourDailyTargetAnd =>
+      'Keep your daily target and local reminder realistic.';
+
+  @override
+  String get dailyDailyCompanionIsUnavailable =>
+      'Daily Companion is unavailable';
+
+  @override
+  String get dailyYourSavedRevisionQueueIs =>
+      'Your saved revision queue is still on this device. Try loading it again.';
+
+  @override
+  String get dailyRetryDailyCompanion => 'Retry Daily Companion';
+
+  @override
+  String get dailyTodaySRevision => 'Today’s revision';
+
+  @override
+  String get dailyExamDayMode => 'Exam-Day Mode';
+
+  @override
+  String get dailyCountdownLogisticsChecklistAndLocal =>
+      'Countdown, logistics checklist and local reminders';
+
+  @override
+  String get dailyCompleteTestsToBuildA =>
+      'Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.';
+
+  @override
+  String get dailyMyStudyPlan => 'My study plan';
+
+  @override
+  String get dailySetARealisticDailyReview =>
+      'Set a realistic daily review target and an optional local reminder.';
+
+  @override
+  String get dailyLocalStudyReminder => 'Local study reminder';
+
+  @override
+  String get dailyChangeReminderTime => 'Change reminder time';
+
+  @override
+  String get dailyDecreaseDailyQuestionGoal => 'Decrease daily question goal';
+
+  @override
+  String get dailyIncreaseDailyQuestionGoal => 'Increase daily question goal';
+
+  @override
+  String get dailyDailyQuestionGoal => 'Daily question goal';
+
+  @override
+  String get revisionUnableToSaveThisReview => 'Unable to save this review.';
+
+  @override
+  String get revisionRevisionQueueUnavailable => 'Revision queue unavailable';
+
+  @override
+  String get revisionTryLoadingYourSavedRevision =>
+      'Try loading your saved revision questions again.';
+
+  @override
+  String get revisionReviewTheQuestion => 'Review the question';
+
+  @override
+  String get revisionShowAnswer => 'Show answer';
+
+  @override
+  String get revisionRecallFirstRevealTheStored =>
+      'Recall first. Reveal the stored answer when you’re ready.';
+
+  @override
+  String get revisionCompareThisWithTheReasoning =>
+      'Compare this with the reasoning you recalled.';
+
+  @override
+  String get revisionHowWellDidYouRemember => 'How well did you remember this?';
+
+  @override
+  String get revisionChooseGotItIfYou =>
+      'Choose “Got it” if you could explain the answer now. Choose “Review again” to bring it back sooner.';
+
+  @override
+  String get revisionReviewAgain => 'Review again';
+
+  @override
+  String get revisionGotIt => 'Got it';
+
+  @override
+  String get notifAllNotificationsMarkedAsRead =>
+      'All notifications marked as read.';
+
+  @override
+  String get notifUnableToMarkNotificationsAs =>
+      'Unable to mark notifications as read.';
+
+  @override
+  String get notifMarkAllRead => 'Mark all read';
+
+  @override
+  String get notifImportantUpdatesInOnePlace =>
+      'Important updates, in one place.';
+
+  @override
+  String get notifExamRemindersLearningUpdatesAnd =>
+      'Exam reminders, learning updates and test announcements stay easy to find.';
+
+  @override
+  String get notifOpenLink => 'Open link';
+
+  @override
+  String get notifNoNotificationsYet => 'No notifications yet';
+
+  @override
+  String get notifImportantExamtreeUpdatesWillAppear =>
+      'Important ExamTree updates will appear here when there is something worth your attention.';
+
+  @override
+  String get notifUnableToLoadNotifications => 'Unable to load notifications';
+
+  @override
+  String get notifTryAgain => 'Try again';
 }

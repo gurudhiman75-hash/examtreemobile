@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../shared/widgets/network_failure_view.dart';
 import '../../learn/domain/learning_resource.dart';
 import '../../learn/presentation/providers/learning_resources_providers.dart';
+import '../../../l10n/l10n.dart';
 
 enum _FormatFilter { all, articles, pdfs }
 
@@ -42,7 +43,7 @@ class _CurrentAffairsScreenState extends ConsumerState<CurrentAffairsScreen> {
     }
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('This current-affairs item could not be opened.')),
+      SnackBar(content: Text(context.l10n.caThisCurrentAffairsItemCould)),
     );
   }
 
@@ -55,7 +56,7 @@ class _CurrentAffairsScreenState extends ConsumerState<CurrentAffairsScreen> {
         loading: () => const _LoadingState(),
         error: (error, stackTrace) => NetworkFailureView(
           error: error,
-          fallbackTitle: 'Unable to load current affairs',
+          fallbackTitle: context.l10n.caUnableToLoadCurrentAffairs,
           onRetry: () => ref.invalidate(learningResourcesProvider),
         ),
         data: (allResources) {
@@ -113,7 +114,7 @@ class _CurrentAffairsScreenState extends ConsumerState<CurrentAffairsScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 _SectionHeading(
-                  title: 'Latest updates',
+                  title: context.l10n.caLatestUpdates,
                   subtitle: currentAffairs.isEmpty
                       ? 'Published current-affairs material will appear here.'
                       : 'Exam-relevant updates from the published ExamTree feed.',
@@ -213,7 +214,7 @@ class _Hero extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Stay ready for what changed.',
+                context.l10n.caStayReadyForWhatChanged,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
                   height: 1.08,
@@ -223,7 +224,7 @@ class _Hero extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Read published updates in your preferred language and keep exam-relevant developments close at hand.',
+                context.l10n.caReadPublishedUpdatesInYour,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withValues(alpha: 0.84),
                   height: 1.42,
@@ -564,7 +565,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'No current affairs are published yet.',
+            context.l10n.caNoCurrentAffairsArePublished,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               color: const Color(0xFF10264A),
@@ -573,7 +574,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'New published updates will appear here automatically.',
+            context.l10n.caNewPublishedUpdatesWillAppear,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -599,7 +600,7 @@ class _FilteredEmptyState extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE8EDF3)),
       ),
       child: Text(
-        'No published items match this format yet.',
+        context.l10n.caNoPublishedItemsMatchThis,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: const Color(0xFF526274),

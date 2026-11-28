@@ -1965,4 +1965,209 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get authForgotPassword => 'पासवर्ड भूल गए?';
+
+  @override
+  String get caThisCurrentAffairsItemCould =>
+      'यह करंट अफेयर्स आइटम नहीं खुल सका।';
+
+  @override
+  String get caUnableToLoadCurrentAffairs => 'करंट अफेयर्स लोड नहीं हो सके';
+
+  @override
+  String get caLatestUpdates => 'ताज़ा अपडेट';
+
+  @override
+  String get caStayReadyForWhatChanged => 'जो बदला है, उसके लिए तैयार रहें।';
+
+  @override
+  String get caReadPublishedUpdatesInYour =>
+      'प्रकाशित अपडेट अपनी पसंदीदा भाषा में पढ़ें और परीक्षा से जुड़ी घटनाएँ पास रखें।';
+
+  @override
+  String get caNoCurrentAffairsArePublished =>
+      'अभी कोई करंट अफेयर्स प्रकाशित नहीं है।';
+
+  @override
+  String get caNewPublishedUpdatesWillAppear =>
+      'नए प्रकाशित अपडेट यहाँ अपने आप दिखेंगे।';
+
+  @override
+  String get caNoPublishedItemsMatchThis =>
+      'इस प्रारूप में अभी कोई प्रकाशित आइटम नहीं है।';
+
+  @override
+  String get myExamsMyExams => 'मेरी परीक्षाएँ';
+
+  @override
+  String get myExamsUnableToLoadYourExam => 'आपकी परीक्षा सूची लोड नहीं हो सकी';
+
+  @override
+  String get myExamsMyExamsUpdated => 'मेरी परीक्षाएँ अपडेट हुईं।';
+
+  @override
+  String get myExamsUnableToSaveYourSelected =>
+      'आपकी चुनी परीक्षाएँ सेव नहीं हो सकीं।';
+
+  @override
+  String get myExamsSearchExamsOrExamFamilies =>
+      'परीक्षाएँ या परीक्षा समूह खोजें';
+
+  @override
+  String get myExamsChooseWhatYouArePreparing =>
+      'चुनें आप किसकी तैयारी कर रहे हैं';
+
+  @override
+  String get myExamsExamtreeWillUseTheseChoices =>
+      'ExamTree इन विकल्पों से टेस्ट, मुफ़्त सामग्री और ज़रूरी अपडेट व्यवस्थित करेगा। आप इन्हें कभी भी बदल सकते हैं।';
+
+  @override
+  String get myExamsClearSelection => 'चुनाव हटाएँ';
+
+  @override
+  String get myExamsNoExamsMatchThatSearch =>
+      'इस खोज से कोई परीक्षा मेल नहीं खाती।';
+
+  @override
+  String get myExamsTryTheExamNameCode =>
+      'परीक्षा का नाम, कोड या परीक्षा समूह आज़माएँ।';
+
+  @override
+  String get dailyStudyPlanSavedButNotifications =>
+      'अध्ययन योजना सेव हुई, पर सूचनाएँ बंद हैं।';
+
+  @override
+  String get dailyUnableToSaveTheStudy => 'अध्ययन योजना सेव नहीं हो सकी।';
+
+  @override
+  String get dailyDailyCompanion => 'दैनिक साथी';
+
+  @override
+  String get dailyRefresh => 'रीफ़्रेश';
+
+  @override
+  String get dailyQuickRevision => 'जल्दी दोहराव';
+
+  @override
+  String get dailyStudyPlan => 'अध्ययन योजना';
+
+  @override
+  String get dailyKeepYourDailyTargetAnd =>
+      'अपना दैनिक लक्ष्य और रिमाइंडर व्यावहारिक रखें।';
+
+  @override
+  String get dailyDailyCompanionIsUnavailable => 'दैनिक साथी उपलब्ध नहीं है';
+
+  @override
+  String get dailyYourSavedRevisionQueueIs =>
+      'आपकी सेव दोहराव सूची अभी भी इस डिवाइस पर है। फिर से लोड करें।';
+
+  @override
+  String get dailyRetryDailyCompanion => 'दैनिक साथी फिर से लोड करें';
+
+  @override
+  String get dailyTodaySRevision => 'आज का दोहराव';
+
+  @override
+  String get dailyExamDayMode => 'परीक्षा-दिवस मोड';
+
+  @override
+  String get dailyCountdownLogisticsChecklistAndLocal =>
+      'उलटी गिनती, तैयारी चेकलिस्ट और रिमाइंडर';
+
+  @override
+  String get dailyCompleteTestsToBuildA =>
+      'गलत, छोड़े गए, चिह्नित और धीमे प्रश्नों से निजी दोहराव सूची बनाने के लिए टेस्ट पूरे करें।';
+
+  @override
+  String get dailyMyStudyPlan => 'मेरी अध्ययन योजना';
+
+  @override
+  String get dailySetARealisticDailyReview =>
+      'व्यावहारिक दैनिक लक्ष्य और वैकल्पिक रिमाइंडर सेट करें।';
+
+  @override
+  String get dailyLocalStudyReminder => 'अध्ययन रिमाइंडर';
+
+  @override
+  String get dailyChangeReminderTime => 'रिमाइंडर का समय बदलें';
+
+  @override
+  String get dailyDecreaseDailyQuestionGoal => 'दैनिक प्रश्न लक्ष्य घटाएँ';
+
+  @override
+  String get dailyIncreaseDailyQuestionGoal => 'दैनिक प्रश्न लक्ष्य बढ़ाएँ';
+
+  @override
+  String get dailyDailyQuestionGoal => 'दैनिक प्रश्न लक्ष्य';
+
+  @override
+  String get revisionUnableToSaveThisReview => 'यह समीक्षा सेव नहीं हो सकी।';
+
+  @override
+  String get revisionRevisionQueueUnavailable => 'दोहराव सूची उपलब्ध नहीं';
+
+  @override
+  String get revisionTryLoadingYourSavedRevision =>
+      'अपने सेव किए दोहराव प्रश्न फिर से लोड करें।';
+
+  @override
+  String get revisionReviewTheQuestion => 'प्रश्न देखें';
+
+  @override
+  String get revisionShowAnswer => 'उत्तर दिखाएँ';
+
+  @override
+  String get revisionRecallFirstRevealTheStored =>
+      'पहले याद करें। तैयार होने पर उत्तर देखें।';
+
+  @override
+  String get revisionCompareThisWithTheReasoning =>
+      'इसे अपने याद किए तर्क से मिलाएँ।';
+
+  @override
+  String get revisionHowWellDidYouRemember => 'आपको यह कितना अच्छा याद था?';
+
+  @override
+  String get revisionChooseGotItIfYou =>
+      'अगर आप अभी उत्तर समझा सकते हैं तो “समझ गया” चुनें। जल्दी दोबारा देखने के लिए “फिर से देखें” चुनें।';
+
+  @override
+  String get revisionReviewAgain => 'फिर से देखें';
+
+  @override
+  String get revisionGotIt => 'समझ गया';
+
+  @override
+  String get notifAllNotificationsMarkedAsRead =>
+      'सभी सूचनाएँ पढ़ी गई चिह्नित।';
+
+  @override
+  String get notifUnableToMarkNotificationsAs =>
+      'सूचनाओं को पढ़ा चिह्नित नहीं किया जा सका।';
+
+  @override
+  String get notifMarkAllRead => 'सभी पढ़ी चिह्नित करें';
+
+  @override
+  String get notifImportantUpdatesInOnePlace => 'ज़रूरी अपडेट, एक जगह।';
+
+  @override
+  String get notifExamRemindersLearningUpdatesAnd =>
+      'परीक्षा रिमाइंडर, पढ़ाई अपडेट और टेस्ट घोषणाएँ आसानी से मिलती हैं।';
+
+  @override
+  String get notifOpenLink => 'लिंक खोलें';
+
+  @override
+  String get notifNoNotificationsYet => 'अभी कोई सूचना नहीं';
+
+  @override
+  String get notifImportantExamtreeUpdatesWillAppear =>
+      'ज़रूरी ExamTree अपडेट यहाँ दिखेंगे जब कुछ ध्यान देने लायक होगा।';
+
+  @override
+  String get notifUnableToLoadNotifications => 'सूचनाएँ लोड नहीं हो सकीं';
+
+  @override
+  String get notifTryAgain => 'फिर से कोशिश करें';
 }

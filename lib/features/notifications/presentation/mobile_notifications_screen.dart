@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/providers/mobile_analytics_provider.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../../l10n/l10n.dart';
 
 class MobileNotificationItem {
   const MobileNotificationItem({
@@ -82,13 +83,13 @@ class MobileNotificationsScreen extends ConsumerWidget {
       await ref.read(mobileNotificationInboxProvider.future);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('All notifications marked as read.')),
+          SnackBar(content: Text(context.l10n.notifAllNotificationsMarkedAsRead)),
         );
       }
     } catch (_) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to mark notifications as read.')),
+          SnackBar(content: Text(context.l10n.notifUnableToMarkNotificationsAs)),
         );
       }
     }
@@ -179,7 +180,7 @@ class MobileNotificationsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(context.l10n.homeNotifications),
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF10264A),
         surfaceTintColor: Colors.transparent,
@@ -189,8 +190,8 @@ class MobileNotificationsScreen extends ConsumerWidget {
           if (unreadCount > 0)
             TextButton(
               onPressed: () => _markAllRead(context, ref),
-              child: const Text(
-                'Mark all read',
+              child: Text(
+                context.l10n.notifMarkAllRead,
                 style: TextStyle(fontWeight: FontWeight.w800),
               ),
             ),
@@ -314,7 +315,7 @@ class _NotificationHero extends StatelessWidget {
               ),
               const SizedBox(height: 9),
               Text(
-                'Important updates, in one place.',
+                context.l10n.notifImportantUpdatesInOnePlace,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
@@ -324,7 +325,7 @@ class _NotificationHero extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                'Exam reminders, learning updates and test announcements stay easy to find.',
+                context.l10n.notifExamRemindersLearningUpdatesAnd,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withValues(alpha: .84),
                   height: 1.4,
@@ -644,7 +645,7 @@ class _EmptyNotifications extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'No notifications yet',
+            context.l10n.notifNoNotificationsYet,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleMedium?.copyWith(
               color: const Color(0xFF10264A),
@@ -653,7 +654,7 @@ class _EmptyNotifications extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            'Important ExamTree updates will appear here when there is something worth your attention.',
+            context.l10n.notifImportantExamtreeUpdatesWillAppear,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: const Color(0xFF718096),
@@ -685,7 +686,7 @@ class _NotificationErrorState extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         Text(
-          'Unable to load notifications',
+          context.l10n.notifUnableToLoadNotifications,
           textAlign: TextAlign.center,
           style: theme.textTheme.titleMedium?.copyWith(
             color: const Color(0xFF10264A),
@@ -694,7 +695,7 @@ class _NotificationErrorState extends StatelessWidget {
         ),
         const SizedBox(height: 7),
         Text(
-          'Check your connection and try again.',
+          context.l10n.seriesCheckConnection,
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: const Color(0xFF718096),
@@ -712,7 +713,7 @@ class _NotificationErrorState extends StatelessWidget {
               ),
               textStyle: const TextStyle(fontWeight: FontWeight.w900),
             ),
-            child: const Text('Try again'),
+            child: Text(context.l10n.notifTryAgain),
           ),
         ),
       ],

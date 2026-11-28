@@ -3345,6 +3345,366 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forgot password?'**
   String get authForgotPassword;
+
+  /// No description provided for @caThisCurrentAffairsItemCould.
+  ///
+  /// In en, this message translates to:
+  /// **'This current-affairs item could not be opened.'**
+  String get caThisCurrentAffairsItemCould;
+
+  /// No description provided for @caUnableToLoadCurrentAffairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load current affairs'**
+  String get caUnableToLoadCurrentAffairs;
+
+  /// No description provided for @caLatestUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest updates'**
+  String get caLatestUpdates;
+
+  /// No description provided for @caStayReadyForWhatChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay ready for what changed.'**
+  String get caStayReadyForWhatChanged;
+
+  /// No description provided for @caReadPublishedUpdatesInYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Read published updates in your preferred language and keep exam-relevant developments close at hand.'**
+  String get caReadPublishedUpdatesInYour;
+
+  /// No description provided for @caNoCurrentAffairsArePublished.
+  ///
+  /// In en, this message translates to:
+  /// **'No current affairs are published yet.'**
+  String get caNoCurrentAffairsArePublished;
+
+  /// No description provided for @caNewPublishedUpdatesWillAppear.
+  ///
+  /// In en, this message translates to:
+  /// **'New published updates will appear here automatically.'**
+  String get caNewPublishedUpdatesWillAppear;
+
+  /// No description provided for @caNoPublishedItemsMatchThis.
+  ///
+  /// In en, this message translates to:
+  /// **'No published items match this format yet.'**
+  String get caNoPublishedItemsMatchThis;
+
+  /// No description provided for @myExamsMyExams.
+  ///
+  /// In en, this message translates to:
+  /// **'My exams'**
+  String get myExamsMyExams;
+
+  /// No description provided for @myExamsUnableToLoadYourExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load your exam catalogue'**
+  String get myExamsUnableToLoadYourExam;
+
+  /// No description provided for @myExamsMyExamsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'My exams updated.'**
+  String get myExamsMyExamsUpdated;
+
+  /// No description provided for @myExamsUnableToSaveYourSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save your selected exams.'**
+  String get myExamsUnableToSaveYourSelected;
+
+  /// No description provided for @myExamsSearchExamsOrExamFamilies.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exams or exam families'**
+  String get myExamsSearchExamsOrExamFamilies;
+
+  /// No description provided for @myExamsChooseWhatYouArePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what you are preparing for'**
+  String get myExamsChooseWhatYouArePreparing;
+
+  /// No description provided for @myExamsExamtreeWillUseTheseChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'ExamTree will use these choices to organise tests, free material and relevant updates. You can change them anytime.'**
+  String get myExamsExamtreeWillUseTheseChoices;
+
+  /// No description provided for @myExamsClearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get myExamsClearSelection;
+
+  /// No description provided for @myExamsNoExamsMatchThatSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'No exams match that search.'**
+  String get myExamsNoExamsMatchThatSearch;
+
+  /// No description provided for @myExamsTryTheExamNameCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Try the exam name, code, or exam family.'**
+  String get myExamsTryTheExamNameCode;
+
+  /// No description provided for @dailyStudyPlanSavedButNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Study plan saved, but notifications are disabled.'**
+  String get dailyStudyPlanSavedButNotifications;
+
+  /// No description provided for @dailyUnableToSaveTheStudy.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save the study plan.'**
+  String get dailyUnableToSaveTheStudy;
+
+  /// No description provided for @dailyDailyCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Companion'**
+  String get dailyDailyCompanion;
+
+  /// No description provided for @dailyRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get dailyRefresh;
+
+  /// No description provided for @dailyQuickRevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick revision'**
+  String get dailyQuickRevision;
+
+  /// No description provided for @dailyStudyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Study plan'**
+  String get dailyStudyPlan;
+
+  /// No description provided for @dailyKeepYourDailyTargetAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your daily target and local reminder realistic.'**
+  String get dailyKeepYourDailyTargetAnd;
+
+  /// No description provided for @dailyDailyCompanionIsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Companion is unavailable'**
+  String get dailyDailyCompanionIsUnavailable;
+
+  /// No description provided for @dailyYourSavedRevisionQueueIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your saved revision queue is still on this device. Try loading it again.'**
+  String get dailyYourSavedRevisionQueueIs;
+
+  /// No description provided for @dailyRetryDailyCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry Daily Companion'**
+  String get dailyRetryDailyCompanion;
+
+  /// No description provided for @dailyTodaySRevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s revision'**
+  String get dailyTodaySRevision;
+
+  /// No description provided for @dailyExamDayMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam-Day Mode'**
+  String get dailyExamDayMode;
+
+  /// No description provided for @dailyCountdownLogisticsChecklistAndLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Countdown, logistics checklist and local reminders'**
+  String get dailyCountdownLogisticsChecklistAndLocal;
+
+  /// No description provided for @dailyCompleteTestsToBuildA.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete tests to build a private revision queue from wrong, skipped, flagged and unusually slow questions.'**
+  String get dailyCompleteTestsToBuildA;
+
+  /// No description provided for @dailyMyStudyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'My study plan'**
+  String get dailyMyStudyPlan;
+
+  /// No description provided for @dailySetARealisticDailyReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a realistic daily review target and an optional local reminder.'**
+  String get dailySetARealisticDailyReview;
+
+  /// No description provided for @dailyLocalStudyReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Local study reminder'**
+  String get dailyLocalStudyReminder;
+
+  /// No description provided for @dailyChangeReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Change reminder time'**
+  String get dailyChangeReminderTime;
+
+  /// No description provided for @dailyDecreaseDailyQuestionGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease daily question goal'**
+  String get dailyDecreaseDailyQuestionGoal;
+
+  /// No description provided for @dailyIncreaseDailyQuestionGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase daily question goal'**
+  String get dailyIncreaseDailyQuestionGoal;
+
+  /// No description provided for @dailyDailyQuestionGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily question goal'**
+  String get dailyDailyQuestionGoal;
+
+  /// No description provided for @revisionUnableToSaveThisReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to save this review.'**
+  String get revisionUnableToSaveThisReview;
+
+  /// No description provided for @revisionRevisionQueueUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Revision queue unavailable'**
+  String get revisionRevisionQueueUnavailable;
+
+  /// No description provided for @revisionTryLoadingYourSavedRevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Try loading your saved revision questions again.'**
+  String get revisionTryLoadingYourSavedRevision;
+
+  /// No description provided for @revisionReviewTheQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the question'**
+  String get revisionReviewTheQuestion;
+
+  /// No description provided for @revisionShowAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Show answer'**
+  String get revisionShowAnswer;
+
+  /// No description provided for @revisionRecallFirstRevealTheStored.
+  ///
+  /// In en, this message translates to:
+  /// **'Recall first. Reveal the stored answer when you’re ready.'**
+  String get revisionRecallFirstRevealTheStored;
+
+  /// No description provided for @revisionCompareThisWithTheReasoning.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare this with the reasoning you recalled.'**
+  String get revisionCompareThisWithTheReasoning;
+
+  /// No description provided for @revisionHowWellDidYouRemember.
+  ///
+  /// In en, this message translates to:
+  /// **'How well did you remember this?'**
+  String get revisionHowWellDidYouRemember;
+
+  /// No description provided for @revisionChooseGotItIfYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose “Got it” if you could explain the answer now. Choose “Review again” to bring it back sooner.'**
+  String get revisionChooseGotItIfYou;
+
+  /// No description provided for @revisionReviewAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Review again'**
+  String get revisionReviewAgain;
+
+  /// No description provided for @revisionGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get revisionGotIt;
+
+  /// No description provided for @notifAllNotificationsMarkedAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'All notifications marked as read.'**
+  String get notifAllNotificationsMarkedAsRead;
+
+  /// No description provided for @notifUnableToMarkNotificationsAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to mark notifications as read.'**
+  String get notifUnableToMarkNotificationsAs;
+
+  /// No description provided for @notifMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get notifMarkAllRead;
+
+  /// No description provided for @notifImportantUpdatesInOnePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Important updates, in one place.'**
+  String get notifImportantUpdatesInOnePlace;
+
+  /// No description provided for @notifExamRemindersLearningUpdatesAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam reminders, learning updates and test announcements stay easy to find.'**
+  String get notifExamRemindersLearningUpdatesAnd;
+
+  /// No description provided for @notifOpenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Open link'**
+  String get notifOpenLink;
+
+  /// No description provided for @notifNoNotificationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notifNoNotificationsYet;
+
+  /// No description provided for @notifImportantExamtreeUpdatesWillAppear.
+  ///
+  /// In en, this message translates to:
+  /// **'Important ExamTree updates will appear here when there is something worth your attention.'**
+  String get notifImportantExamtreeUpdatesWillAppear;
+
+  /// No description provided for @notifUnableToLoadNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load notifications'**
+  String get notifUnableToLoadNotifications;
+
+  /// No description provided for @notifTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get notifTryAgain;
 }
 
 class _AppLocalizationsDelegate
