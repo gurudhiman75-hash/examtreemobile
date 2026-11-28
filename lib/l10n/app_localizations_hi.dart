@@ -1358,4 +1358,337 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get readyViewOrder => 'ऑर्डर विवरण देखें';
+
+  @override
+  String get seriesLockedTitle => 'यह टेस्ट लॉक है';
+
+  @override
+  String seriesFreeAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'इस सीरीज़ में $count मुफ़्त टेस्ट उपलब्ध हैं।',
+      one: 'इस सीरीज़ में 1 मुफ़्त टेस्ट उपलब्ध है।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seriesTryFree => 'मुफ़्त टेस्ट आज़माएँ';
+
+  @override
+  String get seriesViewPlansUnlock => 'प्लान देखें और अनलॉक करें';
+
+  @override
+  String get seriesMaybeLater => 'बाद में';
+
+  @override
+  String seriesStructuredPractice(String exam) {
+    return '$exam के लिए व्यवस्थित मॉक-टेस्ट अभ्यास।';
+  }
+
+  @override
+  String get seriesComingSoon => 'जल्द आ रहा है';
+
+  @override
+  String get seriesActive => 'सक्रिय';
+
+  @override
+  String get seriesUnavailable => 'उपलब्ध नहीं';
+
+  @override
+  String get seriesInPreparation => 'सामग्री तैयार हो रही है';
+
+  @override
+  String seriesPercentComplete(int percent) {
+    return '$percent% पूरा';
+  }
+
+  @override
+  String seriesTestsFraction(int done, int total) {
+    return '$done/$total टेस्ट';
+  }
+
+  @override
+  String get seriesPracticeTime => 'अभ्यास समय';
+
+  @override
+  String get seriesProgress => 'प्रगति';
+
+  @override
+  String get seriesTabOverview => 'अवलोकन';
+
+  @override
+  String get seriesTabTestList => 'टेस्ट सूची';
+
+  @override
+  String get seriesTabSyllabus => 'पाठ्यक्रम';
+
+  @override
+  String get seriesTabPattern => 'परीक्षा पैटर्न';
+
+  @override
+  String get seriesTabReviews => 'समीक्षाएँ';
+
+  @override
+  String get seriesTabFaqs => 'सवाल-जवाब';
+
+  @override
+  String get seriesSequential => 'क्रम से आगे बढ़ें';
+
+  @override
+  String get seriesScoreGated => 'स्कोर के आधार पर आगे बढ़ें';
+
+  @override
+  String get seriesOpenProgression => 'किसी भी क्रम में दें';
+
+  @override
+  String get seriesAbout => 'इस सीरीज़ के बारे में';
+
+  @override
+  String seriesOrganisedFor(String exam) {
+    return 'यह सीरीज़ $exam के व्यवस्थित अभ्यास के लिए बनाई गई है।';
+  }
+
+  @override
+  String get seriesIncluded => 'क्या शामिल है';
+
+  @override
+  String seriesRequired(int count) {
+    return '$count ज़रूरी';
+  }
+
+  @override
+  String get seriesWhyChoose => 'यह सीरीज़ क्यों चुनें';
+
+  @override
+  String get seriesWhyProgress => 'प्रगति ट्रैकिंग';
+
+  @override
+  String get seriesWhyProgressBody =>
+      'पूरे हुए टेस्ट और आपका अगला टेस्ट हमेशा दिखते रहते हैं।';
+
+  @override
+  String get seriesWhyUnlock => 'साफ़ अनलॉक नियम';
+
+  @override
+  String get seriesWhyUnlockBody =>
+      'टेस्ट खोलने से पहले समय और प्रगति आधारित लॉक दिखाए जाते हैं।';
+
+  @override
+  String get seriesWhyInstructions => 'प्रयास से पहले निर्देश';
+
+  @override
+  String get seriesWhyInstructionsBody =>
+      'हर अनलॉक टेस्ट टाइमर शुरू होने से पहले अपना विवरण और निर्देश दिखाता है।';
+
+  @override
+  String get seriesNoTests => 'इस सीरीज़ में अभी कोई टेस्ट उपलब्ध नहीं है।';
+
+  @override
+  String seriesTypeCountA11y(String label, int count) {
+    return '$label, $count टेस्ट';
+  }
+
+  @override
+  String get seriesNoPattern => 'अभी कोई टेस्ट पैटर्न उपलब्ध नहीं है।';
+
+  @override
+  String get seriesPattern => 'सीरीज़ पैटर्न';
+
+  @override
+  String seriesMinTotal(int minutes) {
+    return 'कुल $minutes मिनट';
+  }
+
+  @override
+  String get seriesBreakdown => 'टेस्ट-वार विवरण';
+
+  @override
+  String seriesSyllabusBody(String exam) {
+    return '$exam की विषयवार पूरी तैयारी। नीचे के टेस्ट समूह प्रकाशित सीरीज़ सूची से बने हैं।';
+  }
+
+  @override
+  String get seriesSyllabusEmpty => 'टेस्ट प्रकाशित होने पर पाठ्यक्रम दिखेगा।';
+
+  @override
+  String seriesPublishedTestsQuestions(int tests, int questions) {
+    return '$tests प्रकाशित टेस्ट · $questions प्रश्न';
+  }
+
+  @override
+  String get seriesReviewsEmpty =>
+      'प्रकाशित समीक्षाएँ उपलब्ध होने पर यहाँ दिखेंगी।';
+
+  @override
+  String get seriesStudentReviews => 'विद्यार्थियों की समीक्षाएँ';
+
+  @override
+  String seriesRatedReviews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count रेटेड समीक्षाएँ',
+      one: '1 रेटेड समीक्षा',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faqIncludedQ => 'इस टेस्ट सीरीज़ में क्या शामिल है?';
+
+  @override
+  String faqIncludedA(int tests, int questions) {
+    return '$tests प्रकाशित टेस्ट, कुल $questions प्रश्न, लाइव सूची और आपके एक्सेस प्लान के अनुसार।';
+  }
+
+  @override
+  String get faqExplanationsQ => 'क्या व्याख्या उपलब्ध है?';
+
+  @override
+  String get faqExplanationsA =>
+      'पूरे प्रयासों की समीक्षा टेस्ट में उपलब्ध व्याख्या और विश्लेषण के साथ की जा सकती है।';
+
+  @override
+  String get faqMultipleQ => 'क्या मैं एक टेस्ट कई बार दे सकता हूँ?';
+
+  @override
+  String get faqMultipleA =>
+      'प्रयासों की सीमा टेस्ट निर्देश पेज पर दिखती है और टेस्ट सेटिंग से लागू होती है।';
+
+  @override
+  String get faqLanguageQ => 'क्या मैं प्रश्नों की भाषा बदल सकता हूँ?';
+
+  @override
+  String get faqLanguageA =>
+      'टेस्ट शुरू करने से पहले उपलब्ध भाषाएँ दिखाई जाती हैं। यह प्रकाशित प्रश्नों पर निर्भर करता है।';
+
+  @override
+  String get faqExpiryQ => 'मेरा एक्सेस खत्म होने पर क्या होगा?';
+
+  @override
+  String get faqExpiryA =>
+      'आप मेरी टेस्ट सीरीज़ से सीरीज़ रिन्यू कर सकते हैं। मौजूदा प्रगति और विश्लेषण आपके खाते से जुड़े रहते हैं।';
+
+  @override
+  String get faqPreviousQ => 'मैं अपने पिछले प्रयास कहाँ देख सकता हूँ?';
+
+  @override
+  String get faqPreviousA =>
+      'पूरे प्रयास और प्रदर्शन देखने के लिए मेरी टेस्ट सीरीज़, प्रोफ़ाइल या परिणाम खोलें।';
+
+  @override
+  String get seriesYourProgress => 'आपकी सीरीज़ प्रगति';
+
+  @override
+  String seriesCompletedOf(int done, int total) {
+    return '$total में से $done टेस्ट पूरे';
+  }
+
+  @override
+  String get typeFullTitle => 'फुल लेंथ मॉक टेस्ट';
+
+  @override
+  String get typeFullSubtitle => 'नए पैटर्न पर पूरे पाठ्यक्रम के टेस्ट';
+
+  @override
+  String get typeSectionalTitle => 'सेक्शनल टेस्ट';
+
+  @override
+  String get typeSectionalSubtitle => 'विषयवार अभ्यास टेस्ट';
+
+  @override
+  String get typeTopicTitle => 'टॉपिक-वार टेस्ट';
+
+  @override
+  String get typeTopicSubtitle => 'ज़रूरी टॉपिक पर केंद्रित अभ्यास';
+
+  @override
+  String get typePyqTitle => 'पिछले वर्ष के पेपर';
+
+  @override
+  String get typePyqSubtitle => 'समीक्षा सहित पिछले परीक्षा पेपर';
+
+  @override
+  String get typeFullTab => 'फुल';
+
+  @override
+  String get typeSectionalTab => 'सेक्शनल';
+
+  @override
+  String get typeTopicTab => 'टॉपिक-वार';
+
+  @override
+  String get typePyqTab => 'PYQ';
+
+  @override
+  String get seriesStateCompleted => 'पूरा';
+
+  @override
+  String get seriesStatePremium => 'प्रीमियम';
+
+  @override
+  String get seriesStateReady => 'तैयार';
+
+  @override
+  String get seriesStateLocked => 'लॉक';
+
+  @override
+  String get seriesOptional => 'वैकल्पिक';
+
+  @override
+  String get seriesRequiredTag => 'ज़रूरी';
+
+  @override
+  String seriesBestScore(String score) {
+    return 'सर्वश्रेष्ठ स्कोर: $score';
+  }
+
+  @override
+  String get seriesOpenAgain => 'टेस्ट फिर से खोलें';
+
+  @override
+  String get seriesViewInstructions => 'निर्देश देखें';
+
+  @override
+  String get seriesUnlockPremium => 'प्रीमियम टेस्ट अनलॉक करें';
+
+  @override
+  String get seriesProgressLabel => 'सीरीज़ प्रगति';
+
+  @override
+  String get seriesStatus => 'सीरीज़ स्थिति';
+
+  @override
+  String get seriesUpNext => 'अगला';
+
+  @override
+  String get seriesPremiumRequired => 'प्रीमियम एक्सेस ज़रूरी';
+
+  @override
+  String seriesFromPrice(String price) {
+    return '$price से';
+  }
+
+  @override
+  String get seriesAllCompleted => 'सभी टेस्ट पूरे';
+
+  @override
+  String get seriesNoneAvailable => 'अभी कोई टेस्ट उपलब्ध नहीं';
+
+  @override
+  String get seriesViewPlans => 'प्लान देखें';
+
+  @override
+  String get seriesReviewTests => 'टेस्ट देखें';
+
+  @override
+  String get seriesOpenTest => 'टेस्ट खोलें';
+
+  @override
+  String get seriesLoadFailed => 'टेस्ट सीरीज़ लोड नहीं हो सकी।';
+
+  @override
+  String get seriesCheckConnection => 'इंटरनेट जाँचें और फिर से कोशिश करें।';
 }

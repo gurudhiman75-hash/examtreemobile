@@ -1361,4 +1361,337 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get readyViewOrder => 'ਆਰਡਰ ਵੇਰਵੇ ਦੇਖੋ';
+
+  @override
+  String get seriesLockedTitle => 'ਇਹ ਟੈਸਟ ਲਾਕ ਹੈ';
+
+  @override
+  String seriesFreeAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'ਇਸ ਸੀਰੀਜ਼ ਵਿੱਚ $count ਮੁਫ਼ਤ ਟੈਸਟ ਉਪਲਬਧ ਹਨ।',
+      one: 'ਇਸ ਸੀਰੀਜ਼ ਵਿੱਚ 1 ਮੁਫ਼ਤ ਟੈਸਟ ਉਪਲਬਧ ਹੈ।',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seriesTryFree => 'ਮੁਫ਼ਤ ਟੈਸਟ ਅਜ਼ਮਾਓ';
+
+  @override
+  String get seriesViewPlansUnlock => 'ਪਲਾਨ ਦੇਖੋ ਅਤੇ ਅਨਲੌਕ ਕਰੋ';
+
+  @override
+  String get seriesMaybeLater => 'ਬਾਅਦ ਵਿੱਚ';
+
+  @override
+  String seriesStructuredPractice(String exam) {
+    return '$exam ਲਈ ਵਿਵਸਥਿਤ ਮੌਕ-ਟੈਸਟ ਅਭਿਆਸ।';
+  }
+
+  @override
+  String get seriesComingSoon => 'ਜਲਦ ਆ ਰਿਹਾ ਹੈ';
+
+  @override
+  String get seriesActive => 'ਚਾਲੂ';
+
+  @override
+  String get seriesUnavailable => 'ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get seriesInPreparation => 'ਸਮੱਗਰੀ ਤਿਆਰ ਹੋ ਰਹੀ ਹੈ';
+
+  @override
+  String seriesPercentComplete(int percent) {
+    return '$percent% ਪੂਰਾ';
+  }
+
+  @override
+  String seriesTestsFraction(int done, int total) {
+    return '$done/$total ਟੈਸਟ';
+  }
+
+  @override
+  String get seriesPracticeTime => 'ਅਭਿਆਸ ਸਮਾਂ';
+
+  @override
+  String get seriesProgress => 'ਪ੍ਰਗਤੀ';
+
+  @override
+  String get seriesTabOverview => 'ਝਲਕ';
+
+  @override
+  String get seriesTabTestList => 'ਟੈਸਟ ਸੂਚੀ';
+
+  @override
+  String get seriesTabSyllabus => 'ਸਿਲੇਬਸ';
+
+  @override
+  String get seriesTabPattern => 'ਪ੍ਰੀਖਿਆ ਪੈਟਰਨ';
+
+  @override
+  String get seriesTabReviews => 'ਸਮੀਖਿਆਵਾਂ';
+
+  @override
+  String get seriesTabFaqs => 'ਸਵਾਲ-ਜਵਾਬ';
+
+  @override
+  String get seriesSequential => 'ਤਰਤੀਬ ਨਾਲ ਅੱਗੇ ਵਧੋ';
+
+  @override
+  String get seriesScoreGated => 'ਸਕੋਰ ਦੇ ਆਧਾਰ \'ਤੇ ਅੱਗੇ ਵਧੋ';
+
+  @override
+  String get seriesOpenProgression => 'ਕਿਸੇ ਵੀ ਤਰਤੀਬ ਵਿੱਚ ਦਿਓ';
+
+  @override
+  String get seriesAbout => 'ਇਸ ਸੀਰੀਜ਼ ਬਾਰੇ';
+
+  @override
+  String seriesOrganisedFor(String exam) {
+    return 'ਇਹ ਸੀਰੀਜ਼ $exam ਦੇ ਵਿਵਸਥਿਤ ਅਭਿਆਸ ਲਈ ਬਣਾਈ ਗਈ ਹੈ।';
+  }
+
+  @override
+  String get seriesIncluded => 'ਕੀ ਸ਼ਾਮਲ ਹੈ';
+
+  @override
+  String seriesRequired(int count) {
+    return '$count ਲਾਜ਼ਮੀ';
+  }
+
+  @override
+  String get seriesWhyChoose => 'ਇਹ ਸੀਰੀਜ਼ ਕਿਉਂ ਚੁਣੋ';
+
+  @override
+  String get seriesWhyProgress => 'ਪ੍ਰਗਤੀ ਟ੍ਰੈਕਿੰਗ';
+
+  @override
+  String get seriesWhyProgressBody =>
+      'ਪੂਰੇ ਹੋਏ ਟੈਸਟ ਅਤੇ ਤੁਹਾਡਾ ਅਗਲਾ ਟੈਸਟ ਹਮੇਸ਼ਾ ਦਿਖਦੇ ਰਹਿੰਦੇ ਹਨ।';
+
+  @override
+  String get seriesWhyUnlock => 'ਸਾਫ਼ ਅਨਲੌਕ ਨਿਯਮ';
+
+  @override
+  String get seriesWhyUnlockBody =>
+      'ਟੈਸਟ ਖੋਲ੍ਹਣ ਤੋਂ ਪਹਿਲਾਂ ਸਮੇਂ ਅਤੇ ਪ੍ਰਗਤੀ ਆਧਾਰਿਤ ਲਾਕ ਦਿਖਾਏ ਜਾਂਦੇ ਹਨ।';
+
+  @override
+  String get seriesWhyInstructions => 'ਕੋਸ਼ਿਸ਼ ਤੋਂ ਪਹਿਲਾਂ ਹਦਾਇਤਾਂ';
+
+  @override
+  String get seriesWhyInstructionsBody =>
+      'ਹਰ ਅਨਲੌਕ ਟੈਸਟ ਟਾਈਮਰ ਸ਼ੁਰੂ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਆਪਣੇ ਵੇਰਵੇ ਅਤੇ ਹਦਾਇਤਾਂ ਦਿਖਾਉਂਦਾ ਹੈ।';
+
+  @override
+  String get seriesNoTests => 'ਇਸ ਸੀਰੀਜ਼ ਵਿੱਚ ਅਜੇ ਕੋਈ ਟੈਸਟ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String seriesTypeCountA11y(String label, int count) {
+    return '$label, $count ਟੈਸਟ';
+  }
+
+  @override
+  String get seriesNoPattern => 'ਅਜੇ ਕੋਈ ਟੈਸਟ ਪੈਟਰਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get seriesPattern => 'ਸੀਰੀਜ਼ ਪੈਟਰਨ';
+
+  @override
+  String seriesMinTotal(int minutes) {
+    return 'ਕੁੱਲ $minutes ਮਿੰਟ';
+  }
+
+  @override
+  String get seriesBreakdown => 'ਟੈਸਟ-ਵਾਰ ਵੇਰਵਾ';
+
+  @override
+  String seriesSyllabusBody(String exam) {
+    return '$exam ਦੀ ਵਿਸ਼ਾਵਾਰ ਪੂਰੀ ਤਿਆਰੀ। ਹੇਠਾਂ ਦੇ ਟੈਸਟ ਸਮੂਹ ਪ੍ਰਕਾਸ਼ਿਤ ਸੀਰੀਜ਼ ਸੂਚੀ ਤੋਂ ਬਣੇ ਹਨ।';
+  }
+
+  @override
+  String get seriesSyllabusEmpty => 'ਟੈਸਟ ਪ੍ਰਕਾਸ਼ਿਤ ਹੋਣ \'ਤੇ ਸਿਲੇਬਸ ਦਿਖੇਗਾ।';
+
+  @override
+  String seriesPublishedTestsQuestions(int tests, int questions) {
+    return '$tests ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ · $questions ਸਵਾਲ';
+  }
+
+  @override
+  String get seriesReviewsEmpty =>
+      'ਪ੍ਰਕਾਸ਼ਿਤ ਸਮੀਖਿਆਵਾਂ ਉਪਲਬਧ ਹੋਣ \'ਤੇ ਇੱਥੇ ਦਿਖਣਗੀਆਂ।';
+
+  @override
+  String get seriesStudentReviews => 'ਵਿਦਿਆਰਥੀਆਂ ਦੀਆਂ ਸਮੀਖਿਆਵਾਂ';
+
+  @override
+  String seriesRatedReviews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ਰੇਟਡ ਸਮੀਖਿਆਵਾਂ',
+      one: '1 ਰੇਟਡ ਸਮੀਖਿਆ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faqIncludedQ => 'ਇਸ ਟੈਸਟ ਸੀਰੀਜ਼ ਵਿੱਚ ਕੀ ਸ਼ਾਮਲ ਹੈ?';
+
+  @override
+  String faqIncludedA(int tests, int questions) {
+    return '$tests ਪ੍ਰਕਾਸ਼ਿਤ ਟੈਸਟ, ਕੁੱਲ $questions ਸਵਾਲ, ਲਾਈਵ ਸੂਚੀ ਅਤੇ ਤੁਹਾਡੇ ਐਕਸੈਸ ਪਲਾਨ ਅਨੁਸਾਰ।';
+  }
+
+  @override
+  String get faqExplanationsQ => 'ਕੀ ਵਿਆਖਿਆ ਉਪਲਬਧ ਹੈ?';
+
+  @override
+  String get faqExplanationsA =>
+      'ਪੂਰੀਆਂ ਕੋਸ਼ਿਸ਼ਾਂ ਦੀ ਸਮੀਖਿਆ ਟੈਸਟ ਵਿੱਚ ਉਪਲਬਧ ਵਿਆਖਿਆ ਅਤੇ ਵਿਸ਼ਲੇਸ਼ਣ ਨਾਲ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ।';
+
+  @override
+  String get faqMultipleQ => 'ਕੀ ਮੈਂ ਇੱਕ ਟੈਸਟ ਕਈ ਵਾਰ ਦੇ ਸਕਦਾ ਹਾਂ?';
+
+  @override
+  String get faqMultipleA =>
+      'ਕੋਸ਼ਿਸ਼ਾਂ ਦੀ ਹੱਦ ਟੈਸਟ ਹਦਾਇਤਾਂ ਪੰਨੇ \'ਤੇ ਦਿਖਦੀ ਹੈ ਅਤੇ ਟੈਸਟ ਸੈਟਿੰਗ ਨਾਲ ਲਾਗੂ ਹੁੰਦੀ ਹੈ।';
+
+  @override
+  String get faqLanguageQ => 'ਕੀ ਮੈਂ ਸਵਾਲਾਂ ਦੀ ਭਾਸ਼ਾ ਬਦਲ ਸਕਦਾ ਹਾਂ?';
+
+  @override
+  String get faqLanguageA =>
+      'ਟੈਸਟ ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਉਪਲਬਧ ਭਾਸ਼ਾਵਾਂ ਦਿਖਾਈਆਂ ਜਾਂਦੀਆਂ ਹਨ। ਇਹ ਪ੍ਰਕਾਸ਼ਿਤ ਸਵਾਲਾਂ \'ਤੇ ਨਿਰਭਰ ਕਰਦਾ ਹੈ।';
+
+  @override
+  String get faqExpiryQ => 'ਮੇਰਾ ਐਕਸੈਸ ਖ਼ਤਮ ਹੋਣ \'ਤੇ ਕੀ ਹੋਵੇਗਾ?';
+
+  @override
+  String get faqExpiryA =>
+      'ਤੁਸੀਂ ਮੇਰੀ ਟੈਸਟ ਸੀਰੀਜ਼ ਤੋਂ ਸੀਰੀਜ਼ ਰੀਨਿਊ ਕਰ ਸਕਦੇ ਹੋ। ਮੌਜੂਦਾ ਪ੍ਰਗਤੀ ਅਤੇ ਵਿਸ਼ਲੇਸ਼ਣ ਤੁਹਾਡੇ ਖਾਤੇ ਨਾਲ ਜੁੜੇ ਰਹਿੰਦੇ ਹਨ।';
+
+  @override
+  String get faqPreviousQ => 'ਮੈਂ ਆਪਣੀਆਂ ਪਿਛਲੀਆਂ ਕੋਸ਼ਿਸ਼ਾਂ ਕਿੱਥੇ ਦੇਖ ਸਕਦਾ ਹਾਂ?';
+
+  @override
+  String get faqPreviousA =>
+      'ਪੂਰੀਆਂ ਕੋਸ਼ਿਸ਼ਾਂ ਅਤੇ ਪ੍ਰਦਰਸ਼ਨ ਦੇਖਣ ਲਈ ਮੇਰੀ ਟੈਸਟ ਸੀਰੀਜ਼, ਪ੍ਰੋਫਾਈਲ ਜਾਂ ਨਤੀਜੇ ਖੋਲ੍ਹੋ।';
+
+  @override
+  String get seriesYourProgress => 'ਤੁਹਾਡੀ ਸੀਰੀਜ਼ ਪ੍ਰਗਤੀ';
+
+  @override
+  String seriesCompletedOf(int done, int total) {
+    return '$total ਵਿੱਚੋਂ $done ਟੈਸਟ ਪੂਰੇ';
+  }
+
+  @override
+  String get typeFullTitle => 'ਫੁੱਲ ਲੈਂਥ ਮੌਕ ਟੈਸਟ';
+
+  @override
+  String get typeFullSubtitle => 'ਨਵੇਂ ਪੈਟਰਨ \'ਤੇ ਪੂਰੇ ਸਿਲੇਬਸ ਦੇ ਟੈਸਟ';
+
+  @override
+  String get typeSectionalTitle => 'ਸੈਕਸ਼ਨਲ ਟੈਸਟ';
+
+  @override
+  String get typeSectionalSubtitle => 'ਵਿਸ਼ਾਵਾਰ ਅਭਿਆਸ ਟੈਸਟ';
+
+  @override
+  String get typeTopicTitle => 'ਟੌਪਿਕ-ਵਾਰ ਟੈਸਟ';
+
+  @override
+  String get typeTopicSubtitle => 'ਜ਼ਰੂਰੀ ਟੌਪਿਕਾਂ \'ਤੇ ਕੇਂਦਰਿਤ ਅਭਿਆਸ';
+
+  @override
+  String get typePyqTitle => 'ਪਿਛਲੇ ਸਾਲ ਦੇ ਪੇਪਰ';
+
+  @override
+  String get typePyqSubtitle => 'ਸਮੀਖਿਆ ਸਮੇਤ ਪਿਛਲੇ ਪ੍ਰੀਖਿਆ ਪੇਪਰ';
+
+  @override
+  String get typeFullTab => 'ਫੁੱਲ';
+
+  @override
+  String get typeSectionalTab => 'ਸੈਕਸ਼ਨਲ';
+
+  @override
+  String get typeTopicTab => 'ਟੌਪਿਕ-ਵਾਰ';
+
+  @override
+  String get typePyqTab => 'PYQ';
+
+  @override
+  String get seriesStateCompleted => 'ਪੂਰਾ';
+
+  @override
+  String get seriesStatePremium => 'ਪ੍ਰੀਮੀਅਮ';
+
+  @override
+  String get seriesStateReady => 'ਤਿਆਰ';
+
+  @override
+  String get seriesStateLocked => 'ਲਾਕ';
+
+  @override
+  String get seriesOptional => 'ਵਿਕਲਪਿਕ';
+
+  @override
+  String get seriesRequiredTag => 'ਲਾਜ਼ਮੀ';
+
+  @override
+  String seriesBestScore(String score) {
+    return 'ਸਭ ਤੋਂ ਵਧੀਆ ਸਕੋਰ: $score';
+  }
+
+  @override
+  String get seriesOpenAgain => 'ਟੈਸਟ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ';
+
+  @override
+  String get seriesViewInstructions => 'ਹਦਾਇਤਾਂ ਦੇਖੋ';
+
+  @override
+  String get seriesUnlockPremium => 'ਪ੍ਰੀਮੀਅਮ ਟੈਸਟ ਅਨਲੌਕ ਕਰੋ';
+
+  @override
+  String get seriesProgressLabel => 'ਸੀਰੀਜ਼ ਪ੍ਰਗਤੀ';
+
+  @override
+  String get seriesStatus => 'ਸੀਰੀਜ਼ ਸਥਿਤੀ';
+
+  @override
+  String get seriesUpNext => 'ਅਗਲਾ';
+
+  @override
+  String get seriesPremiumRequired => 'ਪ੍ਰੀਮੀਅਮ ਐਕਸੈਸ ਲਾਜ਼ਮੀ';
+
+  @override
+  String seriesFromPrice(String price) {
+    return '$price ਤੋਂ';
+  }
+
+  @override
+  String get seriesAllCompleted => 'ਸਾਰੇ ਟੈਸਟ ਪੂਰੇ';
+
+  @override
+  String get seriesNoneAvailable => 'ਅਜੇ ਕੋਈ ਟੈਸਟ ਉਪਲਬਧ ਨਹੀਂ';
+
+  @override
+  String get seriesViewPlans => 'ਪਲਾਨ ਦੇਖੋ';
+
+  @override
+  String get seriesReviewTests => 'ਟੈਸਟ ਦੇਖੋ';
+
+  @override
+  String get seriesOpenTest => 'ਟੈਸਟ ਖੋਲ੍ਹੋ';
+
+  @override
+  String get seriesLoadFailed => 'ਟੈਸਟ ਸੀਰੀਜ਼ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ।';
+
+  @override
+  String get seriesCheckConnection => 'ਇੰਟਰਨੈੱਟ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
 }

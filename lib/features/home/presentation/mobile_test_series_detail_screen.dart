@@ -7,6 +7,7 @@ import '../../store/domain/series_purchase.dart';
 import '../../../shared/widgets/skeleton.dart';
 import '../domain/series_test_type.dart';
 import '../../mobile_config/presentation/mobile_app_configuration_providers.dart';
+import '../../../l10n/l10n.dart';
 
 final mobileTestSeriesDetailProvider =
     FutureProvider.family<Map<String, dynamic>, String>((ref, seriesId) async {
@@ -86,9 +87,9 @@ class _MobileTestSeriesDetailScreenState
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
-                'This Test is Locked',
-                style: TextStyle(
+              Text(
+                context.l10n.seriesLockedTitle,
+                style: const TextStyle(
                   color: Color(0xFF10264A),
                   fontSize: 21,
                   fontWeight: FontWeight.w900,
@@ -113,10 +114,7 @@ class _MobileTestSeriesDetailScreenState
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Text(
-                    vm.commerce.freeTestCount.toString() +
-                        (vm.commerce.freeTestCount == 1
-                            ? ' free test is available in this series.'
-                            : ' free tests are available in this series.'),
+                    context.l10n.seriesFreeAvailable(vm.commerce.freeTestCount),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Color(0xFF087653),
@@ -136,8 +134,8 @@ class _MobileTestSeriesDetailScreenState
                       _openTest(freeMember, vm);
                     },
                     icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text(
-                      'Try Free Test',
+                    label: Text(
+                      context.l10n.seriesTryFree,
                       style: TextStyle(fontWeight: FontWeight.w900),
                     ),
                     style: OutlinedButton.styleFrom(
@@ -164,8 +162,8 @@ class _MobileTestSeriesDetailScreenState
                     foregroundColor: Colors.white,
                     minimumSize: const Size.fromHeight(50),
                   ),
-                  child: const Text(
-                    'View Plans & Unlock',
+                  child: Text(
+                    context.l10n.seriesViewPlansUnlock,
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -173,7 +171,7 @@ class _MobileTestSeriesDetailScreenState
               const SizedBox(height: 6),
               TextButton(
                 onPressed: () => Navigator.of(sheetContext).pop(),
-                child: const Text('Maybe Later'),
+                child: Text(context.l10n.seriesMaybeLater),
               ),
             ],
           ),
@@ -192,7 +190,7 @@ class _MobileTestSeriesDetailScreenState
       loading: () => const _SeriesLoadingScaffold(),
       error: (error, stackTrace) => Scaffold(
         backgroundColor: const Color(0xFFF8FAFD),
-        appBar: _appBar(),
+        appBar: _appBar(context),
         body: _SeriesError(onRetry: _refresh),
       ),
       data: (body) {
@@ -204,7 +202,7 @@ class _MobileTestSeriesDetailScreenState
 
         return Scaffold(
           backgroundColor: const Color(0xFFF8FAFD),
-          appBar: _appBar(),
+          appBar: _appBar(context),
           body: RefreshIndicator(
             onRefresh: _refresh,
             child: ListView(
@@ -256,11 +254,11 @@ class _MobileTestSeriesDetailScreenState
   }
 }
 
-PreferredSizeWidget _appBar() {
+PreferredSizeWidget _appBar(BuildContext context) {
   return AppBar(
-    title: const Text(
-      'Test Series',
-      style: TextStyle(fontWeight: FontWeight.w800),
+    title: Text(
+      context.l10n.examsTestSeries,
+      style: const TextStyle(fontWeight: FontWeight.w800),
     ),
     backgroundColor: Colors.white,
     foregroundColor: const Color(0xFF10264A),
@@ -569,7 +567,7 @@ class _SeriesHero extends StatelessWidget {
     final subtitle = vm.comingSoon && vm.learnerMessage.isNotEmpty
         ? vm.learnerMessage
         : vm.description.isEmpty
-            ? 'Structured mock-test practice for ' + vm.examName + '.'
+            ? context.l10n.seriesStructuredPractice(vm.examName)
             : vm.description;
 
     return Container(
@@ -624,10 +622,10 @@ class _SeriesHero extends StatelessWidget {
                   ),
                   _HeroChip(
                     label: vm.comingSoon
-                        ? 'COMING SOON'
+                        ? context.l10n.seriesComingSoon
                         : vm.available
-                            ? 'ACTIVE'
-                            : 'UNAVAILABLE',
+                            ? context.l10n.seriesActive
+                            : context.l10n.seriesUnavailable,
                     foreground: vm.comingSoon
                         ? const Color(0xFFFFD36B)
                         : vm.available
@@ -661,8 +659,8 @@ class _SeriesHero extends StatelessWidget {
                   Expanded(
                     child: Text(
                       vm.comingSoon
-                          ? 'Content in preparation'
-                          : vm.progressPercent.toString() + '% complete',
+                          ? context.l10n.seriesInPreparation
+                          : context.l10n.seriesPercentComplete(vm.progressPercent),
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -671,11 +669,11 @@ class _SeriesHero extends StatelessWidget {
                   ),
                   Text(
                     vm.comingSoon
-                        ? 'No questions yet'
-                        : vm.completedCount.toString() +
-                            '/' +
-                            vm.totalCount.toString() +
-                            ' tests',
+                        ? context.l10n.examsNoQuestionsYet
+                        : context.l10n.seriesTestsFraction(
+                            vm.completedCount,
+                            vm.totalCount,
+                          ),
                     style: const TextStyle(
                       color: Color(0xFFD6E3F1),
                       fontWeight: FontWeight.w700,
@@ -785,7 +783,7 @@ class _SeriesSummary extends StatelessWidget {
               width: width,
               child: _MetricCard(
                 icon: Icons.assignment_turned_in_outlined,
-                label: 'Tests',
+                label: context.l10n.homeTests,
                 value: vm.totalCount.toString(),
                 tint: const Color(0xFFEAF4FF),
                 iconColor: const Color(0xFF176CC0),
@@ -795,7 +793,7 @@ class _SeriesSummary extends StatelessWidget {
               width: width,
               child: _MetricCard(
                 icon: Icons.quiz_outlined,
-                label: 'Questions',
+                label: context.l10n.homeQuestions,
                 value: vm.totalQuestions.toString(),
                 tint: const Color(0xFFEAF8F2),
                 iconColor: const Color(0xFF11966F),
@@ -805,8 +803,8 @@ class _SeriesSummary extends StatelessWidget {
               width: width,
               child: _MetricCard(
                 icon: Icons.timer_outlined,
-                label: 'Practice time',
-                value: totalMinutes <= 0 ? '—' : totalMinutes.toString() + ' min',
+                label: context.l10n.seriesPracticeTime,
+                value: totalMinutes <= 0 ? '—' : context.l10n.minutesShort(totalMinutes),
                 tint: const Color(0xFFFFF4E8),
                 iconColor: const Color(0xFFD97706),
               ),
@@ -815,7 +813,7 @@ class _SeriesSummary extends StatelessWidget {
               width: width,
               child: _MetricCard(
                 icon: Icons.trending_up_rounded,
-                label: 'Progress',
+                label: context.l10n.seriesProgress,
                 value: vm.progressPercent.toString() + '%',
                 tint: const Color(0xFFF2EEFF),
                 iconColor: const Color(0xFF7248E8),
@@ -920,32 +918,32 @@ class _SeriesTabs extends StatelessWidget {
         child: Row(
           children: [
             _TabButton(
-              label: 'Overview',
+              label: context.l10n.seriesTabOverview,
               selected: selected == _SeriesTab.overview,
               onTap: () => onChanged(_SeriesTab.overview),
             ),
             _TabButton(
-              label: 'Test List',
+              label: context.l10n.seriesTabTestList,
               selected: selected == _SeriesTab.tests,
               onTap: () => onChanged(_SeriesTab.tests),
             ),
             _TabButton(
-              label: 'Syllabus',
+              label: context.l10n.seriesTabSyllabus,
               selected: selected == _SeriesTab.syllabus,
               onTap: () => onChanged(_SeriesTab.syllabus),
             ),
             _TabButton(
-              label: 'Exam Pattern',
+              label: context.l10n.seriesTabPattern,
               selected: selected == _SeriesTab.pattern,
               onTap: () => onChanged(_SeriesTab.pattern),
             ),
             _TabButton(
-              label: 'Reviews',
+              label: context.l10n.seriesTabReviews,
               selected: selected == _SeriesTab.reviews,
               onTap: () => onChanged(_SeriesTab.reviews),
             ),
             _TabButton(
-              label: 'FAQs',
+              label: context.l10n.seriesTabFaqs,
               selected: selected == _SeriesTab.faqs,
               onTap: () => onChanged(_SeriesTab.faqs),
             ),
@@ -1002,22 +1000,20 @@ class _OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final modeLabel = switch (vm.progressionMode) {
-      'sequential' => 'Sequential progression',
-      'score_gated' => 'Score-gated progression',
-      _ => 'Open progression',
+      'sequential' => context.l10n.seriesSequential,
+      'score_gated' => context.l10n.seriesScoreGated,
+      _ => context.l10n.seriesOpenProgression,
     };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionCard(
-          title: 'About this series',
+          title: context.l10n.seriesAbout,
           icon: Icons.info_outline_rounded,
           child: Text(
             vm.description.isEmpty
-                ? 'This series is organised for structured ' +
-                    vm.examName +
-                    ' practice.'
+                ? context.l10n.seriesOrganisedFor(vm.examName)
                 : vm.description,
             style: const TextStyle(
               color: Color(0xFF5F6F82),
@@ -1027,7 +1023,7 @@ class _OverviewTab extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _SectionCard(
-          title: 'What’s included',
+          title: context.l10n.seriesIncluded,
           icon: Icons.inventory_2_outlined,
           child: Wrap(
             spacing: 8,
@@ -1035,15 +1031,15 @@ class _OverviewTab extends StatelessWidget {
             children: [
               _InfoPill(
                 Icons.assignment_outlined,
-                vm.totalCount.toString() + ' tests',
+                context.l10n.examsTestsCount(vm.totalCount),
               ),
               _InfoPill(
                 Icons.quiz_outlined,
-                vm.totalQuestions.toString() + ' questions',
+                context.l10n.resultQuestionsCount(vm.totalQuestions),
               ),
               _InfoPill(
                 Icons.rule_rounded,
-                vm.requiredCount.toString() + ' required',
+                context.l10n.seriesRequired(vm.requiredCount),
               ),
               _InfoPill(
                 Icons.account_tree_outlined,
@@ -1054,26 +1050,26 @@ class _OverviewTab extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _SectionCard(
-          title: 'Why choose this series',
+          title: context.l10n.seriesWhyChoose,
           icon: Icons.workspace_premium_outlined,
-          child: const Column(
+          child: Column(
             children: [
               _BenefitRow(
                 icon: Icons.track_changes_rounded,
-                title: 'Progress tracking',
-                body: 'Completed tests and your next eligible test stay visible.',
+                title: context.l10n.seriesWhyProgress,
+                body: context.l10n.seriesWhyProgressBody,
               ),
               SizedBox(height: 12),
               _BenefitRow(
                 icon: Icons.lock_open_rounded,
-                title: 'Clear unlock rules',
-                body: 'Scheduled and progression-based locks are shown before you open a test.',
+                title: context.l10n.seriesWhyUnlock,
+                body: context.l10n.seriesWhyUnlockBody,
               ),
               SizedBox(height: 12),
               _BenefitRow(
                 icon: Icons.fact_check_outlined,
-                title: 'Instructions before attempt',
-                body: 'Each unlocked test opens its details and instructions before the timer starts.',
+                title: context.l10n.seriesWhyInstructions,
+                body: context.l10n.seriesWhyInstructionsBody,
               ),
             ],
           ),
@@ -1110,7 +1106,7 @@ class _TestsTabState extends ConsumerState<_TestsTab> {
       return _EmptySeries(
         message: vm.comingSoon && vm.learnerMessage.isNotEmpty
             ? vm.learnerMessage
-            : 'No tests are currently available in this series.',
+            : context.l10n.seriesNoTests,
       );
     }
 
@@ -1223,7 +1219,7 @@ class _TestTypeSwitcher extends StatelessWidget {
       for (final type in types)
         _TestTypeButton(
           key: ValueKey('series-test-type-${type.name}'),
-          label: type.tabLabel,
+          label: _typeTabLabel(context, type),
           count: counts[type] ?? 0,
           selected: type == selected,
           onTap: () => onSelected(type),
@@ -1279,7 +1275,7 @@ class _TestTypeButton extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: '$label, $count tests',
+      label: context.l10n.seriesTypeCountA11y(label, count),
       excludeSemantics: true,
       child: Material(
         color: selected ? Colors.white : Colors.transparent,
@@ -1339,7 +1335,7 @@ class _PatternTab extends StatelessWidget {
       return _EmptySeries(
         message: vm.comingSoon && vm.learnerMessage.isNotEmpty
             ? vm.learnerMessage
-            : 'No test pattern is available yet.',
+            : context.l10n.seriesNoPattern,
       );
     }
 
@@ -1348,7 +1344,7 @@ class _PatternTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionCard(
-          title: 'Series pattern',
+          title: context.l10n.seriesPattern,
           icon: Icons.grid_view_rounded,
           child: Wrap(
             spacing: 8,
@@ -1356,27 +1352,27 @@ class _PatternTab extends StatelessWidget {
             children: [
               _InfoPill(
                 Icons.assignment_outlined,
-                vm.totalCount.toString() + ' tests',
+                context.l10n.examsTestsCount(vm.totalCount),
               ),
               _InfoPill(
                 Icons.quiz_outlined,
-                vm.totalQuestions.toString() + ' questions',
+                context.l10n.resultQuestionsCount(vm.totalQuestions),
               ),
               _InfoPill(
                 Icons.timer_outlined,
-                totalMinutes.toString() + ' min total',
+                context.l10n.seriesMinTotal(totalMinutes),
               ),
               if (vm.totalMarks > 0)
                 _InfoPill(
                   Icons.grade_outlined,
-                  _formatMarks(vm.totalMarks) + ' marks',
+                  context.l10n.resultMarks(_formatMarks(vm.totalMarks)),
                 ),
             ],
           ),
         ),
         const SizedBox(height: 12),
         _SectionCard(
-          title: 'Test-wise breakdown',
+          title: context.l10n.seriesBreakdown,
           icon: Icons.view_list_rounded,
           child: Column(
             children: [
@@ -1408,16 +1404,16 @@ class _SyllabusTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _SectionCard(
-          title: 'Syllabus',
+          title: context.l10n.seriesTabSyllabus,
           icon: Icons.menu_book_rounded,
           child: Text(
-            'Complete topic-wise preparation coverage for ' + vm.examName + '. Test groups below are derived from the published series catalogue.',
+            context.l10n.seriesSyllabusBody(vm.examName),
             style: const TextStyle(color: Color(0xFF5F6F82), height: 1.45),
           ),
         ),
         const SizedBox(height: 12),
         if (groups.isEmpty)
-          const _EmptySeries(message: 'Syllabus will appear as tests are published.')
+          _EmptySeries(message: context.l10n.seriesSyllabusEmpty)
         else
           for (final entry in groups.entries) ...[
             Container(
@@ -1446,12 +1442,13 @@ class _SyllabusTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(entry.key, style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900)),
+                        Text(_typeTitle(context, entry.key), style: const TextStyle(color: Color(0xFF10264A), fontWeight: FontWeight.w900)),
                         const SizedBox(height: 3),
                         Text(
-                          entry.value.length.toString() + ' published tests · ' +
-                              entry.value.fold<int>(0, (sum, m) => sum + m.questionCount).toString() +
-                              ' questions',
+                          context.l10n.seriesPublishedTestsQuestions(
+                            entry.value.length,
+                            entry.value.fold<int>(0, (sum, m) => sum + m.questionCount),
+                          ),
                           style: const TextStyle(color: Color(0xFF718096), fontSize: 12),
                         ),
                       ],
@@ -1474,8 +1471,8 @@ class _ReviewsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (vm.reviews.isEmpty) {
-      return const _EmptySeries(
-        message: 'Learner reviews will appear here when published reviews are available.',
+      return _EmptySeries(
+        message: context.l10n.seriesReviewsEmpty,
       );
     }
 
@@ -1498,9 +1495,9 @@ class _ReviewsTab extends StatelessWidget {
             ),
             child: Column(
               children: [
-                const Text(
-                  'Student Reviews',
-                  style: TextStyle(
+                Text(
+                  context.l10n.seriesStudentReviews,
+                  style: const TextStyle(
                     color: Color(0xFF10264A),
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
@@ -1517,8 +1514,7 @@ class _ReviewsTab extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  rated.length.toString() + ' rated review' +
-                      (rated.length == 1 ? '' : 's'),
+                  context.l10n.seriesRatedReviews(rated.length),
                   style: const TextStyle(
                     color: Color(0xFF718096),
                     fontSize: 12,
@@ -1613,14 +1609,14 @@ class _FaqsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = <MapEntry<String, String>>[
       MapEntry(
-        'What is included in this test series?',
-        vm.totalCount.toString() + ' published tests with ' + vm.totalQuestions.toString() + ' total questions, subject to the live catalogue and your access plan.',
+        context.l10n.faqIncludedQ,
+        context.l10n.faqIncludedA(vm.totalCount, vm.totalQuestions),
       ),
-      const MapEntry('Are explanations available?', 'Completed attempts can be reviewed with the explanation and analysis supported by the test.'),
-      const MapEntry('Can I attempt a test multiple times?', 'Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.'),
-      const MapEntry('Can I change the question language?', 'Supported languages are shown before starting the test. Availability depends on the published question content.'),
-      const MapEntry('What happens when my access expires?', 'You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.'),
-      const MapEntry('Where can I see my previous attempts?', 'Use My Test Series, Profile or Results to revisit completed attempts and performance information.'),
+      MapEntry(context.l10n.faqExplanationsQ, context.l10n.faqExplanationsA),
+      MapEntry(context.l10n.faqMultipleQ, context.l10n.faqMultipleA),
+      MapEntry(context.l10n.faqLanguageQ, context.l10n.faqLanguageA),
+      MapEntry(context.l10n.faqExpiryQ, context.l10n.faqExpiryA),
+      MapEntry(context.l10n.faqPreviousQ, context.l10n.faqPreviousA),
     ];
     return Column(
       children: [
@@ -1858,19 +1854,16 @@ class _ProgressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Your series progress',
-                  style: TextStyle(
+                Text(
+                  context.l10n.seriesYourProgress,
+                  style: const TextStyle(
                     color: Color(0xFF10264A),
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  vm.completedCount.toString() +
-                      ' of ' +
-                      vm.totalCount.toString() +
-                      ' tests completed',
+                  context.l10n.seriesCompletedOf(vm.completedCount, vm.totalCount),
                   style: const TextStyle(
                     color: Color(0xFF64748B),
                     fontSize: 12,
@@ -1930,7 +1923,7 @@ class _TestGroupHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title + ' (' + count.toString() + ')',
+                  _typeTitle(context, title) + ' (' + count.toString() + ')',
                   style: const TextStyle(
                     color: Color(0xFF10264A),
                     fontSize: 15,
@@ -1939,7 +1932,7 @@ class _TestGroupHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  subtitle,
+                  _typeSubtitle(context, title, subtitle),
                   style: const TextStyle(
                     color: Color(0xFF60759B),
                     fontSize: 11,
@@ -1968,12 +1961,12 @@ class _SeriesTestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stateLabel = member.completed
-        ? 'Completed'
+        ? context.l10n.seriesStateCompleted
         : member.requiresPurchase
-            ? 'Premium'
+            ? context.l10n.seriesStatePremium
             : member.unlocked
-                ? 'Ready'
-                : 'Locked';
+                ? context.l10n.seriesStateReady
+                : context.l10n.seriesStateLocked;
     final stateColor = member.completed
         ? const Color(0xFF11966F)
         : member.requiresPurchase
@@ -2116,22 +2109,22 @@ class _SeriesTestCard extends StatelessWidget {
                         if (member.questionCount > 0)
                           _TinyMeta(
                             Icons.quiz_outlined,
-                            member.questionCount.toString() + ' questions',
+                            context.l10n.resultQuestionsCount(member.questionCount),
                           ),
                         if (member.durationMinutes > 0)
                           _TinyMeta(
                             Icons.timer_outlined,
-                            member.durationMinutes.toString() + ' min',
+                            context.l10n.minutesShort(member.durationMinutes),
                           ),
                         if (member.totalMarks > 0)
                           _TinyMeta(
                             Icons.grade_outlined,
-                            _formatMarks(member.totalMarks) + ' marks',
+                            context.l10n.resultMarks(_formatMarks(member.totalMarks)),
                           ),
                         if (!member.isRequired)
-                          const _TinyMeta(
+                          _TinyMeta(
                             Icons.check_box_outline_blank_rounded,
-                            'Optional',
+                            context.l10n.seriesOptional,
                           ),
                       ],
                     ),
@@ -2139,7 +2132,7 @@ class _SeriesTestCard extends StatelessWidget {
                         member.bestScore != null) ...[
                       const SizedBox(height: 8),
                       Text(
-                        'Best score: ' + _formatMarks(member.bestScore!),
+                        context.l10n.seriesBestScore(_formatMarks(member.bestScore!)),
                         style: const TextStyle(
                           color: Color(0xFF11966F),
                           fontSize: 11,
@@ -2165,10 +2158,10 @@ class _SeriesTestCard extends StatelessWidget {
                         children: [
                           Text(
                             member.requiresPurchase
-                                ? 'View Plans & Unlock'
+                                ? context.l10n.seriesViewPlansUnlock
                                 : member.completed
-                                    ? 'Open test again'
-                                    : 'View instructions',
+                                    ? context.l10n.seriesOpenAgain
+                                    : context.l10n.seriesViewInstructions,
                             style: const TextStyle(
                               color: Color(0xFF0B5D96),
                               fontSize: 12,
@@ -2275,7 +2268,7 @@ class _PatternRow extends StatelessWidget {
                 children: [
                   if (member.questionCount > 0)
                     Text(
-                      member.questionCount.toString() + ' questions',
+                      context.l10n.resultQuestionsCount(member.questionCount),
                       style: const TextStyle(
                         color: Color(0xFF718096),
                         fontSize: 11,
@@ -2283,7 +2276,7 @@ class _PatternRow extends StatelessWidget {
                     ),
                   if (member.durationMinutes > 0)
                     Text(
-                      member.durationMinutes.toString() + ' min',
+                      context.l10n.minutesShort(member.durationMinutes),
                       style: const TextStyle(
                         color: Color(0xFF718096),
                         fontSize: 11,
@@ -2291,14 +2284,16 @@ class _PatternRow extends StatelessWidget {
                     ),
                   if (member.totalMarks > 0)
                     Text(
-                      _formatMarks(member.totalMarks) + ' marks',
+                      context.l10n.resultMarks(_formatMarks(member.totalMarks)),
                       style: const TextStyle(
                         color: Color(0xFF718096),
                         fontSize: 11,
                       ),
                     ),
                   Text(
-                    member.isRequired ? 'Required' : 'Optional',
+                    member.isRequired
+                        ? context.l10n.seriesRequiredTag
+                        : context.l10n.seriesOptional,
                     style: TextStyle(
                       color: member.isRequired
                           ? const Color(0xFF176CC0)
@@ -2408,12 +2403,12 @@ class _SeriesBottomBar extends StatelessWidget {
                 children: [
                   Text(
                     purchaseRequired
-                        ? 'Unlock premium tests'
+                        ? context.l10n.seriesUnlockPremium
                         : allCompleted
-                            ? 'Series progress'
+                            ? context.l10n.seriesProgressLabel
                             : member == null
-                                ? 'Series status'
-                                : 'Up next',
+                                ? context.l10n.seriesStatus
+                                : context.l10n.seriesUpNext,
                     style: const TextStyle(
                       color: Color(0xFFAFC5DC),
                       fontSize: 10,
@@ -2424,17 +2419,18 @@ class _SeriesBottomBar extends StatelessWidget {
                   Text(
                     purchaseRequired
                         ? plan == null
-                            ? 'Premium access required'
-                            : 'From ' +
+                            ? context.l10n.seriesPremiumRequired
+                            : context.l10n.seriesFromPrice(
                                 _formatSeriesPrice(
                                   plan.salePriceMinor,
                                   plan.currency,
-                                )
+                                ),
+                              )
                         : allCompleted
-                            ? 'All tests completed'
+                            ? context.l10n.seriesAllCompleted
                             : member?.title ??
                                 (vm.availabilityReason.isEmpty
-                                    ? 'No test is available yet'
+                                    ? context.l10n.seriesNoneAvailable
                                     : vm.availabilityReason),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -2467,12 +2463,12 @@ class _SeriesBottomBar extends StatelessWidget {
               ),
               child: Text(
                 purchaseRequired
-                    ? 'View Plans'
+                    ? context.l10n.seriesViewPlans
                     : allCompleted
-                        ? 'Review Tests'
+                        ? context.l10n.seriesReviewTests
                         : member?.completed == true
-                            ? 'Open Test'
-                            : 'Continue',
+                            ? context.l10n.seriesOpenTest
+                            : context.l10n.continueLabel,
                 style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
@@ -2535,24 +2531,24 @@ class _SeriesError extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            const Text(
-              'Test series could not be loaded.',
+            Text(
+              context.l10n.seriesLoadFailed,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xFF10264A),
                 fontWeight: FontWeight.w900,
               ),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'Check your connection and try again.',
+            Text(
+              context.l10n.seriesCheckConnection,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF718096)),
+              style: const TextStyle(color: Color(0xFF718096)),
             ),
             const SizedBox(height: 14),
             FilledButton(
               onPressed: onRetry,
-              child: const Text('Retry'),
+              child: Text(context.l10n.retry),
             ),
           ],
         ),
@@ -2607,7 +2603,7 @@ class _SeriesLoadingScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFD),
-      appBar: _appBar(),
+      appBar: _appBar(context),
       body: SkeletonShimmer(
         child: ListView(
         physics: const NeverScrollableScrollPhysics(),
@@ -2644,4 +2640,38 @@ class _SeriesLoadingScaffold extends StatelessWidget {
       ),
     );
   }
+}
+
+String _typeTabLabel(BuildContext context, SeriesTestType type) {
+  final l10n = context.l10n;
+  return switch (type) {
+    SeriesTestType.full => l10n.typeFullTab,
+    SeriesTestType.sectional => l10n.typeSectionalTab,
+    SeriesTestType.topic => l10n.typeTopicTab,
+    SeriesTestType.previousYear => l10n.typePyqTab,
+  };
+}
+
+/// Group titles stay English in data (they drive icons and colours); this
+/// returns the label to show in the app language.
+String _typeTitle(BuildContext context, String englishTitle) {
+  final l10n = context.l10n;
+  return switch (englishTitle) {
+    'Full Length Mock Tests' => l10n.typeFullTitle,
+    'Sectional Tests' => l10n.typeSectionalTitle,
+    'Topic-wise Tests' => l10n.typeTopicTitle,
+    'Previous Year Papers' => l10n.typePyqTitle,
+    _ => englishTitle,
+  };
+}
+
+String _typeSubtitle(BuildContext context, String englishTitle, String fallback) {
+  final l10n = context.l10n;
+  return switch (englishTitle) {
+    'Full Length Mock Tests' => l10n.typeFullSubtitle,
+    'Sectional Tests' => l10n.typeSectionalSubtitle,
+    'Topic-wise Tests' => l10n.typeTopicSubtitle,
+    'Previous Year Papers' => l10n.typePyqSubtitle,
+    _ => fallback,
+  };
 }

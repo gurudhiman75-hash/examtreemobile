@@ -1362,4 +1362,339 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readyViewOrder => 'View Order Details';
+
+  @override
+  String get seriesLockedTitle => 'This Test is Locked';
+
+  @override
+  String seriesFreeAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count free tests are available in this series.',
+      one: '1 free test is available in this series.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seriesTryFree => 'Try Free Test';
+
+  @override
+  String get seriesViewPlansUnlock => 'View Plans & Unlock';
+
+  @override
+  String get seriesMaybeLater => 'Maybe Later';
+
+  @override
+  String seriesStructuredPractice(String exam) {
+    return 'Structured mock-test practice for $exam.';
+  }
+
+  @override
+  String get seriesComingSoon => 'COMING SOON';
+
+  @override
+  String get seriesActive => 'ACTIVE';
+
+  @override
+  String get seriesUnavailable => 'UNAVAILABLE';
+
+  @override
+  String get seriesInPreparation => 'Content in preparation';
+
+  @override
+  String seriesPercentComplete(int percent) {
+    return '$percent% complete';
+  }
+
+  @override
+  String seriesTestsFraction(int done, int total) {
+    return '$done/$total tests';
+  }
+
+  @override
+  String get seriesPracticeTime => 'Practice time';
+
+  @override
+  String get seriesProgress => 'Progress';
+
+  @override
+  String get seriesTabOverview => 'Overview';
+
+  @override
+  String get seriesTabTestList => 'Test List';
+
+  @override
+  String get seriesTabSyllabus => 'Syllabus';
+
+  @override
+  String get seriesTabPattern => 'Exam Pattern';
+
+  @override
+  String get seriesTabReviews => 'Reviews';
+
+  @override
+  String get seriesTabFaqs => 'FAQs';
+
+  @override
+  String get seriesSequential => 'Sequential progression';
+
+  @override
+  String get seriesScoreGated => 'Score-gated progression';
+
+  @override
+  String get seriesOpenProgression => 'Open progression';
+
+  @override
+  String get seriesAbout => 'About this series';
+
+  @override
+  String seriesOrganisedFor(String exam) {
+    return 'This series is organised for structured $exam practice.';
+  }
+
+  @override
+  String get seriesIncluded => 'What’s included';
+
+  @override
+  String seriesRequired(int count) {
+    return '$count required';
+  }
+
+  @override
+  String get seriesWhyChoose => 'Why choose this series';
+
+  @override
+  String get seriesWhyProgress => 'Progress tracking';
+
+  @override
+  String get seriesWhyProgressBody =>
+      'Completed tests and your next eligible test stay visible.';
+
+  @override
+  String get seriesWhyUnlock => 'Clear unlock rules';
+
+  @override
+  String get seriesWhyUnlockBody =>
+      'Scheduled and progression-based locks are shown before you open a test.';
+
+  @override
+  String get seriesWhyInstructions => 'Instructions before attempt';
+
+  @override
+  String get seriesWhyInstructionsBody =>
+      'Each unlocked test opens its details and instructions before the timer starts.';
+
+  @override
+  String get seriesNoTests =>
+      'No tests are currently available in this series.';
+
+  @override
+  String seriesTypeCountA11y(String label, int count) {
+    return '$label, $count tests';
+  }
+
+  @override
+  String get seriesNoPattern => 'No test pattern is available yet.';
+
+  @override
+  String get seriesPattern => 'Series pattern';
+
+  @override
+  String seriesMinTotal(int minutes) {
+    return '$minutes min total';
+  }
+
+  @override
+  String get seriesBreakdown => 'Test-wise breakdown';
+
+  @override
+  String seriesSyllabusBody(String exam) {
+    return 'Complete topic-wise preparation coverage for $exam. Test groups below are derived from the published series catalogue.';
+  }
+
+  @override
+  String get seriesSyllabusEmpty =>
+      'Syllabus will appear as tests are published.';
+
+  @override
+  String seriesPublishedTestsQuestions(int tests, int questions) {
+    return '$tests published tests · $questions questions';
+  }
+
+  @override
+  String get seriesReviewsEmpty =>
+      'Learner reviews will appear here when published reviews are available.';
+
+  @override
+  String get seriesStudentReviews => 'Student Reviews';
+
+  @override
+  String seriesRatedReviews(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rated reviews',
+      one: '1 rated review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get faqIncludedQ => 'What is included in this test series?';
+
+  @override
+  String faqIncludedA(int tests, int questions) {
+    return '$tests published tests with $questions total questions, subject to the live catalogue and your access plan.';
+  }
+
+  @override
+  String get faqExplanationsQ => 'Are explanations available?';
+
+  @override
+  String get faqExplanationsA =>
+      'Completed attempts can be reviewed with the explanation and analysis supported by the test.';
+
+  @override
+  String get faqMultipleQ => 'Can I attempt a test multiple times?';
+
+  @override
+  String get faqMultipleA =>
+      'Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.';
+
+  @override
+  String get faqLanguageQ => 'Can I change the question language?';
+
+  @override
+  String get faqLanguageA =>
+      'Supported languages are shown before starting the test. Availability depends on the published question content.';
+
+  @override
+  String get faqExpiryQ => 'What happens when my access expires?';
+
+  @override
+  String get faqExpiryA =>
+      'You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.';
+
+  @override
+  String get faqPreviousQ => 'Where can I see my previous attempts?';
+
+  @override
+  String get faqPreviousA =>
+      'Use My Test Series, Profile or Results to revisit completed attempts and performance information.';
+
+  @override
+  String get seriesYourProgress => 'Your series progress';
+
+  @override
+  String seriesCompletedOf(int done, int total) {
+    return '$done of $total tests completed';
+  }
+
+  @override
+  String get typeFullTitle => 'Full Length Mock Tests';
+
+  @override
+  String get typeFullSubtitle => 'Latest pattern full syllabus tests';
+
+  @override
+  String get typeSectionalTitle => 'Sectional Tests';
+
+  @override
+  String get typeSectionalSubtitle => 'Subject-wise practice tests';
+
+  @override
+  String get typeTopicTitle => 'Topic-wise Tests';
+
+  @override
+  String get typeTopicSubtitle => 'Focused practice on important topics';
+
+  @override
+  String get typePyqTitle => 'Previous Year Papers';
+
+  @override
+  String get typePyqSubtitle => 'Previous exam papers with review';
+
+  @override
+  String get typeFullTab => 'Full';
+
+  @override
+  String get typeSectionalTab => 'Sectional';
+
+  @override
+  String get typeTopicTab => 'Topic-wise';
+
+  @override
+  String get typePyqTab => 'PYQs';
+
+  @override
+  String get seriesStateCompleted => 'Completed';
+
+  @override
+  String get seriesStatePremium => 'Premium';
+
+  @override
+  String get seriesStateReady => 'Ready';
+
+  @override
+  String get seriesStateLocked => 'Locked';
+
+  @override
+  String get seriesOptional => 'Optional';
+
+  @override
+  String get seriesRequiredTag => 'Required';
+
+  @override
+  String seriesBestScore(String score) {
+    return 'Best score: $score';
+  }
+
+  @override
+  String get seriesOpenAgain => 'Open test again';
+
+  @override
+  String get seriesViewInstructions => 'View instructions';
+
+  @override
+  String get seriesUnlockPremium => 'Unlock premium tests';
+
+  @override
+  String get seriesProgressLabel => 'Series progress';
+
+  @override
+  String get seriesStatus => 'Series status';
+
+  @override
+  String get seriesUpNext => 'Up next';
+
+  @override
+  String get seriesPremiumRequired => 'Premium access required';
+
+  @override
+  String seriesFromPrice(String price) {
+    return 'From $price';
+  }
+
+  @override
+  String get seriesAllCompleted => 'All tests completed';
+
+  @override
+  String get seriesNoneAvailable => 'No test is available yet';
+
+  @override
+  String get seriesViewPlans => 'View Plans';
+
+  @override
+  String get seriesReviewTests => 'Review Tests';
+
+  @override
+  String get seriesOpenTest => 'Open Test';
+
+  @override
+  String get seriesLoadFailed => 'Test series could not be loaded.';
+
+  @override
+  String get seriesCheckConnection => 'Check your connection and try again.';
 }

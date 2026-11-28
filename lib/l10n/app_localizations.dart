@@ -2307,6 +2307,570 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Order Details'**
   String get readyViewOrder;
+
+  /// No description provided for @seriesLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This Test is Locked'**
+  String get seriesLockedTitle;
+
+  /// No description provided for @seriesFreeAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 free test is available in this series.} other{{count} free tests are available in this series.}}'**
+  String seriesFreeAvailable(int count);
+
+  /// No description provided for @seriesTryFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Free Test'**
+  String get seriesTryFree;
+
+  /// No description provided for @seriesViewPlansUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans & Unlock'**
+  String get seriesViewPlansUnlock;
+
+  /// No description provided for @seriesMaybeLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe Later'**
+  String get seriesMaybeLater;
+
+  /// No description provided for @seriesStructuredPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Structured mock-test practice for {exam}.'**
+  String seriesStructuredPractice(String exam);
+
+  /// No description provided for @seriesComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'COMING SOON'**
+  String get seriesComingSoon;
+
+  /// No description provided for @seriesActive.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE'**
+  String get seriesActive;
+
+  /// No description provided for @seriesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'UNAVAILABLE'**
+  String get seriesUnavailable;
+
+  /// No description provided for @seriesInPreparation.
+  ///
+  /// In en, this message translates to:
+  /// **'Content in preparation'**
+  String get seriesInPreparation;
+
+  /// No description provided for @seriesPercentComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% complete'**
+  String seriesPercentComplete(int percent);
+
+  /// No description provided for @seriesTestsFraction.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{total} tests'**
+  String seriesTestsFraction(int done, int total);
+
+  /// No description provided for @seriesPracticeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice time'**
+  String get seriesPracticeTime;
+
+  /// No description provided for @seriesProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get seriesProgress;
+
+  /// No description provided for @seriesTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get seriesTabOverview;
+
+  /// No description provided for @seriesTabTestList.
+  ///
+  /// In en, this message translates to:
+  /// **'Test List'**
+  String get seriesTabTestList;
+
+  /// No description provided for @seriesTabSyllabus.
+  ///
+  /// In en, this message translates to:
+  /// **'Syllabus'**
+  String get seriesTabSyllabus;
+
+  /// No description provided for @seriesTabPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam Pattern'**
+  String get seriesTabPattern;
+
+  /// No description provided for @seriesTabReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get seriesTabReviews;
+
+  /// No description provided for @seriesTabFaqs.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQs'**
+  String get seriesTabFaqs;
+
+  /// No description provided for @seriesSequential.
+  ///
+  /// In en, this message translates to:
+  /// **'Sequential progression'**
+  String get seriesSequential;
+
+  /// No description provided for @seriesScoreGated.
+  ///
+  /// In en, this message translates to:
+  /// **'Score-gated progression'**
+  String get seriesScoreGated;
+
+  /// No description provided for @seriesOpenProgression.
+  ///
+  /// In en, this message translates to:
+  /// **'Open progression'**
+  String get seriesOpenProgression;
+
+  /// No description provided for @seriesAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About this series'**
+  String get seriesAbout;
+
+  /// No description provided for @seriesOrganisedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'This series is organised for structured {exam} practice.'**
+  String seriesOrganisedFor(String exam);
+
+  /// No description provided for @seriesIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'What’s included'**
+  String get seriesIncluded;
+
+  /// No description provided for @seriesRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} required'**
+  String seriesRequired(int count);
+
+  /// No description provided for @seriesWhyChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Why choose this series'**
+  String get seriesWhyChoose;
+
+  /// No description provided for @seriesWhyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress tracking'**
+  String get seriesWhyProgress;
+
+  /// No description provided for @seriesWhyProgressBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed tests and your next eligible test stay visible.'**
+  String get seriesWhyProgressBody;
+
+  /// No description provided for @seriesWhyUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear unlock rules'**
+  String get seriesWhyUnlock;
+
+  /// No description provided for @seriesWhyUnlockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled and progression-based locks are shown before you open a test.'**
+  String get seriesWhyUnlockBody;
+
+  /// No description provided for @seriesWhyInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions before attempt'**
+  String get seriesWhyInstructions;
+
+  /// No description provided for @seriesWhyInstructionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each unlocked test opens its details and instructions before the timer starts.'**
+  String get seriesWhyInstructionsBody;
+
+  /// No description provided for @seriesNoTests.
+  ///
+  /// In en, this message translates to:
+  /// **'No tests are currently available in this series.'**
+  String get seriesNoTests;
+
+  /// No description provided for @seriesTypeCountA11y.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}, {count} tests'**
+  String seriesTypeCountA11y(String label, int count);
+
+  /// No description provided for @seriesNoPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'No test pattern is available yet.'**
+  String get seriesNoPattern;
+
+  /// No description provided for @seriesPattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Series pattern'**
+  String get seriesPattern;
+
+  /// No description provided for @seriesMinTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min total'**
+  String seriesMinTotal(int minutes);
+
+  /// No description provided for @seriesBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Test-wise breakdown'**
+  String get seriesBreakdown;
+
+  /// No description provided for @seriesSyllabusBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete topic-wise preparation coverage for {exam}. Test groups below are derived from the published series catalogue.'**
+  String seriesSyllabusBody(String exam);
+
+  /// No description provided for @seriesSyllabusEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Syllabus will appear as tests are published.'**
+  String get seriesSyllabusEmpty;
+
+  /// No description provided for @seriesPublishedTestsQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'{tests} published tests · {questions} questions'**
+  String seriesPublishedTestsQuestions(int tests, int questions);
+
+  /// No description provided for @seriesReviewsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Learner reviews will appear here when published reviews are available.'**
+  String get seriesReviewsEmpty;
+
+  /// No description provided for @seriesStudentReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Reviews'**
+  String get seriesStudentReviews;
+
+  /// No description provided for @seriesRatedReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rated review} other{{count} rated reviews}}'**
+  String seriesRatedReviews(int count);
+
+  /// No description provided for @faqIncludedQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What is included in this test series?'**
+  String get faqIncludedQ;
+
+  /// No description provided for @faqIncludedA.
+  ///
+  /// In en, this message translates to:
+  /// **'{tests} published tests with {questions} total questions, subject to the live catalogue and your access plan.'**
+  String faqIncludedA(int tests, int questions);
+
+  /// No description provided for @faqExplanationsQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Are explanations available?'**
+  String get faqExplanationsQ;
+
+  /// No description provided for @faqExplanationsA.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed attempts can be reviewed with the explanation and analysis supported by the test.'**
+  String get faqExplanationsA;
+
+  /// No description provided for @faqMultipleQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I attempt a test multiple times?'**
+  String get faqMultipleQ;
+
+  /// No description provided for @faqMultipleA.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.'**
+  String get faqMultipleA;
+
+  /// No description provided for @faqLanguageQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I change the question language?'**
+  String get faqLanguageQ;
+
+  /// No description provided for @faqLanguageA.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported languages are shown before starting the test. Availability depends on the published question content.'**
+  String get faqLanguageA;
+
+  /// No description provided for @faqExpiryQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens when my access expires?'**
+  String get faqExpiryQ;
+
+  /// No description provided for @faqExpiryA.
+  ///
+  /// In en, this message translates to:
+  /// **'You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.'**
+  String get faqExpiryA;
+
+  /// No description provided for @faqPreviousQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Where can I see my previous attempts?'**
+  String get faqPreviousQ;
+
+  /// No description provided for @faqPreviousA.
+  ///
+  /// In en, this message translates to:
+  /// **'Use My Test Series, Profile or Results to revisit completed attempts and performance information.'**
+  String get faqPreviousA;
+
+  /// No description provided for @seriesYourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Your series progress'**
+  String get seriesYourProgress;
+
+  /// No description provided for @seriesCompletedOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} tests completed'**
+  String seriesCompletedOf(int done, int total);
+
+  /// No description provided for @typeFullTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Length Mock Tests'**
+  String get typeFullTitle;
+
+  /// No description provided for @typeFullSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest pattern full syllabus tests'**
+  String get typeFullSubtitle;
+
+  /// No description provided for @typeSectionalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sectional Tests'**
+  String get typeSectionalTitle;
+
+  /// No description provided for @typeSectionalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject-wise practice tests'**
+  String get typeSectionalSubtitle;
+
+  /// No description provided for @typeTopicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic-wise Tests'**
+  String get typeTopicTitle;
+
+  /// No description provided for @typeTopicSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focused practice on important topics'**
+  String get typeTopicSubtitle;
+
+  /// No description provided for @typePyqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous Year Papers'**
+  String get typePyqTitle;
+
+  /// No description provided for @typePyqSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous exam papers with review'**
+  String get typePyqSubtitle;
+
+  /// No description provided for @typeFullTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get typeFullTab;
+
+  /// No description provided for @typeSectionalTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Sectional'**
+  String get typeSectionalTab;
+
+  /// No description provided for @typeTopicTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic-wise'**
+  String get typeTopicTab;
+
+  /// No description provided for @typePyqTab.
+  ///
+  /// In en, this message translates to:
+  /// **'PYQs'**
+  String get typePyqTab;
+
+  /// No description provided for @seriesStateCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get seriesStateCompleted;
+
+  /// No description provided for @seriesStatePremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium'**
+  String get seriesStatePremium;
+
+  /// No description provided for @seriesStateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get seriesStateReady;
+
+  /// No description provided for @seriesStateLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get seriesStateLocked;
+
+  /// No description provided for @seriesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get seriesOptional;
+
+  /// No description provided for @seriesRequiredTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get seriesRequiredTag;
+
+  /// No description provided for @seriesBestScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Best score: {score}'**
+  String seriesBestScore(String score);
+
+  /// No description provided for @seriesOpenAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Open test again'**
+  String get seriesOpenAgain;
+
+  /// No description provided for @seriesViewInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'View instructions'**
+  String get seriesViewInstructions;
+
+  /// No description provided for @seriesUnlockPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock premium tests'**
+  String get seriesUnlockPremium;
+
+  /// No description provided for @seriesProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Series progress'**
+  String get seriesProgressLabel;
+
+  /// No description provided for @seriesStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Series status'**
+  String get seriesStatus;
+
+  /// No description provided for @seriesUpNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next'**
+  String get seriesUpNext;
+
+  /// No description provided for @seriesPremiumRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium access required'**
+  String get seriesPremiumRequired;
+
+  /// No description provided for @seriesFromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'From {price}'**
+  String seriesFromPrice(String price);
+
+  /// No description provided for @seriesAllCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All tests completed'**
+  String get seriesAllCompleted;
+
+  /// No description provided for @seriesNoneAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No test is available yet'**
+  String get seriesNoneAvailable;
+
+  /// No description provided for @seriesViewPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans'**
+  String get seriesViewPlans;
+
+  /// No description provided for @seriesReviewTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Tests'**
+  String get seriesReviewTests;
+
+  /// No description provided for @seriesOpenTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Test'**
+  String get seriesOpenTest;
+
+  /// No description provided for @seriesLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Test series could not be loaded.'**
+  String get seriesLoadFailed;
+
+  /// No description provided for @seriesCheckConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get seriesCheckConnection;
 }
 
 class _AppLocalizationsDelegate

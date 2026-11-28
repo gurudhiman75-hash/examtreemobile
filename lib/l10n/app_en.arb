@@ -878,5 +878,219 @@
   "readyTrack": "Track your performance",
   "readyTrackBody": "Review scores, accuracy, attempts and progress from your Profile.",
   "readyGoMySeries": "Go to My Test Series",
-  "readyViewOrder": "View Order Details"
+  "readyViewOrder": "View Order Details",
+  "seriesLockedTitle": "This Test is Locked",
+  "seriesFreeAvailable": "{count, plural, =1{1 free test is available in this series.} other{{count} free tests are available in this series.}}",
+  "@seriesFreeAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesTryFree": "Try Free Test",
+  "seriesViewPlansUnlock": "View Plans & Unlock",
+  "seriesMaybeLater": "Maybe Later",
+  "seriesStructuredPractice": "Structured mock-test practice for {exam}.",
+  "@seriesStructuredPractice": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesComingSoon": "COMING SOON",
+  "seriesActive": "ACTIVE",
+  "seriesUnavailable": "UNAVAILABLE",
+  "seriesInPreparation": "Content in preparation",
+  "seriesPercentComplete": "{percent}% complete",
+  "@seriesPercentComplete": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesTestsFraction": "{done}/{total} tests",
+  "@seriesTestsFraction": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesPracticeTime": "Practice time",
+  "seriesProgress": "Progress",
+  "seriesTabOverview": "Overview",
+  "seriesTabTestList": "Test List",
+  "seriesTabSyllabus": "Syllabus",
+  "seriesTabPattern": "Exam Pattern",
+  "seriesTabReviews": "Reviews",
+  "seriesTabFaqs": "FAQs",
+  "seriesSequential": "Sequential progression",
+  "seriesScoreGated": "Score-gated progression",
+  "seriesOpenProgression": "Open progression",
+  "seriesAbout": "About this series",
+  "seriesOrganisedFor": "This series is organised for structured {exam} practice.",
+  "@seriesOrganisedFor": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesIncluded": "What’s included",
+  "seriesRequired": "{count} required",
+  "@seriesRequired": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesWhyChoose": "Why choose this series",
+  "seriesWhyProgress": "Progress tracking",
+  "seriesWhyProgressBody": "Completed tests and your next eligible test stay visible.",
+  "seriesWhyUnlock": "Clear unlock rules",
+  "seriesWhyUnlockBody": "Scheduled and progression-based locks are shown before you open a test.",
+  "seriesWhyInstructions": "Instructions before attempt",
+  "seriesWhyInstructionsBody": "Each unlocked test opens its details and instructions before the timer starts.",
+  "seriesNoTests": "No tests are currently available in this series.",
+  "seriesTypeCountA11y": "{label}, {count} tests",
+  "@seriesTypeCountA11y": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesNoPattern": "No test pattern is available yet.",
+  "seriesPattern": "Series pattern",
+  "seriesMinTotal": "{minutes} min total",
+  "@seriesMinTotal": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesBreakdown": "Test-wise breakdown",
+  "seriesSyllabusBody": "Complete topic-wise preparation coverage for {exam}. Test groups below are derived from the published series catalogue.",
+  "@seriesSyllabusBody": {
+    "placeholders": {
+      "exam": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesSyllabusEmpty": "Syllabus will appear as tests are published.",
+  "seriesPublishedTestsQuestions": "{tests} published tests · {questions} questions",
+  "@seriesPublishedTestsQuestions": {
+    "placeholders": {
+      "tests": {
+        "type": "int"
+      },
+      "questions": {
+        "type": "int"
+      }
+    }
+  },
+  "seriesReviewsEmpty": "Learner reviews will appear here when published reviews are available.",
+  "seriesStudentReviews": "Student Reviews",
+  "seriesRatedReviews": "{count, plural, =1{1 rated review} other{{count} rated reviews}}",
+  "@seriesRatedReviews": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "faqIncludedQ": "What is included in this test series?",
+  "faqIncludedA": "{tests} published tests with {questions} total questions, subject to the live catalogue and your access plan.",
+  "@faqIncludedA": {
+    "placeholders": {
+      "tests": {
+        "type": "int"
+      },
+      "questions": {
+        "type": "int"
+      }
+    }
+  },
+  "faqExplanationsQ": "Are explanations available?",
+  "faqExplanationsA": "Completed attempts can be reviewed with the explanation and analysis supported by the test.",
+  "faqMultipleQ": "Can I attempt a test multiple times?",
+  "faqMultipleA": "Attempt limits are shown on the Test Instructions page and are enforced by the test configuration.",
+  "faqLanguageQ": "Can I change the question language?",
+  "faqLanguageA": "Supported languages are shown before starting the test. Availability depends on the published question content.",
+  "faqExpiryQ": "What happens when my access expires?",
+  "faqExpiryA": "You can renew the series from My Test Series. Existing progress and analytics remain tied to your account.",
+  "faqPreviousQ": "Where can I see my previous attempts?",
+  "faqPreviousA": "Use My Test Series, Profile or Results to revisit completed attempts and performance information.",
+  "seriesYourProgress": "Your series progress",
+  "seriesCompletedOf": "{done} of {total} tests completed",
+  "@seriesCompletedOf": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "typeFullTitle": "Full Length Mock Tests",
+  "typeFullSubtitle": "Latest pattern full syllabus tests",
+  "typeSectionalTitle": "Sectional Tests",
+  "typeSectionalSubtitle": "Subject-wise practice tests",
+  "typeTopicTitle": "Topic-wise Tests",
+  "typeTopicSubtitle": "Focused practice on important topics",
+  "typePyqTitle": "Previous Year Papers",
+  "typePyqSubtitle": "Previous exam papers with review",
+  "typeFullTab": "Full",
+  "typeSectionalTab": "Sectional",
+  "typeTopicTab": "Topic-wise",
+  "typePyqTab": "PYQs",
+  "seriesStateCompleted": "Completed",
+  "seriesStatePremium": "Premium",
+  "seriesStateReady": "Ready",
+  "seriesStateLocked": "Locked",
+  "seriesOptional": "Optional",
+  "seriesRequiredTag": "Required",
+  "seriesBestScore": "Best score: {score}",
+  "@seriesBestScore": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesOpenAgain": "Open test again",
+  "seriesViewInstructions": "View instructions",
+  "seriesUnlockPremium": "Unlock premium tests",
+  "seriesProgressLabel": "Series progress",
+  "seriesStatus": "Series status",
+  "seriesUpNext": "Up next",
+  "seriesPremiumRequired": "Premium access required",
+  "seriesFromPrice": "From {price}",
+  "@seriesFromPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "seriesAllCompleted": "All tests completed",
+  "seriesNoneAvailable": "No test is available yet",
+  "seriesViewPlans": "View Plans",
+  "seriesReviewTests": "Review Tests",
+  "seriesOpenTest": "Open Test",
+  "seriesLoadFailed": "Test series could not be loaded.",
+  "seriesCheckConnection": "Check your connection and try again."
 }
