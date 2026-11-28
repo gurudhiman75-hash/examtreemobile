@@ -12,6 +12,7 @@ import '../data/store_repository.dart';
 import '../domain/series_purchase.dart';
 import 'providers/store_providers.dart';
 import 'series_purchase_shared.dart';
+import '../../../l10n/l10n.dart';
 
 final checkoutCouponQuoteProvider =
     FutureProvider.family<CouponQuote, ({String productId, String code})>(
@@ -108,7 +109,7 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
       setState(() => _error = error.message);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _error = 'Unable to open secure payment.');
+      setState(() => _error = context.l10n.storeOpenPaymentFailed);
     } finally {
       if (mounted) setState(() => _opening = false);
     }
@@ -120,8 +121,7 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
     if (paymentId.isEmpty || signature.isEmpty || _order == null) {
       if (!mounted) return;
       setState(() {
-        _error =
-            'Payment returned incomplete confirmation details. Please verify again.';
+        _error = context.l10n.storeIncompleteConfirmation;
       });
       return;
     }
@@ -135,7 +135,7 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
     setState(() {
       _error = response.message?.trim().isNotEmpty == true
           ? response.message!.trim()
-          : 'Payment was not completed.';
+          : context.l10n.storePaymentNotCompleted;
     });
   }
 
@@ -146,8 +146,8 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
       SnackBar(
         content: Text(
           wallet == null || wallet.isEmpty
-              ? 'Continue in your wallet to complete payment.'
-              : 'Continue in ' + wallet + ' to complete payment.',
+              ? context.l10n.storeContinueWallet
+              : context.l10n.storeContinueInWallet(wallet),
         ),
       ),
     );
@@ -200,7 +200,7 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
       } else {
         setState(() {
           _error =
-              'Payment was received but activation is still processing. Tap Verify Payment.';
+              context.l10n.storeActivationProcessing;
         });
       }
     } on StoreCatalogException catch (error) {
@@ -217,13 +217,13 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
 
     return Scaffold(
       backgroundColor: purchasePage,
-      appBar: purchaseAppBar('Checkout'),
+      appBar: purchaseAppBar(context.l10n.storeCheckout),
       body: detail.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => PurchaseState(
           icon: Icons.cloud_off_outlined,
-          title: 'Unable to load checkout',
-          action: 'Retry',
+          title: context.l10n.storeCheckoutFailed,
+          action: context.l10n.retry,
           onAction: () =>
               ref.invalidate(mobileTestSeriesDetailProvider(widget.seriesId)),
         ),
@@ -242,17 +242,17 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
             return PurchaseState(
               icon: Icons.verified_rounded,
               iconColor: const Color(0xFF10996F),
-              title: 'This test series is already active.',
-              action: 'Open Test Series',
+              title: context.l10n.storeAlreadyActive,
+              action: context.l10n.storeOpenTestSeries,
               onAction: () => context.go(
                 '/test-series?id=' + Uri.encodeQueryComponent(widget.seriesId),
               ),
             );
           }
           if (selected == null) {
-            return const PurchaseState(
+            return PurchaseState(
               icon: Icons.inventory_2_outlined,
-              title: 'This plan is no longer available.',
+              title: context.l10n.storePlanUnavailable,
             );
           }
 
@@ -277,7 +277,7 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
             children: [
               PurchaseHero(
                 eyebrow: info.examName,
-                title: 'Review & Pay',
+                title: context.l10n.storeReviewPay,
                 subtitle: info.name,
               ),
               const SizedBox(height: 16),
@@ -293,8 +293,8 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
                 if (quoteLoading)
                   const LinearProgressIndicator(minHeight: 3)
                 else if (quoteError)
-                  const InlinePurchaseWarning(
-                    'Coupon could not be revalidated. Go back and apply it again.',
+                  InlinePurchaseWarning(
+                    context.l10n.storeCouponRevalidate,
                   )
                 else if (quote != null)
                   _CouponApplied(quote: quote),
@@ -331,9 +331,10 @@ class _SeriesCheckoutScreenState extends ConsumerState<SeriesCheckoutScreen> {
                       )
                     : Text(
                         _paymentId != null && _signature != null
-                            ? 'Verify Payment'
-                            : 'Pay ' +
+                            ? context.l10n.storeVerifyPayment
+                            : context.l10n.storePayAmount(
                                 formatSeriesMoney(payable, plan.currency),
+                              ),
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 16,
@@ -368,8 +369,8 @@ class _OrderSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Order Summary',
+          Text(
+            context.l10n.storeOrderSummary,
             style: TextStyle(
               color: Color(0xFF10264A),
               fontSize: 17,
@@ -386,18 +387,18 @@ class _OrderSummary extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            validityLabel(plan.validityDays) + ' access',
+            context.l10n.storeAccess(validityLabel(context, plan.validityDays)),
             style: const TextStyle(color: purchaseMuted, fontSize: 12),
           ),
           const Divider(height: 24, color: purchaseLine),
           ReceiptRow(
-            label: 'Plan price',
+            label: context.l10n.storePlanPrice,
             value: formatSeriesMoney(plan.salePriceMinor, plan.currency),
           ),
           if (quote != null && quote!.discountMinor > 0) ...[
             const SizedBox(height: 9),
             ReceiptRow(
-              label: 'Coupon discount',
+              label: context.l10n.storeCouponDiscount,
               value: '-' +
                   formatSeriesMoney(
                     quote!.discountMinor,
@@ -408,7 +409,7 @@ class _OrderSummary extends StatelessWidget {
           ],
           const Divider(height: 24, color: purchaseLine),
           ReceiptRow(
-            label: 'Total Payable',
+            label: context.l10n.storeTotalPayable,
             value: formatSeriesMoney(total, plan.currency),
             strong: true,
           ),
@@ -426,7 +427,7 @@ class _PaymentMethod extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: purchaseCardDecoration(),
-      child: const Row(
+      child: Row(
         children: [
           _PaymentIcon(),
           SizedBox(width: 12),
@@ -435,7 +436,7 @@ class _PaymentMethod extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'UPI, Cards & More',
+                  context.l10n.storeUpiCards,
                   style: TextStyle(
                     color: Color(0xFF10264A),
                     fontWeight: FontWeight.w900,
@@ -443,7 +444,7 @@ class _PaymentMethod extends StatelessWidget {
                 ),
                 SizedBox(height: 3),
                 Text(
-                  'Choose UPI, card, net banking or wallet in secure Razorpay Checkout.',
+                  context.l10n.storeRazorpayBody,
                   style: TextStyle(
                     color: purchaseMuted,
                     fontSize: 11,
@@ -529,7 +530,7 @@ class _PaymentProcessing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
         padding: EdgeInsets.all(28),
         child: Column(
@@ -542,7 +543,7 @@ class _PaymentProcessing extends StatelessWidget {
             ),
             SizedBox(height: 18),
             Text(
-              'Activating your test series…',
+              context.l10n.storeActivating,
               style: TextStyle(
                 color: Color(0xFF10264A),
                 fontSize: 18,
@@ -551,7 +552,7 @@ class _PaymentProcessing extends StatelessWidget {
             ),
             SizedBox(height: 6),
             Text(
-              'Please keep this screen open while we verify your payment.',
+              context.l10n.storeKeepOpen,
               textAlign: TextAlign.center,
               style: TextStyle(color: purchaseMuted),
             ),

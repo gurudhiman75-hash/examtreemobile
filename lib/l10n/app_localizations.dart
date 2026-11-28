@@ -1875,6 +1875,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Good evening'**
   String get homeGoodEvening;
+
+  /// No description provided for @storeEnterCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a coupon code first.'**
+  String get storeEnterCoupon;
+
+  /// No description provided for @storeCouponApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied • Save {amount}'**
+  String storeCouponApplied(String amount);
+
+  /// No description provided for @storeChoosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Plan'**
+  String get storeChoosePlan;
+
+  /// No description provided for @storePlansFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load plans'**
+  String get storePlansFailed;
+
+  /// No description provided for @storeAlreadyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This test series is already active.'**
+  String get storeAlreadyActive;
+
+  /// No description provided for @storeOpenTestSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Test Series'**
+  String get storeOpenTestSeries;
+
+  /// No description provided for @storeNoPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No purchase plan is available right now.'**
+  String get storeNoPlan;
+
+  /// No description provided for @storePremiumFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{premium} premium tests • {free} free'**
+  String storePremiumFree(int premium, int free);
+
+  /// No description provided for @storeChooseAccessPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your access plan'**
+  String get storeChooseAccessPlan;
+
+  /// No description provided for @storePublishedOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only currently published plans are shown.'**
+  String get storePublishedOnly;
+
+  /// No description provided for @storeHaveCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a coupon?'**
+  String get storeHaveCoupon;
+
+  /// No description provided for @storeCouponHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter coupon code'**
+  String get storeCouponHint;
+
+  /// No description provided for @storeApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get storeApply;
+
+  /// No description provided for @storeSelectedPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected plan'**
+  String get storeSelectedPlan;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueLabel;
+
+  /// No description provided for @storeTestsIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} series tests included'**
+  String storeTestsIncluded(int count);
+
+  /// No description provided for @storePercentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% OFF'**
+  String storePercentOff(int percent);
+
+  /// No description provided for @storeOpenPaymentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open secure payment.'**
+  String get storeOpenPaymentFailed;
+
+  /// No description provided for @storeIncompleteConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment returned incomplete confirmation details. Please verify again.'**
+  String get storeIncompleteConfirmation;
+
+  /// No description provided for @storePaymentNotCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment was not completed.'**
+  String get storePaymentNotCompleted;
+
+  /// No description provided for @storeContinueWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue in your wallet to complete payment.'**
+  String get storeContinueWallet;
+
+  /// No description provided for @storeContinueInWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue in {wallet} to complete payment.'**
+  String storeContinueInWallet(String wallet);
+
+  /// No description provided for @storeActivationProcessing.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment was received but activation is still processing. Tap Verify Payment.'**
+  String get storeActivationProcessing;
+
+  /// No description provided for @storeCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout'**
+  String get storeCheckout;
+
+  /// No description provided for @storeCheckoutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load checkout'**
+  String get storeCheckoutFailed;
+
+  /// No description provided for @storePlanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan is no longer available.'**
+  String get storePlanUnavailable;
+
+  /// No description provided for @storeReviewPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Review & Pay'**
+  String get storeReviewPay;
+
+  /// No description provided for @storeCouponRevalidate.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon could not be revalidated. Go back and apply it again.'**
+  String get storeCouponRevalidate;
+
+  /// No description provided for @storeVerifyPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Payment'**
+  String get storeVerifyPayment;
+
+  /// No description provided for @storePayAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay {amount}'**
+  String storePayAmount(String amount);
+
+  /// No description provided for @storeOrderSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Summary'**
+  String get storeOrderSummary;
+
+  /// No description provided for @storeAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{validity} access'**
+  String storeAccess(String validity);
+
+  /// No description provided for @storePlanPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan price'**
+  String get storePlanPrice;
+
+  /// No description provided for @storeCouponDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon discount'**
+  String get storeCouponDiscount;
+
+  /// No description provided for @storeTotalPayable.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Payable'**
+  String get storeTotalPayable;
+
+  /// No description provided for @storeUpiCards.
+  ///
+  /// In en, this message translates to:
+  /// **'UPI, Cards & More'**
+  String get storeUpiCards;
+
+  /// No description provided for @storeRazorpayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose UPI, card, net banking or wallet in secure Razorpay Checkout.'**
+  String get storeRazorpayBody;
+
+  /// No description provided for @storeCouponSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{code} applied • You save {amount}'**
+  String storeCouponSaved(String code, String amount);
+
+  /// No description provided for @storeActivating.
+  ///
+  /// In en, this message translates to:
+  /// **'Activating your test series…'**
+  String get storeActivating;
+
+  /// No description provided for @storeKeepOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Please keep this screen open while we verify your payment.'**
+  String get storeKeepOpen;
+
+  /// No description provided for @storeRazorpayNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment is processed securely by Razorpay. Examtree never stores your card or UPI credentials.'**
+  String get storeRazorpayNote;
+
+  /// No description provided for @validityAsPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Validity as published'**
+  String get validityAsPublished;
+
+  /// No description provided for @validityMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Months'**
+  String validityMonths(int count);
+
+  /// No description provided for @validityDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Days'**
+  String validityDays(int count);
+
+  /// No description provided for @paySuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Successful!'**
+  String get paySuccessTitle;
+
+  /// No description provided for @paySuccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your test series has been unlocked and is ready for your preparation.'**
+  String get paySuccessBody;
+
+  /// No description provided for @payAccessActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Access Active'**
+  String get payAccessActive;
+
+  /// No description provided for @payActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get payActive;
+
+  /// No description provided for @payMockTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock Tests'**
+  String get payMockTests;
+
+  /// No description provided for @payMockTestsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Full access to your purchased series'**
+  String get payMockTestsBody;
+
+  /// No description provided for @payAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Analysis'**
+  String get payAnalysis;
+
+  /// No description provided for @payAnalysisBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Track attempts, accuracy and progress'**
+  String get payAnalysisBody;
+
+  /// No description provided for @payBilingual.
+  ///
+  /// In en, this message translates to:
+  /// **'Bilingual Content'**
+  String get payBilingual;
+
+  /// No description provided for @payBilingualBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use supported languages throughout the series'**
+  String get payBilingualBody;
+
+  /// No description provided for @paySolutions.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Solutions'**
+  String get paySolutions;
+
+  /// No description provided for @paySolutionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Review explanations after every attempt'**
+  String get paySolutionsBody;
+
+  /// No description provided for @paySafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Progress is Safe'**
+  String get paySafe;
+
+  /// No description provided for @paySafeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Attempts, analytics and bookmarks are preserved with your access.'**
+  String get paySafeBody;
+
+  /// No description provided for @payStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Learning Now'**
+  String get payStart;
+
+  /// No description provided for @payStartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue from where you left off and keep your preparation on track.'**
+  String get payStartBody;
+
+  /// No description provided for @payOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get payOrder;
+
+  /// No description provided for @payViewReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'View Receipt'**
+  String get payViewReceipt;
+
+  /// No description provided for @readyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re All Set!'**
+  String get readyTitle;
+
+  /// No description provided for @readyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your ExamTree test series is active and ready to use.'**
+  String get readyBody;
+
+  /// No description provided for @readyOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your Test Series'**
+  String get readyOpen;
+
+  /// No description provided for @readyOpenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your purchased series now appears in My Test Series.'**
+  String get readyOpenBody;
+
+  /// No description provided for @readyChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a test'**
+  String get readyChoose;
+
+  /// No description provided for @readyChooseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a full mock, sectional, PYQ or topic-wise test.'**
+  String get readyChooseBody;
+
+  /// No description provided for @readyTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your performance'**
+  String get readyTrack;
+
+  /// No description provided for @readyTrackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Review scores, accuracy, attempts and progress from your Profile.'**
+  String get readyTrackBody;
+
+  /// No description provided for @readyGoMySeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to My Test Series'**
+  String get readyGoMySeries;
+
+  /// No description provided for @readyViewOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'View Order Details'**
+  String get readyViewOrder;
 }
 
 class _AppLocalizationsDelegate

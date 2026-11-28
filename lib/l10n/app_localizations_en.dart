@@ -1111,4 +1111,255 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeGoodEvening => 'Good evening';
+
+  @override
+  String get storeEnterCoupon => 'Enter a coupon code first.';
+
+  @override
+  String storeCouponApplied(String amount) {
+    return 'Coupon applied • Save $amount';
+  }
+
+  @override
+  String get storeChoosePlan => 'Choose Plan';
+
+  @override
+  String get storePlansFailed => 'Unable to load plans';
+
+  @override
+  String get storeAlreadyActive => 'This test series is already active.';
+
+  @override
+  String get storeOpenTestSeries => 'Open Test Series';
+
+  @override
+  String get storeNoPlan => 'No purchase plan is available right now.';
+
+  @override
+  String storePremiumFree(int premium, int free) {
+    return '$premium premium tests • $free free';
+  }
+
+  @override
+  String get storeChooseAccessPlan => 'Choose your access plan';
+
+  @override
+  String get storePublishedOnly => 'Only currently published plans are shown.';
+
+  @override
+  String get storeHaveCoupon => 'Have a coupon?';
+
+  @override
+  String get storeCouponHint => 'Enter coupon code';
+
+  @override
+  String get storeApply => 'Apply';
+
+  @override
+  String get storeSelectedPlan => 'Selected plan';
+
+  @override
+  String get continueLabel => 'Continue';
+
+  @override
+  String storeTestsIncluded(int count) {
+    return '$count series tests included';
+  }
+
+  @override
+  String storePercentOff(int percent) {
+    return '$percent% OFF';
+  }
+
+  @override
+  String get storeOpenPaymentFailed => 'Unable to open secure payment.';
+
+  @override
+  String get storeIncompleteConfirmation =>
+      'Payment returned incomplete confirmation details. Please verify again.';
+
+  @override
+  String get storePaymentNotCompleted => 'Payment was not completed.';
+
+  @override
+  String get storeContinueWallet =>
+      'Continue in your wallet to complete payment.';
+
+  @override
+  String storeContinueInWallet(String wallet) {
+    return 'Continue in $wallet to complete payment.';
+  }
+
+  @override
+  String get storeActivationProcessing =>
+      'Payment was received but activation is still processing. Tap Verify Payment.';
+
+  @override
+  String get storeCheckout => 'Checkout';
+
+  @override
+  String get storeCheckoutFailed => 'Unable to load checkout';
+
+  @override
+  String get storePlanUnavailable => 'This plan is no longer available.';
+
+  @override
+  String get storeReviewPay => 'Review & Pay';
+
+  @override
+  String get storeCouponRevalidate =>
+      'Coupon could not be revalidated. Go back and apply it again.';
+
+  @override
+  String get storeVerifyPayment => 'Verify Payment';
+
+  @override
+  String storePayAmount(String amount) {
+    return 'Pay $amount';
+  }
+
+  @override
+  String get storeOrderSummary => 'Order Summary';
+
+  @override
+  String storeAccess(String validity) {
+    return '$validity access';
+  }
+
+  @override
+  String get storePlanPrice => 'Plan price';
+
+  @override
+  String get storeCouponDiscount => 'Coupon discount';
+
+  @override
+  String get storeTotalPayable => 'Total Payable';
+
+  @override
+  String get storeUpiCards => 'UPI, Cards & More';
+
+  @override
+  String get storeRazorpayBody =>
+      'Choose UPI, card, net banking or wallet in secure Razorpay Checkout.';
+
+  @override
+  String storeCouponSaved(String code, String amount) {
+    return '$code applied • You save $amount';
+  }
+
+  @override
+  String get storeActivating => 'Activating your test series…';
+
+  @override
+  String get storeKeepOpen =>
+      'Please keep this screen open while we verify your payment.';
+
+  @override
+  String get storeRazorpayNote =>
+      'Payment is processed securely by Razorpay. Examtree never stores your card or UPI credentials.';
+
+  @override
+  String get validityAsPublished => 'Validity as published';
+
+  @override
+  String validityMonths(int count) {
+    return '$count Months';
+  }
+
+  @override
+  String validityDays(int count) {
+    return '$count Days';
+  }
+
+  @override
+  String get paySuccessTitle => 'Payment Successful!';
+
+  @override
+  String get paySuccessBody =>
+      'Your test series has been unlocked and is ready for your preparation.';
+
+  @override
+  String get payAccessActive => 'Access Active';
+
+  @override
+  String get payActive => 'Active';
+
+  @override
+  String get payMockTests => 'Mock Tests';
+
+  @override
+  String get payMockTestsBody => 'Full access to your purchased series';
+
+  @override
+  String get payAnalysis => 'Detailed Analysis';
+
+  @override
+  String get payAnalysisBody => 'Track attempts, accuracy and progress';
+
+  @override
+  String get payBilingual => 'Bilingual Content';
+
+  @override
+  String get payBilingualBody =>
+      'Use supported languages throughout the series';
+
+  @override
+  String get paySolutions => 'Detailed Solutions';
+
+  @override
+  String get paySolutionsBody => 'Review explanations after every attempt';
+
+  @override
+  String get paySafe => 'Your Progress is Safe';
+
+  @override
+  String get paySafeBody =>
+      'Attempts, analytics and bookmarks are preserved with your access.';
+
+  @override
+  String get payStart => 'Start Learning Now';
+
+  @override
+  String get payStartBody =>
+      'Continue from where you left off and keep your preparation on track.';
+
+  @override
+  String get payOrder => 'Order';
+
+  @override
+  String get payViewReceipt => 'View Receipt';
+
+  @override
+  String get readyTitle => 'You’re All Set!';
+
+  @override
+  String get readyBody =>
+      'Your ExamTree test series is active and ready to use.';
+
+  @override
+  String get readyOpen => 'Open your Test Series';
+
+  @override
+  String get readyOpenBody =>
+      'Your purchased series now appears in My Test Series.';
+
+  @override
+  String get readyChoose => 'Choose a test';
+
+  @override
+  String get readyChooseBody =>
+      'Start with a full mock, sectional, PYQ or topic-wise test.';
+
+  @override
+  String get readyTrack => 'Track your performance';
+
+  @override
+  String get readyTrackBody =>
+      'Review scores, accuracy, attempts and progress from your Profile.';
+
+  @override
+  String get readyGoMySeries => 'Go to My Test Series';
+
+  @override
+  String get readyViewOrder => 'View Order Details';
 }

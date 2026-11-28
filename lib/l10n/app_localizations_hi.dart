@@ -1109,4 +1109,253 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeGoodEvening => 'शुभ संध्या';
+
+  @override
+  String get storeEnterCoupon => 'पहले कूपन कोड डालें।';
+
+  @override
+  String storeCouponApplied(String amount) {
+    return 'कूपन लगा • $amount की बचत';
+  }
+
+  @override
+  String get storeChoosePlan => 'प्लान चुनें';
+
+  @override
+  String get storePlansFailed => 'प्लान लोड नहीं हो सके';
+
+  @override
+  String get storeAlreadyActive => 'यह टेस्ट सीरीज़ पहले से सक्रिय है।';
+
+  @override
+  String get storeOpenTestSeries => 'टेस्ट सीरीज़ खोलें';
+
+  @override
+  String get storeNoPlan => 'अभी कोई खरीद प्लान उपलब्ध नहीं है।';
+
+  @override
+  String storePremiumFree(int premium, int free) {
+    return '$premium प्रीमियम टेस्ट • $free मुफ़्त';
+  }
+
+  @override
+  String get storeChooseAccessPlan => 'अपना एक्सेस प्लान चुनें';
+
+  @override
+  String get storePublishedOnly => 'सिर्फ़ अभी प्रकाशित प्लान दिखाए गए हैं।';
+
+  @override
+  String get storeHaveCoupon => 'कूपन है?';
+
+  @override
+  String get storeCouponHint => 'कूपन कोड डालें';
+
+  @override
+  String get storeApply => 'लगाएँ';
+
+  @override
+  String get storeSelectedPlan => 'चुना गया प्लान';
+
+  @override
+  String get continueLabel => 'जारी रखें';
+
+  @override
+  String storeTestsIncluded(int count) {
+    return '$count सीरीज़ टेस्ट शामिल';
+  }
+
+  @override
+  String storePercentOff(int percent) {
+    return '$percent% छूट';
+  }
+
+  @override
+  String get storeOpenPaymentFailed => 'सुरक्षित भुगतान नहीं खुल सका।';
+
+  @override
+  String get storeIncompleteConfirmation =>
+      'भुगतान की पुष्टि अधूरी मिली। कृपया फिर से जाँचें।';
+
+  @override
+  String get storePaymentNotCompleted => 'भुगतान पूरा नहीं हुआ।';
+
+  @override
+  String get storeContinueWallet =>
+      'भुगतान पूरा करने के लिए अपने वॉलेट में जारी रखें।';
+
+  @override
+  String storeContinueInWallet(String wallet) {
+    return 'भुगतान पूरा करने के लिए $wallet में जारी रखें।';
+  }
+
+  @override
+  String get storeActivationProcessing =>
+      'भुगतान मिल गया है पर एक्टिवेशन अभी चल रहा है। भुगतान जाँचें दबाएँ।';
+
+  @override
+  String get storeCheckout => 'चेकआउट';
+
+  @override
+  String get storeCheckoutFailed => 'चेकआउट लोड नहीं हो सका';
+
+  @override
+  String get storePlanUnavailable => 'यह प्लान अब उपलब्ध नहीं है।';
+
+  @override
+  String get storeReviewPay => 'देखें और भुगतान करें';
+
+  @override
+  String get storeCouponRevalidate =>
+      'कूपन की दोबारा जाँच नहीं हो सकी। वापस जाकर फिर से लगाएँ।';
+
+  @override
+  String get storeVerifyPayment => 'भुगतान जाँचें';
+
+  @override
+  String storePayAmount(String amount) {
+    return '$amount का भुगतान करें';
+  }
+
+  @override
+  String get storeOrderSummary => 'ऑर्डर सारांश';
+
+  @override
+  String storeAccess(String validity) {
+    return '$validity एक्सेस';
+  }
+
+  @override
+  String get storePlanPrice => 'प्लान कीमत';
+
+  @override
+  String get storeCouponDiscount => 'कूपन छूट';
+
+  @override
+  String get storeTotalPayable => 'कुल देय राशि';
+
+  @override
+  String get storeUpiCards => 'UPI, कार्ड और अन्य';
+
+  @override
+  String get storeRazorpayBody =>
+      'सुरक्षित Razorpay चेकआउट में UPI, कार्ड, नेट बैंकिंग या वॉलेट चुनें।';
+
+  @override
+  String storeCouponSaved(String code, String amount) {
+    return '$code लगा • आपकी बचत $amount';
+  }
+
+  @override
+  String get storeActivating => 'आपकी टेस्ट सीरीज़ सक्रिय हो रही है…';
+
+  @override
+  String get storeKeepOpen => 'भुगतान की जाँच होने तक यह स्क्रीन खुली रखें।';
+
+  @override
+  String get storeRazorpayNote =>
+      'भुगतान Razorpay द्वारा सुरक्षित रूप से होता है। Examtree आपके कार्ड या UPI विवरण कभी सेव नहीं करता।';
+
+  @override
+  String get validityAsPublished => 'प्रकाशित वैधता के अनुसार';
+
+  @override
+  String validityMonths(int count) {
+    return '$count महीने';
+  }
+
+  @override
+  String validityDays(int count) {
+    return '$count दिन';
+  }
+
+  @override
+  String get paySuccessTitle => 'भुगतान सफल!';
+
+  @override
+  String get paySuccessBody =>
+      'आपकी टेस्ट सीरीज़ अनलॉक हो गई है और तैयारी के लिए तैयार है।';
+
+  @override
+  String get payAccessActive => 'एक्सेस सक्रिय';
+
+  @override
+  String get payActive => 'सक्रिय';
+
+  @override
+  String get payMockTests => 'मॉक टेस्ट';
+
+  @override
+  String get payMockTestsBody => 'आपकी खरीदी गई सीरीज़ का पूरा एक्सेस';
+
+  @override
+  String get payAnalysis => 'विस्तृत विश्लेषण';
+
+  @override
+  String get payAnalysisBody => 'प्रयास, सटीकता और प्रगति देखें';
+
+  @override
+  String get payBilingual => 'द्विभाषी सामग्री';
+
+  @override
+  String get payBilingualBody => 'पूरी सीरीज़ में उपलब्ध भाषाओं का उपयोग करें';
+
+  @override
+  String get paySolutions => 'विस्तृत हल';
+
+  @override
+  String get paySolutionsBody => 'हर प्रयास के बाद व्याख्या देखें';
+
+  @override
+  String get paySafe => 'आपकी प्रगति सुरक्षित है';
+
+  @override
+  String get paySafeBody =>
+      'आपके एक्सेस के साथ प्रयास, विश्लेषण और बुकमार्क सुरक्षित रहते हैं।';
+
+  @override
+  String get payStart => 'अभी सीखना शुरू करें';
+
+  @override
+  String get payStartBody =>
+      'जहाँ छोड़ा था वहीं से जारी रखें और तैयारी सही राह पर रखें।';
+
+  @override
+  String get payOrder => 'ऑर्डर';
+
+  @override
+  String get payViewReceipt => 'रसीद देखें';
+
+  @override
+  String get readyTitle => 'आप तैयार हैं!';
+
+  @override
+  String get readyBody =>
+      'आपकी ExamTree टेस्ट सीरीज़ सक्रिय है और उपयोग के लिए तैयार है।';
+
+  @override
+  String get readyOpen => 'अपनी टेस्ट सीरीज़ खोलें';
+
+  @override
+  String get readyOpenBody =>
+      'आपकी खरीदी गई सीरीज़ अब मेरी टेस्ट सीरीज़ में दिखती है।';
+
+  @override
+  String get readyChoose => 'टेस्ट चुनें';
+
+  @override
+  String get readyChooseBody =>
+      'फुल मॉक, सेक्शनल, PYQ या विषयवार टेस्ट से शुरू करें।';
+
+  @override
+  String get readyTrack => 'अपना प्रदर्शन देखें';
+
+  @override
+  String get readyTrackBody =>
+      'अपनी प्रोफ़ाइल से स्कोर, सटीकता, प्रयास और प्रगति देखें।';
+
+  @override
+  String get readyGoMySeries => 'मेरी टेस्ट सीरीज़ पर जाएँ';
+
+  @override
+  String get readyViewOrder => 'ऑर्डर विवरण देखें';
 }

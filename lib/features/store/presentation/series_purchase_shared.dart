@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/l10n.dart';
 
 const purchaseNavy = Color(0xFF062D5C);
 const purchaseBlue = Color(0xFF0B5D96);
@@ -113,7 +114,7 @@ class SecurePaymentNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
@@ -124,7 +125,7 @@ class SecurePaymentNote extends StatelessWidget {
         SizedBox(width: 8),
         Expanded(
           child: Text(
-            'Payment is processed securely by Razorpay. Examtree never stores your card or UPI credentials.',
+            context.l10n.storeRazorpayNote,
             style: TextStyle(
               color: Color(0xFF64748B),
               fontSize: 11,
@@ -275,15 +276,14 @@ class InlinePurchaseWarning extends StatelessWidget {
   }
 }
 
-String validityLabel(int? days) {
-  if (days == null) return 'Validity as published';
-  if (days >= 360 && days <= 370) return '12 Months';
-  if (days >= 175 && days <= 190) return '6 Months';
-  if (days >= 85 && days <= 100) return '3 Months';
-  if (days % 30 == 0 && days < 360) {
-    return (days ~/ 30).toString() + ' Months';
-  }
-  return days.toString() + ' Days';
+String validityLabel(BuildContext context, int? days) {
+  final l10n = context.l10n;
+  if (days == null) return l10n.validityAsPublished;
+  if (days >= 360 && days <= 370) return l10n.validityMonths(12);
+  if (days >= 175 && days <= 190) return l10n.validityMonths(6);
+  if (days >= 85 && days <= 100) return l10n.validityMonths(3);
+  if (days % 30 == 0 && days < 360) return l10n.validityMonths(days ~/ 30);
+  return l10n.validityDays(days);
 }
 
 String formatSeriesMoney(int minor, String currency) {

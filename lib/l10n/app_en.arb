@@ -730,5 +730,153 @@
   "homeStudent": "Student",
   "homeGoodMorning": "Good morning",
   "homeGoodAfternoon": "Good afternoon",
-  "homeGoodEvening": "Good evening"
+  "homeGoodEvening": "Good evening",
+  "storeEnterCoupon": "Enter a coupon code first.",
+  "storeCouponApplied": "Coupon applied • Save {amount}",
+  "@storeCouponApplied": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeChoosePlan": "Choose Plan",
+  "storePlansFailed": "Unable to load plans",
+  "storeAlreadyActive": "This test series is already active.",
+  "storeOpenTestSeries": "Open Test Series",
+  "storeNoPlan": "No purchase plan is available right now.",
+  "storePremiumFree": "{premium} premium tests • {free} free",
+  "@storePremiumFree": {
+    "placeholders": {
+      "premium": {
+        "type": "int"
+      },
+      "free": {
+        "type": "int"
+      }
+    }
+  },
+  "storeChooseAccessPlan": "Choose your access plan",
+  "storePublishedOnly": "Only currently published plans are shown.",
+  "storeHaveCoupon": "Have a coupon?",
+  "storeCouponHint": "Enter coupon code",
+  "storeApply": "Apply",
+  "storeSelectedPlan": "Selected plan",
+  "continueLabel": "Continue",
+  "storeTestsIncluded": "{count} series tests included",
+  "@storeTestsIncluded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "storePercentOff": "{percent}% OFF",
+  "@storePercentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "storeOpenPaymentFailed": "Unable to open secure payment.",
+  "storeIncompleteConfirmation": "Payment returned incomplete confirmation details. Please verify again.",
+  "storePaymentNotCompleted": "Payment was not completed.",
+  "storeContinueWallet": "Continue in your wallet to complete payment.",
+  "storeContinueInWallet": "Continue in {wallet} to complete payment.",
+  "@storeContinueInWallet": {
+    "placeholders": {
+      "wallet": {
+        "type": "String"
+      }
+    }
+  },
+  "storeActivationProcessing": "Payment was received but activation is still processing. Tap Verify Payment.",
+  "storeCheckout": "Checkout",
+  "storeCheckoutFailed": "Unable to load checkout",
+  "storePlanUnavailable": "This plan is no longer available.",
+  "storeReviewPay": "Review & Pay",
+  "storeCouponRevalidate": "Coupon could not be revalidated. Go back and apply it again.",
+  "storeVerifyPayment": "Verify Payment",
+  "storePayAmount": "Pay {amount}",
+  "@storePayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeOrderSummary": "Order Summary",
+  "storeAccess": "{validity} access",
+  "@storeAccess": {
+    "placeholders": {
+      "validity": {
+        "type": "String"
+      }
+    }
+  },
+  "storePlanPrice": "Plan price",
+  "storeCouponDiscount": "Coupon discount",
+  "storeTotalPayable": "Total Payable",
+  "storeUpiCards": "UPI, Cards & More",
+  "storeRazorpayBody": "Choose UPI, card, net banking or wallet in secure Razorpay Checkout.",
+  "storeCouponSaved": "{code} applied • You save {amount}",
+  "@storeCouponSaved": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "storeActivating": "Activating your test series…",
+  "storeKeepOpen": "Please keep this screen open while we verify your payment.",
+  "storeRazorpayNote": "Payment is processed securely by Razorpay. Examtree never stores your card or UPI credentials.",
+  "validityAsPublished": "Validity as published",
+  "validityMonths": "{count} Months",
+  "@validityMonths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "validityDays": "{count} Days",
+  "@validityDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paySuccessTitle": "Payment Successful!",
+  "paySuccessBody": "Your test series has been unlocked and is ready for your preparation.",
+  "payAccessActive": "Access Active",
+  "payActive": "Active",
+  "payMockTests": "Mock Tests",
+  "payMockTestsBody": "Full access to your purchased series",
+  "payAnalysis": "Detailed Analysis",
+  "payAnalysisBody": "Track attempts, accuracy and progress",
+  "payBilingual": "Bilingual Content",
+  "payBilingualBody": "Use supported languages throughout the series",
+  "paySolutions": "Detailed Solutions",
+  "paySolutionsBody": "Review explanations after every attempt",
+  "paySafe": "Your Progress is Safe",
+  "paySafeBody": "Attempts, analytics and bookmarks are preserved with your access.",
+  "payStart": "Start Learning Now",
+  "payStartBody": "Continue from where you left off and keep your preparation on track.",
+  "payOrder": "Order",
+  "payViewReceipt": "View Receipt",
+  "readyTitle": "You’re All Set!",
+  "readyBody": "Your ExamTree test series is active and ready to use.",
+  "readyOpen": "Open your Test Series",
+  "readyOpenBody": "Your purchased series now appears in My Test Series.",
+  "readyChoose": "Choose a test",
+  "readyChooseBody": "Start with a full mock, sectional, PYQ or topic-wise test.",
+  "readyTrack": "Track your performance",
+  "readyTrackBody": "Review scores, accuracy, attempts and progress from your Profile.",
+  "readyGoMySeries": "Go to My Test Series",
+  "readyViewOrder": "View Order Details"
 }
