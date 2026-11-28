@@ -10,6 +10,7 @@ import '../../features/exams/presentation/providers/exam_providers.dart';
 import '../../features/home/presentation/home_primary_action.dart';
 import '../../features/results/presentation/providers/result_providers.dart';
 import '../../l10n/l10n.dart';
+import '../../features/preferences/presentation/app_language_picker.dart';
 
 bool shouldResetBranchOnSelection({
   required int selectedIndex,
@@ -268,6 +269,7 @@ class _AppScaffoldState extends ConsumerState<AppScaffold> {
                 ),
               ),
               actions: [
+                const AppLanguageButton(iconSize: 24),
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: Semantics(
